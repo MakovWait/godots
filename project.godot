@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="Godots"
+run/main_scene="res://src/main/main.tscn"
 config/features=PackedStringArray("4.0", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Config="*res://src/config.gd"
 
 [rendering]
 

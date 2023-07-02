@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://dvlmutw7v33j0"]
+
+[ext_resource type="Script" path="res://src/components/editors/editor_item.gd" id="1_lyr11"]
+[ext_resource type="Texture2D" uid="uid://iiuvg75aspkd" path="res://icon.svg" id="2_w10yd"]
+
+[node name="EditorItem" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_lyr11")
+
+[node name="Favorite" type="VBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="FavoriteButton" type="TextureButton" parent="Favorite"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_w10yd")
+
+[node name="InfoVBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="InfoVBox"]
+custom_minimum_size = Vector2(2.08165e-12, 1)
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="InfoVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="InfoVBox/Title"]
+layout_mode = 2
+text = "test"
+
+[node name="Control" type="Control" parent="InfoVBox/Title"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+
+[node name="Path" type="HBoxContainer" parent="InfoVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="InfoVBox/Path"]
+layout_mode = 2
+text = "/home/kovkel/editor/path"

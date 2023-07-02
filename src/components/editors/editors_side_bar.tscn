@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cv0ghc0ad1f3n"]
+
+[node name="EditorsSideBar" type="VBoxContainer"]
+custom_minimum_size = Vector2(120, 120)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+text = "action"
+
+[node name="Button2" type="Button" parent="."]
+layout_mode = 2
+text = "action"
+
+[node name="Button3" type="Button" parent="."]
+layout_mode = 2
+text = "action"
+
+[node name="Button4" type="Button" parent="."]
+layout_mode = 2
+text = "action"
+
+[node name="Button5" type="Button" parent="."]
+layout_mode = 2
+text = "action"
+
+[node name="Button6" type="Button" parent="."]
+layout_mode = 2
+text = "action"
+
+[node name="Button7" type="Button" parent="."]
+layout_mode = 2
+text = "action"

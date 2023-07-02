@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://omgg45dpxftx"]
+
+[ext_resource type="Theme" uid="uid://baqg384v16s82" path="res://assets/default.tres" id="1_kwlqb"]
+[ext_resource type="PackedScene" uid="uid://csgrsfoydw3m4" path="res://src/components/title_bar/title_bar.tscn" id="2_bjhyn"]
+[ext_resource type="Script" path="res://src/main/main.gd" id="2_nqr5a"]
+[ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/editors.tscn" id="4_y2wp0"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_kwlqb")
+script = ExtResource("2_nqr5a")
+
+[node name="GuiBase" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainVBox" type="VBoxContainer" parent="GuiBase"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleBar" parent="GuiBase/MainVBox" instance=ExtResource("2_bjhyn")]
+layout_mode = 2
+
+[node name="Content" type="Control" parent="GuiBase/MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="GuiBase/MainVBox/Content"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("4_y2wp0")]
+layout_mode = 2

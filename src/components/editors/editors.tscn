@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpi7ggvfe5uhq"]
+
+[ext_resource type="PackedScene" uid="uid://bqboqvklwmhlq" path="res://src/components/editors/editors_list.tscn" id="1_5l7jo"]
+[ext_resource type="PackedScene" uid="uid://cv0ghc0ad1f3n" path="res://src/components/editors/editors_side_bar.tscn" id="2_h1608"]
+
+[node name="Editors" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EditorsList" parent="." instance=ExtResource("1_5l7jo")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EditorsSideBar" parent="." instance=ExtResource("2_h1608")]
+layout_mode = 2

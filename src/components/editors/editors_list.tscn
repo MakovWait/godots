@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqboqvklwmhlq"]
+
+[ext_resource type="PackedScene" uid="uid://dvlmutw7v33j0" path="res://src/components/editors/editor_item.tscn" id="1_2vgrw"]
+[ext_resource type="Script" path="res://src/components/editors/editors_list.gd" id="1_avpel"]
+
+[node name="EditorsList" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_avpel")
+
+[node name="LineEdit" type="LineEdit" parent="."]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+
+[node name="EditorItem" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_2vgrw")]
+layout_mode = 2
+
+[node name="EditorItem2" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_2vgrw")]
+layout_mode = 2
+
+[node name="EditorItem3" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_2vgrw")]
+layout_mode = 2
+
+[node name="EditorItem4" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_2vgrw")]
+layout_mode = 2
+
+[node name="EditorItem5" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_2vgrw")]
+layout_mode = 2
+
+[node name="EditorItem6" parent="ScrollContainer/VBoxContainer" instance=ExtResource("1_2vgrw")]
+layout_mode = 2
