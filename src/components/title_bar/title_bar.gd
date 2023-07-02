@@ -71,19 +71,22 @@ func _gui_input(event):
 
 
 func _resize():
+	print(self.global_position, self.size)
+	var buttons_offet = Vector2i(
+		self.global_position.y + (self.size.y / 2),
+		self.global_position.y + (self.size.y / 2)
+	) * Config.EDSCALE
 	DisplayServer.window_set_window_buttons_offset(
-		Vector2i(
-			self.global_position.y + (self.size.y / 2) * Config.EDSCALE,
-#			16
-			self.global_position.y + (self.size.y / 2) * Config.EDSCALE
-		),
+		buttons_offet,
 		DisplayServer.MAIN_WINDOW_ID
 	)
-	var margin = DisplayServer.window_get_safe_title_margins()
+	var margin = DisplayServer.window_get_safe_title_margins(
+		DisplayServer.MAIN_WINDOW_ID
+	)
 	if _left_spacer: 
 		var w = margin.y if self.is_layout_rtl() else margin.x
 		_left_spacer.custom_minimum_size = Vector2(w, 0) / Config.EDSCALE
 #	if right_menu_spacer: 
 #		var w = margin.x if $GuiBase.is_layout_rtl() else margin.y
 #		right_menu_spacer.custom_minimum_size = Vector2(w, 0)
-	self.custom_minimum_size = Vector2(0, margin.z - self.global_position.y) / Config.EDSCALE
+	self.custom_minimum_size = Vector2(0, margin.z - self.global_position.y) / Config.EDSCALE	

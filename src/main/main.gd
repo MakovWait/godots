@@ -24,11 +24,11 @@ func _ready():
 	_main_v_box.set_anchors_and_offsets_preset(
 		Control.PRESET_FULL_RECT, 
 		Control.PRESET_MODE_MINSIZE, 
-		8 / Config.EDSCALE
+		8
 	)
 	_main_v_box.add_theme_constant_override(
 		"separation", 
-		8 / Config.EDSCALE
+		8 * Config.EDSCALE
 	)
 
 
