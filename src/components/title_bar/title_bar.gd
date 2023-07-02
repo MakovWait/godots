@@ -71,7 +71,6 @@ func _gui_input(event):
 
 
 func _resize():
-	print(self.global_position, self.size)
 	var buttons_offet = Vector2i(
 		self.global_position.y + (self.size.y / 2),
 		self.global_position.y + (self.size.y / 2)
