@@ -34,5 +34,5 @@ func _ready():
 
 func _enter_tree():
 	var window = get_window()
-	window.min_size = Vector2(1024, 600) * Config.EDSCALE
+	window.min_size = Vector2(520, 350) * Config.EDSCALE
 	window.size = window.min_size
