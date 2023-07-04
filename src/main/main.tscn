@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://omgg45dpxftx"]
+[gd_scene load_steps=6 format=3 uid="uid://omgg45dpxftx"]
 
 [ext_resource type="Theme" uid="uid://baqg384v16s82" path="res://assets/default.tres" id="1_kwlqb"]
 [ext_resource type="PackedScene" uid="uid://csgrsfoydw3m4" path="res://src/components/title_bar/title_bar.tscn" id="2_bjhyn"]
 [ext_resource type="Script" path="res://src/main/main.gd" id="2_nqr5a"]
 [ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/editors.tscn" id="4_y2wp0"]
+[ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote_editors.tscn" id="5_gdaat"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -48,5 +49,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("4_y2wp0")]
+[node name="Local Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("4_y2wp0")]
+layout_mode = 2
+
+[node name="Remote Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("5_gdaat")]
+visible = false
 layout_mode = 2
