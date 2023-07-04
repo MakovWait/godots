@@ -26,10 +26,10 @@ func _ready():
 		Control.PRESET_MODE_MINSIZE, 
 		8
 	)
-	_main_v_box.add_theme_constant_override(
-		"separation", 
-		8 * Config.EDSCALE
-	)
+#	_main_v_box.add_theme_constant_override(
+#		"separation", 
+#		8 * Config.EDSCALE
+#	)
 
 
 func _enter_tree():
