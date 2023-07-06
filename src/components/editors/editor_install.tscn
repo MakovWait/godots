@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://ca7g1asyno8ik"]
+
+[ext_resource type="Script" path="res://src/components/editors/editor_install.gd" id="1_vo8ft"]
+
+[node name="EditorInstall" type="ConfirmationDialog"]
+position = Vector2i(0, 36)
+size = Vector2i(200, 219)
+visible = true
+script = ExtResource("1_vo8ft")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NameContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/NameContainer"]
+layout_mode = 2
+text = "Editor Name:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/NameContainer"]
+layout_mode = 2
+
+[node name="EditorNameEdit" type="LineEdit" parent="VBoxContainer/NameContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Editor Path:"
+
+[node name="SelectExecFileTree" type="Tree" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+hide_root = true
+
+[connection signal="canceled" from="." to="." method="_on_canceled"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]

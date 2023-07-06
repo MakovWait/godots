@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dxnoecc3ruw3t"]
+[gd_scene load_steps=4 format=3 uid="uid://dxnoecc3ruw3t"]
 
 [ext_resource type="Script" path="res://src/components/editors/remote_editors.gd" id="1_80m0a"]
+[ext_resource type="PackedScene" uid="uid://c5gkkg0g1tofs" path="res://src/components/editors/editor_download.tscn" id="2_5cbw2"]
+[ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/editor_install.tscn" id="3_wvg3b"]
 
 [node name="RemoteEditors" type="Control"]
 layout_mode = 3
@@ -10,11 +12,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_80m0a")
+_editor_download_scene = ExtResource("2_5cbw2")
+_editor_install_scene = ExtResource("3_wvg3b")
 
-[node name="Tree" type="Tree" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Tree" type="Tree" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 125)
+layout_mode = 2
+
+[node name="EditorDownloads" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

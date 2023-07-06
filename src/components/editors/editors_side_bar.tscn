@@ -10,28 +10,8 @@ grow_vertical = 2
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
-text = "action"
+text = "Run"
 
 [node name="Button2" type="Button" parent="."]
 layout_mode = 2
-text = "action"
-
-[node name="Button3" type="Button" parent="."]
-layout_mode = 2
-text = "action"
-
-[node name="Button4" type="Button" parent="."]
-layout_mode = 2
-text = "action"
-
-[node name="Button5" type="Button" parent="."]
-layout_mode = 2
-text = "action"
-
-[node name="Button6" type="Button" parent="."]
-layout_mode = 2
-text = "action"
-
-[node name="Button7" type="Button" parent="."]
-layout_mode = 2
-text = "action"
+text = "Delete"

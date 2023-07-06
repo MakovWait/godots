@@ -1,14 +1,23 @@
 extends Control
 
-@onready var _gui_base : Panel = get_node("%GuiBase")
-@onready var _main_v_box : VBoxContainer = get_node("%MainVBox")
+
+@export var _remote_editors: Control
+@export var _local_editors: Control
+
+@onready var _gui_base: Panel = get_node("%GuiBase")
+@onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
+
+const EDITORS_CONFIG_PATH = "user://editors.cfg"
+var _editors = ConfigFile.new()
 
 
 func _ready():
+	_editors.load(EDITORS_CONFIG_PATH)
+	
 	if not theme.default_font:
 		theme.default_font = theme.get_font("main", "EditorFonts")
 	
-	if not theme.default_font_size == 0:
+	if not theme.has_default_font_size():
 		theme.default_font_size = 14
 	
 	get_tree().root.content_scale_factor = Config.EDSCALE
@@ -30,6 +39,14 @@ func _ready():
 #		"separation", 
 #		8 * Config.EDSCALE
 #	)
+
+	_remote_editors.installed.connect(func(name, path):
+		if not _editors.has_section(path):
+			_editors.set_value(path, "name", name)
+			_editors.save(EDITORS_CONFIG_PATH)
+	)
+	
+	_local_editors.update_items(_editors)
 
 
 func _enter_tree():

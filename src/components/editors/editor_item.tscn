@@ -33,7 +33,8 @@ layout_mode = 2
 [node name="Title" type="HBoxContainer" parent="InfoVBox"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="InfoVBox/Title"]
+[node name="TitleLabel" type="Label" parent="InfoVBox/Title"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "test"
 
@@ -44,6 +45,7 @@ layout_mode = 2
 [node name="Path" type="HBoxContainer" parent="InfoVBox"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="InfoVBox/Path"]
+[node name="PathLabel" type="Label" parent="InfoVBox/Path"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "/home/kovkel/editor/path"

@@ -11,13 +11,23 @@ config_version=5
 [application]
 
 config/name="Godots"
+config/tags=PackedStringArray("tag2")
 run/main_scene="res://src/main/main.tscn"
-config/features=PackedStringArray("4.0", "GL Compatibility")
+config/features=PackedStringArray("4.1", "GL Compatibility")
+run/low_processor_mode=true
 config/icon="res://icon.svg"
 
 [autoload]
 
 Config="*res://src/config.gd"
+
+[display]
+
+window/subwindows/embed_subwindows=false
+
+[filesystem]
+
+import/blender/enabled=false
 
 [rendering]
 

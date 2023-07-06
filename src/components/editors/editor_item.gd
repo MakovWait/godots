@@ -2,6 +2,9 @@ extends HBoxContainer
 
 signal clicked
 
+@onready var _path_label: Label = %PathLabel
+@onready var _title_label: Label = %TitleLabel
+
 var _is_hovering = false
 var _is_selected = false
 
@@ -21,6 +24,11 @@ func _ready():
 		_is_hovering = false
 		queue_redraw();
 	)
+
+
+func init(item):
+	_title_label.text = item.name
+	_path_label.text = item.path
 
 
 func _input(event):
