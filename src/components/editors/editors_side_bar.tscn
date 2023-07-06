@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://cv0ghc0ad1f3n"]
+[gd_scene load_steps=2 format=3 uid="uid://cv0ghc0ad1f3n"]
+
+[ext_resource type="Script" path="res://src/components/editors/editors_side_bar.gd" id="1_ybx7v"]
 
 [node name="EditorsSideBar" type="VBoxContainer"]
 custom_minimum_size = Vector2(120, 120)
@@ -7,11 +9,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ybx7v")
 
-[node name="Button" type="Button" parent="."]
+[node name="ItemActions" type="VBoxContainer" parent="."]
 layout_mode = 2
-text = "Run"
 
-[node name="Button2" type="Button" parent="."]
+[node name="Spacer" type="Control" parent="."]
 layout_mode = 2
-text = "Delete"
+size_flags_vertical = 3
+
+[node name="TipLabel" type="Label" parent="Spacer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Select editor"
+horizontal_alignment = 1
+vertical_alignment = 1

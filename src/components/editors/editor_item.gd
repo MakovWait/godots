@@ -7,6 +7,7 @@ signal clicked
 
 var _is_hovering = false
 var _is_selected = false
+var _get_actions_callback: Callable
 
 
 func _ready():
@@ -18,22 +19,40 @@ func _ready():
 	
 	mouse_entered.connect(func(): 
 		_is_hovering = true
-		queue_redraw();
+		queue_redraw()
 	)
 	mouse_exited.connect(func(): 
 		_is_hovering = false
-		queue_redraw();
+		queue_redraw()
 	)
 
 
 func init(item):
 	_title_label.text = item.name
 	_path_label.text = item.path
+	
+	_get_actions_callback = func():
+		var run_btn = Button.new()
+		run_btn.text = "Run"
+		run_btn.pressed.connect(func():
+			# TODO handle all OS
+			OS.execute("open", [ProjectSettings.globalize_path(item.path)])
+		)
+		return [
+			run_btn
+		]
 
 
-func _input(event):
-	if event is InputEventMouseButton and get_rect().has_point(event.position):
-		var mb = event as InputEventMouseButton
+func get_actions():
+	if _get_actions_callback:
+		return _get_actions_callback.call()
+	else:
+		return []
+
+
+func _input(event: InputEvent) -> void:
+	var mb = event as InputEventMouseButton
+	if mb and get_global_rect().has_point(event.position):
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if mb.is_pressed(): 
 				clicked.emit()
@@ -61,7 +80,9 @@ func _draw():
 
 func select():
 	_is_selected = true
+	queue_redraw()
 
 
 func deselect():
 	_is_selected = false
+	queue_redraw()

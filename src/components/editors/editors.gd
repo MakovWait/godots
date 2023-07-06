@@ -1,6 +1,7 @@
 extends HBoxContainer
 
 @onready var _editors_list: VBoxContainer = $EditorsList
+@onready var _editors_side_bar: VBoxContainer = $EditorsSideBar
 
 
 func update_items(config: ConfigFile):
@@ -8,6 +9,10 @@ func update_items(config: ConfigFile):
 	for section in config.get_sections():
 		items.append(LocalEditorItem.new(section, config))
 	_editors_list.load_items(items)
+
+
+func _on_editors_list_editor_item_selected(editor_item) -> void:
+	_editors_side_bar.refresh_actions(editor_item.get_actions())
 
 
 class LocalEditorItem extends RefCounted:
