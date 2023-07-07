@@ -1,5 +1,7 @@
 extends Control
 
+const theme_source = preload("res://theme.gd")
+
 
 @export var _remote_editors: Control
 @export var _local_editors: Control
@@ -13,15 +15,7 @@ var _editors = ConfigFile.new()
 
 func _ready():
 	_editors.load(EDITORS_CONFIG_PATH)
-	
-	if not theme.default_font:
-		theme.default_font = theme.get_font("main", "EditorFonts")
-	
-	if not theme.has_default_font_size():
-		theme.default_font_size = 14
-	
-	get_tree().root.content_scale_factor = Config.EDSCALE
-	
+
 	_gui_base.set(
 		"theme_override_styles/panel",
 		get_theme_stylebox("Background", "EditorStyles")
@@ -33,12 +27,12 @@ func _ready():
 	_main_v_box.set_anchors_and_offsets_preset(
 		Control.PRESET_FULL_RECT, 
 		Control.PRESET_MODE_MINSIZE, 
-		8
+		get_theme_constant("window_border_margin", "Editor")
 	)
-#	_main_v_box.add_theme_constant_override(
-#		"separation", 
-#		8 * Config.EDSCALE
-#	)
+	_main_v_box.add_theme_constant_override(
+		"separation", 
+		get_theme_constant("top_bar_separation", "Editor")
+	)
 
 	_remote_editors.installed.connect(func(name, path):
 		if not _editors.has_section(path):
@@ -50,6 +44,9 @@ func _ready():
 
 
 func _enter_tree():
+	theme_source.set_scale(Config.EDSCALE)
+	theme = theme_source.create_editor_theme(null)
+	
 	var window = get_window()
 	window.min_size = Vector2(520, 350) * Config.EDSCALE
 	window.size = window.min_size

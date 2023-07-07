@@ -8,13 +8,14 @@ signal editor_item_selected(editor_item)
 
 
 func _ready():
+	_update_theme()
 	theme_changed.connect(_update_theme)
 
 
 func _update_theme():
-	$ScrollContainer.set(
-		"theme_override_styles/panel",
-		get_theme_stylebox("panel", "EditorsListScrollContainer")
+	$ScrollContainer.add_theme_stylebox_override(
+		"panel",
+		get_theme_stylebox("search_panel", "ProjectManager")
 	)
 
 
