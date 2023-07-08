@@ -32,6 +32,8 @@ var _root_loaded = false
 func _ready():
 	_detect_platform()
 	_setup_tree()
+	
+	$VBoxContainer/ScrollContainer.custom_minimum_size = Vector2(0, 125) * Config.EDSCALE
 
 
 func _detect_platform():

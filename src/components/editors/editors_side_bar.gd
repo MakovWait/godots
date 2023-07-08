@@ -26,3 +26,7 @@ func _clear_actions():
 
 func _handle_actions_changed():
 	_tip_label.visible = _item_actions.get_child_count() == 0
+
+
+func _enter_tree() -> void:
+	custom_minimum_size = Vector2(120, 120) * Config.EDSCALE
