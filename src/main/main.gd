@@ -1,6 +1,6 @@
 extends Control
 
-const theme_source = preload("res://theme.gd")
+const theme_source = preload("res://theme/theme.gd")
 
 
 @export var _remote_editors: Control
