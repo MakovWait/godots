@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dvlmutw7v33j0"]
 
 [ext_resource type="Script" path="res://src/components/editors/editor_item.gd" id="1_lyr11"]
-[ext_resource type="Texture2D" uid="uid://iiuvg75aspkd" path="res://icon.svg" id="2_w10yd"]
+[ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_iu11t"]
 
 [node name="EditorItem" type="HBoxContainer"]
 anchors_preset = 15
@@ -21,10 +21,11 @@ layout_mode = 2
 
 [node name="Icon" type="TextureRect" parent="."]
 layout_mode = 2
-texture = ExtResource("2_w10yd")
+texture = ExtResource("2_iu11t")
 
 [node name="InfoVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Control" type="Control" parent="InfoVBox"]
 custom_minimum_size = Vector2(2.08165e-12, 1)
@@ -32,6 +33,7 @@ layout_mode = 2
 
 [node name="Title" type="HBoxContainer" parent="InfoVBox"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="TitleLabel" type="Label" parent="InfoVBox/Title"]
 unique_name_in_owner = true
@@ -43,7 +45,13 @@ custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
 [node name="Path" type="HBoxContainer" parent="InfoVBox"]
+modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
+
+[node name="ExploreButton" type="Button" parent="InfoVBox/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+flat = true
 
 [node name="PathLabel" type="Label" parent="InfoVBox/Path"]
 unique_name_in_owner = true

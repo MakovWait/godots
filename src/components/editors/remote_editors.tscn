@@ -26,10 +26,11 @@ grow_vertical = 2
 [node name="Tree" type="Tree" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+hide_root = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 125)
 layout_mode = 2
+vertical_scroll_mode = 0
 
 [node name="EditorDownloads" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true

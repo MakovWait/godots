@@ -7,6 +7,15 @@ signal downloaded(abs_zip_path: String)
 @onready var _status: Label = get_node("%Status")
 @onready var _download :HTTPRequest = $HTTPRequest
 @onready var _install_button: Button = %InstallButton
+@onready var _dismiss_button: TextureButton = %DismissButton
+
+
+func _ready() -> void:
+	add_theme_stylebox_override("panel", get_theme_stylebox("panel", "AssetLib"))
+	custom_minimum_size = Vector2(250, 100) * Config.EDSCALE
+	
+	_dismiss_button.pressed.connect(queue_free)
+	_dismiss_button.texture_normal = get_theme_icon("Close", "EditorIcons")
 
 
 func start(url, target_abs_dir, file_name):
@@ -38,3 +47,11 @@ func start(url, target_abs_dir, file_name):
 func _on_http_request_request_completed(result, response_code, headers, body):
 	# TODO check response_code
 	downloaded.emit(_download.download_file)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_EXIT_TREE:
+		if _download.download_file:
+			DirAccess.remove_absolute(
+				ProjectSettings.globalize_path(_download.download_file)
+			)

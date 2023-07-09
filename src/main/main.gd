@@ -9,13 +9,8 @@ const theme_source = preload("res://theme/theme.gd")
 @onready var _gui_base: Panel = get_node("%GuiBase")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
 
-const EDITORS_CONFIG_PATH = "user://editors.cfg"
-var _editors = ConfigFile.new()
-
 
 func _ready():
-	_editors.load(EDITORS_CONFIG_PATH)
-
 	_gui_base.set(
 		"theme_override_styles/panel",
 		get_theme_stylebox("Background", "EditorStyles")
@@ -35,12 +30,8 @@ func _ready():
 	)
 
 	_remote_editors.installed.connect(func(name, path):
-		if not _editors.has_section(path):
-			_editors.set_value(path, "name", name)
-			_editors.save(EDITORS_CONFIG_PATH)
+		_local_editors.add(name, path)
 	)
-	
-	_local_editors.update_items(_editors)
 
 
 func _enter_tree():

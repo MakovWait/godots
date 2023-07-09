@@ -33,7 +33,7 @@ func _ready():
 	_detect_platform()
 	_setup_tree()
 	
-	$VBoxContainer/ScrollContainer.custom_minimum_size = Vector2(0, 125) * Config.EDSCALE
+	$VBoxContainer/ScrollContainer.add_theme_stylebox_override("panel", get_theme_stylebox("panel", "Tree"))
 
 
 func _detect_platform():
@@ -57,11 +57,6 @@ func _setup_tree():
 				_load_data(x)
 	)
 
-	tree.item_selected.connect(func(): 
-		var selected = tree.get_selected()
-		if selected != null:
-			print(_restore_url(selected))
-	)
 	
 	# FIX
 	tree.button_clicked.connect(func(item, col, id, mouse):
@@ -73,13 +68,14 @@ func _setup_tree():
 		editor_download.downloaded.connect(func(abs_path):
 			var zip_content_dir = "user://versions/%s/" % uuid.v4()
 			zip.unzip(abs_path, zip_content_dir)
-			
+
 			var editor_install = _editor_install_scene.instantiate()
 			add_child(editor_install)
 			editor_install.init("Godot", zip_content_dir)
 			editor_install.installed.connect(func(name, exec_path):
 				installed.emit(name, ProjectSettings.globalize_path(exec_path))
 			)
+			editor_install.popup_centered_ratio()
 		)
 	)
 
@@ -101,12 +97,18 @@ func _load_data(root: TreeItem):
 			var tree_item = tree.create_item(root)
 			tree_item.set_text(0, row.name)
 			if row.is_dir:
+#				tree_item.set_icon(0, get_theme_icon("folder", "FileDialog"))
+				tree_item.set_icon(0, get_theme_icon("Folder", "EditorIcons"))
+				tree_item.set_icon_modulate(0, get_theme_color("folder_icon_color", "FileDialog"))
 				var placeholder = tree.create_item(tree_item)
 				placeholder.set_text(0, "loading...")
+				# TODO animate
+				placeholder.set_icon(0, get_theme_icon("Progress1", "EditorIcons"))
 				tree_item.set_meta("loading_placeholder", placeholder)
-			if row.is_zip:
-				# FIX add appropriate texture. save ref to button_click_handler etc.
-				var btn_texture: Texture2D = get_theme_icon("Favorites", "EditorIcons")
+			elif row.is_zip:
+				tree_item.set_icon(0, get_theme_icon("Godot", "EditorIcons"))
+				# FIX save ref to button_click_handler etc.
+				var btn_texture: Texture2D = get_theme_icon("AssetLib", "EditorIcons")
 				tree_item.add_button(0, btn_texture)
 			tree_item.collapsed = true
 			tree_item.set_meta("url_part", row.href)

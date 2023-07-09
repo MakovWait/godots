@@ -19,4 +19,5 @@ size_flags_horizontal = 3
 [node name="EditorsSideBar" parent="." instance=ExtResource("2_h1608")]
 layout_mode = 2
 
+[connection signal="editor_item_removed" from="EditorsList" to="." method="_on_editors_list_editor_item_removed"]
 [connection signal="editor_item_selected" from="EditorsList" to="." method="_on_editors_list_editor_item_selected"]
