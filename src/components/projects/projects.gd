@@ -5,21 +5,25 @@ var _projects_cfg = ConfigFile.new()
 @onready var _sidebar: VBoxContainer = $ActionsSidebar
 @onready var _projects_list: VBoxContainer = $ProjectsList
 @onready var _import_project_button: Button = %ImportProjectButton
-@onready var _import_project_dialog: FileDialog = $ImportProjectDialog
+@onready var _import_project_dialog: ConfirmationDialog = $ImportProjectDialog
+
+var local_editors
 
 
 func _ready() -> void:
 	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
 	_import_project_button.pressed.connect(func():
-		_import_project_dialog.popup_centered_ratio()
+		_import_project_dialog.init(local_editors.as_option_button_items())
+		_import_project_dialog.popup_centered()
 	)
-	_import_project_dialog.file_selected.connect(func(path):
+	_import_project_dialog.imported.connect(func(project_path, editor_path):
 		var project_item = ProjectItem.new(
-			ConfigFileSection.new(path, _projects_cfg)
+			ConfigFileSection.new(project_path, _projects_cfg)
 		)
 		
 		project_item.favorite = false
-		
+		project_item.editor_path = editor_path
+
 		_projects_cfg.save(Config.PROJECTS_CONFIG_PATH)
 		_projects_list.add(project_item)
 		_projects_list.sort_items()
@@ -68,6 +72,10 @@ class ProjectItem extends RefCounted:
 	var favorite:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
+	
+	var editor_path:
+		get: return _section.get_value("editor_path", "")
+		set(value): _section.set_value("editor_path", value)
 	
 	func _init(section: ConfigFileSection) -> void:
 		self._section = section

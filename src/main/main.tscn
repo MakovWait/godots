@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/local/local_editors.tscn" id="4_y2wp0"]
 [ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote/remote_editors.tscn" id="5_gdaat"]
 
-[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors")]
+[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,6 +16,7 @@ grow_vertical = 2
 script = ExtResource("2_nqr5a")
 _remote_editors = NodePath("GuiBase/MainVBox/Content/TabContainer/Remote Editors")
 _local_editors = NodePath("GuiBase/MainVBox/Content/TabContainer/Local Editors")
+_projects = NodePath("GuiBase/MainVBox/Content/TabContainer/Projects")
 
 [node name="GuiBase" type="Panel" parent="."]
 unique_name_in_owner = true
@@ -51,10 +52,10 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Projects" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("3_oipyf")]
-visible = false
 layout_mode = 2
 
 [node name="Local Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("4_y2wp0")]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 

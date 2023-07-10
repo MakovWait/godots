@@ -25,11 +25,7 @@ func add(editor_name, exec_path):
 
 
 func _load_items():
-	var items = []
-	for section in _editors_cfg.get_sections():
-		items.append(LocalEditorItem.new(
-			ConfigFileSection.new(section, _editors_cfg)
-		))
+	var items = get_local_editor_data_items()
 	_editors_list.refresh(items)
 	_editors_list.sort_items()
 
@@ -50,6 +46,22 @@ func _on_editors_list_item_removed(item_data: LocalEditorItem) -> void:
 func _on_editors_list_item_edited(item_data) -> void:
 	_editors_cfg.save(Config.EDITORS_CONFIG_PATH)
 	_editors_list.sort_items()
+
+
+func get_local_editor_data_items():
+	var items = []
+	for section in _editors_cfg.get_sections():
+		items.append(LocalEditorItem.new(
+			ConfigFileSection.new(section, _editors_cfg)
+		))
+	return items
+
+
+func as_option_button_items():
+	return get_local_editor_data_items().map(func(x): return {
+		'label': x.name,
+		'path': x.path
+	})
 
 
 class LocalEditorItem extends RefCounted:

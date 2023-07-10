@@ -5,6 +5,7 @@ const theme_source = preload("res://theme/theme.gd")
 
 @export var _remote_editors: Control
 @export var _local_editors: Control
+@export var _projects: Control
 
 @onready var _gui_base: Panel = get_node("%GuiBase")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
@@ -43,6 +44,8 @@ func _ready():
 	$GuiBase/MainVBox/TitleBar.add_button(
 		_make_main_button("Remote Editors", get_theme_icon("Filesystem", "EditorIcons")),
 	)
+	
+	_projects.local_editors = _local_editors
 
 
 # obsolete

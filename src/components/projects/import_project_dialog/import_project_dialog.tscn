@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcn7ypx0qusqp"]
+
+[ext_resource type="Script" path="res://src/components/projects/import_project_dialog/import_project_dialog.gd" id="1_dyj76"]
+
+[node name="ImportProjectDialog" type="ConfirmationDialog"]
+position = Vector2i(0, 36)
+size = Vector2i(256, 152)
+visible = true
+script = ExtResource("1_dyj76")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 248.0
+offset_bottom = 103.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Project Path:"
+
+[node name="ProjectPathEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+editable = false
+
+[node name="BrowseProjectPathButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Browse"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Editor:"
+
+[node name="EditorsOptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+flat = true
+
+[node name="BrowseProjectPathDialog" type="FileDialog" parent="."]
+title = "Open a File"
+size = Vector2i(312, 157)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("project.godot")
+
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]
