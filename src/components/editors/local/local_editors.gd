@@ -46,6 +46,10 @@ func _on_editors_list_item_removed(item_data: LocalEditorItem) -> void:
 	_sidebar.refresh_actions([])
 
 
+func _on_editors_list_item_edited(item_data) -> void:
+	_editors_cfg.save(Config.EDITORS_CONFIG_PATH)
+
+
 class LocalEditorItem extends RefCounted:
 	var _section: ConfigFileSection
 	
@@ -55,6 +59,10 @@ class LocalEditorItem extends RefCounted:
 	var name:
 		get: return _section.get_value("name", "")
 		set(value): _section.set_value("name", value)
+
+	var favorite:
+		get: return _section.get_value("favorite", false)
+		set(value): _section.set_value("favorite", value)
 	
 	func _init(section: ConfigFileSection) -> void:
 		self._section = section

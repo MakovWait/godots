@@ -19,5 +19,6 @@ size_flags_horizontal = 3
 [node name="ActionsSidebar" parent="." instance=ExtResource("3_kugpf")]
 layout_mode = 2
 
+[connection signal="item_edited" from="EditorsList" to="." method="_on_editors_list_item_edited"]
 [connection signal="item_removed" from="EditorsList" to="." method="_on_editors_list_item_removed"]
 [connection signal="item_selected" from="EditorsList" to="." method="_on_editors_list_item_selected"]

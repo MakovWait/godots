@@ -1,6 +1,6 @@
 extends HBoxListItem
 
-#signal edited(data: A)
+signal edited
 signal removed
 
 const buttons = preload("res://src/extensions/buttons.gd")
@@ -9,6 +9,7 @@ const buttons = preload("res://src/extensions/buttons.gd")
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
 @onready var _explore_button: Button = %ExploreButton
+@onready var _favorite_button: TextureButton = %FavoriteButton
 
 var _get_actions_callback: Callable
 
@@ -16,22 +17,23 @@ var _get_actions_callback: Callable
 func init(item):
 	_title_label.text = item.name
 	_path_label.text = item.path
+	_favorite_button.button_pressed = item.favorite
 	
 	_get_actions_callback = func():
 		return [
-			_make_button(
+			buttons.simple(
 				"Run", 
 				get_theme_icon("Play", "EditorIcons"),
 				func():
 					# TODO handle all OS
 					OS.execute("open", [ProjectSettings.globalize_path(item.path)]),
 			),
-			_make_button(
+			buttons.simple(
 				"Rename", 
 				get_theme_icon("Edit", "EditorIcons"),
 				func(): pass
 			),
-			_make_button(
+			buttons.simple(
 				"Remove", 
 				get_theme_icon("Remove", "EditorIcons"),
 				_on_remove
@@ -40,6 +42,10 @@ func init(item):
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
+	)
+	_favorite_button.toggled.connect(func(is_favorite):
+		item.favorite = is_favorite
+		edited.emit()
 	)
 
 
