@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c5gkkg0g1tofs"]
 
-[ext_resource type="Script" path="res://src/components/editors/editor_download.gd" id="1_7akd3"]
+[ext_resource type="Script" path="res://src/components/editors/remote/remote_editor_download/remote_editor_download.gd" id="1_7akd3"]
 
 [node name="EditorDownload" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 125)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dmvn86qs8d4h1"]
 
 [ext_resource type="Script" path="res://src/sandbox/sandbox.gd" id="1_7v3xj"]
-[ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/editor_install.tscn" id="2_wue5m"]
+[ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.tscn" id="2_wue5m"]
 
 [node name="Sandbox" type="Control"]
 layout_mode = 3

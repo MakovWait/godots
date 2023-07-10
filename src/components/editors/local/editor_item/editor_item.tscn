@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dvlmutw7v33j0"]
 
-[ext_resource type="Script" path="res://src/components/editors/editor_item.gd" id="1_lyr11"]
+[ext_resource type="Script" path="res://src/components/editors/local/editor_item/editor_item.gd" id="1_lyr11"]
 [ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_iu11t"]
 
 [node name="EditorItem" type="HBoxContainer"]

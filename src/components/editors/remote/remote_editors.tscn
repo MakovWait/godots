@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://dxnoecc3ruw3t"]
 
-[ext_resource type="Script" path="res://src/components/editors/remote_editors.gd" id="1_80m0a"]
-[ext_resource type="PackedScene" uid="uid://c5gkkg0g1tofs" path="res://src/components/editors/editor_download.tscn" id="2_5cbw2"]
-[ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/editor_install.tscn" id="3_wvg3b"]
+[ext_resource type="Script" path="res://src/components/editors/remote/remote_editors.gd" id="1_80m0a"]
+[ext_resource type="PackedScene" uid="uid://c5gkkg0g1tofs" path="res://src/components/editors/remote/remote_editor_download/remote_editor_download.tscn" id="2_5cbw2"]
+[ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.tscn" id="3_wvg3b"]
 
 [node name="RemoteEditors" type="Control"]
 layout_mode = 3

@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://csgrsfoydw3m4" path="res://src/components/title_bar/title_bar.tscn" id="2_bjhyn"]
 [ext_resource type="Script" path="res://src/main/main.gd" id="2_nqr5a"]
-[ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/editors.tscn" id="4_y2wp0"]
-[ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote_editors.tscn" id="5_gdaat"]
+[ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/local/local_editors.tscn" id="4_y2wp0"]
+[ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote/remote_editors.tscn" id="5_gdaat"]
 
 [node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors")]
 layout_mode = 3
