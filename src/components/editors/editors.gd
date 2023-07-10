@@ -14,9 +14,11 @@ func _ready() -> void:
 
 func add(editor_name, exec_path):
 	if not _editors_cfg.has_section(exec_path):
-		_editors_cfg.set_value(exec_path, "name", editor_name)
+		var item = LocalEditorItem.new(exec_path, _editors_cfg)
+		item.name = editor_name
+		
 		_editors_cfg.save(EDITORS_CONFIG_PATH)
-		_editors_list.add(LocalEditorItem.new(exec_path, _editors_cfg))
+		_editors_list.add(item)
 
 
 func _load_items():
@@ -72,6 +74,7 @@ class LocalEditorItem extends RefCounted:
 	
 	var name:
 		get: return _get_cfg_value("name", "")
+		set(value): _set_cfg_value(path, value)
 	
 	func _init(section, cfg) -> void:
 		self._cfg = cfg
