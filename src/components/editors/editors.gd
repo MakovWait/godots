@@ -1,7 +1,7 @@
 extends HBoxContainer
 
 @onready var _editors_list: VBoxContainer = $EditorsList
-@onready var _editors_side_bar: VBoxContainer = $EditorsSideBar
+@onready var _sidebar: VBoxContainer = $ActionsSidebar
 
 const EDITORS_CONFIG_PATH = "user://editors.cfg"
 var _editors_cfg = ConfigFile.new()
@@ -27,7 +27,7 @@ func _load_items():
 
 
 func _on_editors_list_editor_item_selected(side_bar_actions_src) -> void:
-	_editors_side_bar.refresh_actions(side_bar_actions_src.get_actions())
+	_sidebar.refresh_actions(side_bar_actions_src.get_actions())
 
 
 func _on_editors_list_editor_item_removed(editor_data) -> void:
@@ -36,7 +36,7 @@ func _on_editors_list_editor_item_removed(editor_data) -> void:
 		_editors_cfg.erase_section(section)
 		_editors_cfg.save(EDITORS_CONFIG_PATH)
 	_remove_recursive(editor_data.path.get_base_dir())
-	_editors_side_bar.refresh_actions([])
+	_sidebar.refresh_actions([])
 
 
 # https://www.davidepesce.com/?p=1365

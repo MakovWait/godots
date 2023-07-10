@@ -1,5 +1,6 @@
 extends VBoxContainer
 
+
 @onready var _item_actions: VBoxContainer = $ItemActions
 @onready var _tip_label: Label = $Spacer/TipLabel
 

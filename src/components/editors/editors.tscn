@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bqboqvklwmhlq" path="res://src/components/editors/editors_list.tscn" id="1_5l7jo"]
 [ext_resource type="Script" path="res://src/components/editors/editors.gd" id="1_uc0j8"]
-[ext_resource type="PackedScene" uid="uid://cv0ghc0ad1f3n" path="res://src/components/editors/editors_side_bar.tscn" id="2_h1608"]
+[ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="3_kugpf"]
 
 [node name="Editors" type="HBoxContainer"]
 anchors_preset = 15
@@ -16,7 +16,7 @@ script = ExtResource("1_uc0j8")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EditorsSideBar" parent="." instance=ExtResource("2_h1608")]
+[node name="ActionsSidebar" parent="." instance=ExtResource("3_kugpf")]
 layout_mode = 2
 
 [connection signal="editor_item_removed" from="EditorsList" to="." method="_on_editors_list_editor_item_removed"]
