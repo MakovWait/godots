@@ -5,12 +5,11 @@ const dir = preload("res://src/extensions/dir.gd")
 @onready var _editors_list: VBoxContainer = $EditorsList
 @onready var _sidebar: VBoxContainer = $ActionsSidebar
 
-const EDITORS_CONFIG_PATH = "user://editors.cfg"
 var _editors_cfg = ConfigFile.new()
 
 
 func _ready() -> void:
-	_editors_cfg.load(EDITORS_CONFIG_PATH)
+	_editors_cfg.load(Config.EDITORS_CONFIG_PATH)
 	_load_items()
 
 
@@ -21,7 +20,7 @@ func add(editor_name, exec_path):
 		)
 		item.name = editor_name
 		
-		_editors_cfg.save(EDITORS_CONFIG_PATH)
+		_editors_cfg.save(Config.EDITORS_CONFIG_PATH)
 		_editors_list.add(item)
 
 
@@ -42,7 +41,7 @@ func _on_editors_list_item_removed(item_data: LocalEditorItem) -> void:
 	var section = item_data.path
 	if _editors_cfg.has_section(section):
 		_editors_cfg.erase_section(section)
-		_editors_cfg.save(EDITORS_CONFIG_PATH)
+		_editors_cfg.save(Config.EDITORS_CONFIG_PATH)
 	dir.remove_recursive(item_data.path.get_base_dir())
 	_sidebar.refresh_actions([])
 
