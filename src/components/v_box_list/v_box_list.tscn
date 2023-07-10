@@ -1,16 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://bqboqvklwmhlq"]
+[gd_scene load_steps=2 format=3 uid="uid://bjudiph2xbmbu"]
 
-[ext_resource type="PackedScene" uid="uid://dvlmutw7v33j0" path="res://src/components/editors/editor_item.tscn" id="1_2vgrw"]
-[ext_resource type="Script" path="res://src/components/editors/editors_list.gd" id="1_avpel"]
+[ext_resource type="Script" path="res://src/components/v_box_list/v_box_list.gd" id="1_psfnh"]
 
-[node name="EditorsList" type="VBoxContainer"]
+[node name="VBoxList" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_avpel")
-_editor_item_scene = ExtResource("1_2vgrw")
+script = ExtResource("1_psfnh")
 
 [node name="SearchBox" type="LineEdit" parent="."]
 layout_mode = 2

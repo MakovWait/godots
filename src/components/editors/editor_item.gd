@@ -62,13 +62,29 @@ func init(item):
 			_make_button(
 				"Remove", 
 				get_theme_icon("Remove", "EditorIcons"),
-				func(): removed.emit()
+				_on_remove
 			)
 		]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
 	)
+
+
+func _on_remove():
+	var confirmation_dialog = ConfirmationDialog.new()
+	confirmation_dialog.ok_button_text = "Remove"
+	confirmation_dialog.dialog_text = "Are you sure to remove the editor from the file system?"
+	confirmation_dialog.visibility_changed.connect(func(): 
+		if not confirmation_dialog.visible:
+			confirmation_dialog.queue_free()
+	)
+	confirmation_dialog.confirmed.connect(func():
+		queue_free()
+		removed.emit()
+	)
+	add_child(confirmation_dialog)
+	confirmation_dialog.popup_centered()
 
 
 func get_actions():

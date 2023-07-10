@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bpi7ggvfe5uhq"]
 
-[ext_resource type="PackedScene" uid="uid://bqboqvklwmhlq" path="res://src/components/editors/editors_list.tscn" id="1_5l7jo"]
 [ext_resource type="Script" path="res://src/components/editors/editors.gd" id="1_uc0j8"]
+[ext_resource type="PackedScene" uid="uid://datb5j88oompr" path="res://src/components/editors/local/editors_list/editors_list.tscn" id="2_a50s0"]
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="3_kugpf"]
 
 [node name="Editors" type="HBoxContainer"]
@@ -12,12 +12,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uc0j8")
 
-[node name="EditorsList" parent="." instance=ExtResource("1_5l7jo")]
+[node name="EditorsList" parent="." instance=ExtResource("2_a50s0")]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ActionsSidebar" parent="." instance=ExtResource("3_kugpf")]
 layout_mode = 2
 
-[connection signal="editor_item_removed" from="EditorsList" to="." method="_on_editors_list_editor_item_removed"]
-[connection signal="editor_item_selected" from="EditorsList" to="." method="_on_editors_list_editor_item_selected"]
+[connection signal="item_removed" from="EditorsList" to="." method="_on_editors_list_item_removed"]
+[connection signal="item_selected" from="EditorsList" to="." method="_on_editors_list_item_selected"]

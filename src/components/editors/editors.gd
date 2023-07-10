@@ -28,16 +28,16 @@ func _load_items():
 	_editors_list.refresh(items)
 
 
-func _on_editors_list_editor_item_selected(side_bar_actions_src) -> void:
-	_sidebar.refresh_actions(side_bar_actions_src.get_actions())
+func _on_editors_list_item_selected(item) -> void:
+	_sidebar.refresh_actions(item.get_actions())
 
 
-func _on_editors_list_editor_item_removed(editor_data) -> void:
-	var section = editor_data.path
+func _on_editors_list_item_removed(item_data: LocalEditorItem) -> void:
+	var section = item_data.path
 	if _editors_cfg.has_section(section):
 		_editors_cfg.erase_section(section)
 		_editors_cfg.save(EDITORS_CONFIG_PATH)
-	_remove_recursive(editor_data.path.get_base_dir())
+	_remove_recursive(item_data.path.get_base_dir())
 	_sidebar.refresh_actions([])
 
 
