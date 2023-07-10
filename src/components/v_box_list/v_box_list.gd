@@ -38,6 +38,23 @@ func add(item_data):
 	_post_add(item_data, item_control)
 
 
+func sort_items():
+	var sort_data = _items_container.get_children().map(
+		func(x): return x.get_sort_data()
+	)
+	sort_data.sort_custom(self._item_comparator)
+	for i in range(len(sort_data)):
+		var sorted_item = sort_data[i]
+		_items_container.move_child(
+			sorted_item.ref,
+			i
+		)
+
+
+func _item_comparator(a, b):
+	pass
+
+
 func _post_add(item_data, item_control):
 	pass
 

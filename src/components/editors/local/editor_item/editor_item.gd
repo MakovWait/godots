@@ -73,3 +73,11 @@ func apply_filter(filter):
 		'name': _title_label.text,
 		'path': _path_label.text
 	})
+
+
+func get_sort_data():
+	return {
+		'ref': self,
+		'favorite': _favorite_button.button_pressed,
+		'name': _title_label.text
+	}

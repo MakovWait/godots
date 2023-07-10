@@ -31,6 +31,7 @@ func _load_items():
 			ConfigFileSection.new(section, _editors_cfg)
 		))
 	_editors_list.refresh(items)
+	_editors_list.sort_items()
 
 
 func _on_editors_list_item_selected(item) -> void:
@@ -48,6 +49,7 @@ func _on_editors_list_item_removed(item_data: LocalEditorItem) -> void:
 
 func _on_editors_list_item_edited(item_data) -> void:
 	_editors_cfg.save(Config.EDITORS_CONFIG_PATH)
+	_editors_list.sort_items()
 
 
 class LocalEditorItem extends RefCounted:
