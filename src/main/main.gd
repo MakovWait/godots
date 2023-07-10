@@ -32,6 +32,29 @@ func _ready():
 	_remote_editors.installed.connect(func(name, path):
 		_local_editors.add(name, path)
 	)
+	
+	# obsolete
+	$GuiBase/MainVBox/TitleBar.add_button(
+		_make_main_button("Projects", get_theme_icon("File", "EditorIcons")),
+	)
+	$GuiBase/MainVBox/TitleBar.add_button(
+		_make_main_button("Local Editors", get_theme_icon("GodotMonochrome", "EditorIcons"))
+	)
+	$GuiBase/MainVBox/TitleBar.add_button(
+		_make_main_button("Remote Editors", get_theme_icon("Filesystem", "EditorIcons")),
+	)
+
+
+# obsolete
+func _make_main_button(text, icon):
+	var btn = Button.new()
+	btn.toggle_mode = true
+	btn.flat = true
+	btn.text = text
+	btn.icon = icon
+	btn.add_theme_font_override("font", get_theme_font("main_button_font", "EditorFonts"))
+	btn.add_theme_font_size_override("font_size", get_theme_font_size("main_button_font_size", "EditorFonts"))
+	return btn
 
 
 func _enter_tree():

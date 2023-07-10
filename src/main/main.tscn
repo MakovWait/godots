@@ -51,6 +51,7 @@ grow_vertical = 2
 
 [node name="Local Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("4_y2wp0")]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="Remote Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("5_gdaat")]
 visible = false

@@ -23,6 +23,11 @@ func _ready():
 	_resize.call_deferred()
 
 
+# obsolete
+func add_button(btn):
+	$ButtonsContainer.add_child(btn)
+
+
 func _setup_title_label():
 	var label : Label = $Label
 	label.add_theme_font_override("font", get_theme_font("bold", "EditorFonts"))

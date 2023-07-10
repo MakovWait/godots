@@ -36,6 +36,7 @@ func _on_editors_list_editor_item_removed(editor_data) -> void:
 		_editors_cfg.erase_section(section)
 		_editors_cfg.save(EDITORS_CONFIG_PATH)
 	_remove_recursive(editor_data.path.get_base_dir())
+	_editors_side_bar.refresh_actions([])
 
 
 # https://www.davidepesce.com/?p=1365
