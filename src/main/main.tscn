@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://omgg45dpxftx"]
+[gd_scene load_steps=6 format=3 uid="uid://omgg45dpxftx"]
 
 [ext_resource type="PackedScene" uid="uid://csgrsfoydw3m4" path="res://src/components/title_bar/title_bar.tscn" id="2_bjhyn"]
 [ext_resource type="Script" path="res://src/main/main.gd" id="2_nqr5a"]
+[ext_resource type="PackedScene" uid="uid://qxd7fbvfbjs5" path="res://src/components/projects/projects.tscn" id="3_oipyf"]
 [ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/local/local_editors.tscn" id="4_y2wp0"]
 [ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote/remote_editors.tscn" id="5_gdaat"]
 
@@ -48,6 +49,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Projects" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("3_oipyf")]
+visible = false
+layout_mode = 2
 
 [node name="Local Editors" parent="GuiBase/MainVBox/Content/TabContainer" instance=ExtResource("4_y2wp0")]
 layout_mode = 2

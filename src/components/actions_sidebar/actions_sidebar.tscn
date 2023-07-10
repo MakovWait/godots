@@ -10,6 +10,9 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_b7woe")
 
+[node name="TabActions" type="VBoxContainer" parent="."]
+layout_mode = 2
+
 [node name="ItemActions" type="VBoxContainer" parent="."]
 layout_mode = 2
 
