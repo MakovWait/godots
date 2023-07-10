@@ -14,7 +14,9 @@ func _ready() -> void:
 
 func add(editor_name, exec_path):
 	if not _editors_cfg.has_section(exec_path):
-		var item = LocalEditorItem.new(exec_path, _editors_cfg)
+		var item = LocalEditorItem.new(
+			ConfigFileSection.new(exec_path, _editors_cfg)
+		)
 		item.name = editor_name
 		
 		_editors_cfg.save(EDITORS_CONFIG_PATH)
@@ -24,7 +26,9 @@ func add(editor_name, exec_path):
 func _load_items():
 	var items = []
 	for section in _editors_cfg.get_sections():
-		items.append(LocalEditorItem.new(section, _editors_cfg))
+		items.append(LocalEditorItem.new(
+			ConfigFileSection.new(section, _editors_cfg)
+		))
 	_editors_list.refresh(items)
 
 
@@ -66,22 +70,14 @@ func _remove_recursive(path):
 
 
 class LocalEditorItem extends RefCounted:
-	var _cfg: ConfigFile
-	var _section: String
+	var _section: ConfigFileSection
 	
 	var path:
-		get: return _section
+		get: return _section.name
 	
 	var name:
-		get: return _get_cfg_value("name", "")
-		set(value): _set_cfg_value("name", value)
+		get: return _section.get_value("name", "")
+		set(value): _section.set_value("name", value)
 	
-	func _init(section, cfg) -> void:
-		self._cfg = cfg
+	func _init(section: ConfigFileSection) -> void:
 		self._section = section
-	
-	func _get_cfg_value(key, default=null):
-		return self._cfg.get_value(self._section, key, default)
-	
-	func _set_cfg_value(key, value):
-		self._cfg.set_value(self._section, key, value)
