@@ -1,7 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://dvlmutw7v33j0"]
+[gd_scene load_steps=8 format=3 uid="uid://dvlmutw7v33j0"]
 
-[ext_resource type="Script" path="res://src/components/editors/local/editor_item/editor_item.gd" id="1_lyr11"]
-[ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_iu11t"]
+[ext_resource type="Script" path="res://src/components/editors/local/editor_item/editor_item.gd" id="1_gsbp6"]
+[ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_8fw8m"]
+[ext_resource type="Script" path="res://src/components/aux/favorite_button.gd" id="2_wwklx"]
+[ext_resource type="Script" path="res://src/components/aux/list_item_icon.gd" id="4_imfjm"]
+[ext_resource type="Script" path="res://src/components/aux/list_item_title_label.gd" id="5_0avqe"]
+[ext_resource type="Script" path="res://src/components/aux/list_item_path_label.gd" id="6_jissd"]
+[ext_resource type="Script" path="res://src/components/aux/explore_button.gd" id="6_r55h6"]
 
 [node name="EditorItem" type="HBoxContainer"]
 anchors_preset = 15
@@ -10,7 +15,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-script = ExtResource("1_lyr11")
+script = ExtResource("1_gsbp6")
 
 [node name="Favorite" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -18,10 +23,12 @@ alignment = 1
 
 [node name="FavoriteButton" type="TextureButton" parent="Favorite"]
 layout_mode = 2
+script = ExtResource("2_wwklx")
 
 [node name="Icon" type="TextureRect" parent="."]
 layout_mode = 2
-texture = ExtResource("2_iu11t")
+texture = ExtResource("2_8fw8m")
+script = ExtResource("4_imfjm")
 
 [node name="InfoVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -39,6 +46,7 @@ size_flags_vertical = 0
 unique_name_in_owner = true
 layout_mode = 2
 text = "test"
+script = ExtResource("5_0avqe")
 
 [node name="Control" type="Control" parent="InfoVBox/Title"]
 custom_minimum_size = Vector2(10, 10)
@@ -52,8 +60,10 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 flat = true
+script = ExtResource("6_r55h6")
 
 [node name="PathLabel" type="Label" parent="InfoVBox/Path"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "/home/kovkel/editor/path"
+script = ExtResource("6_jissd")
