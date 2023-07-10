@@ -74,7 +74,7 @@ class LocalEditorItem extends RefCounted:
 	
 	var name:
 		get: return _get_cfg_value("name", "")
-		set(value): _set_cfg_value(path, value)
+		set(value): _set_cfg_value("name", value)
 	
 	func _init(section, cfg) -> void:
 		self._cfg = cfg
