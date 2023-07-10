@@ -78,6 +78,13 @@ func get_actions():
 		return []
 
 
+func apply_filter(filter):
+	return filter.call({
+		'name': _title_label.text,
+		'path': _path_label.text
+	})
+
+
 static func _make_button(text, icon, on_pressed):
 	var btn = Button.new()
 	btn.icon = icon

@@ -12,8 +12,9 @@ grow_vertical = 2
 script = ExtResource("1_avpel")
 _editor_item_scene = ExtResource("1_2vgrw")
 
-[node name="LineEdit" type="LineEdit" parent="."]
+[node name="SearchBox" type="LineEdit" parent="."]
 layout_mode = 2
+placeholder_text = "Filter Editors"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
@@ -23,3 +24,5 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[connection signal="text_changed" from="SearchBox" to="." method="_on_search_box_text_changed"]

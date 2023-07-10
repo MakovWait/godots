@@ -15,6 +15,7 @@ func _ready():
 
 
 func _update_theme():
+	$SearchBox.right_icon = get_theme_icon("Search", "EditorIcons")
 	$ScrollContainer.add_theme_stylebox_override(
 		"panel",
 		get_theme_stylebox("search_panel", "ProjectManager")
@@ -62,3 +63,13 @@ func _on_editor_item_clicked(editor_item):
 			child.deselect()
 	editor_item.select()
 	editor_item_selected.emit(editor_item)
+
+
+func _on_search_box_text_changed(new_text: String) -> void:
+	for item in _items_container.get_children():
+		if item.has_method("apply_filter"):
+			var should_be_visible = item.apply_filter(func(data): 
+				if len(new_text) == 0: return true
+				return new_text.is_subsequence_ofn(data['name'])
+			)
+			item.visible = should_be_visible
