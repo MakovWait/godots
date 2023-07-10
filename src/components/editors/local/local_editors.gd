@@ -1,5 +1,7 @@
 extends HBoxContainer
 
+const dir = preload("res://src/extensions/dir.gd")
+
 @onready var _editors_list: VBoxContainer = $EditorsList
 @onready var _sidebar: VBoxContainer = $ActionsSidebar
 
@@ -41,32 +43,8 @@ func _on_editors_list_item_removed(item_data: LocalEditorItem) -> void:
 	if _editors_cfg.has_section(section):
 		_editors_cfg.erase_section(section)
 		_editors_cfg.save(EDITORS_CONFIG_PATH)
-	_remove_recursive(item_data.path.get_base_dir())
+	dir.remove_recursive(item_data.path.get_base_dir())
 	_sidebar.refresh_actions([])
-
-
-# https://www.davidepesce.com/?p=1365
-func _remove_recursive(path):
-#	var directory = Directory.new()
-	var directory = DirAccess.open(path)
-	# Open directory
-	var error = DirAccess.get_open_error()
-	if error == OK:
-		directory.include_hidden = true
-		# List directory content
-		directory.list_dir_begin()
-		var file_name = directory.get_next()
-		while file_name != "":
-			if directory.current_is_dir():
-				_remove_recursive(path + "/" + file_name)
-			else:
-				directory.remove(file_name)
-			file_name = directory.get_next()
-		
-		# Remove current path
-		directory.remove(path)
-	else:
-		print("Error removing " + path)
 
 
 class LocalEditorItem extends RefCounted:
