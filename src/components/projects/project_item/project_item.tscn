@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnrduy54kvvf8"]
+[gd_scene load_steps=7 format=3 uid="uid://cnrduy54kvvf8"]
 
 [ext_resource type="Script" path="res://src/components/projects/project_item/project_item.gd" id="1_aivn8"]
 [ext_resource type="Script" path="res://src/components/aux/favorite_button.gd" id="2_t124r"]
-[ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="3_6rqai"]
 [ext_resource type="Script" path="res://src/components/aux/list_item_icon.gd" id="4_0ng6q"]
 [ext_resource type="Script" path="res://src/components/aux/list_item_title_label.gd" id="5_ei0y1"]
 [ext_resource type="Script" path="res://src/components/aux/explore_button.gd" id="6_1b7pb"]
@@ -26,7 +25,6 @@ script = ExtResource("2_t124r")
 
 [node name="Icon" type="TextureRect" parent="."]
 layout_mode = 2
-texture = ExtResource("3_6rqai")
 script = ExtResource("4_0ng6q")
 
 [node name="InfoVBox" type="VBoxContainer" parent="."]

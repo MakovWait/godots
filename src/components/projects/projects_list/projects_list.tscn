@@ -2,11 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://bjudiph2xbmbu" path="res://src/components/v_box_list/v_box_list.tscn" id="1_85pab"]
 [ext_resource type="Script" path="res://src/components/projects/projects_list/projects_list.gd" id="2_luch3"]
-[ext_resource type="PackedScene" uid="uid://dvlmutw7v33j0" path="res://src/components/editors/local/editor_item/editor_item.tscn" id="3_r0hu4"]
+[ext_resource type="PackedScene" uid="uid://cnrduy54kvvf8" path="res://src/components/projects/project_item/project_item.tscn" id="3_rbu5f"]
 
 [node name="ProjectsList" instance=ExtResource("1_85pab")]
 script = ExtResource("2_luch3")
-_item_scene = ExtResource("3_r0hu4")
+_item_scene = ExtResource("3_rbu5f")
 
 [node name="SearchBox" parent="." index="0"]
 placeholder_text = "Filter Projects"

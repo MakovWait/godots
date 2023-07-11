@@ -57,6 +57,10 @@ func get_local_editor_data_items():
 	return items
 
 
+func get_editor_name_by_path(path):
+	return LocalEditorItem.new(ConfigFileSection.new(path, _editors_cfg)).name
+
+
 func as_option_button_items():
 	return get_local_editor_data_items().map(func(x): return {
 		'label': x.name,

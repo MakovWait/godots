@@ -45,7 +45,7 @@ func _ready():
 		_make_main_button("Remote Editors", get_theme_icon("Filesystem", "EditorIcons")),
 	)
 	
-	_projects.local_editors = _local_editors
+	_projects.init(_local_editors)
 
 
 # obsolete

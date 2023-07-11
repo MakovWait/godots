@@ -10,13 +10,18 @@ const buttons = preload("res://src/extensions/buttons.gd")
 @onready var _title_label: Label = %TitleLabel
 @onready var _explore_button: Button = %ExploreButton
 @onready var _favorite_button: TextureButton = $Favorite/FavoriteButton
+@onready var _icon: TextureRect = $Icon
 
 var _get_actions_callback: Callable
 
 
 func init(item):
-	_title_label.text = item.name
+	item.load()
+	
+	_favorite_button.button_pressed = item.favorite
+	_title_label.text = item.name + " (%s)" % item.editor_name
 	_path_label.text = item.path
+	_icon.texture = item.icon
 	
 	_get_actions_callback = func():
 		return [
@@ -72,3 +77,11 @@ func apply_filter(filter):
 		'name': _title_label.text,
 		'path': _path_label.text
 	})
+
+
+func get_sort_data():
+	return {
+		'ref': self,
+		'favorite': _favorite_button.button_pressed,
+		'name': _title_label.text
+	}
