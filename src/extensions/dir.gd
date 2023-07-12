@@ -22,7 +22,4 @@ static func remove_recursive(path):
 
 
 static func path_is_valid(abs_path):
-	if abs_path.ends_with("/"):
-		return DirAccess.dir_exists_absolute(abs_path)
-	else:
-		return FileAccess.file_exists(abs_path)
+	return DirAccess.dir_exists_absolute(abs_path) or FileAccess.file_exists(abs_path)
