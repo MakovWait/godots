@@ -61,6 +61,8 @@ class FlatChildren extends RefCounted:
 		return node
 	
 	func _iter_init(arg):
+		if not _node:
+			return false
 		_nodes_to_iter.clear()
 		_nodes_to_iter.append_array(_node.children)
 		return _should_continue()

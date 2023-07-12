@@ -1,5 +1,7 @@
 extends PanelContainer
 
+const uuid = preload("res://addons/uuid.gd")
+
 signal downloaded(abs_zip_path: String)
 
 
@@ -8,6 +10,7 @@ signal downloaded(abs_zip_path: String)
 @onready var _download :HTTPRequest = $HTTPRequest
 @onready var _install_button: Button = %InstallButton
 @onready var _dismiss_button: TextureButton = %DismissButton
+@onready var _title_label: Label = %TitleLabel
 
 
 func _ready() -> void:
@@ -21,8 +24,11 @@ func _ready() -> void:
 func start(url, target_abs_dir, file_name):
 	assert(target_abs_dir.ends_with("/"))
 
+	_title_label.text = file_name
+	
 	DirAccess.make_dir_absolute(target_abs_dir)
-
+	if FileAccess.file_exists(target_abs_dir + file_name):
+		file_name += uuid.v4()
 	_download.download_file = target_abs_dir + file_name
 	_download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
 	

@@ -66,12 +66,23 @@ func _setup_tree():
 		%EditorDownloads.add_child(editor_download)
 		editor_download.start(_restore_url(item), "user://downloads/", file_name)
 		editor_download.downloaded.connect(func(abs_path):
-			var zip_content_dir = "user://versions/%s/" % uuid.v4()
-			zip.unzip(abs_path, zip_content_dir)
+			var zip_name = file_name
+			var zip_content_dir = "user://versions/%s" % zip_name.replace(".zip", "")
+			if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(zip_content_dir)):
+				zip_content_dir += "-%s" % uuid.v4()
+			zip_content_dir += "/"
+			zip.unzip(abs_path, zip_content_dir + "/")
 
 			var editor_install = _editor_install_scene.instantiate()
 			add_child(editor_install)
-			editor_install.init("Godot", zip_content_dir)
+			var possible_editor_name = file_name
+			var tokens_to_replace = []
+			tokens_to_replace.append_array(_current_platform.suffixes)
+			tokens_to_replace.append_array(["_", "-"])
+			for token in tokens_to_replace:
+				possible_editor_name = possible_editor_name.replace(token, " ")
+			possible_editor_name = possible_editor_name.strip_edges()
+			editor_install.init(possible_editor_name, zip_content_dir)
 			editor_install.installed.connect(func(name, exec_path):
 				installed.emit(name, ProjectSettings.globalize_path(exec_path))
 			)
@@ -89,6 +100,7 @@ func _load_data(root: TreeItem):
 	var tbody = exml.smart(body.root).find_smart_child_recursive(
 		exml.Filters.by_name("tbody")
 	)
+	if not tbody: return
 	for node in tbody.iter_children_recursive():
 		if node.name == "tr":
 			var row = TuxfamilyRow.new(node)
