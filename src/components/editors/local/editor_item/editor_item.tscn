@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dvlmutw7v33j0"]
+[gd_scene load_steps=9 format=3 uid="uid://dvlmutw7v33j0"]
 
 [ext_resource type="Script" path="res://src/components/editors/local/editor_item/editor_item.gd" id="1_gsbp6"]
+[ext_resource type="PackedScene" uid="uid://b2tm4lxm80sj0" path="res://src/components/editors/local/editor_item/rename_editor_dialog.tscn" id="2_6et78"]
 [ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_8fw8m"]
 [ext_resource type="Script" path="res://src/components/aux/favorite_button.gd" id="2_wwklx"]
 [ext_resource type="Script" path="res://src/components/aux/list_item_icon.gd" id="4_imfjm"]
@@ -16,6 +17,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 script = ExtResource("1_gsbp6")
+_rename_dialog_scene = ExtResource("2_6et78")
 
 [node name="Favorite" type="VBoxContainer" parent="."]
 layout_mode = 2

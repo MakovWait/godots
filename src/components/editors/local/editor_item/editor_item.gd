@@ -5,6 +5,7 @@ signal removed
 
 const buttons = preload("res://src/extensions/buttons.gd")
 
+@export var _rename_dialog_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
@@ -31,7 +32,7 @@ func init(item):
 			buttons.simple(
 				"Rename", 
 				get_theme_icon("Edit", "EditorIcons"),
-				func(): pass
+				func(): _on_rename(item)
 			),
 			buttons.simple(
 				"Remove", 
@@ -45,6 +46,18 @@ func init(item):
 	)
 	_favorite_button.toggled.connect(func(is_favorite):
 		item.favorite = is_favorite
+		edited.emit()
+	)
+
+
+func _on_rename(item):
+	var dialog = _rename_dialog_scene.instantiate()
+	add_child(dialog)
+	dialog.popup_centered()
+	dialog.init(item.name)
+	dialog.editor_renamed.connect(func(new_name):
+		item.name = new_name
+		_title_label.text = item.name
 		edited.emit()
 	)
 
