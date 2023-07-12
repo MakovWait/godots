@@ -18,22 +18,29 @@ var _get_actions_callback: Callable
 func init(item):
 	item.load()
 	
+	item.internals_changed.connect(func():
+		_title_label.text = item.name + " (%s)" % item.editor_name
+	)
+
 	_favorite_button.button_pressed = item.favorite
 	_title_label.text = item.name + " (%s)" % item.editor_name
 	_path_label.text = item.path
 	_icon.texture = item.icon
 	
 	_get_actions_callback = func():
+		var run_btn = buttons.simple(
+			"Run", 
+			get_theme_icon("Play", "EditorIcons"),
+			func():
+				# TODO handle all OS
+				OS.execute("open", [ProjectSettings.globalize_path(item.path)]),
+		)
+		run_btn.set_script(RunButton)
+		run_btn.init(item)
 		return [
+			run_btn,
 			buttons.simple(
-				"Run", 
-				get_theme_icon("Play", "EditorIcons"),
-				func():
-					# TODO handle all OS
-					OS.execute("open", [ProjectSettings.globalize_path(item.path)]),
-			),
-			buttons.simple(
-				"Rename", 
+				"Edit Advanced", 
 				get_theme_icon("Edit", "EditorIcons"),
 				func(): pass
 			),
@@ -85,3 +92,12 @@ func get_sort_data():
 		'favorite': _favorite_button.button_pressed,
 		'name': _title_label.text
 	}
+
+
+class RunButton extends Button:
+	func init(item):
+		disabled = item.has_invalid_editor
+		item.internals_changed.connect(func():
+			disabled = item.has_invalid_editor
+		)
+

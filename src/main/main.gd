@@ -1,7 +1,8 @@
 extends Control
 
+const projects = preload("res://src/services/projects.gd")
+const editors = preload("res://src/services/local_editors.gd")
 const theme_source = preload("res://theme/theme.gd")
-
 
 @export var _remote_editors: Control
 @export var _local_editors: Control
@@ -44,8 +45,28 @@ func _ready():
 	$GuiBase/MainVBox/TitleBar.add_button(
 		_make_main_button("Remote Editors", get_theme_icon("Filesystem", "EditorIcons")),
 	)
+
+	_local_editors.editor_download_pressed.connect(func():
+		var tab_container = $GuiBase/MainVBox/Content/TabContainer
+		tab_container.current_tab = tab_container.get_tab_idx_from_control(
+			$"GuiBase/MainVBox/Content/TabContainer/Remote Editors"
+		)
+	)
+
+	var local_editors = editors.LocalEditors.new(
+		Config.EDITORS_CONFIG_PATH
+	)
+	var projects_service = projects.Projects.new(
+		Config.PROJECTS_CONFIG_PATH,
+		local_editors,
+		get_theme_icon("DefaultProjectIcon", "EditorIcons")
+	)
 	
-	_projects.init(_local_editors)
+	local_editors.load()
+	projects_service.load()
+
+	_projects.init(projects_service)
+	_local_editors.init(local_editors)
 
 
 # obsolete
