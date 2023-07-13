@@ -31,7 +31,7 @@ func init(item):
 			),
 			buttons.simple(
 				"Rename", 
-				get_theme_icon("Edit", "EditorIcons"),
+				get_theme_icon("Rename", "EditorIcons"),
 				func(): _on_rename(item)
 			),
 			buttons.simple(
