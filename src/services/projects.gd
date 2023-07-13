@@ -117,8 +117,11 @@ class Project:
 
 	func _check_editor_changes(editor_path):
 		if editor_path == self.editor_path:
-			internals_changed.emit()
+			emit_internals_changed()
 	
+	func emit_internals_changed():
+		internals_changed.emit()
+
 
 class ExternalProjectInfo extends RefCounted:
 	signal loaded

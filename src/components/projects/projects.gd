@@ -19,9 +19,15 @@ func init(projects: Projects.Projects):
 		_import_project_dialog.popup_centered()
 	)
 	_import_project_dialog.imported.connect(func(project_path, editor_path):
-		var project = _projects.add(project_path, editor_path)
+		var project
+		if projects.has(project_path):
+			project = projects.retrieve(project_path)
+			project.editor_path = editor_path
+			project.emit_internals_changed()
+		else:
+			project = _projects.add(project_path, editor_path)
+			_projects_list.add(project)
 		_projects.save()
-		_projects_list.add(project)
 		_projects_list.sort_items()
 	)
 	
