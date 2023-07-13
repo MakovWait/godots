@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bpi7ggvfe5uhq"]
+[gd_scene load_steps=5 format=3 uid="uid://bpi7ggvfe5uhq"]
 
 [ext_resource type="Script" path="res://src/components/editors/local/local_editors.gd" id="1_uc0j8"]
 [ext_resource type="PackedScene" uid="uid://datb5j88oompr" path="res://src/components/editors/local/editors_list/editors_list.tscn" id="2_a50s0"]
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="3_kugpf"]
+[ext_resource type="PackedScene" uid="uid://bgs8c8ed7oww1" path="res://src/components/editors/local/oprhan_editor_explorer/oprhan_editor_explorer.tscn" id="4_ymsfk"]
 
 [node name="Editors" type="HBoxContainer"]
 anchors_preset = 15
@@ -23,6 +24,14 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 text = "Downlod"
+
+[node name="OrphanEditorsButton" type="Button" parent="ActionsSidebar/TabActions" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Orphan"
+
+[node name="OrphanEditorExplorer" parent="." instance=ExtResource("4_ymsfk")]
+visible = false
 
 [connection signal="item_edited" from="EditorsList" to="." method="_on_editors_list_item_edited"]
 [connection signal="item_removed" from="EditorsList" to="." method="_on_editors_list_item_removed"]

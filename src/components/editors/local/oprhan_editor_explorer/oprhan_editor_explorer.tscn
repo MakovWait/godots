@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgs8c8ed7oww1"]
+
+[ext_resource type="Script" path="res://src/components/editors/local/oprhan_editor_explorer/oprhan_editor_explorer.gd" id="1_li7fp"]
+
+[node name="OprhanEditorExplorer" type="ConfirmationDialog"]
+title = "Orphan Editor Explorer"
+position = Vector2i(0, 36)
+size = Vector2i(331, 100)
+visible = true
+ok_button_text = "Delete"
+dialog_hide_on_ok = false
+script = ExtResource("1_li7fp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 323.0
+offset_bottom = 51.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Folders that are not bound to any editor:"
+
+[node name="Tree" type="Tree" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3

@@ -8,12 +8,15 @@ const dir = preload("res://src/extensions/dir.gd")
 @onready var _editors_list: VBoxContainer = $EditorsList
 @onready var _sidebar: VBoxContainer = $ActionsSidebar
 @onready var _download_button: Button = %DownloadButton
+@onready var _orphan_editors_button: Button = %OrphanEditorsButton
+@onready var _orphan_editors_explorer: ConfirmationDialog = $OrphanEditorExplorer
 
 var _local_editors = Editors.LocalEditors
 
 
 func _ready() -> void:
 	_download_button.icon = get_theme_icon("AssetLib", "EditorIcons")
+	_orphan_editors_button.icon = get_theme_icon("Debug", "EditorIcons")
 	_download_button.pressed.connect(func(): editor_download_pressed.emit())
 
 
@@ -21,6 +24,12 @@ func init(editors: Editors.LocalEditors):
 	_local_editors = editors
 	_editors_list.refresh(_local_editors.all())
 	_editors_list.sort_items()
+	
+	_orphan_editors_explorer.init(editors, "user://versions")
+	_orphan_editors_button.pressed.connect(func():
+		_orphan_editors_explorer.before_popup()
+		_orphan_editors_explorer.popup_centered_ratio(0.4)
+	)
 
 
 func add(editor_name, exec_path):
