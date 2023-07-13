@@ -2,6 +2,7 @@ extends HBoxContainer
 
 
 @onready var _left_spacer = $LeftSpacer
+@onready var _right_spacer = $RightSpacer
 @onready var _gui_base = get_parent()
 
 var _can_move = true
@@ -90,7 +91,8 @@ func _resize():
 	if _left_spacer: 
 		var w = margin.y if self.is_layout_rtl() else margin.x
 		_left_spacer.custom_minimum_size = Vector2(w, 0)
-#	if right_menu_spacer: 
-#		var w = margin.x if $GuiBase.is_layout_rtl() else margin.y
-#		right_menu_spacer.custom_minimum_size = Vector2(w, 0)
+	if _right_spacer: 
+		var w = margin.x if self.is_layout_rtl() else margin.y
+		_right_spacer.custom_minimum_size = Vector2(w, 0)
+#	_right_spacer.custom_minimum_size = _left_spacer.custom_minimum_size
 	self.custom_minimum_size = Vector2(0, margin.z - self.global_position.y)

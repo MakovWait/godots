@@ -25,3 +25,6 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
+
+[node name="RightSpacer" type="Control" parent="."]
+layout_mode = 2
