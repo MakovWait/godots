@@ -28,9 +28,7 @@ func init(item):
 		var run_btn = buttons.simple(
 			"Run", 
 			get_theme_icon("Play", "EditorIcons"),
-			func():
-				# TODO handle all OS
-				OS.execute("open", [ProjectSettings.globalize_path(item.path)]),
+			_on_run_editor.bind(item)
 		)
 		run_btn.disabled = not item.is_valid
 		
@@ -58,6 +56,16 @@ func init(item):
 		item.favorite = is_favorite
 		edited.emit()
 	)
+
+
+func _on_run_editor(item):
+	if OS.has_feature("windows") or OS.has_feature("linux"):
+		OS.execute(
+			ProjectSettings.globalize_path(item.editor_path),
+			[]
+		)
+	elif OS.has_feature("macos"):
+		OS.execute("open", [ProjectSettings.globalize_path(item.path)])
 
 
 func _on_rename(item):

@@ -16,6 +16,16 @@ class LocalEditors extends RefCounted:
 		var editor = LocalEditor.new(
 			ConfigFileSection.new(editor_path, _cfg),
 		)
+		if OS.has_feature("linux"):
+			var output = []
+			var exit_code = OS.execute(
+				"chmod", 
+				["+x", "%s" % ProjectSettings.globalize_path(editor_path) ], 
+				output,
+				true
+			)
+			print(output.pop_front())
+			print("chmod executed with exit code: %s" % exit_code)
 		_connect_name_changed(editor)
 		editor.name = name
 		editor.favorite = false
