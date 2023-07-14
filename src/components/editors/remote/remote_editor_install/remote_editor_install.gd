@@ -61,6 +61,7 @@ func _setup_editor_select_tree(editor_exec_path):
 			var item = _select_exec_file_tree.create_item(root)
 			item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 			item.set_text(0, x)
+			item.set_editable(0, true)
 			item.set_meta("full_path", editor_exec_path + x)
 	
 	create_tree_items.call(dirs, func(x): return x.ends_with(".app"))
