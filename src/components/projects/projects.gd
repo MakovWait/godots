@@ -47,5 +47,6 @@ func _on_projects_list_item_removed(item_data) -> void:
 
 
 func _on_projects_list_item_edited(item_data) -> void:
+	item_data.emit_internals_changed()
 	_projects.save()
 	_projects_list.sort_items()

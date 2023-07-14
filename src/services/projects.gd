@@ -89,6 +89,9 @@ class Project:
 	var is_valid:
 		get: return dir.path_is_valid(path)
 	
+	var editors_to_bind:
+		get: return _local_editors.as_option_button_items()
+	
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors

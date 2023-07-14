@@ -38,9 +38,9 @@ func init(item):
 		return [
 			run_btn,
 			buttons.simple(
-				"Edit Advanced", 
-				get_theme_icon("Edit", "EditorIcons"),
-				func(): pass
+				"Bind Editor", 
+				get_theme_icon("GodotMonochrome", "EditorIcons"),
+				_on_rebind_editor.bind(item)
 			),
 			buttons.simple(
 				"Remove", 
@@ -56,6 +56,46 @@ func init(item):
 		item.favorite = is_favorite
 		edited.emit()
 	)
+
+
+func _on_rebind_editor(item):
+	var bind_dialog = ConfirmationDialogAutoFree.new()
+	
+	var vbox = VBoxContainer.new()
+	bind_dialog.add_child(vbox)
+	
+	var hbox = HBoxContainer.new()
+	vbox.add_child(hbox)
+	
+	var title = Label.new()
+	hbox.add_child(title)
+	
+	var options = OptionButton.new()
+	hbox.add_child(options)
+	
+	vbox.add_spacer(false)
+	
+	title.text = "Editor: "
+	
+	options.item_selected.connect(func(idx):
+		bind_dialog.get_ok_button().disabled = false
+	)
+	var option_items = item.editors_to_bind
+	bind_dialog.get_ok_button().disabled = len(option_items) == 0
+	for i in len(option_items):
+		var opt = option_items[i]
+		options.add_item(opt.label, i)
+		options.set_item_metadata(i, opt.path)
+	
+	bind_dialog.confirmed.connect(func():
+		if options.selected < 0: return
+		var new_editor_path = options.get_item_metadata(options.selected)
+		item.editor_path = new_editor_path
+		edited.emit()
+	)
+	
+	add_child(bind_dialog)
+	bind_dialog.popup_centered()
 
 
 func _on_run_with_editor(item):
