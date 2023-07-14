@@ -28,7 +28,7 @@ func start(url, target_abs_dir, file_name):
 	
 	DirAccess.make_dir_absolute(target_abs_dir)
 	if FileAccess.file_exists(target_abs_dir + file_name):
-		file_name += uuid.v4()
+		file_name = uuid.v4().substr(0, 8) + "-" + file_name
 	_download.download_file = target_abs_dir + file_name
 	_download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
 	

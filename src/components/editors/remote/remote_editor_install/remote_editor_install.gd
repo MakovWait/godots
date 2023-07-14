@@ -6,15 +6,46 @@ signal installed(editor_name, editor_exec_path)
 
 @onready var _editor_name_edit: LineEdit = %EditorNameEdit
 @onready var _select_exec_file_tree: Tree = %SelectExecFileTree
+@onready var _file_dialog = $FileDialog
+@onready var _browse_exec_file_button = %BrowseExecFileButton
+@onready var _exec_path_edit = %ExecPathEdit
+
+
+var _selected_file_source
+
+
+func _ready():
+	_browse_exec_file_button.pressed.connect(func():
+		_file_dialog.popup_centered()
+	)
 
 
 func init(editor_name, editor_exec_path):
 	assert(editor_exec_path.ends_with("/"))
 	
 	_editor_name_edit.text = editor_name
-	_setup_editor_select_tree(editor_exec_path)
+	if OS.has_feature("macos"):
+		_select_exec_file_tree.show()
+		_setup_editor_select_tree(editor_exec_path)
+	else:
+		_setup_editor_select_dialog(editor_exec_path)
+		_browse_exec_file_button.show()
+		_exec_path_edit.show()
 	
 	get_ok_button().disabled = true
+
+
+func _setup_editor_select_dialog(editor_exec_path):
+	var selected_file = {}
+	if OS.has_feature("windows"):
+		_file_dialog.filters = ["*.exe"]
+	_file_dialog.root_subfolder = editor_exec_path
+	_file_dialog.file_selected.connect(func(path):
+		selected_file['value'] = path
+		_exec_path_edit.text = path
+		get_ok_button().disabled = false
+	)
+	_selected_file_source = func(): return selected_file['value']
 
 
 func _setup_editor_select_tree(editor_exec_path):
@@ -28,31 +59,26 @@ func _setup_editor_select_tree(editor_exec_path):
 			if filter and not filter.call(x):
 				continue
 			var item = _select_exec_file_tree.create_item(root)
+			item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 			item.set_text(0, x)
 			item.set_meta("full_path", editor_exec_path + x)
 	
-	if OS.has_feature("windows"):
-		create_tree_items.call(
-			files, 
-			func(x): return x.ends_with(".exe")
-		)
-	elif OS.has_feature("macos"):
-		create_tree_items.call(dirs, func(x): return x.ends_with(".app"))
-	elif OS.has_feature("linux"):
-		create_tree_items.call(files)
+	create_tree_items.call(dirs, func(x): return x.ends_with(".app"))
 	
 	_select_exec_file_tree.item_selected.connect(func(): 
 		get_ok_button().disabled = false
 	)
+	_selected_file_source = func(): 
+		var selected_item = _select_exec_file_tree.get_selected()
+		assert(selected_item)
+		return selected_item.get_meta("full_path")
 
 
 func _on_confirmed() -> void:
 	# TODO validate data ???
-	var selected_item = _select_exec_file_tree.get_selected()
-	assert(selected_item)
 	installed.emit(
 		_editor_name_edit.text,
-		selected_item.get_meta("full_path")
+		_selected_file_source.call()
 	)
 	queue_free()
 

@@ -10,13 +10,13 @@ const zip = preload("res://src/extensions/zip.gd")
 const url = "https://downloads.tuxfamily.org/godotengine/"
 const platforms = {
 	"X11": {
-		"suffixes": ["_x11.64.zip", "_linux.64.zip", "_linux.x86_64.zip"],
+		"suffixes": ["_x11.64.zip", "_linux.64.zip", "_linux.x86_64.zip", "_linux.x86_32.zip"],
 	},
 	"OSX": {
 		"suffixes": ["_osx.universal.zip", "_macos.universal.zip"],
 	},
 	"Windows": {
-		"suffixes": ["_win64.exe.zip"],
+		"suffixes": ["_win64.exe.zip", "_win32.exe.zip", "_win64.zip", "_win32.zip"],
 	}
 }
 
@@ -69,9 +69,9 @@ func _setup_tree():
 			var zip_name = file_name
 			var zip_content_dir = "user://versions/%s" % zip_name.replace(".zip", "")
 			if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(zip_content_dir)):
-				zip_content_dir += "-%s" % uuid.v4()
+				zip_content_dir += "-%s" % uuid.v4().substr(0, 8)
 			zip_content_dir += "/"
-			zip.unzip(abs_path, zip_content_dir + "/")
+			zip.unzip(abs_path, zip_content_dir)
 
 			var editor_install = _editor_install_scene.instantiate()
 			add_child(editor_install)
