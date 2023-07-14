@@ -62,6 +62,7 @@ class Project:
 	const dir = preload("res://src/extensions/dir.gd")
 	
 	signal internals_changed
+	signal loaded
 	
 	var path:
 		get: return _section.name
@@ -92,6 +93,12 @@ class Project:
 	var editors_to_bind:
 		get: return _local_editors.as_option_button_items()
 	
+	var is_missing:
+		get: return _external_project_info.is_missing
+	
+	var is_loaded:
+		get: return _external_project_info.is_loaded
+	
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors
@@ -108,13 +115,14 @@ class Project:
 			_check_editor_changes
 		)
 		self._local_editors.editor_name_changed.connect(_check_editor_changes)
+		project_info.loaded.connect(func(): loaded.emit())
 	
 	func load():
 		_external_project_info.load()
 	
 	func _get_editor_name():
 		if has_invalid_editor:
-			return 'Missing'
+			return '<null>'
 		else:
 			return _local_editors.retrieve(editor_path).name
 
@@ -140,13 +148,17 @@ class ExternalProjectInfo extends RefCounted:
 	
 	var is_loaded:
 		get: return _is_loaded
-
+	
+	var is_missing:
+		get: return _is_missing
+	
 	var _is_loaded = false
 	var _project_path
 	var _default_icon
 	var _icon
 	var _name
 	var _last_modified
+	var _is_missing = false
 	
 	func _init(project_path, default_icon):
 		_project_path = project_path
@@ -155,17 +167,19 @@ class ExternalProjectInfo extends RefCounted:
 	
 	func load():
 		var cfg = ConfigFile.new()
-		cfg.load(_project_path)
+		var err = cfg.load(_project_path)
 		
-		_name = cfg.get_value("application", "config/name", "unknown")
+		_name = cfg.get_value("application", "config/name", "Missing Project")
 		_icon = _load_icon(cfg)
-		
-		is_loaded = true
+		_is_missing = bool(err)
+
+		_is_loaded = true
 		loaded.emit()
 	
 	func _load_icon(cfg):
-		var result
-		var icon_path: String = cfg.get_value("application", "config/icon")
+		var result = _default_icon
+		var icon_path: String = cfg.get_value("application", "config/icon", "")
+		if not icon_path: return result
 		icon_path = icon_path.replace("res://", self._project_path.get_base_dir() + "/")
 
 		var icon_image = Image.new()
@@ -175,6 +189,4 @@ class ExternalProjectInfo extends RefCounted:
 				_default_icon.get_width(), _default_icon.get_height(), Image.INTERPOLATE_LANCZOS
 			)
 			result = ImageTexture.create_from_image(icon_image)
-		else:
-			result = _default_icon
 		return result

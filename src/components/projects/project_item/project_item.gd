@@ -4,7 +4,7 @@ signal edited
 signal removed
 
 const buttons = preload("res://src/extensions/buttons.gd")
-
+const projects_ns = preload("res://src/services/projects.gd")
 
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
@@ -18,11 +18,19 @@ var _get_actions_callback: Callable
 
 
 func _ready() -> void:
+	super._ready()
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 
 
-func init(item):
+func init(item: projects_ns.Project):
 	item.load()
+	
+	if not item.is_loaded:
+		await item.loaded
+	
+	if item.is_missing:
+		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
+		modulate = Color(1, 1, 1, 0.498)
 	
 	item.internals_changed.connect(func():
 		_title_label.text = item.name
@@ -43,19 +51,26 @@ func init(item):
 		)
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
-		return [
-			run_btn,
-			buttons.simple(
-				"Bind Editor", 
-				get_theme_icon("GodotMonochrome", "EditorIcons"),
-				_on_rebind_editor.bind(item)
-			),
-			buttons.simple(
-				"Remove", 
-				get_theme_icon("Remove", "EditorIcons"),
-				_on_remove
-			)
-		]
+		
+		var bind_editor_btn = buttons.simple(
+			"Bind Editor", 
+			get_theme_icon("GodotMonochrome", "EditorIcons"),
+			_on_rebind_editor.bind(item)
+		)
+		bind_editor_btn.disabled = item.is_missing
+		
+		var remove_btn = buttons.simple(
+			"Remove", 
+			get_theme_icon("Remove", "EditorIcons"),
+			_on_remove
+		)
+		
+#		var actions = []
+#		if not item.is_missing:
+#			actions.append(run_btn)
+#			actions.append(bind_editor_btn)
+#		actions.append(remove_btn)
+		return [run_btn, bind_editor_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -165,8 +180,8 @@ func get_sort_data():
 
 class RunButton extends Button:
 	func init(item):
-		disabled = item.has_invalid_editor
+		disabled = item.has_invalid_editor or item.is_missing
 		item.internals_changed.connect(func():
-			disabled = item.has_invalid_editor
+			disabled = item.has_invalid_editor or item.is_missing
 		)
 
