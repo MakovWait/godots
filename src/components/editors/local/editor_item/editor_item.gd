@@ -61,7 +61,7 @@ func init(item):
 func _on_run_editor(item):
 	if OS.has_feature("windows") or OS.has_feature("linux"):
 		OS.execute(
-			ProjectSettings.globalize_path(item.editor_path),
+			ProjectSettings.globalize_path(item.path),
 			[]
 		)
 	elif OS.has_feature("macos"):
