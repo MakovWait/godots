@@ -29,11 +29,9 @@ func init(item):
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
-			"Run", 
-			get_theme_icon("Play", "EditorIcons"),
-			func():
-				# TODO handle all OS
-				OS.execute("open", [ProjectSettings.globalize_path(item.path)]),
+			"Edit", 
+			get_theme_icon("Edit", "EditorIcons"),
+			_on_run_with_editor.bind(item)
 		)
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
@@ -58,6 +56,29 @@ func init(item):
 		item.favorite = is_favorite
 		edited.emit()
 	)
+
+
+func _on_run_with_editor(item):
+	if OS.has_feature("windows") or OS.has_feature("linux"):
+		OS.execute(
+			ProjectSettings.globalize_path(item.editor_path),
+			[
+				"--path",
+				ProjectSettings.globalize_path(item.path).get_base_dir(),
+				"-e"
+			]
+		)
+	elif OS.has_feature("macos"):
+		OS.execute(
+			"open", 
+			[
+				ProjectSettings.globalize_path(item.editor_path),
+				"--args",
+				"--path",
+				ProjectSettings.globalize_path(item.path).get_base_dir(),
+				"-e"
+			]
+		)
 
 
 func _on_remove():
