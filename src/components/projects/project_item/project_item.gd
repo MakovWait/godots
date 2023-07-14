@@ -11,19 +11,27 @@ const buttons = preload("res://src/extensions/buttons.gd")
 @onready var _explore_button: Button = %ExploreButton
 @onready var _favorite_button: TextureButton = $Favorite/FavoriteButton
 @onready var _icon: TextureRect = $Icon
+@onready var _editor_path_label: Label = %EditorPathLabel
+@onready var _editor_button: Button = %EditorButton
 
 var _get_actions_callback: Callable
+
+
+func _ready() -> void:
+	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 
 
 func init(item):
 	item.load()
 	
 	item.internals_changed.connect(func():
-		_title_label.text = item.name + " (%s)" % item.editor_name
+		_title_label.text = item.name
+		_editor_path_label.text = item.editor_name
 	)
 
 	_favorite_button.button_pressed = item.favorite
-	_title_label.text = item.name + " (%s)" % item.editor_name
+	_title_label.text = item.name
+	_editor_path_label.text = item.editor_name
 	_path_label.text = item.path
 	_icon.texture = item.icon
 	
