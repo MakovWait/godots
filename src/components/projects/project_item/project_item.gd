@@ -13,6 +13,7 @@ const projects_ns = preload("res://src/services/projects.gd")
 @onready var _icon: TextureRect = $Icon
 @onready var _editor_path_label: Label = %EditorPathLabel
 @onready var _editor_button: Button = %EditorButton
+@onready var _project_warning: TextureRect = %ProjectWarning
 
 var _get_actions_callback: Callable
 
@@ -20,6 +21,8 @@ var _get_actions_callback: Callable
 func _ready() -> void:
 	super._ready()
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
+	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
+	_project_warning.tooltip_text = "Editor is missing"
 
 
 func init(item: projects_ns.Project):
@@ -35,8 +38,10 @@ func init(item: projects_ns.Project):
 	item.internals_changed.connect(func():
 		_title_label.text = item.name
 		_editor_path_label.text = item.editor_name
+		_project_warning.visible = item.has_invalid_editor
 	)
 
+	_project_warning.visible = item.has_invalid_editor
 	_favorite_button.button_pressed = item.favorite
 	_title_label.text = item.name
 	_editor_path_label.text = item.editor_name

@@ -66,17 +66,23 @@ text = "/home/kovkel/editor/path"
 script = ExtResource("7_38w7e")
 
 [node name="Path" type="HBoxContainer" parent="InfoVBox"]
-modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 
 [node name="ExploreButton" type="Button" parent="InfoVBox/Path"]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 flat = true
 script = ExtResource("6_1b7pb")
 
 [node name="PathLabel" type="Label" parent="InfoVBox/Path"]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 text = "/home/kovkel/editor/path"
 script = ExtResource("7_38w7e")
+
+[node name="ProjectWarning" type="TextureRect" parent="InfoVBox/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+stretch_mode = 3
