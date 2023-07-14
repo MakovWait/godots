@@ -45,7 +45,9 @@ class LocalEditors extends RefCounted:
 		editor_removed.emit(editor_path)
 	
 	func as_option_button_items():
-		return all().map(func(x: LocalEditor): return {
+		return all().filter(
+			func(x): return self.editor_is_valid(x.path)
+		).map(func(x: LocalEditor): return {
 			'label': x.name,
 			'path': x.path
 		})
@@ -89,7 +91,7 @@ class LocalEditor extends Object:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
 	
-	var is_value:
+	var is_valid:
 		get: return dir.path_is_valid(path)
 	
 	var _section: ConfigFileSection

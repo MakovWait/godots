@@ -16,24 +16,34 @@ var _get_actions_callback: Callable
 
 
 func init(item):
+	if not item.is_valid:
+		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
+		modulate = Color(1, 1, 1, 0.498)
+	
 	_title_label.text = item.name
 	_path_label.text = item.path
 	_favorite_button.button_pressed = item.favorite
 	
 	_get_actions_callback = func():
+		var run_btn = buttons.simple(
+			"Run", 
+			get_theme_icon("Play", "EditorIcons"),
+			func():
+				# TODO handle all OS
+				OS.execute("open", [ProjectSettings.globalize_path(item.path)]),
+		)
+		run_btn.disabled = not item.is_valid
+		
+		var rename_btn = buttons.simple(
+			"Rename", 
+			get_theme_icon("Rename", "EditorIcons"),
+			func(): _on_rename(item)
+		)
+		rename_btn.disabled = not item.is_valid
+		
 		return [
-			buttons.simple(
-				"Run", 
-				get_theme_icon("Play", "EditorIcons"),
-				func():
-					# TODO handle all OS
-					OS.execute("open", [ProjectSettings.globalize_path(item.path)]),
-			),
-			buttons.simple(
-				"Rename", 
-				get_theme_icon("Rename", "EditorIcons"),
-				func(): _on_rename(item)
-			),
+			run_btn,
+			rename_btn,
 			buttons.simple(
 				"Remove", 
 				get_theme_icon("Remove", "EditorIcons"),
