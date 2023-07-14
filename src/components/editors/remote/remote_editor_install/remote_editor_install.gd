@@ -31,8 +31,15 @@ func _setup_editor_select_tree(editor_exec_path):
 			item.set_text(0, x)
 			item.set_meta("full_path", editor_exec_path + x)
 	
-	create_tree_items.call(dirs, func(x): return x.ends_with(".app"))
-	create_tree_items.call(files)
+	if OS.has_feature("windows"):
+		create_tree_items.call(
+			files, 
+			func(x): return x.ends_with(".exe")
+		)
+	elif OS.has_feature("macos"):
+		create_tree_items.call(dirs, func(x): return x.ends_with(".app"))
+	elif OS.has_feature("linux"):
+		create_tree_items.call(files)
 	
 	_select_exec_file_tree.item_selected.connect(func(): 
 		get_ok_button().disabled = false
