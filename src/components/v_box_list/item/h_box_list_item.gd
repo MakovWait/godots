@@ -23,7 +23,7 @@ func _input(event: InputEvent) -> void:
 	var mb = event as InputEventMouseButton
 	if mb and get_global_rect().has_point(event.position):
 		if mb.button_index == MOUSE_BUTTON_LEFT:
-			if mb.is_pressed(): 
+			if mb.is_pressed() and visible: 
 				clicked.emit()
 
 
