@@ -69,6 +69,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="RetryButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Retry
 "
@@ -80,4 +81,4 @@ text = "Install..."
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
-[connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
+[node name="AcceptErrorDialog" type="AcceptDialog" parent="."]
