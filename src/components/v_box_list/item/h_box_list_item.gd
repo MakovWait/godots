@@ -2,6 +2,7 @@ class_name HBoxListItem
 extends HBoxContainer
 
 signal clicked
+signal double_clicked
 
 
 var _is_hovering = false
@@ -23,7 +24,9 @@ func _input(event: InputEvent) -> void:
 	var mb = event as InputEventMouseButton
 	if mb and get_global_rect().has_point(event.position):
 		if mb.button_index == MOUSE_BUTTON_LEFT:
-			if mb.is_pressed() and visible: 
+			if mb.double_click and visible:
+				double_clicked.emit()
+			elif mb.is_pressed() and visible: 
 				clicked.emit()
 
 
