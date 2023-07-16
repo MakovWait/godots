@@ -18,7 +18,7 @@ static func remove_recursive(path):
 		# Remove current path
 		directory.remove(path)
 	else:
-		print("Error removing " + path)
+		Output.push("Error removing " + path)
 
 
 static func path_is_valid(abs_path):

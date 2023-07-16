@@ -14,8 +14,8 @@ static func unzip(zip_path, target_dir):
 				]
 			], output, true
 		)
-		print(output.pop_front())
-		print("unzip executed with exit code: %s" % exit_code)
+		Output.push(output.pop_front())
+		Output.push("unzip executed with exit code: %s" % exit_code)
 	elif OS.has_feature("macos"):
 		exit_code = OS.execute(
 			"unzip", 
@@ -25,8 +25,8 @@ static func unzip(zip_path, target_dir):
 				"%s" % ProjectSettings.globalize_path(target_dir)
 			], output, true
 		)
-		print(output.pop_front())
-		print("unzip executed with exit code: %s" % exit_code)
+		Output.push(output.pop_front())
+		Output.push("unzip executed with exit code: %s" % exit_code)
 	elif OS.has_feature("linux"):
 		exit_code = OS.execute(
 			"unzip",
@@ -37,5 +37,5 @@ static func unzip(zip_path, target_dir):
 				"%s" % ProjectSettings.globalize_path(target_dir)
 			], output, true
 		)
-		print(output.pop_front())
-		print("unzip executed with exit code: %s" % exit_code)
+		Output.push(output.pop_front())
+		Output.push("unzip executed with exit code: %s" % exit_code)

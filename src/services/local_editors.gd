@@ -24,8 +24,8 @@ class LocalEditors extends RefCounted:
 				output,
 				true
 			)
-			print(output.pop_front())
-			print("chmod executed with exit code: %s" % exit_code)
+			Output.push(output.pop_front())
+			Output.push("chmod executed with exit code: %s" % exit_code)
 		_connect_name_changed(editor)
 		editor.name = name
 		editor.favorite = false

@@ -59,13 +59,20 @@ func init(item):
 
 
 func _on_run_editor(item):
+	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
 		OS.execute(
 			ProjectSettings.globalize_path(item.path),
-			[]
+			[],
+			output, true
 		)
 	elif OS.has_feature("macos"):
-		OS.execute("open", [ProjectSettings.globalize_path(item.path)])
+		OS.execute(
+			"open", 
+			[ProjectSettings.globalize_path(item.path)],
+			output, true
+		)
+	Output.push_array(output)
 
 
 func _on_rename(item):

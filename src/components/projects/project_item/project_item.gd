@@ -127,6 +127,7 @@ func _on_rebind_editor(item):
 
 
 func _on_run_with_editor(item):
+	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
 		OS.execute(
 			ProjectSettings.globalize_path(item.editor_path),
@@ -134,7 +135,7 @@ func _on_run_with_editor(item):
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
 				"-e"
-			]
+			], output, true
 		)
 	elif OS.has_feature("macos"):
 		OS.execute(
@@ -145,8 +146,9 @@ func _on_run_with_editor(item):
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
 				"-e"
-			]
+			], output, true
 		)
+	Output.push_array(output)
 
 
 func _on_remove():
