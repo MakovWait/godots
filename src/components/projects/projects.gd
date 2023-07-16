@@ -14,10 +14,7 @@ func init(projects: Projects.Projects):
 	self._projects = projects
 	
 	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
-	_import_project_button.pressed.connect(func():
-		_import_project_dialog.init(_projects.get_editors_to_bind())
-		_import_project_dialog.popup_centered()
-	)
+	_import_project_button.pressed.connect(func(): import())
 	_import_project_dialog.imported.connect(func(project_path, editor_path):
 		var project
 		if projects.has(project_path):
@@ -33,6 +30,13 @@ func init(projects: Projects.Projects):
 	
 	_projects_list.refresh(_projects.all())
 	_projects_list.sort_items()
+
+
+func import(project_path=""):
+	if _import_project_dialog.visible:
+		return
+	_import_project_dialog.init(project_path, _projects.get_editors_to_bind())
+	_import_project_dialog.popup_centered()
 
 
 func _on_projects_list_item_selected(item) -> void:

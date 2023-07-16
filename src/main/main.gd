@@ -13,6 +13,22 @@ const theme_source = preload("res://theme/theme.gd")
 
 
 func _ready():
+	get_tree().root.files_dropped.connect(func(files):
+		if len(files) == 0:
+			return
+		var file = files[0]
+		if file.ends_with("project.godot"):
+			_projects.import(file)
+		elif file.ends_with(".zip"):
+			_remote_editors.install_zip(
+				file, 
+				file.get_file().replace(".zip", ""), 
+				_remote_editors.guess_editor_name(file)
+			)
+		else:
+			_local_editors.import("", file)
+	)
+	
 	_gui_base.set(
 		"theme_override_styles/panel",
 		get_theme_stylebox("Background", "EditorStyles")

@@ -28,9 +28,11 @@ func _ready() -> void:
 	)
 
 
-func init(editor_options):
+func init(project_path, editor_options):
 	_set_editor_options(editor_options)
 	_project_path_edit.clear()
+	_project_path_edit.text = project_path
+	_update_ok_button_available()
 
 
 func _set_editor_options(options):

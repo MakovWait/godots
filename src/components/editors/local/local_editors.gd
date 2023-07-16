@@ -10,6 +10,7 @@ const dir = preload("res://src/extensions/dir.gd")
 @onready var _download_button: Button = %DownloadButton
 @onready var _orphan_editors_button: Button = %OrphanEditorsButton
 @onready var _orphan_editors_explorer: ConfirmationDialog = $OrphanEditorExplorer
+@onready var _import_button: Button = %ImportButton
 
 var _local_editors = Editors.LocalEditors
 
@@ -17,7 +18,14 @@ var _local_editors = Editors.LocalEditors
 func _ready() -> void:
 	_download_button.icon = get_theme_icon("AssetLib", "EditorIcons")
 	_orphan_editors_button.icon = get_theme_icon("Debug", "EditorIcons")
+	_import_button.icon = get_theme_icon("Load", "EditorIcons")
+	
+	_import_button.pressed.connect(func(): import())
 	_download_button.pressed.connect(func(): editor_download_pressed.emit())
+	
+	$EditorImport.imported.connect(func(editor_name, editor_path):
+		add(editor_name, editor_path)
+	)
 
 
 func init(editors: Editors.LocalEditors):
@@ -39,12 +47,19 @@ func add(editor_name, exec_path):
 		_editors_list.add(editor)
 
 
+func import(editor_name="", editor_path=""):
+	if $EditorImport.visible: 
+		return
+	$EditorImport.init(editor_name, editor_path)
+	$EditorImport.popup_centered()
+
+
 func _on_editors_list_item_selected(item) -> void:
 	_sidebar.refresh_actions(item.get_actions())
 
 
 func _on_editors_list_item_removed(item_data: Editors.LocalEditor) -> void:
-	dir.remove_recursive(item_data.path.get_base_dir())
+#	dir.remove_recursive(item_data.path.get_base_dir())
 	if _local_editors.has(item_data.path):
 		_local_editors.erase(item_data.path)
 		_local_editors.save()

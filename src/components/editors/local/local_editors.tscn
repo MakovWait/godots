@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bpi7ggvfe5uhq"]
+[gd_scene load_steps=6 format=3 uid="uid://bpi7ggvfe5uhq"]
 
 [ext_resource type="Script" path="res://src/components/editors/local/local_editors.gd" id="1_uc0j8"]
 [ext_resource type="PackedScene" uid="uid://datb5j88oompr" path="res://src/components/editors/local/editors_list/editors_list.tscn" id="2_a50s0"]
+[ext_resource type="PackedScene" uid="uid://cetwb5xs7wck5" path="res://src/components/editors/local/editor_import/editor_import.tscn" id="2_t30qe"]
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="3_kugpf"]
 [ext_resource type="PackedScene" uid="uid://bgs8c8ed7oww1" path="res://src/components/editors/local/orphan_editor_explorer/orphan_editor_explorer.tscn" id="4_nupsx"]
 
@@ -20,15 +21,23 @@ size_flags_horizontal = 3
 [node name="ActionsSidebar" parent="." instance=ExtResource("3_kugpf")]
 layout_mode = 2
 
-[node name="DownloadButton" type="Button" parent="ActionsSidebar/TabActions" index="0"]
+[node name="ImportButton" type="Button" parent="ActionsSidebar/TabActions" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Import"
+
+[node name="DownloadButton" type="Button" parent="ActionsSidebar/TabActions" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Downlod"
 
-[node name="OrphanEditorsButton" type="Button" parent="ActionsSidebar/TabActions" index="1"]
+[node name="OrphanEditorsButton" type="Button" parent="ActionsSidebar/TabActions" index="2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Orphan"
+
+[node name="EditorImport" parent="." instance=ExtResource("2_t30qe")]
+visible = false
 
 [node name="OrphanEditorExplorer" parent="." instance=ExtResource("4_nupsx")]
 visible = false

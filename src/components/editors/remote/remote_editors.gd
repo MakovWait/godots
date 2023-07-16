@@ -66,18 +66,37 @@ func _setup_tree():
 		%EditorDownloads.add_child(editor_download)
 		editor_download.start(_restore_url(item), "user://downloads/", file_name)
 		editor_download.downloaded.connect(func(abs_path):
-			var editor_install = _editor_install_scene.instantiate()
-			add_child(editor_install)
-			var zip_content_dir = _unzip_downloaded(abs_path, file_name.replace(".zip", ""))
-			var possible_editor_name = _guess_editor_name(file_name)
-			editor_install.init(possible_editor_name, zip_content_dir)
-			editor_install.installed.connect(func(name, exec_path):
-				installed.emit(name, ProjectSettings.globalize_path(exec_path))
-				editor_download.queue_free()
+			install_zip(
+				abs_path, 
+				file_name.replace(".zip", ""), 
+				guess_editor_name(file_name),
+				func(): editor_download.queue_free()
 			)
-			editor_install.popup_centered_ratio()
 		)
 	)
+
+
+func install_zip(zip_abs_path, root_unzip_folder_name, possible_editor_name, on_install=null):
+	var zip_content_dir = _unzip_downloaded(zip_abs_path, root_unzip_folder_name)
+	if not DirAccess.dir_exists_absolute(zip_content_dir):
+		var accept_dialog = AcceptDialog.new()
+		accept_dialog.visibility_changed.connect(func():
+			if not accept_dialog.visible:
+				accept_dialog.queue_free()
+		)
+		accept_dialog.dialog_text = "Error extracting archive"
+		add_child(accept_dialog)
+		accept_dialog.popup_centered()
+	else:
+		var editor_install = _editor_install_scene.instantiate()
+		add_child(editor_install)
+		editor_install.init(possible_editor_name, zip_content_dir)
+		editor_install.installed.connect(func(name, exec_path):
+			installed.emit(name, ProjectSettings.globalize_path(exec_path))
+			if on_install:
+				on_install.call()
+		)
+		editor_install.popup_centered_ratio()
 
 
 func _unzip_downloaded(downloaded_abs_path, root_unzip_folder_name):
@@ -89,7 +108,7 @@ func _unzip_downloaded(downloaded_abs_path, root_unzip_folder_name):
 	return zip_content_dir
 
 
-func _guess_editor_name(file_name):
+func guess_editor_name(file_name):
 	var possible_editor_name = file_name
 	var tokens_to_replace = []
 	tokens_to_replace.append_array(_current_platform.suffixes)
@@ -139,8 +158,8 @@ func _load_data(root: TreeItem):
 
 
 func _should_be_skipped(row: TuxfamilyRow):
-	if len(row.name) > 0 and int(row.name[0]) == 0:
-		return true
+#	if len(row.name) > 0 and int(row.name[0]) == 0:
+#		return true
 
 #	if ["rc", "dev", "alpha", "beta"].any(func(x): return row.name.contains(x)):
 #		return true
