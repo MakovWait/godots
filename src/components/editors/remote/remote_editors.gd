@@ -66,29 +66,38 @@ func _setup_tree():
 		%EditorDownloads.add_child(editor_download)
 		editor_download.start(_restore_url(item), "user://downloads/", file_name)
 		editor_download.downloaded.connect(func(abs_path):
-			var zip_name = file_name
-			var zip_content_dir = "user://versions/%s" % zip_name.replace(".zip", "")
-			if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(zip_content_dir)):
-				zip_content_dir += "-%s" % uuid.v4().substr(0, 8)
-			zip_content_dir += "/"
-			zip.unzip(abs_path, zip_content_dir)
-
 			var editor_install = _editor_install_scene.instantiate()
 			add_child(editor_install)
-			var possible_editor_name = file_name
-			var tokens_to_replace = []
-			tokens_to_replace.append_array(_current_platform.suffixes)
-			tokens_to_replace.append_array(["_", "-"])
-			for token in tokens_to_replace:
-				possible_editor_name = possible_editor_name.replace(token, " ")
-			possible_editor_name = possible_editor_name.strip_edges()
+			var zip_content_dir = _unzip_downloaded(abs_path, file_name.replace(".zip", ""))
+			var possible_editor_name = _guess_editor_name(file_name)
 			editor_install.init(possible_editor_name, zip_content_dir)
 			editor_install.installed.connect(func(name, exec_path):
 				installed.emit(name, ProjectSettings.globalize_path(exec_path))
+				editor_download.queue_free()
 			)
 			editor_install.popup_centered_ratio()
 		)
 	)
+
+
+func _unzip_downloaded(downloaded_abs_path, root_unzip_folder_name):
+	var zip_content_dir = "user://versions/%s" % root_unzip_folder_name
+	if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(zip_content_dir)):
+		zip_content_dir += "-%s" % uuid.v4().substr(0, 8)
+	zip_content_dir += "/"
+	zip.unzip(downloaded_abs_path, zip_content_dir)
+	return zip_content_dir
+
+
+func _guess_editor_name(file_name):
+	var possible_editor_name = file_name
+	var tokens_to_replace = []
+	tokens_to_replace.append_array(_current_platform.suffixes)
+	tokens_to_replace.append_array(["_", "-"])
+	for token in tokens_to_replace:
+		possible_editor_name = possible_editor_name.replace(token, " ")
+	possible_editor_name = possible_editor_name.strip_edges()
+	return possible_editor_name
 
 
 func _load_data(root: TreeItem):
