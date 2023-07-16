@@ -50,12 +50,19 @@ func before_popup():
 
 func _get_orphan_dirs():
 	var all_dirs = DirAccess.get_directories_at(_versions_abs_path)
-	var editor_dirs = _local_editors.all().map(func(x): return x.path)
+	var editor_dirs = _local_editors.all().map(func(x): return _map_path(x.path))
 	var orphan_dirs = []
 	var is_orphan = func(dir):
-		return len(editor_dirs.filter(func(x): return x.contains(dir))) == 0
+		return len(editor_dirs.filter(func(x): return x.begins_with(dir))) == 0
 	for dir in all_dirs:
 		var abs_dir_path = ProjectSettings.globalize_path(_versions_abs_path.path_join(dir))
-		if is_orphan.call(abs_dir_path):
+		if is_orphan.call(_map_path(abs_dir_path) + "/"):
 			orphan_dirs.append(abs_dir_path)
 	return orphan_dirs
+
+
+func _map_path(path):
+	if OS.has_feature("linux"):
+		return path
+	else:
+		return path.to_lower()
