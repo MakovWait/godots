@@ -139,6 +139,12 @@ func _load_data(root: TreeItem):
 
 
 func _should_be_skipped(row: TuxfamilyRow):
+	if len(row.name) > 0 and int(row.name[0]) == 0:
+		return true
+
+#	if ["rc", "dev", "alpha", "beta"].any(func(x): return row.name.contains(x)):
+#		return true
+
 	if row.is_parent_ref:
 		return true
 	
@@ -187,7 +193,7 @@ class TuxfamilyRow extends RefCounted:
 	var type:
 		get: return _src.find_child_recursive(exml.Filters.by_attr("class", "t")).content
 	
-	var name:
+	var name: String:
 		get: return _src.find_child_recursive(exml.Filters.by_name("a")).content
 	
 	var is_zip:
