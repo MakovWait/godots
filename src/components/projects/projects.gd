@@ -2,6 +2,8 @@ extends HBoxContainer
 
 const Projects = preload("res://src/services/projects.gd")
 
+signal manage_tags_requested(item_tags, all_tags, on_confirm)
+
 @onready var _sidebar: VBoxContainer = $ActionsSidebar
 @onready var _projects_list: VBoxContainer = $ProjectsList
 @onready var _import_project_button: Button = %ImportProjectButton
@@ -54,3 +56,13 @@ func _on_projects_list_item_edited(item_data) -> void:
 	item_data.emit_internals_changed()
 	_projects.save()
 	_projects_list.sort_items()
+
+
+func _on_projects_list_item_manage_tags_requested(item_data) -> void:
+	manage_tags_requested.emit(
+		item_data.tags,
+		_projects.get_all_tags(),
+		func(new_tags):
+			item_data.tags = new_tags
+			_on_projects_list_item_edited(item_data)
+	)

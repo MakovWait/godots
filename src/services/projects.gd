@@ -42,6 +42,14 @@ class Projects extends RefCounted:
 	func get_editors_to_bind():
 		return _local_editors.as_option_button_items()
 	
+	func get_all_tags():
+		var set = Set.new()
+		for project in _projects.values():
+			for tag in project.tags:
+				set.append(tag.to_lower())
+		return set.values()
+	
+	
 	func load() -> Error:
 		dict.clear_and_free(_projects)
 		var err = _cfg.load(_cfg_path)
@@ -99,6 +107,10 @@ class Project:
 	var is_loaded:
 		get: return _external_project_info.is_loaded
 	
+	var tags:
+		set(value): _external_project_info.tags = value
+		get: return _external_project_info.tags
+	
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors
@@ -152,6 +164,25 @@ class ExternalProjectInfo extends RefCounted:
 	var is_missing:
 		get: return _is_missing
 	
+	var tags:
+		set(value):
+			_tags = value
+			if is_missing:
+				return
+			var cfg = ConfigFile.new()
+			var err = cfg.load(_project_path)
+			if not err:
+				var set = Set.new()
+				for tag in _tags:
+					set.append(tag.to_lower())
+				cfg.set_value(
+					"application", 
+					"config/tags", 
+					PackedStringArray(set.values())
+				)
+				cfg.save(_project_path)
+		get: return _tags
+	
 	var _is_loaded = false
 	var _project_path
 	var _default_icon
@@ -159,6 +190,7 @@ class ExternalProjectInfo extends RefCounted:
 	var _name
 	var _last_modified
 	var _is_missing = false
+	var _tags = []
 	
 	func _init(project_path, default_icon):
 		_project_path = project_path
@@ -170,6 +202,7 @@ class ExternalProjectInfo extends RefCounted:
 		var err = cfg.load(_project_path)
 		
 		_name = cfg.get_value("application", "config/name", "Missing Project")
+		_tags = cfg.get_value("application", "config/tags", [])
 		_icon = _load_icon(cfg)
 		_is_missing = bool(err)
 

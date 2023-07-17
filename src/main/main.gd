@@ -83,6 +83,9 @@ func _ready():
 
 	_projects.init(projects_service)
 	_local_editors.init(local_editors)
+	
+	_projects.manage_tags_requested.connect(_popup_manage_tags)
+#	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
 
 
 # obsolete
@@ -104,3 +107,8 @@ func _enter_tree():
 	var window = get_window()
 	window.min_size = Vector2(520, 350) * Config.EDSCALE
 	window.size = window.min_size
+
+
+func _popup_manage_tags(item_tags, all_tags, on_confirm):
+	$ManageTags.popup_centered(Vector2(500, 0) * Config.EDSCALE)
+	$ManageTags.init(item_tags, all_tags, on_confirm)

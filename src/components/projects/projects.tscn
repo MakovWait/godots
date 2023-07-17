@@ -29,6 +29,7 @@ text = "Import"
 visible = false
 
 [connection signal="item_edited" from="ProjectsList" to="." method="_on_projects_list_item_edited"]
+[connection signal="item_manage_tags_requested" from="ProjectsList" to="." method="_on_projects_list_item_manage_tags_requested"]
 [connection signal="item_removed" from="ProjectsList" to="." method="_on_projects_list_item_removed"]
 [connection signal="item_selected" from="ProjectsList" to="." method="_on_projects_list_item_selected"]
 

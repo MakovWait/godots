@@ -2,9 +2,12 @@ extends HBoxListItem
 
 signal edited
 signal removed
+signal manage_tags_requested
 
 const buttons = preload("res://src/extensions/buttons.gd")
 const projects_ns = preload("res://src/services/projects.gd")
+
+@export var _tag_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
@@ -14,6 +17,7 @@ const projects_ns = preload("res://src/services/projects.gd")
 @onready var _editor_path_label: Label = %EditorPathLabel
 @onready var _editor_button: Button = %EditorButton
 @onready var _project_warning: TextureRect = %ProjectWarning
+@onready var _tag_container: HBoxContainer = %TagContainer
 
 var _get_actions_callback: Callable
 
@@ -23,6 +27,7 @@ func _ready() -> void:
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
 	_project_warning.tooltip_text = "Editor is missing"
+	_title_label.custom_minimum_size = Vector2(128, 0) * Config.EDSCALE
 
 
 func init(item: projects_ns.Project):
@@ -39,6 +44,7 @@ func init(item: projects_ns.Project):
 		_title_label.text = item.name
 		_editor_path_label.text = item.editor_name
 		_project_warning.visible = item.has_invalid_editor
+		_setup_tags(item)
 	)
 
 	_project_warning.visible = item.has_invalid_editor
@@ -47,6 +53,7 @@ func init(item: projects_ns.Project):
 	_editor_path_label.text = item.editor_name
 	_path_label.text = item.path
 	_icon.texture = item.icon
+	_setup_tags(item)
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
@@ -64,6 +71,13 @@ func init(item: projects_ns.Project):
 		)
 		bind_editor_btn.disabled = item.is_missing
 		
+		var manage_tags_btn = buttons.simple(
+			"Manage Tags", 
+			get_theme_icon("Script", "EditorIcons"),
+			func(): manage_tags_requested.emit()
+		)
+		manage_tags_btn.disabled = item.is_missing
+		
 		var remove_btn = buttons.simple(
 			"Remove", 
 			get_theme_icon("Remove", "EditorIcons"),
@@ -75,7 +89,7 @@ func init(item: projects_ns.Project):
 #			actions.append(run_btn)
 #			actions.append(bind_editor_btn)
 #		actions.append(remove_btn)
-		return [run_btn, bind_editor_btn, remove_btn]
+		return [run_btn, bind_editor_btn, manage_tags_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -84,6 +98,15 @@ func init(item: projects_ns.Project):
 		item.favorite = is_favorite
 		edited.emit()
 	)
+
+
+func _setup_tags(item):
+	for child in _tag_container.get_children():
+		child.queue_free()
+	for tag in item.tags:
+		var tag_control = _tag_scene.instantiate()
+		_tag_container.add_child(tag_control)
+		tag_control.init(tag)
 
 
 func _on_rebind_editor(item):

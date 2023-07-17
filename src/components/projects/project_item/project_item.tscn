@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cnrduy54kvvf8"]
+[gd_scene load_steps=8 format=3 uid="uid://cnrduy54kvvf8"]
 
 [ext_resource type="Script" path="res://src/components/projects/project_item/project_item.gd" id="1_aivn8"]
 [ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="2_4lhxn"]
+[ext_resource type="PackedScene" uid="uid://c8micaell2aed" path="res://src/components/tags/tag/tag.tscn" id="2_or7js"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_tvtl4"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="4_m00kj"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="5_bf7vh"]
@@ -14,6 +15,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_aivn8")
+_tag_scene = ExtResource("2_or7js")
 
 [node name="Favorite" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -30,7 +32,6 @@ script = ExtResource("3_tvtl4")
 [node name="InfoVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = -12
 
 [node name="Control" type="Control" parent="InfoVBox"]
 custom_minimum_size = Vector2(2.08165e-12, 1)
@@ -43,6 +44,7 @@ size_flags_vertical = 0
 [node name="TitleLabel" type="Label" parent="InfoVBox/Title"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 text = "test"
 script = ExtResource("4_m00kj")
 
@@ -50,39 +52,47 @@ script = ExtResource("4_m00kj")
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
-[node name="Editor" type="HBoxContainer" parent="InfoVBox"]
+[node name="TagContainer" type="HBoxContainer" parent="InfoVBox/Title"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InfoVBox"]
+layout_mode = 2
+theme_override_constants/separation = -12
+
+[node name="Editor" type="HBoxContainer" parent="InfoVBox/VBoxContainer"]
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 
-[node name="EditorButton" type="Button" parent="InfoVBox/Editor"]
+[node name="EditorButton" type="Button" parent="InfoVBox/VBoxContainer/Editor"]
 unique_name_in_owner = true
 layout_mode = 2
 flat = true
 
-[node name="EditorPathLabel" type="Label" parent="InfoVBox/Editor"]
+[node name="EditorPathLabel" type="Label" parent="InfoVBox/VBoxContainer/Editor"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "/home/kovkel/editor/path"
 script = ExtResource("5_bf7vh")
 
-[node name="Path" type="HBoxContainer" parent="InfoVBox"]
+[node name="Path" type="HBoxContainer" parent="InfoVBox/VBoxContainer"]
 layout_mode = 2
 
-[node name="ExploreButton" type="Button" parent="InfoVBox/Path"]
+[node name="ExploreButton" type="Button" parent="InfoVBox/VBoxContainer/Path"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 flat = true
 script = ExtResource("6_8vyss")
 
-[node name="PathLabel" type="Label" parent="InfoVBox/Path"]
+[node name="PathLabel" type="Label" parent="InfoVBox/VBoxContainer/Path"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 text = "/home/kovkel/editor/path"
 script = ExtResource("5_bf7vh")
 
-[node name="ProjectWarning" type="TextureRect" parent="InfoVBox/Path"]
+[node name="ProjectWarning" type="TextureRect" parent="InfoVBox/VBoxContainer/Path"]
 unique_name_in_owner = true
 layout_mode = 2
 stretch_mode = 3

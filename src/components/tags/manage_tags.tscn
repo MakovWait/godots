@@ -1,0 +1,72 @@
+[gd_scene load_steps=3 format=3 uid="uid://buwhvihmtjeff"]
+
+[ext_resource type="Script" path="res://src/components/tags/manage_tags.gd" id="1_teu6l"]
+[ext_resource type="PackedScene" uid="uid://c8micaell2aed" path="res://src/components/tags/tag/tag.tscn" id="2_lc67g"]
+
+[node name="ManageTags" type="ConfirmationDialog"]
+title = "Manage Tags"
+position = Vector2i(0, 36)
+size = Vector2i(295, 194)
+visible = true
+script = ExtResource("1_teu6l")
+_tag_scene = ExtResource("2_lc67g")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 287.0
+offset_bottom = 145.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Click tag to remove it from the item."
+horizontal_alignment = 1
+
+[node name="ItemTagsContainer" type="HFlowContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "All Tags"
+horizontal_alignment = 1
+
+[node name="Label4" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Click tag to add it to the item."
+horizontal_alignment = 1
+
+[node name="AllTagsContainer" type="HFlowContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CreateTagButton" type="Button" parent="VBoxContainer/AllTagsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CreateTagDialog" type="ConfirmationDialog" parent="."]
+title = "Create New Tag"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CreateTagDialog"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="CreateTagDialog/VBoxContainer"]
+layout_mode = 2
+text = "Tags are capitalized automatically when displayed."
+
+[node name="NewTagNameEdit" type="LineEdit" parent="CreateTagDialog/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TagErrorLabel" type="Label" parent="CreateTagDialog/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
