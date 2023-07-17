@@ -23,6 +23,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	var mb = event as InputEventMouseButton
 	if mb and get_global_rect().has_point(event.position):
+		if not _is_hovering:
+			return
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if mb.double_click and visible:
 				double_clicked.emit()
