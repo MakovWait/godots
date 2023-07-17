@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://br4maab5g540u"]
+
+[ext_resource type="PackedScene" uid="uid://bv8wmo3sdwlm5" path="res://addons/quick_script_change/BaseUI.tscn" id="1_0u7po"]
+
+[node name="InputScriptName" type="Popup"]
+initial_position = 1
+title = "some"
+size = Vector2i(1200, 600)
+current_screen = -2
+visible = true
+
+[node name="InputUI" parent="." instance=ExtResource("1_0u7po")]
+offset_right = 0.0
+offset_bottom = 0.0

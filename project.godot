@@ -26,6 +26,10 @@ Output="*res://src/output.gd"
 
 window/subwindows/embed_subwindows=false
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/quick_script_change/plugin.cfg", "res://addons/script-name-on-top/plugin.cfg")
+
 [filesystem]
 
 import/blender/enabled=false
