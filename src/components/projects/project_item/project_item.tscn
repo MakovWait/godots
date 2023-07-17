@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://src/components/projects/project_item/project_item.gd" id="1_aivn8"]
 [ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="2_4lhxn"]
-[ext_resource type="PackedScene" uid="uid://c8micaell2aed" path="res://src/components/tags/tag/tag.tscn" id="2_or7js"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_tvtl4"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="4_m00kj"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="5_bf7vh"]
 [ext_resource type="Script" path="res://src/components/misc/explore_button.gd" id="6_8vyss"]
+[ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="6_k6uq1"]
 
 [node name="ProjectItem" type="HBoxContainer"]
 anchors_preset = 15
@@ -15,7 +15,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_aivn8")
-_tag_scene = ExtResource("2_or7js")
 
 [node name="Favorite" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -55,6 +54,7 @@ layout_mode = 2
 [node name="TagContainer" type="HBoxContainer" parent="InfoVBox/Title"]
 unique_name_in_owner = true
 layout_mode = 2
+script = ExtResource("6_k6uq1")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="InfoVBox"]
 layout_mode = 2

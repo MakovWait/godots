@@ -2,6 +2,7 @@ extends HBoxListItem
 
 signal edited
 signal removed
+signal manage_tags_requested
 
 const buttons = preload("res://src/extensions/buttons.gd")
 
@@ -11,6 +12,7 @@ const buttons = preload("res://src/extensions/buttons.gd")
 @onready var _title_label: Label = %TitleLabel
 @onready var _explore_button: Button = %ExploreButton
 @onready var _favorite_button: TextureButton = %FavoriteButton
+@onready var _tag_container: HBoxContainer = %TagContainer
 
 var _get_actions_callback: Callable
 
@@ -20,9 +22,14 @@ func init(item):
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
 	
+	item.tags_edited.connect(func():
+		_tag_container.set_tags(item.tags)
+	)
+	
 	_title_label.text = item.name
 	_path_label.text = item.path
 	_favorite_button.button_pressed = item.favorite
+	_tag_container.set_tags(item.tags)
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
@@ -39,9 +46,17 @@ func init(item):
 		)
 		rename_btn.disabled = not item.is_valid
 		
+		var manage_tags_btn = buttons.simple(
+			"Manage Tags", 
+			get_theme_icon("Script", "EditorIcons"),
+			func(): manage_tags_requested.emit()
+		)
+		manage_tags_btn.disabled = not item.is_valid
+		
 		return [
 			run_btn,
 			rename_btn,
+			manage_tags_btn,
 			buttons.simple(
 				"Remove", 
 				get_theme_icon("Remove", "EditorIcons"),

@@ -1,6 +1,7 @@
 extends HBoxContainer
 
 signal editor_download_pressed
+signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
 const Editors = preload("res://src/services/local_editors.gd")
 const dir = preload("res://src/extensions/dir.gd")
@@ -69,3 +70,14 @@ func _on_editors_list_item_removed(item_data: Editors.LocalEditor) -> void:
 func _on_editors_list_item_edited(item_data) -> void:
 	_local_editors.save()
 	_editors_list.sort_items()
+
+
+func _on_editors_list_item_manage_tags_requested(item_data) -> void:
+	manage_tags_requested.emit(
+		item_data.tags,
+		_local_editors.get_all_tags(),
+		func(new_tags):
+			item_data.tags = new_tags
+			item_data.emit_tags_edited()
+			_on_editors_list_item_edited(item_data)
+	)

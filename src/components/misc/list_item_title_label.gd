@@ -4,6 +4,7 @@ extends Label
 func _ready() -> void:
 	clip_text = true
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	custom_minimum_size = Vector2(128, 0) * Config.EDSCALE
 	add_theme_font_override(
 		"font", get_theme_font("title", "EditorFonts")
 	)

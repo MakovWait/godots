@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dvlmutw7v33j0"]
+[gd_scene load_steps=10 format=3 uid="uid://dvlmutw7v33j0"]
 
 [ext_resource type="Script" path="res://src/components/editors/local/editor_item/editor_item.gd" id="1_gsbp6"]
 [ext_resource type="PackedScene" uid="uid://b2tm4lxm80sj0" path="res://src/components/editors/local/editor_item/rename_editor_dialog.tscn" id="2_6et78"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="3_8hshq"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="5_48fct"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="6_qnxw1"]
+[ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="7_0bi54"]
 [ext_resource type="Script" path="res://src/components/misc/explore_button.gd" id="7_dupbh"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="8_d5wg1"]
 
@@ -48,12 +49,18 @@ size_flags_vertical = 0
 [node name="TitleLabel" type="Label" parent="InfoVBox/Title"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 text = "test"
 script = ExtResource("6_qnxw1")
 
 [node name="Control" type="Control" parent="InfoVBox/Title"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
+
+[node name="TagContainer" type="HBoxContainer" parent="InfoVBox/Title"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("7_0bi54")
 
 [node name="Path" type="HBoxContainer" parent="InfoVBox"]
 modulate = Color(1, 1, 1, 0.498039)

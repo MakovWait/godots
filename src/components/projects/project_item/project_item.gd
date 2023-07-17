@@ -7,7 +7,6 @@ signal manage_tags_requested
 const buttons = preload("res://src/extensions/buttons.gd")
 const projects_ns = preload("res://src/services/projects.gd")
 
-@export var _tag_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
@@ -27,7 +26,6 @@ func _ready() -> void:
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
 	_project_warning.tooltip_text = "Editor is missing"
-	_title_label.custom_minimum_size = Vector2(128, 0) * Config.EDSCALE
 
 
 func init(item: projects_ns.Project):
@@ -44,7 +42,7 @@ func init(item: projects_ns.Project):
 		_title_label.text = item.name
 		_editor_path_label.text = item.editor_name
 		_project_warning.visible = item.has_invalid_editor
-		_setup_tags(item)
+		_tag_container.set_tags(item.tags)
 	)
 
 	_project_warning.visible = item.has_invalid_editor
@@ -53,7 +51,7 @@ func init(item: projects_ns.Project):
 	_editor_path_label.text = item.editor_name
 	_path_label.text = item.path
 	_icon.texture = item.icon
-	_setup_tags(item)
+	_tag_container.set_tags(item.tags)
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
@@ -98,15 +96,6 @@ func init(item: projects_ns.Project):
 		item.favorite = is_favorite
 		edited.emit()
 	)
-
-
-func _setup_tags(item):
-	for child in _tag_container.get_children():
-		child.queue_free()
-	for tag in item.tags:
-		var tag_control = _tag_scene.instantiate()
-		_tag_container.add_child(tag_control)
-		tag_control.init(tag)
 
 
 func _on_rebind_editor(item):

@@ -85,7 +85,7 @@ func _ready():
 	_local_editors.init(local_editors)
 	
 	_projects.manage_tags_requested.connect(_popup_manage_tags)
-#	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
+	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
 
 
 # obsolete

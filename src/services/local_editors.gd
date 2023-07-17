@@ -62,6 +62,13 @@ class LocalEditors extends RefCounted:
 			'path': x.path
 		})
 	
+	func get_all_tags():
+		var set = Set.new()
+		for editor in _editors.values():
+			for tag in editor.tags:
+				set.append(tag.to_lower())
+		return set.values()
+	
 	func load() -> Error:
 		dict.clear_and_free(_editors)
 		var err = _cfg.load(_cfg_path)
@@ -84,6 +91,8 @@ class LocalEditors extends RefCounted:
 
 
 class LocalEditor extends Object:
+	signal tags_edited
+	
 	const dir = preload("res://src/extensions/dir.gd")
 	
 	signal name_changed(new_name)
@@ -101,6 +110,10 @@ class LocalEditor extends Object:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
 	
+	var tags:
+		get: return _section.get_value("tags", [])
+		set(value): _section.set_value("tags", value)
+	
 	var is_valid:
 		get: return dir.path_is_valid(path)
 	
@@ -108,3 +121,6 @@ class LocalEditor extends Object:
 	
 	func _init(section: ConfigFileSection) -> void:
 		self._section = section
+	
+	func emit_tags_edited():
+		tags_edited.emit()
