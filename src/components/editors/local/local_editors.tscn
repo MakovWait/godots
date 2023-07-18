@@ -29,7 +29,7 @@ text = "Import"
 [node name="DownloadButton" type="Button" parent="ActionsSidebar/TabActions" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Downlod"
+text = "Download"
 
 [node name="OrphanEditorsButton" type="Button" parent="ActionsSidebar/TabActions" index="2"]
 unique_name_in_owner = true
