@@ -18,6 +18,7 @@ func _ready():
 	_browse_exec_file_button.pressed.connect(func():
 		_file_dialog.popup_centered()
 	)
+	_browse_exec_file_button.icon = get_theme_icon("Load", "EditorIcons")
 
 
 func init(editor_name, editor_exec_path):

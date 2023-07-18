@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://src/components/editors/local/editor_import/editor_import.gd" id="1_xe8i2"]
 
 [node name="EditorImport" type="ConfirmationDialog"]
+title = "Import Editor"
 position = Vector2i(0, 36)
 size = Vector2i(357, 123)
 visible = true
@@ -42,7 +43,6 @@ editable = false
 [node name="BrowseButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Browse"
 
 [node name="FileDialog" type="FileDialog" parent="."]
 title = "Open a File or Directory"

@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.gd" id="1_vo8ft"]
 
 [node name="EditorInstall" type="ConfirmationDialog"]
+title = "Install Editor"
 position = Vector2i(0, 36)
 size = Vector2i(200, 219)
 visible = true
@@ -14,8 +15,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 192.0
-offset_bottom = 170.0
+offset_right = -8.0
+offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -55,7 +56,6 @@ editable = false
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-text = "Browse"
 
 [node name="FileDialog" type="FileDialog" parent="."]
 title = "Open a File"

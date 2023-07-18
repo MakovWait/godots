@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://src/components/projects/import_project_dialog/import_project_dialog.gd" id="1_dyj76"]
 
 [node name="ImportProjectDialog" type="ConfirmationDialog"]
+title = "Import Project"
 position = Vector2i(0, 36)
 size = Vector2i(256, 152)
 visible = true
@@ -14,8 +15,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 248.0
-offset_bottom = 103.0
+offset_right = -8.0
+offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -35,7 +36,6 @@ editable = false
 [node name="BrowseProjectPathButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Browse"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2

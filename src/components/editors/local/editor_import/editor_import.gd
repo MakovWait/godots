@@ -18,6 +18,7 @@ func _ready() -> void:
 		_file_dialog.popup_centered()
 		_file_dialog.current_path = _path_edit.text
 	)
+	_browse_button.icon = get_theme_icon("Load", "EditorIcons")
 	_file_dialog.file_selected.connect(func(dir):
 		_path_edit.text = dir
 	)
