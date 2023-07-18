@@ -22,6 +22,7 @@ const platforms = {
 
 @export var _editor_download_scene : PackedScene
 @export var _editor_install_scene : PackedScene
+@export var _remote_editor_direct_link_scene : PackedScene
 
 @onready var tree: Tree = %Tree
 @onready var _open_downloads_button: Button = %OpenDownloadsButton
@@ -36,14 +37,16 @@ func _ready():
 	_setup_tree()
 	
 	var scroll_container = %ScrollContainer
-	var editors_download = %EditorDownloads
+	var editors_downloads = %EditorDownloads
 	var update_scroll_container_visibility = func():
-		scroll_container.visible = editors_download.get_child_count() > 0
+		if not is_instance_valid(scroll_container) or not is_instance_valid(editors_downloads):
+			return
+		scroll_container.visible = editors_downloads.get_child_count() > 0
 	scroll_container.add_theme_stylebox_override("panel", get_theme_stylebox("panel", "Tree"))
-	editors_download.child_entered_tree.connect(func(_node):
+	editors_downloads.child_entered_tree.connect(func(_node):
 		update_scroll_container_visibility.call_deferred()
 	)
-	editors_download.child_exiting_tree.connect(func(_node):
+	editors_downloads.child_exiting_tree.connect(func(_node):
 		update_scroll_container_visibility.call_deferred()
 	)
 	update_scroll_container_visibility.call()
@@ -55,6 +58,15 @@ func _ready():
 	_open_downloads_button.tooltip_text = "Open Downloads Dir"
 	
 	_direct_link_button.icon = get_theme_icon("AssetLib", "EditorIcons")
+	_direct_link_button.pressed.connect(func():
+		var link_dialog = _remote_editor_direct_link_scene.instantiate()
+		add_child(link_dialog)
+		link_dialog.popup_centered()
+		link_dialog.link_confirmed.connect(func(link):
+			download_zip(link, "custom_editor.zip")
+		)
+	)
+
 
 func _detect_platform():
 	if OS.has_feature("windows"):
@@ -82,16 +94,21 @@ func _setup_tree():
 	tree.button_clicked.connect(func(item, col, id, mouse):
 		if not item.has_meta("file_name"): return
 		var file_name = item.get_meta("file_name")
-		var editor_download = _editor_download_scene.instantiate()
-		%EditorDownloads.add_child(editor_download)
-		editor_download.start(_restore_url(item), "user://downloads/", file_name)
-		editor_download.downloaded.connect(func(abs_path):
-			install_zip(
-				abs_path, 
-				file_name.replace(".zip", ""), 
-				guess_editor_name(file_name),
-				func(): editor_download.queue_free()
-			)
+		var url = _restore_url(item)
+		download_zip(file_name, url)
+	)
+
+
+func download_zip(url, file_name):
+	var editor_download = _editor_download_scene.instantiate()
+	%EditorDownloads.add_child(editor_download)
+	editor_download.start(url, "user://downloads/", file_name)
+	editor_download.downloaded.connect(func(abs_path):
+		install_zip(
+			abs_path, 
+			file_name.replace(".zip", ""), 
+			guess_editor_name(file_name),
+			func(): editor_download.queue_free()
 		)
 	)
 

@@ -47,7 +47,15 @@ func start(url, target_abs_dir, file_name):
 	if FileAccess.file_exists(target_abs_dir + file_name):
 		file_name = uuid.v4().substr(0, 8) + "-" + file_name
 	_download.download_file = target_abs_dir + file_name
-	_download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
+	var request_err = _download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
+	
+	if request_err:
+		_progress_bar.modulate = Color(0, 0, 0, 0)
+		if request_err == 31:
+			_status.text = "Invalid URL scheme."
+		else:
+			_status.text = "Something went wrong."
+		return
 	
 	_download.request_completed.connect(func(result: int, response_code: int, headers, body):
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
