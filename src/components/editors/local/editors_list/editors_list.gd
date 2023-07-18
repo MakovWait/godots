@@ -22,4 +22,16 @@ func _item_comparator(a, b):
 		return true
 	if b.favorite && !a.favorite:
 		return false
+	match _sort_option_button.selected:
+		1: return a.path < b.path
+		2: return a.tag_sort_string < b.tag_sort_string
+		_: return a.name < b.name
 	return a.name < b.name
+
+
+func _fill_sort_options(btn: OptionButton):
+	btn.add_item("Name")
+	btn.add_item("Path")
+	btn.add_item("Tags")
+	
+	btn.select(0)

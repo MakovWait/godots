@@ -111,7 +111,7 @@ class LocalEditor extends Object:
 		set(value): _section.set_value("favorite", value)
 	
 	var tags:
-		get: return _section.get_value("tags", [])
+		get: return Set.of(_section.get_value("tags", [])).values()
 		set(value): _section.set_value("tags", value)
 	
 	var is_valid:

@@ -21,6 +21,9 @@ const projects_ns = preload("res://src/services/projects.gd")
 
 var _get_actions_callback: Callable
 var _tags = []
+var _sort_data = {
+	'ref': self
+}
 
 
 func _ready() -> void:
@@ -40,13 +43,19 @@ func init(item: projects_ns.Project):
 	if item.is_missing:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
-	
+
 	item.internals_changed.connect(func():
 		_title_label.text = item.name
 		_editor_path_label.text = item.editor_name
 		_project_warning.visible = item.has_invalid_editor
 		_tag_container.set_tags(item.tags)
 		_tags = item.tags
+		
+		_sort_data.favorite = item.favorite
+		_sort_data.name = item.name
+		_sort_data.path = item.path
+		_sort_data.last_modified = item.last_modified
+		_sort_data.tag_sort_string = "".join(item.tags)
 	)
 
 	_project_warning.visible = item.has_invalid_editor
@@ -57,6 +66,12 @@ func init(item: projects_ns.Project):
 	_icon.texture = item.icon
 	_tag_container.set_tags(item.tags)
 	_tags = item.tags
+	
+	_sort_data.favorite = item.favorite
+	_sort_data.name = item.name
+	_sort_data.path = item.path
+	_sort_data.last_modified = item.last_modified
+	_sort_data.tag_sort_string = "".join(item.tags)
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
@@ -196,11 +211,7 @@ func apply_filter(filter):
 
 
 func get_sort_data():
-	return {
-		'ref': self,
-		'favorite': _favorite_button.button_pressed,
-		'name': _title_label.text
-	}
+	return _sort_data
 
 
 class RunButton extends Button:

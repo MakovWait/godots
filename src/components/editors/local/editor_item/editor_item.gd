@@ -17,6 +17,9 @@ const buttons = preload("res://src/extensions/buttons.gd")
 
 var _get_actions_callback: Callable
 var _tags = []
+var _sort_data = {
+	'ref': self
+}
 
 
 func _ready():
@@ -32,6 +35,7 @@ func init(item):
 	item.tags_edited.connect(func():
 		_tag_container.set_tags(item.tags)
 		_tags = item.tags
+		_sort_data.tag_sort_string = "".join(item.tags)
 	)
 	
 	_title_label.text = item.name
@@ -39,6 +43,11 @@ func init(item):
 	_favorite_button.button_pressed = item.favorite
 	_tag_container.set_tags(item.tags)
 	_tags = item.tags
+	
+	_sort_data.favorite = item.favorite
+	_sort_data.name = item.name
+	_sort_data.path = item.path
+	_sort_data.tag_sort_string = "".join(item.tags)
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
@@ -139,8 +148,4 @@ func apply_filter(filter):
 
 
 func get_sort_data():
-	return {
-		'ref': self,
-		'favorite': _favorite_button.button_pressed,
-		'name': _title_label.text
-	}
+	return _sort_data

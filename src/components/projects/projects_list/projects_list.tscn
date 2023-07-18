@@ -7,6 +7,3 @@
 [node name="ProjectsList" instance=ExtResource("1_85pab")]
 script = ExtResource("2_luch3")
 _item_scene = ExtResource("3_rbu5f")
-
-[node name="SearchBox" parent="." index="0"]
-placeholder_text = "Filter Projects"

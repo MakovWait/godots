@@ -111,6 +111,9 @@ class Project:
 		set(value): _external_project_info.tags = value
 		get: return _external_project_info.tags
 	
+	var last_modified:
+		get: return _external_project_info.last_modified
+	
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors
@@ -155,7 +158,7 @@ class ExternalProjectInfo extends RefCounted:
 	var name:
 		get: return _name
 
-	var last_modied:
+	var last_modified:
 		get: return _last_modified
 	
 	var is_loaded:
@@ -181,7 +184,7 @@ class ExternalProjectInfo extends RefCounted:
 					PackedStringArray(set.values())
 				)
 				cfg.save(_project_path)
-		get: return _tags
+		get: return Set.of(_tags).values()
 	
 	var _is_loaded = false
 	var _project_path
@@ -203,9 +206,10 @@ class ExternalProjectInfo extends RefCounted:
 		
 		_name = cfg.get_value("application", "config/name", "Missing Project")
 		_tags = cfg.get_value("application", "config/tags", [])
+		_last_modified = FileAccess.get_modified_time(_project_path)
 		_icon = _load_icon(cfg)
 		_is_missing = bool(err)
-
+		
 		_is_loaded = true
 		loaded.emit()
 	

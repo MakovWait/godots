@@ -5,16 +5,22 @@ signal item_selected(item)
 
 
 @export var _item_scene: PackedScene
+
 @onready var _items_container: VBoxContainer = %ItemsContainer
+@onready var _sort_option_button: OptionButton = %SortOptionButton
 
 
 func _ready():
 	_update_theme()
 	theme_changed.connect(_update_theme)
+	_fill_sort_options(_sort_option_button)
+	_sort_option_button.item_selected.connect(func(_arg):
+		sort_items()
+	)
 
 
 func _update_theme():
-	$SearchBox.right_icon = get_theme_icon("Search", "EditorIcons")
+	%SearchBox.right_icon = get_theme_icon("Search", "EditorIcons")
 	$ScrollContainer.add_theme_stylebox_override(
 		"panel",
 		get_theme_stylebox("search_panel", "ProjectManager")
@@ -38,7 +44,7 @@ func add(item_data):
 	if item_control.has_signal("tag_clicked"):
 		item_control.tag_clicked.connect(
 			func(tag): 
-				var search_box = $SearchBox
+				var search_box = %SearchBox
 				search_box.text = "tag:%s" % tag
 				search_box.text_changed.emit(search_box.text)
 				search_box.grab_focus()
@@ -60,6 +66,10 @@ func sort_items():
 
 
 func _item_comparator(a, b):
+	pass
+
+
+func _fill_sort_options(btn: OptionButton):
 	pass
 
 
