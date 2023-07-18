@@ -11,7 +11,6 @@ config_version=5
 [application]
 
 config/name="Godots"
-config/tags=PackedStringArray("tag2")
 run/main_scene="res://src/main/main.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 run/low_processor_mode=true
