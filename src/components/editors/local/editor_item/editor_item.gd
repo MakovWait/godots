@@ -3,6 +3,7 @@ extends HBoxListItem
 signal edited
 signal removed
 signal manage_tags_requested
+signal tag_clicked(tag)
 
 const buttons = preload("res://src/extensions/buttons.gd")
 
@@ -15,6 +16,12 @@ const buttons = preload("res://src/extensions/buttons.gd")
 @onready var _tag_container: HBoxContainer = %TagContainer
 
 var _get_actions_callback: Callable
+var _tags = []
+
+
+func _ready():
+	super._ready()
+	_tag_container.tag_clicked.connect(func(tag): tag_clicked.emit(tag))
 
 
 func init(item):
@@ -24,12 +31,14 @@ func init(item):
 	
 	item.tags_edited.connect(func():
 		_tag_container.set_tags(item.tags)
+		_tags = item.tags
 	)
 	
 	_title_label.text = item.name
 	_path_label.text = item.path
 	_favorite_button.button_pressed = item.favorite
 	_tag_container.set_tags(item.tags)
+	_tags = item.tags
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
@@ -124,7 +133,8 @@ func get_actions():
 func apply_filter(filter):
 	return filter.call({
 		'name': _title_label.text,
-		'path': _path_label.text
+		'path': _path_label.text,
+		'tags': _tags
 	})
 
 

@@ -3,6 +3,7 @@ extends HBoxListItem
 signal edited
 signal removed
 signal manage_tags_requested
+signal tag_clicked(tag)
 
 const buttons = preload("res://src/extensions/buttons.gd")
 const projects_ns = preload("res://src/services/projects.gd")
@@ -19,6 +20,7 @@ const projects_ns = preload("res://src/services/projects.gd")
 @onready var _tag_container: HBoxContainer = %TagContainer
 
 var _get_actions_callback: Callable
+var _tags = []
 
 
 func _ready() -> void:
@@ -26,6 +28,7 @@ func _ready() -> void:
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
 	_project_warning.tooltip_text = "Editor is missing"
+	_tag_container.tag_clicked.connect(func(tag): tag_clicked.emit(tag))
 
 
 func init(item: projects_ns.Project):
@@ -43,6 +46,7 @@ func init(item: projects_ns.Project):
 		_editor_path_label.text = item.editor_name
 		_project_warning.visible = item.has_invalid_editor
 		_tag_container.set_tags(item.tags)
+		_tags = item.tags
 	)
 
 	_project_warning.visible = item.has_invalid_editor
@@ -52,6 +56,7 @@ func init(item: projects_ns.Project):
 	_path_label.text = item.path
 	_icon.texture = item.icon
 	_tag_container.set_tags(item.tags)
+	_tags = item.tags
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
@@ -185,7 +190,8 @@ func get_actions():
 func apply_filter(filter):
 	return filter.call({
 		'name': _title_label.text,
-		'path': _path_label.text
+		'path': _path_label.text,
+		'tags': _tags
 	})
 
 

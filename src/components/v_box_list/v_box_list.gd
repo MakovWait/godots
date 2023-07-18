@@ -35,6 +35,14 @@ func add(item_data):
 	item_control.clicked.connect(
 		_on_item_clicked.bind(item_control)
 	)
+	if item_control.has_signal("tag_clicked"):
+		item_control.tag_clicked.connect(
+			func(tag): 
+				var search_box = $SearchBox
+				search_box.text = "tag:%s" % tag
+				search_box.text_changed.emit(search_box.text)
+				search_box.grab_focus()
+		)
 	_post_add(item_data, item_control)
 
 
@@ -68,10 +76,32 @@ func _on_item_clicked(item):
 
 
 func _on_search_box_text_changed(new_text: String) -> void:
+	var search_tag = ""
+	var search_term = ""
+	for part in new_text.split(" "):
+		if part.begins_with("tag:"):
+			var tag_parts = part.split(":")
+			if len(tag_parts) > 1:
+				search_tag = part.split(":")[1]
+		else:
+			search_term += part
+
 	for item in _items_container.get_children():
 		if item.has_method("apply_filter"):
 			var should_be_visible = item.apply_filter(func(data): 
-				if len(new_text) == 0: return true
-				return new_text.is_subsequence_ofn(data['name'])
+				var search_path = data['path']
+				if not search_term.contains('/'):
+					search_path = search_path.get_file()
+				var check_path = search_path.findn(search_term) != -1
+				var check_name = data['name'].findn(search_term) != -1
+				var check_term = search_term.is_empty() or check_path or check_name
+				if not search_tag.is_empty():
+					return check_term and _has_tag(data, search_tag)
+				else:
+					return check_term
 			)
 			item.visible = should_be_visible
+
+
+func _has_tag(tags_source, tag):
+	return Array(tags_source.tags).find(tag) > -1
