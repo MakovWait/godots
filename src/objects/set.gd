@@ -8,8 +8,15 @@ func append(value):
 	_set[value] = value
 
 
+func append_array(array):
+	for el in array:
+		append(el)
+
+
 func values():
-	return _set.values()
+	var values = _set.values().duplicate()
+	values.sort()
+	return values
 
 
 static func of(array) -> Set:

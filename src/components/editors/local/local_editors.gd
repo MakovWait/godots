@@ -73,9 +73,12 @@ func _on_editors_list_item_edited(item_data) -> void:
 
 
 func _on_editors_list_item_manage_tags_requested(item_data) -> void:
+	var all_tags = Set.new()
+	all_tags.append_array(_local_editors.get_all_tags())
+	all_tags.append_array(Config.DEFAULT_EDITOR_TAGS)
 	manage_tags_requested.emit(
 		item_data.tags,
-		_local_editors.get_all_tags(),
+		all_tags.values(),
 		func(new_tags):
 			item_data.tags = new_tags
 			item_data.emit_tags_edited()

@@ -59,9 +59,12 @@ func _on_projects_list_item_edited(item_data) -> void:
 
 
 func _on_projects_list_item_manage_tags_requested(item_data) -> void:
+	var all_tags = Set.new()
+	all_tags.append_array(_projects.get_all_tags())
+	all_tags.append_array(Config.DEFAULT_PROJECT_TAGS)
 	manage_tags_requested.emit(
 		item_data.tags,
-		_projects.get_all_tags(),
+		all_tags.values(),
 		func(new_tags):
 			item_data.tags = new_tags
 			_on_projects_list_item_edited(item_data)
