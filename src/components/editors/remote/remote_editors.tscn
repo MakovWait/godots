@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dxnoecc3ruw3t"]
+[gd_scene load_steps=5 format=3 uid="uid://dxnoecc3ruw3t"]
 
 [ext_resource type="Script" path="res://src/components/editors/remote/remote_editors.gd" id="1_80m0a"]
 [ext_resource type="PackedScene" uid="uid://c5gkkg0g1tofs" path="res://src/components/editors/remote/remote_editor_download/remote_editor_download.tscn" id="2_5cbw2"]
 [ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.tscn" id="3_wvg3b"]
+[ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="4_s82j0"]
 
 [node name="RemoteEditors" type="Control"]
 layout_mode = 3
@@ -23,17 +24,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Tree" type="Tree" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Tree" type="Tree" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 hide_root = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 vertical_scroll_mode = 0
 
-[node name="EditorDownloads" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="EditorDownloads" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="ActionsSidebar" parent="VBoxContainer/HBoxContainer" instance=ExtResource("4_s82j0")]
+layout_mode = 2
+
+[node name="OpenDownloadsButton" type="Button" parent="VBoxContainer/HBoxContainer/ActionsSidebar/TabActions" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Downloads"
+
+[node name="DirectLinkButton" type="Button" parent="VBoxContainer/HBoxContainer/ActionsSidebar/TabActions" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Direct Link"
+
+[node name="HSeparator" parent="VBoxContainer/HBoxContainer/ActionsSidebar" index="1"]
+visible = false
+
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+
+[editable path="VBoxContainer/HBoxContainer/ActionsSidebar"]

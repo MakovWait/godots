@@ -23,7 +23,9 @@ const platforms = {
 @export var _editor_download_scene : PackedScene
 @export var _editor_install_scene : PackedScene
 
-@onready var tree: Tree = $VBoxContainer/Tree
+@onready var tree: Tree = %Tree
+@onready var _open_downloads_button: Button = %OpenDownloadsButton
+@onready var _direct_link_button: Button = %DirectLinkButton
 
 var _current_platform
 var _root_loaded = false
@@ -33,8 +35,26 @@ func _ready():
 	_detect_platform()
 	_setup_tree()
 	
-	$VBoxContainer/ScrollContainer.add_theme_stylebox_override("panel", get_theme_stylebox("panel", "Tree"))
-
+	var scroll_container = %ScrollContainer
+	var editors_download = %EditorDownloads
+	var update_scroll_container_visibility = func():
+		scroll_container.visible = editors_download.get_child_count() > 0
+	scroll_container.add_theme_stylebox_override("panel", get_theme_stylebox("panel", "Tree"))
+	editors_download.child_entered_tree.connect(func(_node):
+		update_scroll_container_visibility.call_deferred()
+	)
+	editors_download.child_exiting_tree.connect(func(_node):
+		update_scroll_container_visibility.call_deferred()
+	)
+	update_scroll_container_visibility.call()
+	
+	_open_downloads_button.pressed.connect(func():
+		OS.shell_show_in_file_manager(ProjectSettings.globalize_path("user://downloads"))
+	)
+	_open_downloads_button.icon = get_theme_icon("Load", "EditorIcons")
+	_open_downloads_button.tooltip_text = "Open Downloads Dir"
+	
+	_direct_link_button.icon = get_theme_icon("AssetLib", "EditorIcons")
 
 func _detect_platform():
 	if OS.has_feature("windows"):
