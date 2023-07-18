@@ -34,7 +34,7 @@ func init(editors: Editors.LocalEditors):
 	_editors_list.refresh(_local_editors.all())
 	_editors_list.sort_items()
 	
-	_orphan_editors_explorer.init(editors, "user://versions")
+	_orphan_editors_explorer.init(editors, Config.VERSIONS_PATH)
 	_orphan_editors_button.pressed.connect(func():
 		_orphan_editors_explorer.before_popup()
 		_orphan_editors_explorer.popup_centered_ratio(0.4)

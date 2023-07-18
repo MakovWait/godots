@@ -52,7 +52,7 @@ func _ready():
 	update_scroll_container_visibility.call()
 	
 	_open_downloads_button.pressed.connect(func():
-		OS.shell_show_in_file_manager(ProjectSettings.globalize_path("user://downloads"))
+		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(Config.DOWNLOADS_PATH))
 	)
 	_open_downloads_button.icon = get_theme_icon("Load", "EditorIcons")
 	_open_downloads_button.tooltip_text = "Open Downloads Dir"
@@ -102,11 +102,11 @@ func _setup_tree():
 func download_zip(url, file_name):
 	var editor_download = _editor_download_scene.instantiate()
 	%EditorDownloads.add_child(editor_download)
-	editor_download.start(url, "user://downloads/", file_name)
+	editor_download.start(url, Config.DOWNLOADS_PATH + "/", file_name)
 	editor_download.downloaded.connect(func(abs_path):
 		install_zip(
 			abs_path, 
-			file_name.replace(".zip", ""), 
+			file_name.replace(".zip", "").replace(".", "_"), 
 			guess_editor_name(file_name),
 			func(): editor_download.queue_free()
 		)
@@ -137,7 +137,7 @@ func install_zip(zip_abs_path, root_unzip_folder_name, possible_editor_name, on_
 
 
 func _unzip_downloaded(downloaded_abs_path, root_unzip_folder_name):
-	var zip_content_dir = "user://versions/%s" % root_unzip_folder_name
+	var zip_content_dir = "%s/%s" % [Config.VERSIONS_PATH, root_unzip_folder_name]
 	if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(zip_content_dir)):
 		zip_content_dir += "-%s" % uuid.v4().substr(0, 8)
 	zip_content_dir += "/"
