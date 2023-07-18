@@ -95,7 +95,7 @@ func _setup_tree():
 		if not item.has_meta("file_name"): return
 		var file_name = item.get_meta("file_name")
 		var url = _restore_url(item)
-		download_zip(file_name, url)
+		download_zip(url, file_name)
 	)
 
 
