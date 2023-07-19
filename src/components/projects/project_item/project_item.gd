@@ -56,7 +56,7 @@ func init(item: projects_ns.Project):
 		var edit_btn = buttons.simple(
 			"Edit", 
 			get_theme_icon("Edit", "EditorIcons"),
-			_on_run_with_editor.bind(item, "-e")
+			_on_run_with_editor.bind(item, "-e", "edit", "Edit")
 		)
 		edit_btn.set_script(RunButton)
 		edit_btn.init(item)
@@ -64,7 +64,7 @@ func init(item: projects_ns.Project):
 		var run_btn = buttons.simple(
 			"Run", 
 			get_theme_icon("Play", "EditorIcons"),
-			_on_run_with_editor.bind(item, "")
+			_on_run_with_editor.bind(item, "", "run", "Run")
 		)
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
@@ -162,7 +162,45 @@ func _on_rebind_editor(item):
 	bind_dialog.popup_centered()
 
 
-func _on_run_with_editor(item, editor_flag):
+func _on_run_with_editor(item, editor_flag, action_name, ok_button_text):
+	if not item.show_edit_warning:
+		_run_with_editor(item, editor_flag)
+		return
+	
+	var confirmation_dialog = ConfirmationDialogAutoFree.new()
+	confirmation_dialog.ok_button_text = ok_button_text
+	confirmation_dialog.get_label().hide()
+	
+	var label = Label.new()
+	label.text = "Are you sure to %s the project with the given editor?" % action_name
+	
+	var editor_name = Label.new()
+	editor_name.text = item.editor_name
+	editor_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	
+	var checkbox = CheckBox.new()
+	checkbox.text = "do not show again for this project"
+	
+	var vb = VBoxContainer.new()
+	vb.add_child(label)
+	vb.add_child(editor_name)
+	vb.add_child(checkbox)
+	vb.add_spacer(false)
+	
+	confirmation_dialog.add_child(vb)
+	
+	confirmation_dialog.confirmed.connect(func():
+		var before = item.show_edit_warning
+		item.show_edit_warning = not checkbox.button_pressed
+		if item.show_edit_warning != before:
+			edited.emit()
+		_run_with_editor(item, editor_flag)
+	)
+	add_child(confirmation_dialog)
+	confirmation_dialog.popup_centered()
+	
+
+func _run_with_editor(item, editor_flag):
 	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
 		OS.execute(

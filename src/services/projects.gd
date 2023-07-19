@@ -72,6 +72,10 @@ class Project:
 	signal internals_changed
 	signal loaded
 	
+	var show_edit_warning:
+		get: return _section.get_value("show_edit_warning", true)
+		set(value): _section.set_value("show_edit_warning", value)
+	
 	var path:
 		get: return _section.name
 	
@@ -90,7 +94,9 @@ class Project:
 	
 	var editor_path:
 		get: return _section.get_value("editor_path", "")
-		set(value): _section.set_value("editor_path", value)
+		set(value): 
+			show_edit_warning = true
+			_section.set_value("editor_path", value)
 	
 	var has_invalid_editor:
 		get: return not _local_editors.editor_is_valid(editor_path)
