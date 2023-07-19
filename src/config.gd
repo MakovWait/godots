@@ -13,7 +13,7 @@ var AGENT_HEADER:
 	get: return "User-Agent: %s" % AGENT
 
 var DEFAULT_EDITOR_TAGS:
-	get: return ["dev", "rc", "alpha", "4.x", "3.x", "stable", "mono"]
+	get: return get_default_editor_tags(["dev", "rc", "alpha", "4.x", "3.x", "stable", "mono"])
 
 var DEFAULT_PROJECT_TAGS:
 	get: return []
@@ -53,3 +53,7 @@ func set_main_current_tab(tab):
 
 func get_main_current_tab(default=0):
 	return _cfg.get_value("main", "tab", default)
+
+
+func get_default_editor_tags(default):
+	return _cfg.get_value("app", "default_editor_tags", default)
