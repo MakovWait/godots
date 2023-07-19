@@ -44,3 +44,12 @@ func get_remote_editors_checkbox_checked(key, default):
 func set_remote_editors_checkbox_checked(key, value):
 	_cfg.set_value("remote_editor_checkbox", key, value)
 	_cfg.save(APP_CONFIG_PATH)
+
+
+func set_main_current_tab(tab):
+	_cfg.set_value("main", "tab", tab)
+	_cfg.save(APP_CONFIG_PATH)
+
+
+func get_main_current_tab(default=0):
+	return _cfg.get_value("main", "tab", default)

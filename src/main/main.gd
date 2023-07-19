@@ -10,6 +10,7 @@ const theme_source = preload("res://theme/theme.gd")
 
 @onready var _gui_base: Panel = get_node("%GuiBase")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
+@onready var _tab_container: TabContainer = %TabContainer
 
 
 func _ready():
@@ -62,9 +63,13 @@ func _ready():
 		_make_main_button("Remote Editors", get_theme_icon("Filesystem", "EditorIcons")),
 	)
 
+	_tab_container.tab_changed.connect(func(tab):
+		Config.set_main_current_tab(tab)
+	)
+	_tab_container.current_tab = Config.get_main_current_tab()
+
 	_local_editors.editor_download_pressed.connect(func():
-		var tab_container = $GuiBase/MainVBox/Content/TabContainer
-		tab_container.current_tab = tab_container.get_tab_idx_from_control(
+		_tab_container.current_tab = _tab_container.get_tab_idx_from_control(
 			$"GuiBase/MainVBox/Content/TabContainer/Remote Editors"
 		)
 	)
@@ -106,7 +111,21 @@ func _enter_tree():
 	
 	var window = get_window()
 	window.min_size = Vector2(520, 350) * Config.EDSCALE
-	window.size = window.min_size
+	
+	var scale_factor = max(1, Config.EDSCALE * 0.75)
+	if scale_factor > 1:
+		var window_size = DisplayServer.window_get_size()
+		var screen_rect = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
+		
+		window_size *= scale_factor
+		
+		DisplayServer.window_set_size(window_size)
+		if screen_rect.size != Vector2i():
+			var window_position = Vector2i(
+				screen_rect.position.x + (screen_rect.size.x - window_size.x) / 2,
+				screen_rect.position.y + (screen_rect.size.y - window_size.y) / 2
+			)
+			DisplayServer.window_set_position(window_position)
 
 
 func _popup_manage_tags(item_tags, all_tags, on_confirm):

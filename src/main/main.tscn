@@ -45,6 +45,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="TabContainer" type="TabContainer" parent="GuiBase/MainVBox/Content"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
