@@ -74,14 +74,22 @@ func init(item: projects_ns.Project):
 	_sort_data.tag_sort_string = "".join(item.tags)
 	
 	_get_actions_callback = func():
-		var run_btn = buttons.simple(
+		var edit_btn = buttons.simple(
 			"Edit", 
 			get_theme_icon("Edit", "EditorIcons"),
-			_on_run_with_editor.bind(item)
+			_on_run_with_editor.bind(item, "-e")
+		)
+		edit_btn.set_script(RunButton)
+		edit_btn.init(item)
+
+		var run_btn = buttons.simple(
+			"Run", 
+			get_theme_icon("Play", "EditorIcons"),
+			_on_run_with_editor.bind(item, "")
 		)
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
-		
+
 		var bind_editor_btn = buttons.simple(
 			"Bind Editor", 
 			get_theme_icon("GodotMonochrome", "EditorIcons"),
@@ -104,10 +112,10 @@ func init(item: projects_ns.Project):
 		
 #		var actions = []
 #		if not item.is_missing:
-#			actions.append(run_btn)
+#			actions.append(edit_btn)
 #			actions.append(bind_editor_btn)
 #		actions.append(remove_btn)
-		return [run_btn, bind_editor_btn, manage_tags_btn, remove_btn]
+		return [edit_btn, run_btn, bind_editor_btn, manage_tags_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -158,7 +166,7 @@ func _on_rebind_editor(item):
 	bind_dialog.popup_centered()
 
 
-func _on_run_with_editor(item):
+func _on_run_with_editor(item, editor_flag):
 	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
 		OS.execute(
@@ -166,7 +174,7 @@ func _on_run_with_editor(item):
 			[
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				"-e"
+				editor_flag
 			], output, true
 		)
 	elif OS.has_feature("macos"):
@@ -177,7 +185,7 @@ func _on_run_with_editor(item):
 				"--args",
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				"-e"
+				editor_flag
 			], output, true
 		)
 	Output.push_array(output)
