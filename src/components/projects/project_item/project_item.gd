@@ -35,45 +35,24 @@ func _ready() -> void:
 
 
 func init(item: projects_ns.Project):
-	item.load()
-	
-	if not item.is_loaded:
-		await item.loaded
-	
 	if item.is_missing:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
 
-	item.internals_changed.connect(func():
-		_title_label.text = item.name
-		_editor_path_label.text = item.editor_name
-		_project_warning.visible = item.has_invalid_editor
-		_tag_container.set_tags(item.tags)
-		_tags = item.tags
-		
-		_sort_data.favorite = item.favorite
-		_sort_data.name = item.name
-		_sort_data.path = item.path
-		_sort_data.last_modified = item.last_modified
-		_sort_data.tag_sort_string = "".join(item.tags)
+	item.loaded.connect(func():
+		_fill_data(item)
 	)
 
-	_project_warning.visible = item.has_invalid_editor
-	_favorite_button.button_pressed = item.favorite
-	_title_label.text = item.name
-	_editor_path_label.text = item.editor_name
-	_path_label.text = item.path
-	_icon.texture = item.icon
-	_tag_container.set_tags(item.tags)
-	_tags = item.tags
-	
-	_sort_data.favorite = item.favorite
-	_sort_data.name = item.name
-	_sort_data.path = item.path
-	_sort_data.last_modified = item.last_modified
-	_sort_data.tag_sort_string = "".join(item.tags)
+	item.internals_changed.connect(func():
+		_fill_data(item)
+	)
+
+	_fill_data(item)
 	
 	_get_actions_callback = func():
+		if not item.is_loaded:
+			return []
+
 		var edit_btn = buttons.simple(
 			"Edit", 
 			get_theme_icon("Edit", "EditorIcons"),
@@ -124,6 +103,23 @@ func init(item: projects_ns.Project):
 		item.favorite = is_favorite
 		edited.emit()
 	)
+
+
+func _fill_data(item):
+	_project_warning.visible = item.has_invalid_editor
+	_favorite_button.button_pressed = item.favorite
+	_title_label.text = item.name
+	_editor_path_label.text = item.editor_name
+	_path_label.text = item.path
+	_icon.texture = item.icon
+	_tag_container.set_tags(item.tags)
+	_tags = item.tags
+	
+	_sort_data.favorite = item.favorite
+	_sort_data.name = item.name
+	_sort_data.path = item.path
+	_sort_data.last_modified = item.last_modified
+	_sort_data.tag_sort_string = "".join(item.tags)
 
 
 func _on_rebind_editor(item):

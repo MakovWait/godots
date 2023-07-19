@@ -10,6 +10,7 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _import_project_dialog: ConfirmationDialog = $ImportProjectDialog
 
 var _projects: Projects.Projects
+var _load_projects_queue = []
 
 
 func init(projects: Projects.Projects):
@@ -25,12 +26,20 @@ func init(projects: Projects.Projects):
 			project.emit_internals_changed()
 		else:
 			project = _projects.add(project_path, editor_path)
+			project.load()
 			_projects_list.add(project)
 		_projects.save()
 		_projects_list.sort_items()
 	)
 	
 	_projects_list.refresh(_projects.all())
+	_load_projects()
+
+
+func _load_projects():
+	for project in _projects.all():
+		project.load()
+		await get_tree().process_frame
 	_projects_list.sort_items()
 
 

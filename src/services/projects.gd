@@ -190,7 +190,7 @@ class ExternalProjectInfo extends RefCounted:
 	var _project_path
 	var _default_icon
 	var _icon
-	var _name
+	var _name = "Loading..."
 	var _last_modified
 	var _is_missing = false
 	var _tags = []
@@ -198,7 +198,7 @@ class ExternalProjectInfo extends RefCounted:
 	func _init(project_path, default_icon):
 		_project_path = project_path
 		_default_icon = default_icon
-		icon = default_icon
+		_icon = default_icon
 	
 	func load():
 		var cfg = ConfigFile.new()
