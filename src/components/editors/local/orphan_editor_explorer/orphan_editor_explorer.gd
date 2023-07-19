@@ -55,6 +55,8 @@ func _get_orphan_dirs():
 	var is_orphan = func(dir):
 		return len(editor_dirs.filter(func(x): return x.begins_with(dir))) == 0
 	for dir in all_dirs:
+		if (dir.ends_with(".app") or dir.ends_with(".app/")) and OS.has_feature("macos"):
+			continue
 		var abs_dir_path = ProjectSettings.globalize_path(_versions_abs_path.path_join(dir))
 		if is_orphan.call(_map_path(abs_dir_path) + "/"):
 			orphan_dirs.append(abs_dir_path)

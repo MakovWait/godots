@@ -59,8 +59,17 @@ func _on_editors_list_item_selected(item) -> void:
 	_sidebar.refresh_actions(item.get_actions())
 
 
-func _on_editors_list_item_removed(item_data: Editors.LocalEditor) -> void:
-#	dir.remove_recursive(item_data.path.get_base_dir())
+func _on_editors_list_item_removed(item_data: Editors.LocalEditor, remove_dir: bool) -> void:
+	if remove_dir:
+		var base_dir = ProjectSettings.globalize_path(item_data.path.get_base_dir())
+		var versions_dir = ProjectSettings.globalize_path(Config.VERSIONS_PATH)
+		if not OS.has_feature("linux"):
+			base_dir = base_dir.to_lower()
+			versions_dir = versions_dir.to_lower()
+		if base_dir != versions_dir and base_dir.begins_with(versions_dir):
+			dir.remove_recursive(base_dir)
+		else:
+			Output.push("skipping removing path {%s}" % base_dir)
 	if _local_editors.has(item_data.path):
 		_local_editors.erase(item_data.path)
 		_local_editors.save()

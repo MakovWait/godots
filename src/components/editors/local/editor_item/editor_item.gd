@@ -1,7 +1,7 @@
 extends HBoxListItem
 
 signal edited
-signal removed
+signal removed(remove_dir: bool)
 signal manage_tags_requested
 signal tag_clicked(tag)
 
@@ -123,10 +123,24 @@ func _on_rename(item):
 func _on_remove():
 	var confirmation_dialog = ConfirmationDialogAutoFree.new()
 	confirmation_dialog.ok_button_text = "Remove"
-	confirmation_dialog.dialog_text = "Are you sure to remove the editor from the file system?"
+	confirmation_dialog.get_label().hide()
+	
+	var label = Label.new()
+	label.text = "Are you sure to remove the editor from the list?"
+	
+	var checkbox = CheckBox.new()
+	checkbox.text = "remove also from the file system"
+	
+	var vb = VBoxContainer.new()
+	vb.add_child(label)
+	vb.add_child(checkbox)
+	vb.add_spacer(false)
+	
+	confirmation_dialog.add_child(vb)
+	
 	confirmation_dialog.confirmed.connect(func():
 		queue_free()
-		removed.emit()
+		removed.emit(checkbox.button_pressed)
 	)
 	add_child(confirmation_dialog)
 	confirmation_dialog.popup_centered()
