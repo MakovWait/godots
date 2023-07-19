@@ -1,6 +1,6 @@
 extends Node
 
-var EDSCALE = 2
+var EDSCALE = 1
 var AGENT = ""
 const VERSION = "0.0 dev"
 const APP_CONFIG_PATH = "user://godots.cfg"
@@ -16,7 +16,7 @@ var DEFAULT_EDITOR_TAGS:
 	get: return get_default_editor_tags(["dev", "rc", "alpha", "4.x", "3.x", "stable", "mono"])
 
 var DEFAULT_PROJECT_TAGS:
-	get: return []
+	get: return get_default_project_tags([])
 
 var _cfg = ConfigFile.new()
 
@@ -41,26 +41,26 @@ func _enter_tree() -> void:
 
 #https://github.com/godotengine/godot/blob/master/editor/editor_settings.cpp#L1400
 func _get_auto_display_scale():
-	if OS.has_feature("macos"):
-		return DisplayServer.screen_get_max_scale()
-	else:
-		var screen = DisplayServer.window_get_current_screen()
-		if DisplayServer.screen_get_size(screen) == Vector2i():
-			return 1.0
+#	if OS.has_feature("macos"):
+#		return DisplayServer.screen_get_max_scale()
+#	else:
+	var screen = DisplayServer.window_get_current_screen()
+	if DisplayServer.screen_get_size(screen) == Vector2i():
+		return 1.0
 
-		# Use the smallest dimension to use a correct display scale on portrait displays.
-		var smallest_dimension = min(DisplayServer.screen_get_size(screen).x, DisplayServer.screen_get_size(screen).y);
-		if DisplayServer.screen_get_dpi(screen) >= 192 and smallest_dimension >= 1400:
-			# hiDPI display.
-			return 2.0
-		elif smallest_dimension >= 1700:
-			# Likely a hiDPI display, but we aren't certain due to the returned DPI.
-			# Use an intermediate scale to handle this situation.
-			return 1.5
-		elif smallest_dimension <= 800:
-			# Small loDPI display. Use a smaller display scale so that editor elements fit more easily.
-			# Icons won't look great, but this is better than having editor elements overflow from its window.
-			return 0.75
+	# Use the smallest dimension to use a correct display scale on portrait displays.
+	var smallest_dimension = min(DisplayServer.screen_get_size(screen).x, DisplayServer.screen_get_size(screen).y);
+	if DisplayServer.screen_get_dpi(screen) >= 192 and smallest_dimension >= 1400:
+		# hiDPI display.
+		return 2.0
+	elif smallest_dimension >= 1700:
+		# Likely a hiDPI display, but we aren't certain due to the returned DPI.
+		# Use an intermediate scale to handle this situation.
+		return 1.5
+	elif smallest_dimension <= 800:
+		# Small loDPI display. Use a smaller display scale so that editor elements fit more easily.
+		# Icons won't look great, but this is better than having editor elements overflow from its window.
+		return 0.75
 	return 1.0
 
 
@@ -84,3 +84,7 @@ func get_main_current_tab(default=0):
 
 func get_default_editor_tags(default):
 	return _cfg.get_value("app", "default_editor_tags", default)
+
+
+func get_default_project_tags(default):
+	return _cfg.get_value("app", "default_project_tags", default)
