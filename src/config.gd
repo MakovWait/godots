@@ -35,6 +35,33 @@ func _ready():
 func _enter_tree() -> void:
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DOWNLOADS_PATH))
+	
+	EDSCALE = _get_auto_display_scale()
+
+
+#https://github.com/godotengine/godot/blob/master/editor/editor_settings.cpp#L1400
+func _get_auto_display_scale():
+	if OS.has_feature("macos"):
+		return DisplayServer.screen_get_max_scale()
+	else:
+		var screen = DisplayServer.window_get_current_screen()
+		if DisplayServer.screen_get_size(screen) == Vector2i():
+			return 1.0
+
+		# Use the smallest dimension to use a correct display scale on portrait displays.
+		var smallest_dimension = min(DisplayServer.screen_get_size(screen).x, DisplayServer.screen_get_size(screen).y);
+		if DisplayServer.screen_get_dpi(screen) >= 192 and smallest_dimension >= 1400:
+			# hiDPI display.
+			return 2.0
+		elif smallest_dimension >= 1700:
+			# Likely a hiDPI display, but we aren't certain due to the returned DPI.
+			# Use an intermediate scale to handle this situation.
+			return 1.5
+		elif smallest_dimension <= 800:
+			# Small loDPI display. Use a smaller display scale so that editor elements fit more easily.
+			# Icons won't look great, but this is better than having editor elements overflow from its window.
+			return 0.75
+	return 1.0
 
 
 func get_remote_editors_checkbox_checked(key, default):
