@@ -11,6 +11,7 @@ const theme_source = preload("res://theme/theme.gd")
 @onready var _gui_base: Panel = get_node("%GuiBase")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
 @onready var _tab_container: TabContainer = %TabContainer
+@onready var _version_button: LinkButton = %VersionButton
 
 
 func _ready():
@@ -74,6 +75,11 @@ func _ready():
 		)
 	)
 
+	_version_button.text = "v%s" % Config.VERSION
+	_version_button.self_modulate = Color(1, 1, 1, 0.6)
+	_version_button.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
+	_version_button.tooltip_text = "Click to star it on GitHub"
+	
 	var local_editors = editors.LocalEditors.new(
 		Config.EDITORS_CONFIG_PATH
 	)

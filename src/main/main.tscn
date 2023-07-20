@@ -65,5 +65,30 @@ size_flags_vertical = 3
 visible = false
 layout_mode = 2
 
+[node name="SettingsHBoxContainer" type="HBoxContainer" parent="GuiBase/MainVBox/Content"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VersionButton" type="LinkButton" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.0.dev"
+uri = "https://github.com/MakovWait/godots"
+
+[node name="HSpacer" type="Control" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer"]
+layout_mode = 2
+
 [node name="ManageTags" parent="." instance=ExtResource("6_xaluk")]
 visible = false
