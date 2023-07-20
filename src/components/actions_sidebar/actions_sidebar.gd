@@ -3,6 +3,7 @@ extends VBoxContainer
 
 @onready var _item_actions: VBoxContainer = $ItemActions
 @onready var _tip_label: Label = $Spacer/TipLabel
+@onready var _h_separator: HSeparator = $HSeparator
 
 
 func _ready() -> void:
@@ -27,6 +28,7 @@ func _clear_actions():
 
 func _handle_actions_changed():
 	_tip_label.visible = _item_actions.get_child_count() == 0
+	_h_separator.visible = _item_actions.get_child_count() > 0
 
 
 func _enter_tree() -> void:
