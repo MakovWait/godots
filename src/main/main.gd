@@ -12,6 +12,7 @@ const theme_source = preload("res://theme/theme.gd")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
 @onready var _tab_container: TabContainer = %TabContainer
 @onready var _version_button: LinkButton = %VersionButton
+@onready var _auto_close_check_button: CheckButton = %AutoCloseCheckButton
 
 
 func _ready():
@@ -79,6 +80,13 @@ func _ready():
 	_version_button.self_modulate = Color(1, 1, 1, 0.6)
 	_version_button.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
 	_version_button.tooltip_text = "Click to star it on GitHub"
+	
+	_auto_close_check_button.button_pressed = Config.get_auto_close()
+	_auto_close_check_button.tooltip_text = "Close on launch"
+	_auto_close_check_button.self_modulate = Color(1, 1, 1, 0.6)
+	_auto_close_check_button.toggled.connect(func(toggled):
+		Config.set_auto_close(toggled)
+	)
 	
 	var local_editors = editors.LocalEditors.new(
 		Config.EDITORS_CONFIG_PATH

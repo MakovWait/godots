@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 Config="*res://src/config.gd"
 Output="*res://src/output.gd"
+AutoClose="*res://src/auto_close.gd"
 
 [display]
 

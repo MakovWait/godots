@@ -88,3 +88,12 @@ func get_default_editor_tags(default):
 
 func get_default_project_tags(default):
 	return _cfg.get_value("app", "default_project_tags", default)
+
+
+func set_auto_close(value):
+	_cfg.set_value("app", "auto_close", value)
+	_cfg.save(APP_CONFIG_PATH)
+
+
+func get_auto_close():
+	return _cfg.get_value("app", "auto_close", false)

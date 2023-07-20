@@ -56,7 +56,7 @@ func init(item: projects_ns.Project):
 		var edit_btn = buttons.simple(
 			"Edit", 
 			get_theme_icon("Edit", "EditorIcons"),
-			_on_run_with_editor.bind(item, "-e", "edit", "Edit")
+			_on_run_with_editor.bind(item, "-e", "edit", "Edit", true)
 		)
 		edit_btn.set_script(RunButton)
 		edit_btn.init(item)
@@ -64,7 +64,7 @@ func init(item: projects_ns.Project):
 		var run_btn = buttons.simple(
 			"Run", 
 			get_theme_icon("Play", "EditorIcons"),
-			_on_run_with_editor.bind(item, "", "run", "Run")
+			_on_run_with_editor.bind(item, "", "run", "Run", false)
 		)
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
@@ -162,9 +162,9 @@ func _on_rebind_editor(item):
 	bind_dialog.popup_centered()
 
 
-func _on_run_with_editor(item, editor_flag, action_name, ok_button_text):
+func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_close):
 	if not item.show_edit_warning:
-		_run_with_editor(item, editor_flag)
+		_run_with_editor(item, editor_flag, auto_close)
 		return
 	
 	var confirmation_dialog = ConfirmationDialogAutoFree.new()
@@ -194,13 +194,13 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text):
 		item.show_edit_warning = not checkbox.button_pressed
 		if item.show_edit_warning != before:
 			edited.emit()
-		_run_with_editor(item, editor_flag)
+		_run_with_editor(item, editor_flag, auto_close)
 	)
 	add_child(confirmation_dialog)
 	confirmation_dialog.popup_centered()
 	
 
-func _run_with_editor(item, editor_flag):
+func _run_with_editor(item, editor_flag, auto_close):
 	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
 		OS.execute(
@@ -224,6 +224,8 @@ func _run_with_editor(item, editor_flag):
 			], output, true
 		)
 	Output.push_array(output)
+	if auto_close:
+		AutoClose.close_if_should()
 
 
 func _on_remove():

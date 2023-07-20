@@ -106,6 +106,7 @@ func _on_run_editor(item):
 			output, true
 		)
 	Output.push_array(output)
+	AutoClose.close_if_should()
 
 
 func _on_rename(item):
