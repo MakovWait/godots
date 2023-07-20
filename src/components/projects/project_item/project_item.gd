@@ -216,6 +216,7 @@ func _run_with_editor(item, editor_flag):
 			"open", 
 			[
 				ProjectSettings.globalize_path(item.editor_path),
+				"-n",
 				"--args",
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),

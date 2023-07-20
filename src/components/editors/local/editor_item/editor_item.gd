@@ -102,7 +102,7 @@ func _on_run_editor(item):
 	elif OS.has_feature("macos"):
 		OS.execute(
 			"open", 
-			[ProjectSettings.globalize_path(item.path)],
+			[ProjectSettings.globalize_path(item.path), "-n"],
 			output, true
 		)
 	Output.push_array(output)
