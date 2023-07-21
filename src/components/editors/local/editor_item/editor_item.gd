@@ -86,6 +86,7 @@ func init(item):
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
 	)
 	_favorite_button.toggled.connect(func(is_favorite):
+		_sort_data.favorite = is_favorite
 		item.favorite = is_favorite
 		edited.emit()
 	)
