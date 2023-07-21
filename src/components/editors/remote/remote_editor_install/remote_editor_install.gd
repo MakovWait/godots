@@ -16,6 +16,8 @@ var _selected_file_source
 
 func _ready():
 	min_size = Vector2(300, 0) * Config.EDSCALE
+	if OS.has_feature("macos"):
+		_select_exec_file_tree.custom_minimum_size = Vector2(0, 300) * Config.EDSCALE
 	_browse_exec_file_button.pressed.connect(func():
 		_file_dialog.popup_centered_ratio(0.5)
 	)
