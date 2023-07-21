@@ -203,13 +203,14 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 func _run_with_editor(item, editor_flag, auto_close):
 	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
-		OS.execute(
+		OS.create_process(
 			ProjectSettings.globalize_path(item.editor_path),
 			[
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
 				editor_flag
-			], output, true
+			], 
+#			output, true
 		)
 	elif OS.has_feature("macos"):
 		OS.execute(

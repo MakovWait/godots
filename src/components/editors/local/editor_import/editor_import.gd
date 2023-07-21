@@ -11,11 +11,12 @@ signal imported(editor_name, editor_path)
 func _ready() -> void:
 #	super._ready()
 	
+	min_size = Vector2(300, 0) * Config.EDSCALE
 	confirmed.connect(func(): 
 		imported.emit(_name_edit.text, _path_edit.text)
 	)
 	_browse_button.pressed.connect(func():
-		_file_dialog.popup_centered()
+		_file_dialog.popup_centered_ratio(0.5)
 		_file_dialog.current_path = _path_edit.text
 	)
 	_browse_button.icon = get_theme_icon("Load", "EditorIcons")

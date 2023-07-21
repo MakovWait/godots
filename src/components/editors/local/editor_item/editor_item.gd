@@ -86,6 +86,7 @@ func init(item):
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
 	)
 	_favorite_button.toggled.connect(func(is_favorite):
+		_sort_data.favorite = is_favorite
 		item.favorite = is_favorite
 		edited.emit()
 	)
@@ -94,10 +95,10 @@ func init(item):
 func _on_run_editor(item):
 	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
-		OS.execute(
+		OS.create_process(
 			ProjectSettings.globalize_path(item.path),
-			[],
-			output, true
+			["-p"],
+#			output, true
 		)
 	elif OS.has_feature("macos"):
 		OS.execute(
