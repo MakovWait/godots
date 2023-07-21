@@ -64,7 +64,7 @@ func init(item: projects_ns.Project):
 		var run_btn = buttons.simple(
 			"Run", 
 			get_theme_icon("Play", "EditorIcons"),
-			_on_run_with_editor.bind(item, "", "run", "Run", false)
+			_on_run_with_editor.bind(item, "-g", "run", "Run", false)
 		)
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
