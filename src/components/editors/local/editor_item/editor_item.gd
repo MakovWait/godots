@@ -94,10 +94,10 @@ func init(item):
 func _on_run_editor(item):
 	var output = []
 	if OS.has_feature("windows") or OS.has_feature("linux"):
-		OS.execute(
+		OS.create_process(
 			ProjectSettings.globalize_path(item.path),
-			[],
-			output, true
+			["-p"],
+#			output, true
 		)
 	elif OS.has_feature("macos"):
 		OS.execute(
