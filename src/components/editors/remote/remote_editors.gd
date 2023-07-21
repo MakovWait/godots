@@ -235,7 +235,7 @@ func install_zip(zip_abs_path, root_unzip_folder_name, possible_editor_name, on_
 			if on_install:
 				on_install.call()
 		)
-		editor_install.popup_centered_ratio()
+		editor_install.popup_centered()
 
 
 func _unzip_downloaded(downloaded_abs_path, root_unzip_folder_name):

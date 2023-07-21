@@ -32,4 +32,4 @@ func _handle_actions_changed():
 
 
 func _enter_tree() -> void:
-	custom_minimum_size = Vector2(120, 120) * Config.EDSCALE
+	custom_minimum_size = Vector2(150, 120) * Config.EDSCALE

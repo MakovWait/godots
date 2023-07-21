@@ -7,12 +7,14 @@ signal link_confirmed(link)
 
 func _ready() -> void:
 	super._ready()
+	_update_ok_button_availability()
 	_url_edit.text_changed.connect(func(_arg): 
 		_update_ok_button_availability()
 	)
 	confirmed.connect(func():
 		link_confirmed.emit(_url_edit.text)
 	)
+	_url_edit.custom_minimum_size = Vector2(300, 0) * Config.EDSCALE
 
 
 func _update_ok_button_availability():

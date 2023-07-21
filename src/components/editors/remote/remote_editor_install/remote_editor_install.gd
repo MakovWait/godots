@@ -15,8 +15,9 @@ var _selected_file_source
 
 
 func _ready():
+	min_size = Vector2(300, 0) * Config.EDSCALE
 	_browse_exec_file_button.pressed.connect(func():
-		_file_dialog.popup_centered()
+		_file_dialog.popup_centered_ratio(0.5)
 	)
 	_browse_exec_file_button.icon = get_theme_icon("Load", "EditorIcons")
 
