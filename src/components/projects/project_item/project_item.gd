@@ -56,7 +56,7 @@ func init(item: projects_ns.Project):
 		var edit_btn = buttons.simple(
 			"Edit", 
 			get_theme_icon("Edit", "EditorIcons"),
-			_on_run_with_editor.bind(item, "-e", "edit", "Edit", true)
+			_on_edit_with_editor.bind(item)
 		)
 		edit_btn.set_script(RunButton)
 		edit_btn.init(item)
@@ -103,6 +103,7 @@ func init(item: projects_ns.Project):
 		item.favorite = is_favorite
 		edited.emit()
 	)
+	double_clicked.connect(_on_edit_with_editor.bind(item))
 
 
 func _fill_data(item):
@@ -160,6 +161,10 @@ func _on_rebind_editor(item):
 	
 	add_child(bind_dialog)
 	bind_dialog.popup_centered()
+
+
+func _on_edit_with_editor(item):
+	_on_run_with_editor(item, "-e", "edit", "Edit", true)
 
 
 func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_close):

@@ -90,6 +90,7 @@ func init(item):
 		item.favorite = is_favorite
 		edited.emit()
 	)
+	double_clicked.connect(_on_run_editor.bind(item))
 
 
 func _on_run_editor(item):
