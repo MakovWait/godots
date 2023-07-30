@@ -218,7 +218,7 @@ func _run_with_editor(item, editor_flag, auto_close):
 #			output, true
 		)
 	elif OS.has_feature("macos"):
-		OS.execute(
+		OS.create_process(
 			"open", 
 			[
 				ProjectSettings.globalize_path(item.editor_path),
@@ -227,7 +227,8 @@ func _run_with_editor(item, editor_flag, auto_close):
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
 				editor_flag
-			], output, true
+			], 
+#			output, true
 		)
 	Output.push_array(output)
 	if auto_close:

@@ -102,12 +102,12 @@ func _on_run_editor(item):
 #			output, true
 		)
 	elif OS.has_feature("macos"):
-		OS.execute(
+		OS.create_process(
 			"open", 
 			[ProjectSettings.globalize_path(item.path), "-n"],
-			output, true
+#			output, true
 		)
-	Output.push_array(output)
+#	Output.push_array(output)
 	AutoClose.close_if_should()
 
 
