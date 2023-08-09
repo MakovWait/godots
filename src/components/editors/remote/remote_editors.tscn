@@ -72,6 +72,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Direct Link"
 
+[node name="RefreshButton" type="Button" parent="VBoxContainer/HBoxContainer/ActionsSidebar/TabActions" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Refresh"
+
 [node name="HSeparator" parent="VBoxContainer/HBoxContainer/ActionsSidebar" index="1"]
 visible = false
 

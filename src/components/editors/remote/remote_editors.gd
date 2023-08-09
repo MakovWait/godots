@@ -1,6 +1,7 @@
 extends Control
 
 signal installed(name, abs_path)
+signal _loadings_number_changed(value)
 
 const exml = preload("res://src/extensions/xml.gd")
 const uuid = preload("res://addons/uuid.gd")
@@ -28,10 +29,15 @@ const platforms = {
 @onready var _open_downloads_button: Button = %OpenDownloadsButton
 @onready var _direct_link_button: Button = %DirectLinkButton
 @onready var _check_box_container: HFlowContainer = %CheckBoxContainer
+@onready var _refresh_button: Button = %RefreshButton
 
 var _current_platform
 var _root_loaded = false
 var _row_filters: Array[RowFilter] = [NotRelatedFilter.new()]
+var _current_loadings_number = 0:
+	set(value): 
+		_current_loadings_number = value
+		_loadings_number_changed.emit(value)
 
 
 func _ready():
@@ -69,6 +75,18 @@ func _ready():
 			download_zip(link, "custom_editor.zip")
 		)
 	)
+	
+	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
+	_refresh_button.pressed.connect(func():
+		for c in tree.get_root().get_children():
+			c.free()
+		_load_data(tree.get_root(), true, true)
+	)
+	
+	_loadings_number_changed.connect(func(value):
+		_refresh_button.disabled = value != 0
+	)
+	
 
 
 func _setup_checkboxes():
@@ -259,9 +277,11 @@ func guess_editor_name(file_name):
 
 
 func _load_data(root: TreeItem, reverse=false, is_tree_root=false):
+	_current_loadings_number += 1
 	root.set_meta("loaded", true)
 	
 	var resp = await _http_get(_restore_url(root))
+	_current_loadings_number -= 1
 	var body = XML.parse_buffer(resp[3])
 	
 	var tbody = exml.smart(body.root).find_smart_child_recursive(
