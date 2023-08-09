@@ -119,6 +119,15 @@ func _make_main_button(text, icon):
 	return btn
 
 
+func _notification(what: int) -> void:
+	if NOTIFICATION_APPLICATION_FOCUS_OUT == what:
+		OS.low_processor_usage_mode_sleep_usec = 100000
+	elif NOTIFICATION_APPLICATION_FOCUS_IN == what:
+		OS.low_processor_usage_mode_sleep_usec = ProjectSettings.get(
+			"application/run/low_processor_mode_sleep_usec"
+		)
+
+
 func _enter_tree():
 	theme_source.set_scale(Config.EDSCALE)
 	theme = theme_source.create_editor_theme(null)
