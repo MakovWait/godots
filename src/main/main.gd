@@ -81,6 +81,10 @@ func _ready():
 	_version_button.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
 	_version_button.tooltip_text = "Click to star it on GitHub"
 	
+	%NewsButton.self_modulate = Color(1, 1, 1, 0.6)
+	%NewsButton.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
+	%NewsButton.tooltip_text = "Click to see the post."
+	
 	_auto_close_check_button.button_pressed = Config.get_auto_close()
 	_auto_close_check_button.tooltip_text = "Close on launch"
 	_auto_close_check_button.self_modulate = Color(1, 1, 1, 0.6)

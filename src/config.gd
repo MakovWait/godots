@@ -2,12 +2,16 @@ extends Node
 
 var EDSCALE = 1
 var AGENT = ""
-const VERSION = "0.99.dev"
+const VERSION = "1.0.rc-1"
 const APP_CONFIG_PATH = "user://godots.cfg"
+const APP_CACHE_PATH = "user://.cache"
 const EDITORS_CONFIG_PATH = "user://editors.cfg"
 const PROJECTS_CONFIG_PATH = "user://projects.cfg"
 const VERSIONS_PATH = "user://versions"
 const DOWNLOADS_PATH = "user://downloads"
+const RELEASES_URL = "https://github.com/MakovWait/godots/releases"
+const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases/latest"
+
 
 var AGENT_HEADER:
 	get: return "User-Agent: %s" % AGENT
@@ -19,10 +23,12 @@ var DEFAULT_PROJECT_TAGS:
 	get: return get_default_project_tags([])
 
 var _cfg = ConfigFile.new()
+var _cache = ConfigFile.new()
 
 
 func _ready():
 	_cfg.load(APP_CONFIG_PATH)
+	_cache.load(APP_CACHE_PATH)
 	assert(not VERSIONS_PATH.ends_with("/"))
 	assert(not DOWNLOADS_PATH.ends_with("/"))
 	AGENT = "Godots/%s (%s) Godot/%s" % [
@@ -62,6 +68,18 @@ func _get_auto_display_scale():
 		# Icons won't look great, but this is better than having editor elements overflow from its window.
 		return 0.75
 	return 1.0
+
+
+func cache_get_value(section: String, key: String, default: Variant = null):
+	return _cache.get_value(section, key, default)
+
+
+func cache_set_value(section: String, key: String, value: Variant):
+	_cache.set_value(section, key, value)
+
+
+func cache_save():
+	return _cache.save(APP_CACHE_PATH)
 
 
 func get_remote_editors_checkbox_checked(key, default):
