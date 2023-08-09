@@ -76,7 +76,7 @@ func _ready():
 		)
 	)
 
-	_version_button.text = "v%s" % Config.VERSION
+	_version_button.text = Config.VERSION.substr(1)
 	_version_button.self_modulate = Color(1, 1, 1, 0.6)
 	_version_button.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
 	_version_button.tooltip_text = "Click to star it on GitHub"

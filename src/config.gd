@@ -2,7 +2,7 @@ extends Node
 
 var EDSCALE = 1
 var AGENT = ""
-const VERSION = "1.0.rc1"
+const VERSION = "v1.0.rc1"
 const APP_CONFIG_PATH = "user://godots.cfg"
 const APP_CACHE_PATH = "user://.cache"
 const EDITORS_CONFIG_PATH = "user://editors.cfg"
