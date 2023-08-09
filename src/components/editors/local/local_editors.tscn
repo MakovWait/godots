@@ -34,7 +34,7 @@ text = "Download"
 [node name="OrphanEditorsButton" type="Button" parent="ActionsSidebar/TabActions" index="2"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Orphan"
+text = "Remove Orphan"
 
 [node name="EditorImport" parent="." instance=ExtResource("2_t30qe")]
 visible = false
