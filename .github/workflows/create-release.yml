@@ -21,11 +21,11 @@ jobs:
         with:
           submodules: "recursive"
 
-      - name: Install Wine
-        id: wine_install
-        run: |
-          sudo apt install wine64
-          echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
+#      - name: Install Wine
+#        id: wine_install
+#        run: |
+#          sudo apt install wine64
+#          echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
 
       - name: export game
         id: export
@@ -37,7 +37,7 @@ jobs:
           godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.1.1/Godot_v4.1.1-stable_export_templates.tpz
           relative_project_path: .
           archive_output: true
-          wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
+#          wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
  
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
