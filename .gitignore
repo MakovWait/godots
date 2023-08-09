@@ -14,3 +14,10 @@ data_*/
 mono_crash.*.json
 
 .idea/
+.plugged/
+
+addons/gd-plug-ui
+addons/expand-region
+addons/find-everywhere
+addons/previous-tab
+addons/script-tabs
