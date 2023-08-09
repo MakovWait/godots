@@ -1888,6 +1888,7 @@ static func create_editor_theme(p_theme):
 #	theme.set_color("code_folding_color", "CodeEdit", EDITOR_GET("text_editor/theme/highlighting/code_folding_color"))
 #	theme.set_color("search_result_color", "CodeEdit", EDITOR_GET("text_editor/theme/highlighting/search_result_color"))
 #	theme.set_color("search_result_border_color", "CodeEdit", EDITOR_GET("text_editor/theme/highlighting/search_result_border_color"))
+	theme.set_color("string_color", "CodeEdit", string_color)
 
 	return theme
 

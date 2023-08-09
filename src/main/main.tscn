@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://omgg45dpxftx"]
+[gd_scene load_steps=8 format=3 uid="uid://omgg45dpxftx"]
 
 [ext_resource type="PackedScene" uid="uid://csgrsfoydw3m4" path="res://src/components/title_bar/title_bar.tscn" id="2_bjhyn"]
 [ext_resource type="Script" path="res://src/main/main.gd" id="2_nqr5a"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/local/local_editors.tscn" id="4_y2wp0"]
 [ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote/remote_editors.tscn" id="5_gdaat"]
 [ext_resource type="PackedScene" uid="uid://buwhvihmtjeff" path="res://src/components/tags/manage_tags.tscn" id="6_xaluk"]
+[ext_resource type="PackedScene" uid="uid://btxxnjmhy4bqw" path="res://src/components/command_viewer/command_viewer.tscn" id="7_tpcwo"]
 
 [node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects")]
 layout_mode = 3
@@ -99,3 +100,6 @@ layout_mode = 2
 
 [node name="ManageTags" parent="." instance=ExtResource("6_xaluk")]
 visible = false
+
+[node name="CommandViewer" parent="." instance=ExtResource("7_tpcwo")]
+unique_name_in_owner = true

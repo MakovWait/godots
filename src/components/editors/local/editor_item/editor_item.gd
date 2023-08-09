@@ -70,16 +70,32 @@ func init(item):
 			func(): manage_tags_requested.emit()
 		)
 		manage_tags_btn.disabled = not item.is_valid
-		
+
+		var view_command_btn = buttons.simple(
+			"View Command", 
+			get_theme_icon("Window", "EditorIcons"),
+			func(): 
+				var command_viewer = get_tree().current_scene.get_node_or_null(
+					"%CommandViewer"
+				)
+				if command_viewer:
+					command_viewer.raise(
+						_get_process_arguments(item),
+						_get_alternative_process_arguments(item)
+					)
+		)
+		view_command_btn.disabled = not item.is_valid
+
 		return [
 			run_btn,
 			rename_btn,
 			manage_tags_btn,
+			view_command_btn,
 			buttons.simple(
 				"Remove", 
 				get_theme_icon("Remove", "EditorIcons"),
 				_on_remove
-			)
+			),
 		]
 	
 	_explore_button.pressed.connect(func():
@@ -95,20 +111,33 @@ func init(item):
 
 func _on_run_editor(item):
 	var output = []
-	if OS.has_feature("windows") or OS.has_feature("linux"):
-		OS.create_process(
-			ProjectSettings.globalize_path(item.path),
-			["-p"],
-#			output, true
-		)
-	elif OS.has_feature("macos"):
-		OS.create_process(
-			"open", 
-			[ProjectSettings.globalize_path(item.path), "-n"],
-#			output, true
-		)
+	var process_schema = _get_process_arguments(item)
+	OS.create_process(process_schema.path, process_schema.args)
 #	Output.push_array(output)
 	AutoClose.close_if_should()
+
+
+func _get_process_arguments(item):
+	if OS.has_feature("windows") or OS.has_feature("linux"):
+		return {
+			"path": ProjectSettings.globalize_path(item.path),
+			"args": ["-p"] 
+		}
+	elif OS.has_feature("macos"):
+		return {
+			"path": "open",
+			"args": [ProjectSettings.globalize_path(item.path), "-n"],
+		}
+
+
+func _get_alternative_process_arguments(item):
+	if not OS.has_feature("macos"):
+		return null
+	else:
+		return {
+			"path": ProjectSettings.globalize_path(item.path).path_join("Contents/MacOS/Godot"),
+			"args": [],
+		}
 
 
 func _on_rename(item):

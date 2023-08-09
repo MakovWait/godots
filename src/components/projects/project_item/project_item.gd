@@ -92,12 +92,27 @@ func init(item: projects_ns.Project):
 			_on_remove
 		)
 		
+		var view_command_btn = buttons.simple(
+			"View Command", 
+			get_theme_icon("Window", "EditorIcons"),
+			func(): 
+				var command_viewer = get_tree().current_scene.get_node_or_null(
+					"%CommandViewer"
+				)
+				if command_viewer:
+					command_viewer.raise(
+						_get_process_arguments(item, "-e"),
+						_get_alternative_process_arguments(item, "-e")
+					)
+		)
+		view_command_btn.disabled = not item.is_valid
+		
 #		var actions = []
 #		if not item.is_missing:
 #			actions.append(edit_btn)
 #			actions.append(bind_editor_btn)
 #		actions.append(remove_btn)
-		return [edit_btn, run_btn, bind_editor_btn, manage_tags_btn, remove_btn]
+		return [edit_btn, run_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -226,32 +241,50 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 
 func _run_with_editor(item, editor_flag, auto_close):
 	var output = []
+	var process_schema = _get_process_arguments(item, editor_flag)
+	OS.create_process(process_schema.path, process_schema.args)
+	Output.push_array(output)
+	if auto_close:
+		AutoClose.close_if_should()
+
+
+func _get_process_arguments(item, editor_flag):
 	if OS.has_feature("windows") or OS.has_feature("linux"):
-		OS.create_process(
-			ProjectSettings.globalize_path(item.editor_path),
-			[
+		return {
+			"path": ProjectSettings.globalize_path(item.editor_path),
+			"args": [
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
 				editor_flag
-			], 
-#			output, true
-		)
+			]
+		}
 	elif OS.has_feature("macos"):
-		OS.create_process(
-			"open", 
-			[
+		return {
+			"path": "open",
+			"args": [
 				ProjectSettings.globalize_path(item.editor_path),
 				"-n",
 				"--args",
 				"--path",
 				ProjectSettings.globalize_path(item.path).get_base_dir(),
 				editor_flag
-			], 
-#			output, true
-		)
-	Output.push_array(output)
-	if auto_close:
-		AutoClose.close_if_should()
+			]
+		}
+
+
+func _get_alternative_process_arguments(item, editor_flag):
+	if not OS.has_feature("macos"):
+		return null
+	else:
+		return {
+			"path": ProjectSettings.globalize_path(item.editor_path).path_join("Contents/MacOS/Godot"),
+			"args": [
+#				"-n",
+				"--path",
+				ProjectSettings.globalize_path(item.path).get_base_dir(),
+				editor_flag
+			]
+		}
 
 
 func _on_remove():
