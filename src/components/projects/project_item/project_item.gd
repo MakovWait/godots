@@ -18,6 +18,7 @@ const projects_ns = preload("res://src/services/projects.gd")
 @onready var _editor_button: Button = %EditorButton
 @onready var _project_warning: TextureRect = %ProjectWarning
 @onready var _tag_container: HBoxContainer = %TagContainer
+@onready var _project_features: Label = %ProjectFeatures
 
 var _get_actions_callback: Callable
 var _tags = []
@@ -28,6 +29,8 @@ var _sort_data = {
 
 func _ready() -> void:
 	super._ready()
+	_project_features.add_theme_font_override("font", get_theme_font("title", "EditorFonts"))
+	_project_features.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
 	_project_warning.tooltip_text = "Editor is missing"
@@ -114,6 +117,7 @@ func _fill_data(item):
 	_path_label.text = item.path
 	_icon.texture = item.icon
 	_tag_container.set_tags(item.tags)
+	_set_features(item.features)
 	_tags = item.tags
 	
 	_sort_data.favorite = item.favorite
@@ -121,6 +125,21 @@ func _fill_data(item):
 	_sort_data.path = item.path
 	_sort_data.last_modified = item.last_modified
 	_sort_data.tag_sort_string = "".join(item.tags)
+
+
+func _set_features(features):
+	var features_to_print = Array(features).filter(func(x): return _is_version(x) or x == "C#")
+	if len(features_to_print) > 0:
+		var str = ", ".join(features_to_print)
+		_project_features.text = str
+		_project_features.custom_minimum_size = Vector2(25 * 15, 10) * Config.EDSCALE
+		_project_features.show()
+	else:
+		_project_features.hide()
+
+
+func _is_version(feature: String):
+	return feature.contains(".") and feature.substr(0, 3).is_valid_float()
 
 
 func _on_rebind_editor(item):
