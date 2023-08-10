@@ -19,6 +19,7 @@ const projects_ns = preload("res://src/services/projects.gd")
 @onready var _project_warning: TextureRect = %ProjectWarning
 @onready var _tag_container: HBoxContainer = %TagContainer
 @onready var _project_features: Label = %ProjectFeatures
+@onready var _info_body = %InfoBody
 
 var _get_actions_callback: Callable
 var _tags = []
@@ -29,6 +30,7 @@ var _sort_data = {
 
 func _ready() -> void:
 	super._ready()
+	_info_body.add_theme_constant_override("separation", -12 * Config.EDSCALE)
 	_project_features.add_theme_font_override("font", get_theme_font("title", "EditorFonts"))
 	_project_features.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")

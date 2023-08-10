@@ -64,43 +64,43 @@ unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("6_k6uq1")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="InfoVBox"]
+[node name="InfoBody" type="VBoxContainer" parent="InfoVBox"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = -12
 
-[node name="Editor" type="HBoxContainer" parent="InfoVBox/VBoxContainer"]
+[node name="Editor" type="HBoxContainer" parent="InfoVBox/InfoBody"]
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 
-[node name="EditorButton" type="Button" parent="InfoVBox/VBoxContainer/Editor"]
+[node name="EditorButton" type="Button" parent="InfoVBox/InfoBody/Editor"]
 unique_name_in_owner = true
 layout_mode = 2
 flat = true
 
-[node name="EditorPathLabel" type="Label" parent="InfoVBox/VBoxContainer/Editor"]
+[node name="EditorPathLabel" type="Label" parent="InfoVBox/InfoBody/Editor"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "/home/kovkel/editor/path"
 script = ExtResource("5_bf7vh")
 
-[node name="Path" type="HBoxContainer" parent="InfoVBox/VBoxContainer"]
+[node name="Path" type="HBoxContainer" parent="InfoVBox/InfoBody"]
 layout_mode = 2
 
-[node name="ExploreButton" type="Button" parent="InfoVBox/VBoxContainer/Path"]
+[node name="ExploreButton" type="Button" parent="InfoVBox/InfoBody/Path"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 flat = true
 script = ExtResource("6_8vyss")
 
-[node name="PathLabel" type="Label" parent="InfoVBox/VBoxContainer/Path"]
+[node name="PathLabel" type="Label" parent="InfoVBox/InfoBody/Path"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 text = "/home/kovkel/editor/path"
 script = ExtResource("5_bf7vh")
 
-[node name="ProjectWarning" type="TextureRect" parent="InfoVBox/VBoxContainer/Path"]
+[node name="ProjectWarning" type="TextureRect" parent="InfoVBox/InfoBody/Path"]
 unique_name_in_owner = true
 layout_mode = 2
 stretch_mode = 3
