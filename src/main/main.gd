@@ -71,9 +71,7 @@ func _ready():
 	_tab_container.current_tab = Config.get_main_current_tab()
 
 	_local_editors.editor_download_pressed.connect(func():
-		_tab_container.current_tab = _tab_container.get_tab_idx_from_control(
-			$"GuiBase/MainVBox/Content/TabContainer/Remote Editors"
-		)
+		_tab_container.current_tab = _tab_container.get_tab_idx_from_control(_remote_editors)
 	)
 
 	_version_button.text = Config.VERSION.substr(1)
