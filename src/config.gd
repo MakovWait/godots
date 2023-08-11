@@ -1,5 +1,6 @@
 extends Node
 
+var AUTO_EDSCALE = 1
 var EDSCALE = 1
 var AGENT = ""
 const VERSION = "v1.0.rc1"
@@ -26,7 +27,10 @@ var _cfg = ConfigFile.new()
 var _cache = ConfigFile.new()
 
 
-func _ready():
+func _enter_tree() -> void:
+	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(VERSIONS_PATH))
+	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DOWNLOADS_PATH))
+	
 	_cfg.load(APP_CONFIG_PATH)
 	_cache.load(APP_CACHE_PATH)
 	assert(not VERSIONS_PATH.ends_with("/"))
@@ -36,13 +40,16 @@ func _ready():
 		OS.get_name(), 
 		Engine.get_version_info().string
 	]
+	_setup_scale()
 
 
-func _enter_tree() -> void:
-	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(VERSIONS_PATH))
-	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DOWNLOADS_PATH))
-	
-	EDSCALE = _get_auto_display_scale()
+func _setup_scale():
+	AUTO_EDSCALE = _get_auto_display_scale()
+	var saved_scale = get_saved_edscale(-1)
+	print(saved_scale)
+	if saved_scale <= 0:
+		saved_scale = AUTO_EDSCALE
+	EDSCALE = saved_scale
 
 
 #https://github.com/godotengine/godot/blob/master/editor/editor_settings.cpp#L1400
@@ -106,6 +113,15 @@ func get_default_editor_tags(default):
 
 func get_default_project_tags(default):
 	return _cfg.get_value("app", "default_project_tags", default)
+
+
+func get_saved_edscale(default):
+	return _cfg.get_value("app", "edscale", default)
+
+
+func set_saved_edscale(value):
+	_cfg.set_value("app", "edscale", value)
+	_cfg.save(APP_CONFIG_PATH)
 
 
 func set_auto_close(value):

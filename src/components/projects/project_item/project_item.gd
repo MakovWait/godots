@@ -30,7 +30,7 @@ var _sort_data = {
 
 func _ready() -> void:
 	super._ready()
-	_info_body.add_theme_constant_override("separation", -12 * Config.EDSCALE)
+	_info_body.add_theme_constant_override("separation", int(-12 * Config.EDSCALE))
 	_project_features.add_theme_font_override("font", get_theme_font("title", "EditorFonts"))
 	_project_features.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")

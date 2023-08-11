@@ -13,6 +13,7 @@ const theme_source = preload("res://theme/theme.gd")
 @onready var _tab_container: TabContainer = %TabContainer
 @onready var _version_button: LinkButton = %VersionButton
 @onready var _auto_close_check_button: CheckButton = %AutoCloseCheckButton
+@onready var _scale_container = %ScaleContainer
 
 
 func _ready():
@@ -90,6 +91,67 @@ func _ready():
 		Config.set_auto_close(toggled)
 	)
 	
+	var scale_option_button := _scale_container.get_node("ScaleOptionButton") as OptionButton
+	var scale_map = {
+		1: {
+			"name": "auto ({0}%)".format([Config.AUTO_EDSCALE * 100]),
+			"value": -1
+		},
+		2: {
+			"name": "75%",
+			"value": 0.75
+		},
+		3: {
+			"name": "100%",
+			"value": 1
+		},
+		4: {
+			"name": "125%",
+			"value": 1.25
+		},
+		5: {
+			"name": "150%",
+			"value": 1.50
+		},
+		6: {
+			"name": "175%",
+			"value": 1.75
+		},
+		7: {
+			"name": "200%",
+			"value": 2
+		},
+		8: {
+			"name": "225%",
+			"value": 2.25
+		},
+	}
+	
+	var item_idx = 0
+	var item_to_select_was_found = false
+	for scale_key in scale_map.keys():
+		scale_option_button.add_item("scale: " + scale_map[scale_key].name, scale_key)
+		if scale_map[scale_key].value == Config.get_saved_edscale(-1):
+			scale_option_button.selected = item_idx
+			item_to_select_was_found = true
+		item_idx += 1
+	
+	if not item_to_select_was_found:
+		scale_option_button.add_item("scale: custom")
+		scale_option_button.selected = item_idx
+	
+	scale_option_button.self_modulate = Color(1, 1, 1, 0.6)
+	scale_option_button.item_selected.connect(func(item_idx):
+		var id = scale_option_button.get_item_id(item_idx)
+		var scale_entry = scale_map.get(id, null)
+		if scale_entry:
+			Config.set_saved_edscale(scale_entry.value)
+		
+		scale_option_button.icon = get_theme_icon("StatusWarning", "EditorIcons")
+		scale_option_button.self_modulate = get_theme_color("warning_color", "Editor") * Color(1, 1, 1, 0.6)
+		scale_option_button.tooltip_text = "Godots must be restarted for changes to take effect."
+	)
+	
 	var local_editors = editors.LocalEditors.new(
 		Config.EDITORS_CONFIG_PATH
 	)
@@ -135,7 +197,7 @@ func _enter_tree():
 	theme = theme_source.create_editor_theme(null)
 	
 	var window = get_window()
-	window.min_size = Vector2(520, 350) * Config.EDSCALE
+	window.min_size = Vector2(700, 350) * Config.EDSCALE
 	
 	var scale_factor = max(1, Config.EDSCALE * 0.75)
 	if scale_factor > 1:
