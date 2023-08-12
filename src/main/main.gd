@@ -197,7 +197,7 @@ func _enter_tree():
 	theme = theme_source.create_editor_theme(null)
 	
 	var window = get_window()
-	window.min_size = Vector2(700, 350) * Config.EDSCALE
+	window.min_size = Vector2(520, 350) * Config.EDSCALE
 	
 	var scale_factor = max(1, Config.EDSCALE * 0.75)
 	if scale_factor > 1:
@@ -213,6 +213,7 @@ func _enter_tree():
 				screen_rect.position.y + (screen_rect.size.y - window_size.y) / 2
 			)
 			DisplayServer.window_set_position(window_position)
+	window.min_size = Vector2(700, 350) * Config.EDSCALE
 
 
 func _popup_manage_tags(item_tags, all_tags, on_confirm):

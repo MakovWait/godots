@@ -11,7 +11,7 @@ var _click_pos = Vector2.ZERO
 
 
 func _ready():
-	if not DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE):
+	if not DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE) or Config.get_use_system_titlebar(false):
 		queue_free()
 		return
 	
@@ -94,5 +94,5 @@ func _resize():
 	if _right_spacer: 
 		var w = margin.x if self.is_layout_rtl() else margin.y
 		_right_spacer.custom_minimum_size = Vector2(w, 0)
-#	_right_spacer.custom_minimum_size = _left_spacer.custom_minimum_size
+	_right_spacer.custom_minimum_size = _left_spacer.custom_minimum_size
 	self.custom_minimum_size = Vector2(0, margin.z - self.global_position.y)

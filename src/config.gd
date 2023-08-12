@@ -46,7 +46,6 @@ func _enter_tree() -> void:
 func _setup_scale():
 	AUTO_EDSCALE = _get_auto_display_scale()
 	var saved_scale = get_saved_edscale(-1)
-	print(saved_scale)
 	if saved_scale <= 0:
 		saved_scale = AUTO_EDSCALE
 	EDSCALE = saved_scale
@@ -127,6 +126,10 @@ func set_saved_edscale(value):
 func set_auto_close(value):
 	_cfg.set_value("app", "auto_close", value)
 	_cfg.save(APP_CONFIG_PATH)
+
+
+func get_use_system_titlebar(default):
+	return _cfg.get_value("app", "system_titlebar", default)
 
 
 func get_auto_close():
