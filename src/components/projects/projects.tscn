@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://qxd7fbvfbjs5"]
+[gd_scene load_steps=6 format=3 uid="uid://qxd7fbvfbjs5"]
 
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="1_5rf5l"]
 [ext_resource type="PackedScene" uid="uid://ibwyb5nfpxpn" path="res://src/components/projects/projects_list/projects_list.tscn" id="1_hecdv"]
 [ext_resource type="Script" path="res://src/components/projects/projects.gd" id="1_p17nd"]
 [ext_resource type="PackedScene" uid="uid://bcn7ypx0qusqp" path="res://src/components/projects/import_project_dialog/import_project_dialog.tscn" id="4_ooebc"]
+[ext_resource type="PackedScene" uid="uid://b6v7neuq31y1q" path="res://src/components/projects/new_project_dialog/new_project_dialog.tscn" id="5_bycab"]
 
 [node name="Projects" type="HBoxContainer"]
 anchors_preset = 15
@@ -20,12 +21,20 @@ size_flags_horizontal = 3
 [node name="ActionsSidebar" parent="." instance=ExtResource("1_5rf5l")]
 layout_mode = 2
 
-[node name="ImportProjectButton" type="Button" parent="ActionsSidebar/TabActions" index="0"]
+[node name="NewProjectButton" type="Button" parent="ActionsSidebar/TabActions" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "New Project"
+
+[node name="ImportProjectButton" type="Button" parent="ActionsSidebar/TabActions" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Import"
 
 [node name="ImportProjectDialog" parent="." instance=ExtResource("4_ooebc")]
+visible = false
+
+[node name="NewProjectDialog" parent="." instance=ExtResource("5_bycab")]
 visible = false
 
 [connection signal="item_edited" from="ProjectsList" to="." method="_on_projects_list_item_edited"]

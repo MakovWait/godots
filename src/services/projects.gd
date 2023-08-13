@@ -233,12 +233,13 @@ class ExternalProjectInfo extends RefCounted:
 		var icon_path: String = cfg.get_value("application", "config/icon", "")
 		if not icon_path: return result
 		icon_path = icon_path.replace("res://", self._project_path.get_base_dir() + "/")
-
-		var icon_image = Image.new()
-		var err = icon_image.load(icon_path)
-		if not err:
-			icon_image.resize(
-				_default_icon.get_width(), _default_icon.get_height(), Image.INTERPOLATE_LANCZOS
-			)
-			result = ImageTexture.create_from_image(icon_image)
+		
+		if FileAccess.file_exists(icon_path):
+			var icon_image = Image.new()
+			var err = icon_image.load(icon_path)
+			if not err:
+				icon_image.resize(
+					_default_icon.get_width(), _default_icon.get_height(), Image.INTERPOLATE_LANCZOS
+				)
+				result = ImageTexture.create_from_image(icon_image)
 		return result

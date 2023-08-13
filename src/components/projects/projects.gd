@@ -8,6 +8,8 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _projects_list: VBoxContainer = $ProjectsList
 @onready var _import_project_button: Button = %ImportProjectButton
 @onready var _import_project_dialog: ConfirmationDialog = $ImportProjectDialog
+@onready var _new_project_button = %NewProjectButton
+@onready var _new_project_dialog = $NewProjectDialog
 
 var _projects: Projects.Projects
 var _load_projects_queue = []
@@ -31,6 +33,12 @@ func init(projects: Projects.Projects):
 		_projects.save()
 		_projects_list.sort_items()
 	)
+	
+	_new_project_dialog.created.connect(func(project_path):
+		import(project_path)
+	)
+	_new_project_button.pressed.connect(_new_project_dialog.raise)
+	_new_project_button.icon = get_theme_icon("Add", "EditorIcons")
 	
 	_projects_list.refresh(_projects.all())
 	_load_projects()

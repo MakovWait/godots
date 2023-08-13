@@ -132,5 +132,14 @@ func get_use_system_titlebar(default):
 	return _cfg.get_value("app", "system_titlebar", default)
 
 
+func get_project_creating_last_selected_path(default):
+	return _cfg.get_value("project_creating", "last_selected_base_dir", default)
+
+
+func set_project_creating_last_selected_path(value):
+	_cfg.set_value("project_creating", "last_selected_base_dir", value)
+	_cfg.save(APP_CONFIG_PATH)
+
+
 func get_auto_close():
 	return _cfg.get_value("app", "auto_close", false)
