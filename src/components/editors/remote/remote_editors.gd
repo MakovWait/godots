@@ -30,6 +30,7 @@ const platforms = {
 @onready var _direct_link_button: Button = %DirectLinkButton
 @onready var _check_box_container: HFlowContainer = %CheckBoxContainer
 @onready var _refresh_button: Button = %RefreshButton
+@onready var _github_checkbox: CheckBox = %GithubCheckbox
 
 var _current_platform
 var _root_loaded = false
@@ -44,6 +45,8 @@ func _ready():
 	_detect_platform()
 	_setup_tree()
 	_setup_checkboxes()
+	
+	_github_checkbox.get_parent().move_child(_github_checkbox, 1)
 	
 	var scroll_container = %ScrollContainer
 	var editors_downloads = %EditorDownloads
