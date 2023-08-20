@@ -9,6 +9,7 @@ const zip = preload("res://src/extensions/zip.gd")
 
 
 const url = "https://downloads.tuxfamily.org/godotengine/"
+const github_url = "https://github.com/godotengine/godot/releases/download/"
 const platforms = {
 	"X11": {
 		"suffixes": ["_x11.64.zip", "_linux.64.zip", "_linux.x86_64.zip", "_linux.x86_32.zip"],
@@ -217,7 +218,7 @@ func _setup_tree():
 	tree.button_clicked.connect(func(item, col, id, mouse):
 		if not item.has_meta("file_name"): return
 		var file_name = item.get_meta("file_name")
-		var url = _restore_url(item)
+		var url = _restore_url(item, _github_checkbox.button_pressed)
 		download_zip(url, file_name)
 	)
 
@@ -359,14 +360,40 @@ func _http_get(url, headers=[]):
 	return response
 
 
-func _restore_url(item: TreeItem):
+func _restore_url(item: TreeItem, use_github: bool = false):
 	var path_steps = []
 	var path_src = item
 	while path_src != null:
 		path_steps.append(path_src.get_meta("url_part"))
 		path_src = path_src.get_parent()
 	path_steps.reverse()
-	return "".join(path_steps)
+	
+	var result_url = "".join(path_steps) # tux url
+	if use_github:
+		var github_url = _tux_zip_url_to_github(result_url)
+		if github_url:
+			return github_url
+	return result_url
+
+
+## Converts a given TuxFamiy URL for a Godot ZIP to a Github URL.[br]
+##
+## This will only work for all Godot stable Godot releases beginning from
+## 3.1.1 (version 2.1.6, which will work, is the exception).  This is due
+## to the fact that older releases either aren't available or only provide
+## the source code.[br]
+##
+## Returns [code]""[/code] if [param tux_url] can't be converted to a
+## valid Github URL.
+func _tux_zip_url_to_github(tux_url: String) -> String:
+	var version = tux_url.trim_prefix(url).split("/", false, 1)[0]
+	if not (version >= "3.1.1" or version == "2.1.6") or not ".zip" in tux_url:
+		return ""
+	
+	var result_url = tux_url.replace(url, github_url)
+	result_url = result_url.replace("/mono/", "/")
+	result_url = result_url.replace("/" + version + "/", "/" + version + "-stable/")
+	return result_url
 
 
 func _on_visibility_changed() -> void:
