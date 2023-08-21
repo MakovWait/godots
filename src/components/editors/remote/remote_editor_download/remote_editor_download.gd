@@ -122,7 +122,7 @@ func start(url, target_abs_dir, file_name):
 					String.humanize_size(_download.get_downloaded_bytes())
 				]
 		if _download.get_http_client_status() == HTTPClient.STATUS_RESOLVING:
-			_status.text = "Resoilving..."
+			_status.text = "Resolving..."
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		elif _download.get_http_client_status() == HTTPClient.STATUS_CONNECTING:
@@ -130,7 +130,7 @@ func start(url, target_abs_dir, file_name):
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		elif _download.get_http_client_status() == HTTPClient.STATUS_REQUESTING:
-			_status.text = "Requsting..."
+			_status.text = "Requesting..."
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		await get_tree().create_timer(0.1).timeout
