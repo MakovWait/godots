@@ -219,14 +219,18 @@ func _setup_tree():
 		if not item.has_meta("file_name"): return
 		var file_name = item.get_meta("file_name")
 		var url = _restore_url(item, _github_checkbox.button_pressed)
-		download_zip(url, file_name)
+		if _github_checkbox.button_pressed:
+			download_zip(url, file_name, _restore_url(item, false))
+		else:
+			download_zip(url, file_name)
 	)
 
 
-func download_zip(url, file_name):
+func download_zip(url, file_name, tux_fallback = ""):
 	var editor_download = _editor_download_scene.instantiate()
 	%EditorDownloads.add_child(editor_download)
-	editor_download.start(url, Config.DOWNLOADS_PATH + "/", file_name)
+	editor_download.start(url, Config.DOWNLOADS_PATH + "/", file_name,
+			tux_fallback)
 	editor_download.downloaded.connect(func(abs_path):
 		install_zip(
 			abs_path, 
