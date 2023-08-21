@@ -391,7 +391,8 @@ func _restore_url(item: TreeItem, use_github: bool = false):
 ## valid Github URL.
 func _tux_zip_url_to_github(tux_url: String) -> String:
 	var version = tux_url.trim_prefix(url).split("/", false, 1)[0]
-	if not (version >= "3.1.1" or version == "2.1.6") or not ".zip" in tux_url:
+	if (not (version >= "3.1.1" or version == "2.1.6")
+			or not ".zip" in tux_url or not "-stable_" in tux_url):
 		return ""
 	
 	var result_url = tux_url.replace(url, github_url)
