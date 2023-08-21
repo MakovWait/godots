@@ -33,35 +33,20 @@ func _ready() -> void:
 	)
 
 
-func start(url, target_abs_dir, file_name):
-	assert(target_abs_dir.ends_with("/"))
-	
-	_retry_callback = func(): start(url, target_abs_dir, file_name)
-	
-	_retry_button.hide()
-	_install_button.disabled = true
-	_progress_bar.modulate = Color(1, 1, 1, 1)
-	_title_label.text = file_name
-	
-	DirAccess.make_dir_absolute(target_abs_dir)
-	if FileAccess.file_exists(target_abs_dir + file_name):
-		file_name = uuid.v4().substr(0, 8) + "-" + file_name
-	_download.download_file = target_abs_dir + file_name
-	var request_err = _download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
-	
-	if request_err:
-		_progress_bar.modulate = Color(0, 0, 0, 0)
-		if request_err == 31:
-			_status.text = "Invalid URL scheme."
-		else:
-			_status.text = "Something went wrong."
-		return
-	
-	_download.request_completed.connect(func(result: int, response_code: int, headers, body):
+func start(url, target_abs_dir, file_name, tux_fallback = ""):
+	var download_completed_callback = func(result: int, response_code: int,
+			headers, body, download_completed_callback: Callable):
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
 		var host = url
 		var error_text = null
 		var status = ""
+		
+		if ((result != HTTPRequest.RESULT_SUCCESS or response_code != 200)
+				and "github.com" in url and tux_fallback):
+			print("Failure!  Falling back to TuxFamily.")
+			_download.request_completed.disconnect(download_completed_callback)
+			start(tux_fallback, target_abs_dir, file_name, "")
+			return
 		
 		match result:
 			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
@@ -104,7 +89,32 @@ func start(url, target_abs_dir, file_name):
 			_install_button.disabled = false
 			_status.text = "Ready to install"
 			downloaded.emit(_download.download_file)
-	)
+	
+	assert(target_abs_dir.ends_with("/"))
+	print("Downloading " + url)
+	
+	_retry_callback = func(): start(url, target_abs_dir, file_name)
+	
+	_retry_button.hide()
+	_install_button.disabled = true
+	_progress_bar.modulate = Color(1, 1, 1, 1)
+	_title_label.text = file_name
+	
+	DirAccess.make_dir_absolute(target_abs_dir)
+	if FileAccess.file_exists(target_abs_dir + file_name):
+		file_name = uuid.v4().substr(0, 8) + "-" + file_name
+	_download.download_file = target_abs_dir + file_name
+	var request_err = _download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
+	
+	if request_err:
+		_progress_bar.modulate = Color(0, 0, 0, 0)
+		if request_err == 31:
+			_status.text = "Invalid URL scheme."
+		else:
+			_status.text = "Something went wrong."
+		return
+	
+	_download.request_completed.connect(download_completed_callback.bind(download_completed_callback))
 	
 	#TODO handle deadlock
 	while _download.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED:

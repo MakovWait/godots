@@ -143,3 +143,12 @@ func set_project_creating_last_selected_path(value):
 
 func get_auto_close():
 	return _cfg.get_value("app", "auto_close", false)
+
+
+func get_use_github():
+	return _cfg.get_value("app", "use_github", false)
+
+
+func set_use_github(value):
+	_cfg.set_value("app", "use_github", value)
+	_cfg.save(APP_CONFIG_PATH)
