@@ -48,6 +48,9 @@ func _ready():
 	_setup_checkboxes()
 	
 	_github_checkbox.get_parent().move_child(_github_checkbox, 1)
+	_github_checkbox.button_pressed = Config.get_use_github()
+	_github_checkbox.toggled.connect(func (use_github: bool):
+		Config.set_use_github(use_github))
 	
 	var scroll_container = %ScrollContainer
 	var editors_downloads = %EditorDownloads
