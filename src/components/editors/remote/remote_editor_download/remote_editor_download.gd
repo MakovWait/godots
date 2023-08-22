@@ -5,6 +5,20 @@ const uuid = preload("res://addons/uuid.gd")
 signal downloaded(abs_zip_path: String)
 
 var _retry_callback
+var _url: String
+var _fallback_url: String = "":
+	set(new_fallback):
+		if "tuxfamily" in new_fallback:
+			_mirror_switch_button.text = "Switch to TuxFamily"
+		elif "github" in new_fallback:
+			_mirror_switch_button.text = "Switch to GitHub"
+		elif new_fallback == "":
+			pass
+		else:
+			assert(false, "unknown fallback")
+		_fallback_url = new_fallback
+var _target_abs_dir: String
+var _file_name: String
 
 @onready var _progress_bar: ProgressBar = get_node("%ProgressBar")
 @onready var _status: Label = get_node("%Status")
@@ -13,6 +27,7 @@ var _retry_callback
 @onready var _title_label: Label = %TitleLabel
 @onready var _install_button: Button = %InstallButton
 @onready var _retry_button: Button = %RetryButton
+@onready var _mirror_switch_button: Button = %MirrorSwitchButton
 
 
 func _ready() -> void:
@@ -31,22 +46,20 @@ func _ready() -> void:
 	_install_button.pressed.connect(func():
 		downloaded.emit(_download.download_file)
 	)
+	
+	_mirror_switch_button.pressed.connect(func():
+		assert(_fallback_url)
+		start(_fallback_url, _target_abs_dir, _file_name, _url)
+	)
 
 
-func start(url, target_abs_dir, file_name, tux_fallback = ""):
+func start(url, target_abs_dir, file_name, fallback_url = ""):
 	var download_completed_callback = func(result: int, response_code: int,
 			headers, body, download_completed_callback: Callable):
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
 		var host = url
 		var error_text = null
 		var status = ""
-		
-		if ((result != HTTPRequest.RESULT_SUCCESS or response_code != 200)
-				and "github.com" in url and tux_fallback):
-			print("Failure!  Falling back to TuxFamily.")
-			_download.request_completed.disconnect(download_completed_callback)
-			start(tux_fallback, target_abs_dir, file_name, "")
-			return
 		
 		match result:
 			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
@@ -84,6 +97,8 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 			$AcceptErrorDialog.dialog_text = "Download error:" + "\n" + error_text
 			$AcceptErrorDialog.popup_centered()
 			_retry_button.show()
+			if _fallback_url:
+				_mirror_switch_button.show()
 			_status.text = status
 		else:
 			_install_button.disabled = false
@@ -93,9 +108,14 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 	assert(target_abs_dir.ends_with("/"))
 	print("Downloading " + url)
 	
-	_retry_callback = func(): start(url, target_abs_dir, file_name)
+	_url = url
+	_target_abs_dir = target_abs_dir
+	_file_name = file_name
+	_fallback_url = fallback_url
+	_retry_callback = func(): start(url, target_abs_dir, file_name, fallback_url)
 	
 	_retry_button.hide()
+	_mirror_switch_button.hide()
 	_install_button.disabled = true
 	_progress_bar.modulate = Color(1, 1, 1, 1)
 	_title_label.text = file_name
