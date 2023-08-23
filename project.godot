@@ -15,6 +15,7 @@ run/main_scene="res://src/main/main.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 run/low_processor_mode=true
 config/icon="res://icon.svg"
+config/name2/abc/cds="Godots"
 
 [autoload]
 

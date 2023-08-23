@@ -1,0 +1,76 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3aprmu6od0wa"]
+
+[ext_resource type="Script" path="res://src/components/settings/settings_window.gd" id="1_u1xvk"]
+
+[node name="SettingsWindow" type="AcceptDialog"]
+position = Vector2i(0, 36)
+size = Vector2i(154, 100)
+visible = true
+script = ExtResource("1_u1xvk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 146.0
+offset_bottom = 51.0
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftVB" type="VBoxContainer" parent="VBoxContainer/HSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SectionsTree" type="Tree" parent="VBoxContainer/HSplitContainer/LeftVB"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RightVB" type="VBoxContainer" parent="VBoxContainer/HSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Inspector" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/RightVB"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="InspectorVBox" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/RightVB/Inspector"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RestartContainer" type="PanelContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="VBoxContainer/RestartContainer"]
+layout_mode = 2
+
+[node name="WarningRect" type="Button" parent="VBoxContainer/RestartContainer/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+flat = true
+
+[node name="RestartInfoLabel" type="Label" parent="VBoxContainer/RestartContainer/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RestartButton" type="Button" parent="VBoxContainer/RestartContainer/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Save & Restart"
+
+[node name="HideRestartButton" type="Button" parent="VBoxContainer/RestartContainer/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+flat = true

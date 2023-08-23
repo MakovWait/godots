@@ -31,7 +31,6 @@ const platforms = {
 @onready var _direct_link_button: Button = %DirectLinkButton
 @onready var _check_box_container: HFlowContainer = %CheckBoxContainer
 @onready var _refresh_button: Button = %RefreshButton
-@onready var _github_checkbox: CheckBox = %GithubCheckbox
 
 var _current_platform
 var _root_loaded = false
@@ -49,12 +48,6 @@ func _ready():
 	_detect_platform()
 	_setup_tree()
 	_setup_checkboxes()
-	
-	_github_checkbox.get_parent().move_child(_github_checkbox, 1)
-	_github_checkbox.button_pressed = Config.USE_GITHUB.ret()
-	_github_checkbox.toggled.connect(func (use_github: bool):
-		Config.USE_GITHUB.put(use_github)
-	)
 	
 	var scroll_container = %ScrollContainer
 	var editors_downloads = %EditorDownloads
@@ -225,8 +218,8 @@ func _setup_tree():
 	tree.button_clicked.connect(func(item, col, id, mouse):
 		if not item.has_meta("file_name"): return
 		var file_name = item.get_meta("file_name")
-		var url = _restore_url(item, _github_checkbox.button_pressed)
-		if _github_checkbox.button_pressed:
+		var url = _restore_url(item, Config.USE_GITHUB.ret())
+		if Config.USE_GITHUB.ret():
 			download_zip(url, file_name, _restore_url(item, false))
 		else:
 			download_zip(url, file_name)

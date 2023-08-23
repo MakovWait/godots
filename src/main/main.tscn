@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://omgg45dpxftx"]
+[gd_scene load_steps=11 format=3 uid="uid://omgg45dpxftx"]
 
 [ext_resource type="PackedScene" uid="uid://csgrsfoydw3m4" path="res://src/components/title_bar/title_bar.tscn" id="2_bjhyn"]
 [ext_resource type="Script" path="res://src/main/main.gd" id="2_nqr5a"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://buwhvihmtjeff" path="res://src/components/tags/manage_tags.tscn" id="6_xaluk"]
 [ext_resource type="Script" path="res://src/components/misc/updates_button.gd" id="7_ldf5c"]
 [ext_resource type="PackedScene" uid="uid://btxxnjmhy4bqw" path="res://src/components/command_viewer/command_viewer.tscn" id="7_tpcwo"]
+[ext_resource type="PackedScene" uid="uid://b3aprmu6od0wa" path="res://src/components/settings/settings_window.tscn" id="10_8n74v"]
 
 [node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects")]
 layout_mode = 3
@@ -120,23 +121,11 @@ offset_bottom = 31.0
 grow_horizontal = 0
 alignment = 2
 
-[node name="ScaleContainer" type="HBoxContainer" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ScaleOptionButton" type="OptionButton" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer/ScaleContainer"]
-layout_mode = 2
-focus_mode = 0
-flat = true
-alignment = 2
-icon_alignment = 2
-fit_to_longest_item = false
-
-[node name="AutoCloseCheckButton" type="CheckButton" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer"]
+[node name="SettingsButton" type="Button" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
-text = "auto close"
+text = "settings"
 flat = true
 
 [node name="ManageTags" parent="." instance=ExtResource("6_xaluk")]
@@ -144,3 +133,6 @@ visible = false
 
 [node name="CommandViewer" parent="." instance=ExtResource("7_tpcwo")]
 unique_name_in_owner = true
+
+[node name="Settings" parent="." instance=ExtResource("10_8n74v")]
+visible = false

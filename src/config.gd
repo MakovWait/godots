@@ -1,5 +1,9 @@
 extends Node
 
+
+signal saved
+
+
 var AUTO_EDSCALE = 1
 var EDSCALE = 1
 var AGENT = ""
@@ -13,7 +17,14 @@ const RELEASES_URL = "https://github.com/MakovWait/godots/releases"
 const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases/latest"
 
 var _cfg = ConfigFile.new()
-var _cfg_auto_save = ConfigFileSaveOnSet.new(_cfg, APP_CONFIG_PATH)
+var _cfg_auto_save = ConfigFileSaveOnSet.new(
+	_cfg, 
+	APP_CONFIG_PATH, 
+	func(err):
+		if err == OK:
+			saved.emit() 
+		pass\
+)
 
 
 var AGENT_HEADER:
@@ -119,6 +130,13 @@ func _get_auto_display_scale():
 		# Icons won't look great, but this is better than having editor elements overflow from its window.
 		return 0.75
 	return 1.0
+
+
+func save():
+	var err = _cfg.save(APP_CONFIG_PATH)
+	if err == OK:
+		saved.emit() 
+	return err
 
 
 func _readonly():
