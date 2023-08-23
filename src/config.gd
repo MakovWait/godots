@@ -3,9 +3,8 @@ extends Node
 var AUTO_EDSCALE = 1
 var EDSCALE = 1
 var AGENT = ""
-const VERSION = "v1.0.1.dev"
+const VERSION = "v1.1.dev"
 const APP_CONFIG_PATH = "user://godots.cfg"
-const APP_CACHE_PATH = "user://.cache"
 const EDITORS_CONFIG_PATH = "user://editors.cfg"
 const PROJECTS_CONFIG_PATH = "user://projects.cfg"
 const VERSIONS_PATH = "user://versions"
@@ -13,28 +12,74 @@ const DOWNLOADS_PATH = "user://downloads"
 const RELEASES_URL = "https://github.com/MakovWait/godots/releases"
 const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases/latest"
 
+var _cfg = ConfigFile.new()
+var _cfg_auto_save = ConfigFileSaveOnSet.new(_cfg, APP_CONFIG_PATH)
+
 
 var AGENT_HEADER:
 	get: return "User-Agent: %s" % AGENT
 
-var DEFAULT_EDITOR_TAGS:
-	get: return get_default_editor_tags(["dev", "rc", "alpha", "4.x", "3.x", "stable", "mono"])
 
-var DEFAULT_PROJECT_TAGS:
-	get: return get_default_project_tags([])
+var SAVED_EDSCALE = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"edscale"
+): 
+	set(_v): _readonly()
 
-var _cfg = ConfigFile.new()
-var _cache = ConfigFile.new()
+
+var DEFAULT_EDITOR_TAGS = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"default_editor_tags",
+	["dev", "rc", "alpha", "4.x", "3.x", "stable", "mono"]
+): 
+	set(_v): _readonly()
+
+
+var DEFAULT_PROJECT_TAGS = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"default_project_tags",
+	[]
+): 
+	set(_v): _readonly()
+
+
+var AUTO_CLOSE = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"auto_close",
+	false
+): 
+	set(_v): _readonly()
+
+
+var USE_SYSTEM_TITLE_BAR = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"use_system_titlebar",
+	false
+): 
+	set(_v): _readonly()
+
+
+var USE_GITHUB = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"use_github",
+	false
+): 
+	set(_v): _readonly()
 
 
 func _enter_tree() -> void:
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DOWNLOADS_PATH))
-	
 	_cfg.load(APP_CONFIG_PATH)
-	_cache.load(APP_CACHE_PATH)
 	assert(not VERSIONS_PATH.ends_with("/"))
 	assert(not DOWNLOADS_PATH.ends_with("/"))
+	
 	AGENT = "Godots/%s (%s) Godot/%s" % [
 		VERSION, 
 		OS.get_name(), 
@@ -45,7 +90,7 @@ func _enter_tree() -> void:
 
 func _setup_scale():
 	AUTO_EDSCALE = _get_auto_display_scale()
-	var saved_scale = get_saved_edscale(-1)
+	var saved_scale = SAVED_EDSCALE.ret(-1)
 	if saved_scale <= 0:
 		saved_scale = AUTO_EDSCALE
 	EDSCALE = saved_scale
@@ -76,79 +121,5 @@ func _get_auto_display_scale():
 	return 1.0
 
 
-func cache_get_value(section: String, key: String, default: Variant = null):
-	return _cache.get_value(section, key, default)
-
-
-func cache_set_value(section: String, key: String, value: Variant):
-	_cache.set_value(section, key, value)
-
-
-func cache_save():
-	return _cache.save(APP_CACHE_PATH)
-
-
-func get_remote_editors_checkbox_checked(key, default):
-	return _cfg.get_value("remote_editor_checkbox", key, default)
-
-
-func set_remote_editors_checkbox_checked(key, value):
-	_cfg.set_value("remote_editor_checkbox", key, value)
-	_cfg.save(APP_CONFIG_PATH)
-
-
-func set_main_current_tab(tab):
-	_cfg.set_value("main", "tab", tab)
-	_cfg.save(APP_CONFIG_PATH)
-
-
-func get_main_current_tab(default=0):
-	return _cfg.get_value("main", "tab", default)
-
-
-func get_default_editor_tags(default):
-	return _cfg.get_value("app", "default_editor_tags", default)
-
-
-func get_default_project_tags(default):
-	return _cfg.get_value("app", "default_project_tags", default)
-
-
-func get_saved_edscale(default):
-	return _cfg.get_value("app", "edscale", default)
-
-
-func set_saved_edscale(value):
-	_cfg.set_value("app", "edscale", value)
-	_cfg.save(APP_CONFIG_PATH)
-
-
-func set_auto_close(value):
-	_cfg.set_value("app", "auto_close", value)
-	_cfg.save(APP_CONFIG_PATH)
-
-
-func get_use_system_titlebar(default):
-	return _cfg.get_value("app", "system_titlebar", default)
-
-
-func get_project_creating_last_selected_path(default):
-	return _cfg.get_value("project_creating", "last_selected_base_dir", default)
-
-
-func set_project_creating_last_selected_path(value):
-	_cfg.set_value("project_creating", "last_selected_base_dir", value)
-	_cfg.save(APP_CONFIG_PATH)
-
-
-func get_auto_close():
-	return _cfg.get_value("app", "auto_close", false)
-
-
-func get_use_github():
-	return _cfg.get_value("app", "use_github", false)
-
-
-func set_use_github(value):
-	_cfg.set_value("app", "use_github", value)
-	_cfg.save(APP_CONFIG_PATH)
+func _readonly():
+	assert(false, "Property is readonly")

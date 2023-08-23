@@ -26,7 +26,7 @@ func _notification(what: int) -> void:
 func _check_for_updates():
 	if _downloading: 
 		return
-	var last_checked_unix:int = Config.cache_get_value("news", "last_checked", 0)
+	var last_checked_unix:int = Cache.get_value("news", "last_checked", 0)
 	if int(Time.get_unix_time_from_system()) - last_checked_unix > NEWS_CACHE_LIFETIME_SEC:
 		await _update_cache()
 	_load_from_cache()
@@ -48,15 +48,15 @@ func _update_cache():
 	var link = item.find_smart_child_recursive(
 		exml.Filters.by_name("link")
 	)
-	Config.cache_set_value("news", "title", title.o.content)
-	Config.cache_set_value("news", "link", link.o.content)
-	Config.cache_set_value("news", "last_checked", int(Time.get_unix_time_from_system()))
-	Config.cache_save()
+	Cache.set_value("news", "title", title.o.content)
+	Cache.set_value("news", "link", link.o.content)
+	Cache.set_value("news", "last_checked", int(Time.get_unix_time_from_system()))
+	Cache.save()
 
 
 func _load_from_cache():
-	text = "News: %s" % Config.cache_get_value("news", "title", "<null>")
-	uri = Config.cache_get_value("news", "link", "")
+	text = "News: %s" % Cache.get_value("news", "title", "<null>")
+	uri = Cache.get_value("news", "link", "")
 
 
 func _http_get(url, headers=[]):

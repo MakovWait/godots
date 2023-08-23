@@ -34,4 +34,6 @@ func _fill_sort_options(btn: OptionButton):
 	btn.add_item("Path")
 	btn.add_item("Tags")
 	
-	btn.select(0)
+	var last_checked_sort = Cache.smart_value(self, "last_checked_sort", true)
+	btn.select(last_checked_sort.ret(0))
+	btn.item_selected.connect(func(idx): last_checked_sort.put(idx))

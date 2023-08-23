@@ -51,7 +51,7 @@ func _draw() -> void:
 func _check_updates():
 	if _downloading: 
 		return
-	var last_checked_unix:int = Config.cache_get_value("update", "last_checked", 0)
+	var last_checked_unix:int = Cache.get_value("update", "last_checked", 0)
 	if int(Time.get_unix_time_from_system()) - last_checked_unix > UPDATES_CACHE_LIFETIME_SEC:
 		await _update_cache()
 	_load_from_cache()
@@ -71,15 +71,15 @@ func _update_cache():
 	) as Dictionary
 	if not json:
 		return
-	Config.cache_set_value("update", "tag_name", json.get("tag_name", Config.VERSION))
-	Config.cache_set_value("update", "last_checked", int(Time.get_unix_time_from_system()))
-	Config.cache_set_value("update", "link", json.get("html_url", Config.RELEASES_URL))
-	Config.cache_save()
+	Cache.set_value("update", "tag_name", json.get("tag_name", Config.VERSION))
+	Cache.set_value("update", "last_checked", int(Time.get_unix_time_from_system()))
+	Cache.set_value("update", "link", json.get("html_url", Config.RELEASES_URL))
+	Cache.save()
 
 
 func _load_from_cache():
-	_has_update = Config.cache_get_value("update", "tag_name") != Config.VERSION
-	_link = Config.cache_get_value("update", "link", Config.RELEASES_URL)
+	_has_update = Cache.get_value("update", "tag_name") != Config.VERSION
+	_link = Cache.get_value("update", "link", Config.RELEASES_URL)
 
 
 func _http_get(url, headers=[]):

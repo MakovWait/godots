@@ -66,10 +66,11 @@ func _ready():
 		_make_main_button("Remote Editors", get_theme_icon("Filesystem", "EditorIcons")),
 	)
 
-	_tab_container.tab_changed.connect(func(tab):
-		Config.set_main_current_tab(tab)
+	var main_current_tab = Cache.smart_value(
+		self, "main_current_tab", true
 	)
-	_tab_container.current_tab = Config.get_main_current_tab()
+	_tab_container.tab_changed.connect(func(tab): main_current_tab.put(tab))
+	_tab_container.current_tab = main_current_tab.ret(0)
 
 	_local_editors.editor_download_pressed.connect(func():
 		_tab_container.current_tab = _tab_container.get_tab_idx_from_control(_remote_editors)
@@ -84,11 +85,11 @@ func _ready():
 	%NewsButton.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
 	%NewsButton.tooltip_text = "Click to see the post."
 	
-	_auto_close_check_button.button_pressed = Config.get_auto_close()
+	_auto_close_check_button.button_pressed = Config.AUTO_CLOSE.ret()
 	_auto_close_check_button.tooltip_text = "Close on launch"
 	_auto_close_check_button.self_modulate = Color(1, 1, 1, 0.6)
 	_auto_close_check_button.toggled.connect(func(toggled):
-		Config.set_auto_close(toggled)
+		Config.AUTO_CLOSE.put(toggled)
 	)
 	
 	var scale_option_button := _scale_container.get_node("ScaleOptionButton") as OptionButton
@@ -131,7 +132,7 @@ func _ready():
 	var item_to_select_was_found = false
 	for scale_key in scale_map.keys():
 		scale_option_button.add_item("scale: " + scale_map[scale_key].name, scale_key)
-		if scale_map[scale_key].value == Config.get_saved_edscale(-1):
+		if scale_map[scale_key].value == Config.SAVED_EDSCALE.ret(-1):
 			scale_option_button.selected = item_idx
 			item_to_select_was_found = true
 		item_idx += 1
@@ -145,7 +146,7 @@ func _ready():
 		var id = scale_option_button.get_item_id(item_idx)
 		var scale_entry = scale_map.get(id, null)
 		if scale_entry:
-			Config.set_saved_edscale(scale_entry.value)
+			Config.SAVED_EDSCALE.put(scale_entry.value)
 		
 		scale_option_button.icon = get_theme_icon("StatusWarning", "EditorIcons")
 		scale_option_button.self_modulate = get_theme_color("warning_color", "Editor") * Color(1, 1, 1, 0.6)

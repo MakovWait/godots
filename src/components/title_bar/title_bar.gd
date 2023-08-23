@@ -11,7 +11,7 @@ var _click_pos = Vector2.ZERO
 
 
 func _ready():
-	if not DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE) or Config.get_use_system_titlebar(false):
+	if not DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE) or Config.USE_SYSTEM_TITLE_BAR.ret():
 		queue_free()
 		return
 	

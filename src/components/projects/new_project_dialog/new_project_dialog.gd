@@ -10,6 +10,9 @@ signal created(path)
 @onready var _status_rect = %StatusRect
 @onready var _create_folder_failed_dialog = $CreateFolderFailedDialog
 @onready var _file_dialog = $FileDialog
+@onready var _project_creating_last_selected_path = Cache.smart_value(
+	self, "last_selected_base_dir", true
+)
 
 var _create_folder_failed_label: Label
 
@@ -56,7 +59,7 @@ func _ready():
 			var img: Texture2D = preload("res://assets/default_project_icon.svg")
 			img.get_image().save_png(dir.path_join("icon.png"))
 			created.emit(project_file_path)
-			Config.set_project_creating_last_selected_path(dir.get_base_dir())
+			_project_creating_last_selected_path.put(dir.get_base_dir())
 	)
 	
 	min_size = Vector2(640, 215) * Config.EDSCALE
@@ -64,7 +67,7 @@ func _ready():
 
 func raise():
 	_project_name_edit.text = "New Game Project"
-	_project_path_line_edit.text = Config.get_project_creating_last_selected_path(
+	_project_path_line_edit.text = _project_creating_last_selected_path.ret(
 		OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)
 	)
 	popup_centered()

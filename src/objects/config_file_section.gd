@@ -2,7 +2,7 @@ class_name ConfigFileSection
 extends RefCounted
 
 
-var _cfg: ConfigFile
+var _cfg
 var _section: String
 
 var name: 

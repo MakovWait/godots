@@ -40,6 +40,9 @@ var _current_loadings_number = 0:
 	set(value): 
 		_current_loadings_number = value
 		_loadings_number_changed.emit(value)
+var _remote_editors_checkbox_checked = Cache.smart_section(
+	Cache.section_of(self) + ".checkbox_checked", true
+)
 
 
 func _ready():
@@ -48,9 +51,10 @@ func _ready():
 	_setup_checkboxes()
 	
 	_github_checkbox.get_parent().move_child(_github_checkbox, 1)
-	_github_checkbox.button_pressed = Config.get_use_github()
+	_github_checkbox.button_pressed = Config.USE_GITHUB.ret()
 	_github_checkbox.toggled.connect(func (use_github: bool):
-		Config.set_use_github(use_github))
+		Config.USE_GITHUB.put(use_github)
+	)
 	
 	var scroll_container = %ScrollContainer
 	var editors_downloads = %EditorDownloads
@@ -111,7 +115,7 @@ func _setup_checkboxes():
 			else:
 				var idx = _row_filters.find(filter)
 				_row_filters.remove_at(idx)
-			Config.set_remote_editors_checkbox_checked(text, pressed)
+			_remote_editors_checkbox_checked.set_value(text, pressed)
 			_update_whole_tree_visibility(tree.get_root())
 		)
 		return box
@@ -129,7 +133,7 @@ func _setup_checkboxes():
 					_row_filters.remove_at(idx)
 			else:
 				_row_filters.append(filter)
-			Config.set_remote_editors_checkbox_checked(text, pressed)
+			_remote_editors_checkbox_checked.set_value(text, pressed)
 			_update_whole_tree_visibility(tree.get_root())
 		)
 		return box
@@ -145,7 +149,7 @@ func _setup_checkboxes():
 		inverted_checkbox.call(
 			"mono", 
 			RowFilter.new(contains_any.call(["mono"])),
-			Config.get_remote_editors_checkbox_checked("mono", true)
+			_remote_editors_checkbox_checked.get_value("mono", true)
 		)
 	)
 	
@@ -153,7 +157,7 @@ func _setup_checkboxes():
 		inverted_checkbox.call(
 			"unstable", 
 			RowFilter.new(contains_any.call(["rc", "beta", "alpha", "dev", "fixup"])),
-			Config.get_remote_editors_checkbox_checked("unstable", false)
+			_remote_editors_checkbox_checked.get_value("unstable", false)
 		)
 	)
 	
@@ -162,7 +166,7 @@ func _setup_checkboxes():
 			"any platform", 
 			RowFilter.new(func(row): 
 				return row.is_file and row.is_for_different_platform(_current_platform["suffixes"])),
-			Config.get_remote_editors_checkbox_checked("any platform", false)
+			_remote_editors_checkbox_checked.get_value("any platform", false)
 		)
 	)
 
@@ -171,7 +175,7 @@ func _setup_checkboxes():
 			"4.x", 
 			RowFilter.new(func(row: TuxfamilyRow): 
 				return row.is_possible_version_folder and row.name.begins_with("4")),
-			Config.get_remote_editors_checkbox_checked("4.x", true)
+			_remote_editors_checkbox_checked.get_value("4.x", true)
 		)
 	)
 
@@ -180,7 +184,7 @@ func _setup_checkboxes():
 			"3.x", 
 			RowFilter.new(func(row: TuxfamilyRow): 
 				return row.is_possible_version_folder and row.name.begins_with("3")),
-			Config.get_remote_editors_checkbox_checked("3.x", true)
+			_remote_editors_checkbox_checked.get_value("3.x", true)
 		)
 	)
 
@@ -189,7 +193,7 @@ func _setup_checkboxes():
 			"x.x", 
 			RowFilter.new(func(row: TuxfamilyRow): 
 				return row.is_possible_version_folder and not (row.name.begins_with("4") or row.name.begins_with("3"))),
-			Config.get_remote_editors_checkbox_checked("x.x", false)
+			_remote_editors_checkbox_checked.get_value("x.x", false)
 		)
 	)
 
