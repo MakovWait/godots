@@ -217,7 +217,25 @@ func _check_file_integrity() -> bool:
 					+ _CHECKSUM_FILENAME])
 			return status == 0 or status == 127
 		"Windows":
-			return true #TODO
+			var certutil_output = []
+			OS.execute("certutil", ["-hashfile",
+					globalized_directory_path.path_join(_file_name),
+					"SHA512"], certutil_output)
+			var output_lines = certutil_output[0].split("\n")
+			if len(output_lines) <= 2:
+				return true
+			
+			var obtained_sum = output_lines[1].strip_edges()
+			if not obtained_sum.is_valid_hex_number():
+				return true
+			
+			var checksum_file_contents = FileAccess.open(_target_abs_dir.path_join(
+					_CHECKSUM_FILENAME), FileAccess.READ).get_as_text()
+			
+			if obtained_sum + "  " + _file_name in checksum_file_contents:
+				return true
+			else:
+				return false
 		"macOS":
 			return true #TODO
 		_:
