@@ -39,3 +39,7 @@ func map_return_value(callback) -> ConfigFileValue:
 	var result = ConfigFileValue.new(_cfg, _section, _key, _baked_default)
 	result._map_return_value = callback
 	return result
+
+
+func get_baked_default():
+	return _baked_default

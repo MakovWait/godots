@@ -15,7 +15,7 @@ func _prepare_settings():
 		)),
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/config/scale",
-			Config.SAVED_EDSCALE,
+			Config.SAVED_EDSCALE.bake_default(-1),
 			SettingScale,
 		))),
 		SettingChangeObserved(SettingCfg(
@@ -165,11 +165,12 @@ func _update_settings_visibility(section: String):
 
 func SettingCfg(category, cfg_value, prop_factory, tooltip=""):
 	if prop_factory is Script:
-		prop_factory = func(a1, a2, a3): return prop_factory.new(a1, a2, a3)
+		prop_factory = func(a1, a2, a3, a4): return prop_factory.new(a1, a2, a3, a4)
 	return prop_factory.call(
 		category, 
 		cfg_value.ret(),
-		tooltip
+		tooltip,
+		cfg_value.get_baked_default()
 	).on_value_changed(func(v): cfg_value.put_custom(v, Config._cfg))
 
 
@@ -225,11 +226,13 @@ class Setting extends RefCounted:
 	var category: Category
 	var _value
 	var _tooltip
+	var _default_value
 	
-	func _init(name: String, value, tooltip):
+	func _init(name: String, value, tooltip, default_value):
 		self.category = Category.new(name)
 		self._value = value
 		self._tooltip = tooltip
+		self._default_value = default_value
 	
 	func add_control(target):
 		pass
@@ -250,19 +253,22 @@ class Setting extends RefCounted:
 	
 	func validate():
 		category.validate()
+	
+	func reset():
+		set_value_and_notify(_default_value)
+	
+	func value_is_not_default():
+		return _value != _default_value
 
 
 class SettingText extends Setting:
-	func _init(n, v, t):
-		super._init(n, v, t)
-	
 	func add_control(target):
 		var timer = CompRefs.Simple.new()
 		var control = Comp.new(HBoxContainer, [
 			Comp.new(Timer).ref(timer).on_init(
 				func(this: Timer): this.timeout.connect(self.notify_changed)
 			),
-			CompSettingName.new(category.name, _tooltip),
+			CompSettingNameContainer.new(self),
 			CompSettingPanelContainer.new(_tooltip, [
 				Comp.new(LineEdit).on_init([
 					CompInit.TOOLTIP_TEXT(_tooltip),
@@ -270,6 +276,9 @@ class SettingText extends Setting:
 					CompInit.TEXT(self._value),
 					CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL(),
 					CompInit.CUSTOM(func(this: LineEdit):
+						self.on_value_changed(func(new_value):
+							this.text = new_value
+						)
 						this.text_changed.connect(func(new_text):
 							_value = new_text
 							(timer.value as Timer).start(1)
@@ -283,15 +292,15 @@ class SettingText extends Setting:
 
 
 class SettingFilePath extends Setting:
-	func _init(n, v, t):
-		super._init(n, v, t)
-	
 	func add_control(target):
 		var file_dialog = CompRefs.Simple.new()
 		var line_edit = CompRefs.Simple.new()
 		var update_value = func(new_value): 
 				set_value_and_notify(new_value)
 				line_edit.value.text = new_value
+		self.on_value_changed(func(new_value):
+			line_edit.value.text = new_value
+		)
 		var control = Comp.new(HBoxContainer, [
 			Comp.new(FileDialog).ref(file_dialog).on_init(func(x: FileDialog):
 				x.access = FileDialog.ACCESS_FILESYSTEM
@@ -301,7 +310,7 @@ class SettingFilePath extends Setting:
 				)
 				pass\
 			),
-			CompSettingName.new(category.name, _tooltip),
+			CompSettingNameContainer.new(self),
 			CompSettingPanelContainer.new(_tooltip, [
 				Comp.new(HBoxContainer, [
 					Comp.new(LineEdit).on_init([
@@ -342,17 +351,44 @@ class CompSettingName extends Comp:
 		)
 
 
+class CompSettingNameContainer extends Comp:
+	func _init(setting: Setting):
+		super._init(HBoxContainer)
+		on_init([
+			CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL()
+		])
+		var reset_btn = CompRefs.Simple.new()
+		setting.on_value_changed(func(_a):
+			reset_btn.value.visible = setting.value_is_not_default()
+		)
+		children([
+			CompSettingName.new(setting.category.name, setting._tooltip),
+			Comp.new(Button).on_init([
+				CompInit.PRESSED(func(_a):
+					setting.reset()\
+				),
+				CompInit.CUSTOM(func(this):
+					this.visible = setting.value_is_not_default()\
+				),
+				CompInit.SET_FLAT(),
+				CompInit.TREE_ENTERED(
+					CompInit.SET_THEME_ICON("Reload", "EditorIcons")
+				),
+			]).ref(reset_btn)
+		])
+
+
 class SettingCheckbox extends Setting:
-	func _init(n, v, t):
-		super._init(n, v, t)
-	
 	func add_control(target):
 		var control = Comp.new(HBoxContainer, [
-			CompSettingName.new(category.name, _tooltip),
+			CompSettingNameContainer.new(self),
 			CompSettingPanelContainer.new(_tooltip, [
 				Comp.new(CheckBox).on_init([
 					CompInit.TOOLTIP_TEXT(_tooltip),
 					CompInit.CUSTOM(func(this: CheckBox):
+						self.on_value_changed(func(new_value):
+							this.button_pressed = new_value
+						)
 						this.button_pressed = bool(_value)
 						this.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 						this.toggled.connect(func(v): self.set_value_and_notify(v))
@@ -392,14 +428,29 @@ class SettingOptionButton extends Setting:
 	var _options: Dictionary
 	var _fallback_option: String
 	
-	func _init(n, v, t, options, fallback_option):
-		super._init(n, v, t)
+	func _init(n, v, t, d, options, fallback_option):
+		super._init(n, v, t, d)
 		self._options = options
 		self._fallback_option = fallback_option
 	
 	func add_control(target):
+		var update_selected_value = func(this: OptionButton):
+			this.clear()
+			var item_idx = 0
+			var item_to_select_was_found = false
+			for key in _options.keys():
+				this.add_item(_options[key].name, key)
+				if _options[key].value == self._value:
+					this.selected = item_idx
+					item_to_select_was_found = true
+				item_idx += 1
+			
+			if not item_to_select_was_found:
+				this.add_item(_fallback_option)
+				this.selected = item_idx
+		
 		var control = Comp.new(HBoxContainer, [
-			CompSettingName.new(category.name, _tooltip),
+			CompSettingNameContainer.new(self),
 			CompSettingPanelContainer.new(_tooltip, [
 				Comp.new(OptionButton).on_init([
 					CompInit.TOOLTIP_TEXT(_tooltip),
@@ -407,19 +458,10 @@ class SettingOptionButton extends Setting:
 					CompInit.SET_FLAT(),
 					CompInit.ADD_THEME_STYLEBOX_OVERRIDE("focus", StyleBoxEmpty.new()),
 					CompInit.CUSTOM(func(this: OptionButton):
-						var item_idx = 0
-						var item_to_select_was_found = false
-						for key in _options.keys():
-							this.add_item(_options[key].name, key)
-							if _options[key].value == self._value:
-								this.selected = item_idx
-								item_to_select_was_found = true
-							item_idx += 1
-						
-						if not item_to_select_was_found:
-							this.add_item(_fallback_option)
-							this.selected = item_idx
-						
+						self.on_value_changed(func(_a):
+							update_selected_value.call(this)
+						)
+						update_selected_value.call(this)
 						this.self_modulate = Color(1, 1, 1, 0.6)
 						this.item_selected.connect(func(item_idx):
 							var id = this.get_item_id(item_idx)
@@ -435,8 +477,8 @@ class SettingOptionButton extends Setting:
 		control.add_to(target)
 
 
-func SettingScale(a1, a2, a3):
-	return SettingOptionButton.new(a1, a2, a3,
+func SettingScale(a1, a2, a3, a4):
+	return SettingOptionButton.new(a1, a2, a3, a4,
 		{
 			1: {
 				"name": "{0} ({1}%)".format([tr("auto"), Config.AUTO_EDSCALE * 100]),
