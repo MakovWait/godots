@@ -114,6 +114,9 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 			_status.text = "Something went wrong."
 		return
 	
+	for connection in _download.request_completed.get_connections():
+		_download.request_completed.disconnect(connection.callable)
+	
 	_download.request_completed.connect(download_completed_callback)
 	
 	#TODO handle deadlock
