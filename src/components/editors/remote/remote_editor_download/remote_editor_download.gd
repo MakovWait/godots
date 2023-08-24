@@ -35,7 +35,7 @@ func _ready() -> void:
 
 func start(url, target_abs_dir, file_name, tux_fallback = ""):
 	var download_completed_callback = func(result: int, response_code: int,
-			headers, body, download_completed_callback: Callable):
+			headers, body):
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
 		var host = url
 		var error_text = null
@@ -114,7 +114,7 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 			_status.text = "Something went wrong."
 		return
 	
-	_download.request_completed.connect(download_completed_callback.bind(download_completed_callback))
+	_download.request_completed.connect(download_completed_callback)
 	
 	#TODO handle deadlock
 	while _download.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED:
