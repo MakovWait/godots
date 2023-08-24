@@ -14,8 +14,13 @@ func append_array(array):
 
 
 func values():
-	var values = _set.values().duplicate()
+	var values = values_unsorted()
 	values.sort()
+	return values
+
+
+func values_unsorted():
+	var values = _set.values().duplicate()
 	return values
 
 

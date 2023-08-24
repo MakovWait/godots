@@ -13,12 +13,24 @@ static func TOOLTIP_TEXT(text):
 	return func(c): c.tooltip_text = c.tr(str(text))
 
 
+static func SET_EDITABLE(v):
+	return func(c): c.editable = bool(v)
+
+
+static func SET_THEME_ICON(name, theme_type):
+	return func(c): c.icon = c.get_theme_icon(name, theme_type)
+
+
 static func THEME_CHANGED(callback):
 	return func(c: Control): c.theme_changed.connect(func(): callback.call(c))
 
 
 static func TREE_ENTERED(callback):
 	return func(c: Control): c.tree_entered.connect(func(): callback.call(c))
+
+
+static func PRESSED(callback):
+	return func(c): c.pressed.connect(func(): callback.call(c))
 
 
 static func ADD_THEME_STYLEBOX_OVERRIDE_FROM_THEME(name, theme_stylebox_name, theme_type):

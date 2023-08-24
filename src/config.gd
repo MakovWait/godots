@@ -11,8 +11,8 @@ const VERSION = "v1.1.dev"
 const APP_CONFIG_PATH = "user://godots.cfg"
 const EDITORS_CONFIG_PATH = "user://editors.cfg"
 const PROJECTS_CONFIG_PATH = "user://projects.cfg"
-const VERSIONS_PATH = "user://versions"
-const DOWNLOADS_PATH = "user://downloads"
+const DEFAULT_VERSIONS_PATH = "user://versions"
+const DEFAULT_DOWNLOADS_PATH = "user://downloads"
 const RELEASES_URL = "https://github.com/MakovWait/godots/releases"
 const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases/latest"
 
@@ -29,6 +29,24 @@ var _cfg_auto_save = ConfigFileSaveOnSet.new(
 
 var AGENT_HEADER:
 	get: return "User-Agent: %s" % AGENT
+
+
+var VERSIONS_PATH = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"versions_path",
+	DEFAULT_VERSIONS_PATH
+).map_return_value(_simplify_path): 
+	set(_v): _readonly()
+
+
+var DOWNLOADS_PATH = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"downloads_path",
+	DEFAULT_DOWNLOADS_PATH
+).map_return_value(_simplify_path): 
+	set(_v): _readonly()
 
 
 var SAVED_EDSCALE = ConfigFileValue.new(
@@ -66,6 +84,15 @@ var AUTO_CLOSE = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var SHOW_ORPHAN_EDITOR = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"show_orphan_editor",
+	false
+): 
+	set(_v): _readonly()
+
+
 var USE_SYSTEM_TITLE_BAR = ConfigFileValue.new(
 	_cfg_auto_save, 
 	"app", 
@@ -85,11 +112,11 @@ var USE_GITHUB = ConfigFileValue.new(
 
 
 func _enter_tree() -> void:
-	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(VERSIONS_PATH))
-	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DOWNLOADS_PATH))
+	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
+	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))
 	_cfg.load(APP_CONFIG_PATH)
-	assert(not VERSIONS_PATH.ends_with("/"))
-	assert(not DOWNLOADS_PATH.ends_with("/"))
+	assert(not DEFAULT_VERSIONS_PATH.ends_with("/"))
+	assert(not DEFAULT_DOWNLOADS_PATH.ends_with("/"))
 	
 	AGENT = "Godots/%s (%s) Godot/%s" % [
 		VERSION, 
@@ -141,3 +168,7 @@ func save():
 
 func _readonly():
 	assert(false, "Property is readonly")
+
+
+func _simplify_path(s: String):
+	return s.simplify_path()

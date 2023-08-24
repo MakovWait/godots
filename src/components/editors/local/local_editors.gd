@@ -27,6 +27,11 @@ func _ready() -> void:
 	$EditorImport.imported.connect(func(editor_name, editor_path):
 		add(editor_name, editor_path)
 	)
+	
+	_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
+	Config.saved.connect(func():
+		_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
+	)
 
 
 func init(editors: Editors.LocalEditors):
@@ -34,8 +39,10 @@ func init(editors: Editors.LocalEditors):
 	_editors_list.refresh(_local_editors.all())
 	_editors_list.sort_items()
 	
-	_orphan_editors_explorer.init(editors, Config.VERSIONS_PATH)
-	_orphan_editors_button.tooltip_text = "Check if there are some leaked Godot binaries on the filesystem that can be safely removed."
+	_orphan_editors_explorer.init(editors, Config.VERSIONS_PATH.ret())
+	_orphan_editors_button.tooltip_text = tr(
+		"Check if there are some leaked Godot binaries on the filesystem that can be safely removed. For advanced users."
+	)
 	_orphan_editors_button.pressed.connect(func():
 		_orphan_editors_explorer.before_popup()
 		_orphan_editors_explorer.popup_centered_ratio(0.4)
@@ -63,7 +70,7 @@ func _on_editors_list_item_selected(item) -> void:
 func _on_editors_list_item_removed(item_data: Editors.LocalEditor, remove_dir: bool) -> void:
 	if remove_dir:
 		var base_dir = ProjectSettings.globalize_path(item_data.path.get_base_dir())
-		var versions_dir = ProjectSettings.globalize_path(Config.VERSIONS_PATH)
+		var versions_dir = ProjectSettings.globalize_path(Config.VERSIONS_PATH.ret())
 		if not OS.has_feature("linux"):
 			base_dir = base_dir.to_lower()
 			versions_dir = versions_dir.to_lower()

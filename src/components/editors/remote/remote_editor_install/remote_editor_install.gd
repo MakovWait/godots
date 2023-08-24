@@ -26,7 +26,7 @@ func _ready():
 
 func init(editor_name, editor_exec_path):
 	assert(editor_exec_path.ends_with("/"))
-	
+	Output.push("Installing editor: %s" % editor_exec_path)
 	_editor_name_edit.text = editor_name
 	if OS.has_feature("macos"):
 		_select_exec_file_tree.show()

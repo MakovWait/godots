@@ -65,7 +65,7 @@ layout_mode = 2
 title = "Open a File"
 ok_button_text = "Open"
 file_mode = 0
-access = 1
+access = 2
 
 [connection signal="canceled" from="." to="." method="_on_canceled"]
 [connection signal="confirmed" from="." to="." method="_on_confirmed"]

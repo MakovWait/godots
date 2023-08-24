@@ -13,17 +13,35 @@ func _prepare_settings():
 			SettingCheckbox,
 			tr("Close on launch.")
 		)),
-		SettingChangeObserved(SettingCfg(
-			"application/config/use_github",
-			Config.USE_GITHUB,
-			SettingCheckbox,
-			tr("Will download files from github when possible, if enabled.")
-		)),
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/config/scale",
 			Config.SAVED_EDSCALE,
 			SettingScale,
-		)))
+		))),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/use_github",
+			Config.USE_GITHUB,
+			SettingCheckbox,
+			tr("Will download files from github when possible, if enabled.")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/downloads_path",
+			Config.DOWNLOADS_PATH,
+			SettingFilePath,
+			tr("Temp dir for downloaded zips.")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/versions_path",
+			Config.VERSIONS_PATH,
+			SettingFilePath,
+			tr("Dir for downloaded editors.")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/show_orphan_editor_explorer",
+			Config.SHOW_ORPHAN_EDITOR,
+			SettingCheckbox,
+			tr("Check if there are some leaked Godot binaries on the filesystem that can be safely removed. For advanced users.")
+		))
 	]
 
 
@@ -130,7 +148,7 @@ func _setup_settings():
 		first_lvl_item.set_text(0, tr(first_lvl.capitalize()))
 		first_lvl_item.set_selectable(0, false)
 		first_lvl_item.set_custom_font(0, get_theme_font("bold", "EditorFonts"))
-		for second_lvl in categories[first_lvl].values():
+		for second_lvl in categories[first_lvl].values_unsorted():
 			var second_lvl_item = tree.create_item(first_lvl_item)
 			second_lvl_item.set_text(0, tr(second_lvl.capitalize()))
 			second_lvl_item.set_metadata(0, first_lvl + "/" + second_lvl)
@@ -263,6 +281,52 @@ class SettingText extends Setting:
 		])
 		control.add_to(target)
 
+
+class SettingFilePath extends Setting:
+	func _init(n, v, t):
+		super._init(n, v, t)
+	
+	func add_control(target):
+		var file_dialog = CompRefs.Simple.new()
+		var line_edit = CompRefs.Simple.new()
+		var update_value = func(new_value): 
+				set_value_and_notify(new_value)
+				line_edit.value.text = new_value
+		var control = Comp.new(HBoxContainer, [
+			Comp.new(FileDialog).ref(file_dialog).on_init(func(x: FileDialog):
+				x.access = FileDialog.ACCESS_FILESYSTEM
+				x.file_mode = FileDialog.FILE_MODE_OPEN_DIR
+				x.dir_selected.connect(func(dir):
+					update_value.call(dir)
+				)
+				pass\
+			),
+			CompSettingName.new(category.name, _tooltip),
+			CompSettingPanelContainer.new(_tooltip, [
+				Comp.new(HBoxContainer, [
+					Comp.new(LineEdit).on_init([
+						CompInit.SET_EDITABLE(false),
+						CompInit.TOOLTIP_TEXT(_tooltip),
+						CompInit.ADD_THEME_STYLEBOX_OVERRIDE("focus", StyleBoxEmpty.new()),
+						CompInit.TEXT(self._value),
+						CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL(),
+					]).ref(line_edit),
+					Comp.new(Button).on_init([
+						CompInit.TREE_ENTERED(
+							CompInit.SET_THEME_ICON("Load", "EditorIcons")
+						),
+						CompInit.PRESSED(func(_a): 
+							var dialog = file_dialog.value as FileDialog 
+							dialog.current_dir = self._value
+							dialog.popup_centered_ratio(0.5)\
+						)
+					])
+				]).on_init([
+					CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL(),
+				])
+			])
+		])
+		control.add_to(target)
 
 
 class CompSettingName extends Comp:

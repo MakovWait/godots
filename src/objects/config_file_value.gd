@@ -5,6 +5,7 @@ var _cfg
 var _section
 var _key
 var _baked_default
+var _map_return_value
 
 
 func _init(cfg, section, key, baked_default=null):
@@ -16,7 +17,10 @@ func _init(cfg, section, key, baked_default=null):
 
 func ret(default=null):
 	default = _baked_default if default == null else default
-	return _cfg.get_value(_section, _key, default)
+	var value = _cfg.get_value(_section, _key, default) 
+	if _map_return_value:
+		value = _map_return_value.call(value)
+	return value
 
 
 func put(value):
@@ -29,3 +33,9 @@ func put_custom(value, custom_cfg):
 
 func bake_default(default) -> ConfigFileValue:
 	return ConfigFileValue.new(_cfg, _section, _key, default)
+
+
+func map_return_value(callback) -> ConfigFileValue:
+	var result = ConfigFileValue.new(_cfg, _section, _key, _baked_default)
+	result._map_return_value = callback
+	return result

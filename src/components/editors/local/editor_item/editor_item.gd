@@ -94,7 +94,7 @@ func init(item):
 			buttons.simple(
 				"Remove", 
 				get_theme_icon("Remove", "EditorIcons"),
-				_on_remove
+				func(): _on_remove(item)
 			),
 		]
 	
@@ -152,20 +152,29 @@ func _on_rename(item):
 	)
 
 
-func _on_remove():
+func _on_remove(item):
 	var confirmation_dialog = ConfirmationDialogAutoFree.new()
-	confirmation_dialog.ok_button_text = "Remove"
+	confirmation_dialog.ok_button_text = tr("Remove")
 	confirmation_dialog.get_label().hide()
 	
 	var label = Label.new()
-	label.text = "Are you sure to remove the editor from the list?"
+	label.text = tr("Are you sure to remove the editor from the list?")
+	
+	var warning = Label.new()
+	warning.text = tr("NOTE: the action will remove the parent folder of the editor with all the content.") + "\n%s" % item.path.get_base_dir()
+	warning.self_modulate = get_theme_color("warning_color", "Editor")
+	warning.hide()
 	
 	var checkbox = CheckBox.new()
-	checkbox.text = "remove also from the file system"
+	checkbox.text = tr("remove also from the file system")
+	checkbox.toggled.connect(func(toggled):
+		warning.visible = toggled
+	)
 	
 	var vb = VBoxContainer.new()
 	vb.add_child(label)
 	vb.add_child(checkbox)
+	vb.add_child(warning)
 	vb.add_spacer(false)
 	
 	confirmation_dialog.add_child(vb)
