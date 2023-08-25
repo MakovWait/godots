@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://oa55f4gar0hd"]
+
+[ext_resource type="Script" path="res://src/components/assetlib_projects/asset_listing.gd" id="1_k8n7i"]
+[ext_resource type="Texture2D" uid="uid://cdgew1l4b48fm" path="res://theme/icons/DefaultProjectIcon.svg" id="2_mp17f"]
+
+[node name="AssetListing" type="HBoxContainer"]
+custom_minimum_size = Vector2(450, 0)
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 458.0
+offset_bottom = 284.0
+script = ExtResource("1_k8n7i")
+
+[node name="Icon" type="TextureButton" parent="."]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 0
+texture_normal = ExtResource("2_mp17f")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Title" type="LinkButton" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+underline = 1
+
+[node name="Category" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.427451, 0.427451, 0.427451, 1)
+
+[node name="Author" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.427451, 0.427451, 0.427451, 1)
+
+[node name="License" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.427451, 0.427451, 0.427451, 1)

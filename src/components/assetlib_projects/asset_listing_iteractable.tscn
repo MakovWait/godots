@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://d274f0n8k0qib"]
+
+[ext_resource type="PackedScene" uid="uid://oa55f4gar0hd" path="res://src/components/assetlib_projects/asset_listing.tscn" id="1_oixga"]
+[ext_resource type="Script" path="res://src/components/assetlib_projects/asset_listing_iteractable.gd" id="2_qu75l"]
+
+[node name="AssetListingIteractable" instance=ExtResource("1_oixga")]
+script = ExtResource("2_qu75l")
+
+[connection signal="pressed" from="Icon" to="." method="_open_popup"]
+[connection signal="pressed" from="VBoxContainer/Title" to="." method="_open_popup"]

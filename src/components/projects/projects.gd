@@ -28,23 +28,7 @@ func init(projects: Projects.Projects):
 	
 	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
 	_import_project_button.pressed.connect(func(): import())
-	_import_project_dialog.imported.connect(func(project_path, editor_path, edit):
-		var project
-		if projects.has(project_path):
-			project = projects.retrieve(project_path)
-			project.editor_path = editor_path
-			project.emit_internals_changed()
-		else:
-			project = _projects.add(project_path, editor_path)
-			project.load()
-			_projects_list.add(project)
-		_projects.save()
-		_projects_list.sort_items()
-		
-		if edit:
-			project.run_with_editor('-e')
-			AutoClose.close_if_should()
-	)
+	_import_project_dialog.imported.connect(add_project)
 	
 	_new_project_dialog.created.connect(func(project_path):
 		import(project_path)
@@ -70,6 +54,24 @@ func init(projects: Projects.Projects):
 	
 	_projects_list.refresh(_projects.all())
 	_load_projects()
+
+
+func add_project(project_path: String, editor_path: String, edit: bool):
+	var project
+	if _projects.has(project_path):
+		project = _projects.retrieve(project_path)
+		project.editor_path = editor_path
+		project.emit_internals_changed()
+	else:
+		project = _projects.add(project_path, editor_path)
+		project.load()
+		_projects_list.add(project)
+	_projects.save()
+	_projects_list.sort_items()
+		
+	if edit:
+		project.run_with_editor('-e')
+		AutoClose.close_if_should()
 
 
 func _load_projects():

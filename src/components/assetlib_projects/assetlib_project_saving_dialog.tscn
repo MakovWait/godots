@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://ct6r5vx7pxmuu"]
+
+[ext_resource type="PackedScene" uid="uid://canl4lc1tj7qu" path="res://src/components/projects/new_project_dialog/new_project_dialog.tscn" id="1_nhuek"]
+[ext_resource type="Script" path="res://src/components/assetlib_projects/assetlib_project_saving_dialog.gd" id="2_0gr3c"]
+
+[node name="AssetlibProjectSavingDialog" instance=ExtResource("1_nhuek")]
+size = Vector2i(200, 241)
+script = ExtResource("2_0gr3c")
+
+[node name="VBoxContainer" parent="." index="3"]
+offset_bottom = 192.0
+
+[node name="ProjectDownloader" type="HTTPRequest" parent="." index="6"]
+
+[connection signal="confirmed" from="." to="." method="_save_assetlib_project"]
+[connection signal="request_completed" from="ProjectDownloader" to="." method="_on_project_downloader_request_completed"]

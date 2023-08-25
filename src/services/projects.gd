@@ -1,6 +1,8 @@
 class Projects extends RefCounted:
 	const dict = preload("res://src/extensions/dict.gd")
 	
+	static var instance: Projects
+	
 	var _cfg = ConfigFile.new()
 	var _projects = {}
 	var _cfg_path
@@ -8,9 +10,11 @@ class Projects extends RefCounted:
 	var _local_editors
 	
 	func _init(cfg_path, local_editors, default_icon) -> void:
+		assert(instance == null)
 		_cfg_path = cfg_path
 		_local_editors = local_editors
 		_default_icon = default_icon
+		instance = self
 	
 	func add(project_path, editor_path) -> Project:
 		var project = Project.new(

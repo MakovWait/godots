@@ -7,6 +7,7 @@ const theme_source = preload("res://theme/theme.gd")
 @export var _remote_editors: Control
 @export var _local_editors: Control
 @export var _projects: Control
+@export var _asset_library_projects: Control
 @export var _godots_releases: Control
 @export var _auto_updates: Node
 @export var _asset_download: PackedScene
@@ -120,6 +121,8 @@ func _ready():
 
 	_projects.manage_tags_requested.connect(_popup_manage_tags)
 	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
+	
+	_asset_library_projects.projects = _projects
 
 	_setup_godots_releases()
 

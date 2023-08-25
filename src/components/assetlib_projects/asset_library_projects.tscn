@@ -1,0 +1,223 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1sh1x6y1kwc2"]
+
+[ext_resource type="Script" path="res://src/components/assetlib_projects/asset_library_projects.gd" id="1_m0pc7"]
+
+[node name="AssetLibraryProjects" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m0pc7")
+
+[node name="SearchField" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Search Templates, Projects, and Demos"
+
+[node name="FilterSortOptions" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="FilterSortOptions"]
+layout_mode = 2
+text = "Version:"
+
+[node name="VersionOption" type="OptionButton" parent="FilterSortOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VSeparator4" type="VSeparator" parent="FilterSortOptions"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="FilterSortOptions"]
+layout_mode = 2
+text = "Sort:"
+
+[node name="SortOption" type="OptionButton" parent="FilterSortOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 6
+selected = 0
+popup/item_0/text = "Recently Updated"
+popup/item_0/id = 0
+popup/item_1/text = "Least Recently Updated"
+popup/item_1/id = 1
+popup/item_2/text = "Name (A-Z)"
+popup/item_2/id = 2
+popup/item_3/text = "Name (Z-A)"
+popup/item_3/id = 3
+popup/item_4/text = "License (A-Z)"
+popup/item_4/id = 4
+popup/item_5/text = "License (Z-A)"
+popup/item_5/id = 5
+
+[node name="VSeparator" type="VSeparator" parent="FilterSortOptions"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="FilterSortOptions"]
+layout_mode = 2
+text = "Category:"
+
+[node name="CategoryOption" type="OptionButton" parent="FilterSortOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 4
+selected = 0
+popup/item_0/text = "All"
+popup/item_0/id = 0
+popup/item_1/text = "Templates"
+popup/item_1/id = 8
+popup/item_2/text = "Projects"
+popup/item_2/id = 9
+popup/item_3/text = "Demos"
+popup/item_3/id = 10
+
+[node name="VSeparator2" type="VSeparator" parent="FilterSortOptions"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="FilterSortOptions"]
+layout_mode = 2
+text = "Site:"
+
+[node name="SiteOption" type="OptionButton" parent="FilterSortOptions"]
+unique_name_in_owner = true
+editor_description = "Also only has one option in the official project manager.  I don't know why it's there, since there's seemingly no way to add other sources for assets."
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 1
+selected = 0
+popup/item_0/text = "godotengine.org (Official)"
+popup/item_0/id = 0
+
+[node name="VSeparator3" type="VSeparator" parent="FilterSortOptions"]
+layout_mode = 2
+
+[node name="SupportOptions" type="MenuButton" parent="FilterSortOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Support"
+item_count = 3
+popup/item_0/text = "Official"
+popup/item_0/checkable = 1
+popup/item_0/checked = true
+popup/item_0/id = 0
+popup/item_1/text = "Community"
+popup/item_1/checkable = 1
+popup/item_1/checked = true
+popup/item_1/id = 1
+popup/item_2/text = "Testing"
+popup/item_2/checkable = 1
+popup/item_2/id = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NavigationButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+alignment = 1
+
+[node name="FirstButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
+layout_mode = 2
+text = "First"
+
+[node name="PreviousButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
+layout_mode = 2
+text = "Previous"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
+layout_mode = 2
+
+[node name="PageButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
+layout_mode = 2
+
+[node name="VSeparator2" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
+layout_mode = 2
+text = "Next"
+
+[node name="LastButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
+layout_mode = 2
+text = "Last"
+
+[node name="AssetList" type="HFlowContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="NavigationButtons2" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 1
+
+[node name="FirstButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
+layout_mode = 2
+text = "First"
+
+[node name="PreviousButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
+layout_mode = 2
+text = "Previous"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
+layout_mode = 2
+
+[node name="PageButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
+layout_mode = 2
+
+[node name="VSeparator2" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
+layout_mode = 2
+text = "Next"
+
+[node name="LastButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
+layout_mode = 2
+text = "Last"
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+color = Color(0.211765, 0.239216, 0.290196, 0.694118)
+
+[node name="OverlayContents" type="CenterContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/OverlayContents"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/OverlayContents/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RefreshButton" type="Button" parent="MarginContainer/OverlayContents/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Refresh"
+
+[node name="AssetQuerier" type="HTTPRequest" parent="."]
+timeout = 8.0
+
+[connection signal="text_changed" from="SearchField" to="." method="_on_search_field_text_changed"]
+[connection signal="item_selected" from="FilterSortOptions/VersionOption" to="." method="_fetch_assets"]
+[connection signal="item_selected" from="FilterSortOptions/SortOption" to="." method="_fetch_assets"]
+[connection signal="item_selected" from="FilterSortOptions/CategoryOption" to="." method="_fetch_assets"]
+[connection signal="pressed" from="MarginContainer/OverlayContents/VBoxContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]
+[connection signal="request_completed" from="AssetQuerier" to="." method="_on_asset_querier_request_completed"]

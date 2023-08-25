@@ -6,6 +6,8 @@ signal created(path)
 func _ready():
 	super._ready()
 	
+	min_size = Vector2(640, 215) * Config.EDSCALE
+	
 	confirmed.connect(func():
 		var dir = _project_path_line_edit.text.strip_edges()
 		var project_file_path = dir.path_join("project.godot")

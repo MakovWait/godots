@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3 uid="uid://birwt63v5rr5c"]
+
+[ext_resource type="Script" path="res://src/components/assetlib_projects/asset_dialog.gd" id="1_7i63p"]
+[ext_resource type="PackedScene" uid="uid://bcn7ypx0qusqp" path="res://src/components/projects/import_project_dialog/import_project_dialog.tscn" id="2_2yi4x"]
+[ext_resource type="PackedScene" uid="uid://ct6r5vx7pxmuu" path="res://src/components/assetlib_projects/assetlib_project_saving_dialog.tscn" id="3_6stsb"]
+
+[node name="AssetDialog" type="ConfirmationDialog"]
+title = ""
+position = Vector2i(0, 36)
+size = Vector2i(466, 333)
+visible = true
+ok_button_text = "Download"
+cancel_button_text = "Close"
+script = ExtResource("1_7i63p")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 458.0
+offset_bottom = 284.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="PreviewImages" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="AssetInfoDownloader" type="HTTPRequest" parent="."]
+
+[node name="ImportDialog" parent="." instance=ExtResource("2_2yi4x")]
+visible = false
+
+[node name="AssetlibProjectSavingDialog" parent="." instance=ExtResource("3_6stsb")]
+visible = false
+
+[connection signal="about_to_popup" from="." to="." method="_on_about_to_popup"]
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]
+[connection signal="meta_clicked" from="HBoxContainer/VBoxContainer/DescriptionLabel" to="." method="_on_rich_text_label_meta_clicked"]
+[connection signal="request_completed" from="AssetInfoDownloader" to="." method="_on_asset_info_downloader_request_completed"]
+[connection signal="created" from="AssetlibProjectSavingDialog" to="." method="_on_assetlib_project_saving_dialog_created"]
