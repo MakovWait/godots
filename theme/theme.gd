@@ -3,8 +3,28 @@
 
 static var EDSCALE = 1
 
+
+static func is_dark_theme():
+	var auto_color = 0
+	var light_color = 2
+	var base_color = EDITOR_GET("interface/theme/base_color", Color(0.212, 0.239, 0.29)) as Color
+	var icon_font_color_settings = EDITOR_GET("interface/theme/icon_and_font_color", 0)
+	return (icon_font_color_settings == auto_color and base_color.get_luminance() < 0.5) or icon_font_color_settings == light_color
+
+
 static func set_scale(value):
 	EDSCALE = value
+
+
+static func load_external_font(path, fallback=null):
+	if path.is_empty() or not FileAccess.file_exists(path):
+		return null
+	var font = FontFile.new()
+	font.data = FileAccess.get_file_as_bytes(path)
+	if fallback:
+		font.fallbacks.push_back(fallback)
+	return font
+
 
 static func editor_register_fonts(theme: Theme):
 	var ts = TextServerManager.get_primary_interface()
@@ -12,23 +32,31 @@ static func editor_register_fonts(theme: Theme):
 	var default_font_size = int(EDITOR_GET("interface/editor/main_font_size", 14)) * EDSCALE
 	var default_font = load("res://theme/fonts/NotoSans_Regular.woff2")
 	var default_font_bold = load("res://theme/fonts/NotoSans_Bold.woff2")
-	var default_font_mono = load("res://theme/fonts/JetBrainsMono_Regular.woff2")
 	
-	var default_fc = default_font
-	var bold_fc = default_font_bold
+	var custom_font = load_external_font(
+		EDITOR_GET("interface/editor/main_font", ""),
+		default_font
+	)
+	var custom_font_bold = load_external_font(
+		EDITOR_GET("interface/editor/main_font_bold", ""),
+		default_font_bold
+	)
+
+	var default_fc = custom_font if custom_font != null else default_font
+	var bold_fc = custom_font_bold if custom_font_bold != null else default_font_bold
 	
 	var mono_fc = FontVariation.new()
-	mono_fc.base_font = default_font
+	mono_fc.base_font = default_fc
 	mono_fc.spacing_top = -EDSCALE
 	mono_fc.spacing_bottom = -EDSCALE
 	
 	var italic_fc = FontVariation.new()
-	italic_fc.base_font = default_font
+	italic_fc.base_font = default_fc
 	italic_fc.variation_transform = Transform2D(Vector2(1.0, 0.2), Vector2(0.0, 1.0), Vector2(0.0, 0.0))
 	
 	var embolden_strength = 0.6
 	
-	theme.default_font = default_font
+	theme.default_font = default_fc
 	theme.default_font_size = default_font_size
 	
 	theme.set_font("main", "EditorFonts", default_fc)
@@ -98,7 +126,7 @@ static func editor_register_fonts(theme: Theme):
 
 
 static func EDITOR_GET(arg, default):
-	return default
+	return Config.editor_settings_proxy_get(arg, default)
 
 
 static func itos(arg):
@@ -107,8 +135,10 @@ static func itos(arg):
 
 static func editor_register_and_generate_icons(p_theme, p_dark_theme, p_icon_saturation, p_thumb_size, p_only_thumbs = false):
 	var icons_cfg = ConfigFile.new()
-	icons_cfg.load("res://theme/icons.cfg")
-	
+	if p_dark_theme:
+		icons_cfg.load("res://theme/icons.cfg")
+	else:
+		icons_cfg.load("res://theme/icons-light.cfg")
 	for icon_path in icons_cfg.get_sections():
 		add_icon(p_theme, icon_path, icons_cfg.get_value(icon_path, "name"), EDSCALE)
 
@@ -255,16 +285,17 @@ static func create_editor_theme(p_theme):
 #		EditorSettings::get_singleton().set_initial_value("interface/theme/base_color", base_color)
 #		EditorSettings::get_singleton().set_initial_value("interface/theme/contrast", contrast)
 #		EditorSettings::get_singleton().set_initial_value("interface/theme/draw_extra_borders", draw_extra_borders)
-#
-#	EditorSettings::get_singleton().set_manually("interface/theme/preset", preset)
-#	EditorSettings::get_singleton().set_manually("interface/theme/accent_color", accent_color)
-#	EditorSettings::get_singleton().set_manually("interface/theme/base_color", base_color)
-#	EditorSettings::get_singleton().set_manually("interface/theme/contrast", contrast)
-#	EditorSettings::get_singleton().set_manually("interface/theme/draw_extra_borders", draw_extra_borders)
 
+	Config.editor_settings_proxy_set("interface/theme/preset", preset)
+	Config.editor_settings_proxy_set("interface/theme/accent_color", accent_color)
+	Config.editor_settings_proxy_set("interface/theme/base_color", base_color)
+	Config.editor_settings_proxy_set("interface/theme/contrast", contrast)
+	Config.editor_settings_proxy_set("interface/theme/draw_extra_borders", draw_extra_borders)
+	Config.save()
+	
 # Colors
 #	var dark_theme = EditorSettings::get_singleton().is_dark_theme()
-	var dark_theme = true
+	var dark_theme = is_dark_theme()
 
 #ifdef MODULE_SVG_ENABLED
 #	if dark_theme:
@@ -917,7 +948,7 @@ static func create_editor_theme(p_theme):
 	# Force the v_separation to be even so that the spacing on top and bottom is even.
 	# If the vsep is odd and cannot be split into 2 even groups (of pixels), then it will be lopsided.
 	# We add 2 to the vsep to give it some extra spacing which looks a bit more modern (see Windows, for example).
-	var vsep_base = extra_spacing + default_margin_size + 6
+	var vsep_base = int(extra_spacing + default_margin_size + 6)
 	var force_even_vsep = vsep_base + (vsep_base % 2)
 	theme.set_constant("v_separation", "PopupMenu", force_even_vsep * EDSCALE)
 	theme.set_constant("outline_size", "PopupMenu", 0)
@@ -1892,18 +1923,12 @@ static func create_editor_theme(p_theme):
 
 	return theme
 
-#Ref<Theme> create_custom_theme(const Ref<Theme> p_theme) {
-#	OS::get_singleton().benchmark_begin_measure("create_custom_theme")
-#	Ref<Theme> theme = create_editor_theme(p_theme)
-#
-#	const String custom_theme_path = EDITOR_GET("interface/theme/custom_theme")
-#	if (!custom_theme_path.is_empty()) {
-#		Ref<Theme> custom_theme = ResourceLoader::load(custom_theme_path)
-#		if (custom_theme.is_valid()) {
-#			theme.merge_with(custom_theme)
-#		}
-#	}
-#
-#	OS::get_singleton().benchmark_end_measure("create_custom_theme")
-#	return theme
-#}
+
+static func create_custom_theme(p_theme):
+	var theme = create_editor_theme(p_theme)
+	var custom_theme_path = EDITOR_GET("interface/theme/custom_theme", "")
+	if custom_theme_path:
+		var custom_theme = ResourceLoader.load(custom_theme_path) as Theme
+		if custom_theme:
+			theme.merge_with(custom_theme)
+	return theme

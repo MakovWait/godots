@@ -53,17 +53,6 @@ func _ready():
 	_remote_editors.installed.connect(func(name, path):
 		_local_editors.add(name, path)
 	)
-	
-	# obsolete
-	$GuiBase/MainVBox/TitleBar.add_button(
-		_make_main_button("Projects", get_theme_icon("File", "EditorIcons")),
-	)
-	$GuiBase/MainVBox/TitleBar.add_button(
-		_make_main_button("Local Editors", get_theme_icon("GodotMonochrome", "EditorIcons"))
-	)
-	$GuiBase/MainVBox/TitleBar.add_button(
-		_make_main_button("Remote Editors", get_theme_icon("Filesystem", "EditorIcons")),
-	)
 
 	var main_current_tab = Cache.smart_value(
 		self, "main_current_tab", true
@@ -112,18 +101,6 @@ func _ready():
 	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
 
 
-# obsolete
-func _make_main_button(text, icon):
-	var btn = Button.new()
-	btn.toggle_mode = true
-	btn.flat = true
-	btn.text = text
-	btn.icon = icon
-	btn.add_theme_font_override("font", get_theme_font("main_button_font", "EditorFonts"))
-	btn.add_theme_font_size_override("font_size", get_theme_font_size("main_button_font_size", "EditorFonts"))
-	return btn
-
-
 func _notification(what: int) -> void:
 	if NOTIFICATION_APPLICATION_FOCUS_OUT == what:
 		OS.low_processor_usage_mode_sleep_usec = 100000
@@ -135,7 +112,7 @@ func _notification(what: int) -> void:
 
 func _enter_tree():
 	theme_source.set_scale(Config.EDSCALE)
-	theme = theme_source.create_editor_theme(null)
+	theme = theme_source.create_custom_theme(null)
 	
 	var window = get_window()
 	window.min_size = Vector2(520, 350) * Config.EDSCALE

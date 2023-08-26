@@ -18,6 +18,17 @@ func _prepare_settings():
 			Config.SAVED_EDSCALE.bake_default(-1),
 			SettingScale,
 		))),
+		
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/theme/preset",
+			ConfigFileValue.new(
+				Config._cfg, 
+				"theme",
+				"interface/theme/preset"
+			).bake_default("Default"),
+			SettingThemePreset,
+		))),
+		
 		SettingChangeObserved(SettingCfg(
 			"application/advanced/use_github",
 			Config.USE_GITHUB,
@@ -347,6 +358,8 @@ class CompSettingName extends Comp:
 			this.text = tr(name.get_file().capitalize())
 			this.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			this.self_modulate = Color(1, 1, 1, 0.6)
+			this.clip_text = true
+			this.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 			pass\
 		)
 
@@ -481,7 +494,7 @@ func SettingScale(a1, a2, a3, a4):
 	return SettingOptionButton.new(a1, a2, a3, a4,
 		{
 			1: {
-				"name": "{0} ({1}%)".format([tr("auto"), Config.AUTO_EDSCALE * 100]),
+				"name": "{0} ({1}%)".format([tr("Auto"), Config.AUTO_EDSCALE * 100]),
 				"value": -1
 			},
 			2: {
@@ -512,5 +525,28 @@ func SettingScale(a1, a2, a3, a4):
 				"name": "225%",
 				"value": 2.25
 			},
-		}, tr("custom")
+		}, tr("Custom")
+	)
+
+
+func SettingThemePreset(a1, a2, a3, a4):
+	var preset_names = [
+		"Default",
+		"Breeze Dark",
+		"Godot 2",
+		"Gray",
+		"Light",
+		"Solarized (Dark)",
+		"Solarized (Light)",
+		"Black (OLED)",
+		"Custom"
+	]
+	var options = {}
+	for i in range(len(preset_names)):
+		options[i + 1] = {
+			'name': preset_names[i],
+			'value': preset_names[i],
+		}
+	return SettingOptionButton.new(a1, a2, a3, a4,
+		options, tr("Custom")
 	)

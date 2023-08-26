@@ -32,7 +32,9 @@ func put_custom(value, custom_cfg):
 
 
 func bake_default(default) -> ConfigFileValue:
-	return ConfigFileValue.new(_cfg, _section, _key, default)
+	return ConfigFileValue.new(
+		_cfg, _section, _key, default
+	).map_return_value(_map_return_value)
 
 
 func map_return_value(callback) -> ConfigFileValue:

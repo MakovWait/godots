@@ -16,6 +16,8 @@ const DEFAULT_DOWNLOADS_PATH = "user://downloads"
 const RELEASES_URL = "https://github.com/MakovWait/godots/releases"
 const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases/latest"
 
+const _EDITOR_PROXY_SECTION_NAME = "theme"
+
 var _cfg = ConfigFile.new()
 var _cfg_auto_save = ConfigFileSaveOnSet.new(
 	_cfg, 
@@ -51,8 +53,8 @@ var DOWNLOADS_PATH = ConfigFileValue.new(
 
 var SAVED_EDSCALE = ConfigFileValue.new(
 	_cfg_auto_save, 
-	"app", 
-	"edscale"
+	_EDITOR_PROXY_SECTION_NAME, 
+	"interface/editor/custom_display_scale"
 ): 
 	set(_v): _readonly()
 
@@ -128,10 +130,8 @@ func _enter_tree() -> void:
 
 func _setup_scale():
 	AUTO_EDSCALE = _get_auto_display_scale()
-	var saved_scale = SAVED_EDSCALE.ret(-1)
-	if saved_scale <= 0:
-		saved_scale = AUTO_EDSCALE
-	EDSCALE = saved_scale
+	var saved_scale = SAVED_EDSCALE.ret(AUTO_EDSCALE)
+	EDSCALE = clamp(saved_scale, 0.5, 4)
 
 
 #https://github.com/godotengine/godot/blob/master/editor/editor_settings.cpp#L1400
@@ -164,6 +164,14 @@ func save():
 	if err == OK:
 		saved.emit() 
 	return err
+
+
+func editor_settings_proxy_get(key, default):
+	return _cfg.get_value(_EDITOR_PROXY_SECTION_NAME, key, default)
+
+
+func editor_settings_proxy_set(key, value):
+	_cfg.set_value(_EDITOR_PROXY_SECTION_NAME, key, value)
 
 
 func _readonly():
