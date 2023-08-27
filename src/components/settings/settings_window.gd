@@ -69,6 +69,8 @@ func _init():
 		%WarningRect.self_modulate = get_theme_color("warning_color", "Editor") * Color(1, 1, 1, 0.6)
 		%RestartInfoLabel.self_modulate = get_theme_color("warning_color", "Editor") * Color(1, 1, 1, 0.6)
 		
+		%OpenConfigFileButton.icon = get_theme_icon("Load", "EditorIcons")
+		
 		var sections_root = (%SectionsTree as Tree).get_root()
 		if sections_root:
 			for child in sections_root.get_children():
@@ -118,6 +120,9 @@ func _ready():
 	)
 	%RestartContainer.hide()
 	
+	%OpenConfigFileButton.pressed.connect(func():
+		OS.shell_open(ProjectSettings.globalize_path(Config.APP_CONFIG_PATH.get_base_dir()))
+	)
 	
 	_setup_settings()
 

@@ -4,14 +4,14 @@
 
 [node name="SettingsWindow" type="AcceptDialog"]
 position = Vector2i(0, 36)
-size = Vector2i(154, 100)
+size = Vector2i(156, 100)
 visible = true
 script = ExtResource("1_u1xvk")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 146.0
+offset_right = 148.0
 offset_bottom = 51.0
 
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
@@ -27,6 +27,11 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="OpenConfigFileButton" type="Button" parent="VBoxContainer/HSplitContainer/LeftVB"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings  Folder"
 
 [node name="RightVB" type="VBoxContainer" parent="VBoxContainer/HSplitContainer"]
 unique_name_in_owner = true
