@@ -5,7 +5,7 @@
 [node name="EditorInstall" type="ConfirmationDialog"]
 title = "Install Editor"
 position = Vector2i(0, 36)
-size = Vector2i(200, 219)
+size = Vector2i(203, 219)
 visible = true
 script = ExtResource("1_vo8ft")
 
@@ -15,8 +15,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 192.0
-offset_bottom = 170.0
+offset_right = -8.0
+offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -35,9 +35,19 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Editor Path:"
+
+[node name="ShowAllCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "show all"
 
 [node name="SelectExecFileTree" type="Tree" parent="VBoxContainer"]
 unique_name_in_owner = true
@@ -45,21 +55,6 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 hide_root = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="ExecPathEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-editable = false
-
-[node name="BrowseExecFileButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
 
 [node name="FileDialog" type="FileDialog" parent="."]
 title = "Open a File"

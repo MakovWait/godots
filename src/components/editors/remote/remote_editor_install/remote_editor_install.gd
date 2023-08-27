@@ -3,88 +3,104 @@ extends AcceptDialog
 
 signal installed(editor_name, editor_exec_path)
 
+const dir = preload("res://src/extensions/dir.gd")
 
 @onready var _editor_name_edit: LineEdit = %EditorNameEdit
 @onready var _select_exec_file_tree: Tree = %SelectExecFileTree
 @onready var _file_dialog = $FileDialog
-@onready var _browse_exec_file_button = %BrowseExecFileButton
-@onready var _exec_path_edit = %ExecPathEdit
+@onready var _show_all_check_box = %ShowAllCheckBox
 
-
-var _selected_file_source
+var _dir_content = [] as Array[dir.DirListResult]
+var _show_all: bool:
+	get: return _show_all_check_box.button_pressed
 
 
 func _ready():
-	min_size = Vector2(300, 0) * Config.EDSCALE
-	if OS.has_feature("macos"):
-		_select_exec_file_tree.custom_minimum_size = Vector2(0, 300) * Config.EDSCALE
-	_browse_exec_file_button.pressed.connect(func():
-		_file_dialog.popup_centered_ratio(0.5)
+	_select_exec_file_tree.custom_minimum_size = Vector2(300, 100) * Config.EDSCALE
+	_select_exec_file_tree.select_mode = Tree.SELECT_SINGLE
+	_select_exec_file_tree.item_selected.connect(func():
+		var root = _select_exec_file_tree.get_root()
+		var selected = _select_exec_file_tree.get_selected()
+		if root:
+			for c in root.get_children():
+				if c == selected:
+					continue
+				c.set_checked(0, false)
 	)
-	_browse_exec_file_button.icon = get_theme_icon("Load", "EditorIcons")
+	_show_all_check_box.toggled.connect(func(_a):
+		_setup_editor_select_tree()
+	)
 
 
 func init(editor_name, editor_exec_path):
 	assert(editor_exec_path.ends_with("/"))
 	Output.push("Installing editor: %s" % editor_exec_path)
+	_dir_content = dir.list_recursive(editor_exec_path)
 	_editor_name_edit.text = editor_name
-	if OS.has_feature("macos"):
-		_select_exec_file_tree.show()
-		_setup_editor_select_tree(editor_exec_path)
-	else:
-		_setup_editor_select_dialog(editor_exec_path)
-		_browse_exec_file_button.show()
-		_exec_path_edit.show()
-	
-	get_ok_button().disabled = true
+	_select_exec_file_tree.show()
+	_setup_editor_select_tree()
 
 
-func _setup_editor_select_dialog(editor_exec_path):
-	var selected_file = {}
-	if OS.has_feature("windows"):
-		_file_dialog.filters = ["*.exe"]
-	_file_dialog.root_subfolder = editor_exec_path
-	_file_dialog.file_selected.connect(func(path):
-		selected_file['value'] = path
-		_exec_path_edit.text = path
-		get_ok_button().disabled = false
-	)
-	_selected_file_source = func(): return selected_file['value']
-
-
-func _setup_editor_select_tree(editor_exec_path):
+func _setup_editor_select_tree():
+	_select_exec_file_tree.clear()
 	var root = _select_exec_file_tree.create_item()
-	var dir = DirAccess.open(editor_exec_path)
-	var dirs = dir.get_directories()
-	var files = dir.get_files()
 	
-	var create_tree_items = func(source, filter=null):
+	var create_tree_items = func(source, filter=null, should_be_selected=null):
+		var selected = false
 		for x in source:
 			if filter and not filter.call(x):
 				continue
 			var item = _select_exec_file_tree.create_item(root)
 			item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
-			item.set_text(0, x)
+			item.set_text(0, x.file)
 			item.set_editable(0, true)
-			item.set_meta("full_path", editor_exec_path + x)
+			item.set_meta("full_path", x.path)
+			if not selected and should_be_selected != null:
+				if should_be_selected.call(x):
+					selected = true
+					item.set_checked(0, true)
+					item.select(0)
+
+	var filter
+	var should_be_selected
+	if OS.has_feature("macos"):
+		filter = func(x: dir.DirListResult):
+			return x.is_dir and x.extension == "app"
+		should_be_selected = func(x: dir.DirListResult):
+			return x.is_dir and x.extension == "app"
+	if OS.has_feature("windows"):
+		filter = func(x: dir.DirListResult):
+			return x.is_file and x.extension == "exe"
+		should_be_selected = func(x: dir.DirListResult):
+			return x.is_file and x.extension == "exe" and not x.file.contains("console")
+	if OS.has_feature("linux"):
+		filter = func(x: dir.DirListResult):
+			return x.is_file and (
+				x.extension.contains("32") or x.extension.contains("64")
+			)
+		should_be_selected = func(x: dir.DirListResult):
+			return x.is_file and (
+				x.extension.contains("32") or x.extension.contains("64")
+			)
 	
-	create_tree_items.call(dirs, func(x): return x.ends_with(".app"))
-	
-	_select_exec_file_tree.item_selected.connect(func(): 
-		get_ok_button().disabled = false
-	)
-	_selected_file_source = func(): 
-		var selected_item = _select_exec_file_tree.get_selected()
-		assert(selected_item)
-		return selected_item.get_meta("full_path")
+	create_tree_items.call(_dir_content, filter, should_be_selected)
+
+
+func _process(delta):
+	var ok_disabled = true
+	var selected = _select_exec_file_tree.get_selected()
+	if selected and selected.is_checked(0):
+		ok_disabled = false
+	get_ok_button().disabled = ok_disabled
 
 
 func _on_confirmed() -> void:
+	var selected_item = _select_exec_file_tree.get_selected()
+	if not (selected_item and selected_item.is_checked(0)):
+		return
+	var path = selected_item.get_meta("full_path")
 	# TODO validate data ???
-	installed.emit(
-		_editor_name_edit.text,
-		_selected_file_source.call()
-	)
+	installed.emit(_editor_name_edit.text, path)
 	queue_free()
 
 

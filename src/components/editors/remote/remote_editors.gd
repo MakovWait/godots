@@ -275,7 +275,7 @@ func _unzip_downloaded(downloaded_abs_path, root_unzip_folder_name):
 
 
 func guess_editor_name(file_name):
-	var possible_editor_name = file_name
+	var possible_editor_name = file_name.get_file()
 	var tokens_to_replace = []
 	tokens_to_replace.append_array(_current_platform.suffixes)
 	tokens_to_replace.append_array(["_", "-"])
