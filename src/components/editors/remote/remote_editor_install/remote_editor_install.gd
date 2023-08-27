@@ -16,7 +16,7 @@ var _show_all: bool:
 
 
 func _ready():
-	_select_exec_file_tree.custom_minimum_size = Vector2(300, 100) * Config.EDSCALE
+	_select_exec_file_tree.custom_minimum_size = Vector2(350, 150) * Config.EDSCALE
 	_select_exec_file_tree.select_mode = Tree.SELECT_SINGLE
 	_select_exec_file_tree.item_selected.connect(func():
 		var root = _select_exec_file_tree.get_root()

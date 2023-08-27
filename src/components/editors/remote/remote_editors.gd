@@ -140,7 +140,7 @@ func _setup_checkboxes():
 	
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			"mono", 
+			tr("mono"), 
 			RowFilter.new(contains_any.call(["mono"])),
 			_remote_editors_checkbox_checked.get_value("mono", true)
 		)
@@ -148,7 +148,7 @@ func _setup_checkboxes():
 	
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			"unstable", 
+			tr("unstable"), 
 			RowFilter.new(contains_any.call(["rc", "beta", "alpha", "dev", "fixup"])),
 			_remote_editors_checkbox_checked.get_value("unstable", false)
 		)
@@ -156,16 +156,34 @@ func _setup_checkboxes():
 	
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			"any platform", 
+			tr("any platform"), 
 			RowFilter.new(func(row): 
 				return row.is_file and row.is_for_different_platform(_current_platform["suffixes"])),
 			_remote_editors_checkbox_checked.get_value("any platform", false)
 		)
 	)
 
+	if not OS.has_feature("macos"):
+		var bit
+		var opposite 
+		if OS.has_feature("32"):
+			bit = "32"
+			opposite = "64"
+		elif OS.has_feature("64"):
+			bit = "64"
+			opposite = "32"
+		if bit:
+			_check_box_container.add_child(
+				checkbox.call(
+					"%s-bit" % bit, 
+					RowFilter.new(contains_any.call([opposite])),
+					_remote_editors_checkbox_checked.get_value("same-bit", true)
+				)
+			)
+
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			"4.x", 
+			tr("4.x"), 
 			RowFilter.new(func(row: TuxfamilyRow): 
 				return row.is_possible_version_folder and row.name.begins_with("4")),
 			_remote_editors_checkbox_checked.get_value("4.x", true)
@@ -174,7 +192,7 @@ func _setup_checkboxes():
 
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			"3.x", 
+			tr("3.x"), 
 			RowFilter.new(func(row: TuxfamilyRow): 
 				return row.is_possible_version_folder and row.name.begins_with("3")),
 			_remote_editors_checkbox_checked.get_value("3.x", true)
@@ -183,7 +201,7 @@ func _setup_checkboxes():
 
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			"x.x", 
+			tr("x.x"), 
 			RowFilter.new(func(row: TuxfamilyRow): 
 				return row.is_possible_version_folder and not (row.name.begins_with("4") or row.name.begins_with("3"))),
 			_remote_editors_checkbox_checked.get_value("x.x", false)
