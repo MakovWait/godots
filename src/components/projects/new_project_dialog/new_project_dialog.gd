@@ -28,7 +28,11 @@ func _ready():
 		if dir:
 			var err = dir.make_dir(_project_name_edit.text)
 			if err > 0:
-				_create_folder_failed_label.text = "Couldn't create folder. Code: %s." % err
+				_create_folder_failed_label.text = "%s %s: %s." % [
+					tr("Couldn't create folder."),
+					tr("Code"),
+					err
+				]
 				_create_folder_failed_dialog.popup_centered()
 			elif err == OK:
 				_project_path_line_edit.text = path.path_join(_project_name_edit.text)
@@ -53,7 +57,9 @@ func _ready():
 		initial_settings.set_value("application", "config/icon", "res://icon.png")
 		var err = initial_settings.save(project_file_path)
 		if err:
-			_error("Couldn't create project.godot in project path. Code %s." % err)
+			_error("%s %s: %s." % [
+				tr("Couldn't create project.godot in project path."), tr("Code"), err
+			])
 			return
 		else:
 			var img: Texture2D = preload("res://assets/default_project_icon.svg")
@@ -80,11 +86,13 @@ func _validate():
 	var dir = DirAccess.open(path)
 	
 	if not dir:
-		_error("The path specified doesn't exist.")
+		_error(tr("The path specified doesn't exist."))
 		return
 	
 	if path.simplify_path() in [OS.get_environment("HOME"), OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS), OS.get_executable_path().get_base_dir()].filter(func(x): return x.simplify_path()):
-		_error("You cannot save a project in the selected path. Please make a new folder or choose a new path.")
+		_error(tr(
+			"You cannot save a project in the selected path. Please make a new folder or choose a new path."
+		))
 		return
 
 	# Check if the specified folder is empty, even though this is not an error, it is good to check here.
@@ -103,7 +111,9 @@ func _validate():
 	dir.list_dir_end()
 
 	if not dir_is_empty:
-		_warning("The selected path is not empty. Choosing an empty folder is highly recommended.")
+		_warning(tr(
+			"The selected path is not empty. Choosing an empty folder is highly recommended."
+		))
 		return
 	
 	_success("")

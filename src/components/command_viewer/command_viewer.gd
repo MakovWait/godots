@@ -5,19 +5,19 @@ extends AcceptDialog
 
 
 func _ready() -> void:
-	title = "Command Viewer"
+	title = tr("Command Viewer")
 
 
 func raise(main_schema, alternative_schema):
 	_main_command_view.set_text(
-		"Command:", 
+		"%s:" % tr("Command"), 
 		"", 
 		_schema_to_string(main_schema)
 	)
 	if alternative_schema:
 		_alternative_command_view.set_text(
-			"Alternative MacOS Command:", 
-			"MacOS alternative command. Guessed path to editor bin", 
+			"%s:" % tr("Alternative MacOS Command"), 
+			tr("MacOS alternative command. Guessed path to editor bin."), 
 			_schema_to_string(alternative_schema)
 		)
 	else:

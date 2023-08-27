@@ -67,11 +67,11 @@ func _ready():
 	_version_button.text = Config.VERSION.substr(1)
 	_version_button.self_modulate = Color(1, 1, 1, 0.6)
 	_version_button.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
-	_version_button.tooltip_text = "Click to star it on GitHub"
+	_version_button.tooltip_text = tr("Click to star it on GitHub")
 	
 	%NewsButton.self_modulate = Color(1, 1, 1, 0.6)
 	%NewsButton.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
-	%NewsButton.tooltip_text = "Click to see the post."
+	%NewsButton.tooltip_text = tr("Click to see the post.")
 	
 	_settings_button.flat = true
 	_settings_button.text = ""

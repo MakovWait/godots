@@ -50,44 +50,44 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 		
 		match result:
 			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
-				error_text = "Connection error, prease try again."
-				status = "Can't connect"
+				error_text = tr("Connection error, prease try again.")
+				status = tr("Can't connect")
 			HTTPRequest.RESULT_CANT_CONNECT, HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
-				error_text = "Can't connect to host:" + " " + host
-				status = "Can't connect"
+				error_text = tr("Can't connect to host") + ": " + host
+				status = tr("Can't connect")
 			HTTPRequest.RESULT_NO_RESPONSE:
-				error_text = "No response from host:" + " " + host
-				status = "No response"
+				error_text = "No response from host" + ": " + host
+				status = tr("No response")
 			HTTPRequest.RESULT_CANT_RESOLVE:
-				error_text = "Can't resolve hostname:" + " " + host
-				status = "Can't resolve."
+				error_text = tr("Can't resolve hostname") + ": " + host
+				status = tr("Can't resolve.")
 			HTTPRequest.RESULT_REQUEST_FAILED:
-				error_text = "Request failed, return code:" + " " + str(response_code)
-				status = "Request failed."
+				error_text = tr("Request failed, return code") + ": " + str(response_code)
+				status = tr("Request failed.")
 			HTTPRequest.RESULT_DOWNLOAD_FILE_CANT_OPEN, HTTPRequest.RESULT_DOWNLOAD_FILE_WRITE_ERROR:
-				error_text = "Cannot save response to:" + " " + _download.download_file
-				status = "Write error."
+				error_text = tr("Cannot save response to") + ": " + _download.download_file
+				status = tr("Write error.")
 			HTTPRequest.RESULT_REDIRECT_LIMIT_REACHED:
-				error_text = "Request failed, too many redirects"
-				status = "Redirect loop."
+				error_text = tr("Request failed, too many redirects")
+				status = tr("Redirect loop.")
 			HTTPRequest.RESULT_TIMEOUT:
-				error_text = "Request failed, timeout"
-				status = "Timeout."
+				error_text = tr("Request failed, timeout")
+				status = tr("Timeout.")
 			_:
 				if response_code != 200:
-					error_text = "Request failed, return code:" + " " + str(response_code)
-					status = "Failed:" + " " + str(response_code)
+					error_text = tr("Request failed, return code") + ": " + str(response_code)
+					status = tr("Failed") + ": " + str(response_code)
 		
 		_progress_bar.modulate = Color(0, 0, 0, 0)
 		
 		if error_text:
-			$AcceptErrorDialog.dialog_text = "Download error:" + "\n" + error_text
+			$AcceptErrorDialog.dialog_text = tr("Download Error") + ":\n" + error_text
 			$AcceptErrorDialog.popup_centered()
 			_retry_button.show()
 			_status.text = status
 		else:
 			_install_button.disabled = false
-			_status.text = "Ready to install"
+			_status.text = tr("Ready to install")
 			downloaded.emit(_download.download_file)
 	
 	assert(target_abs_dir.ends_with("/"))
@@ -109,9 +109,9 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 	if request_err:
 		_progress_bar.modulate = Color(0, 0, 0, 0)
 		if request_err == 31:
-			_status.text = "Invalid URL scheme."
+			_status.text = tr("Invalid URL scheme.")
 		else:
-			_status.text = "Something went wrong."
+			_status.text = tr("Something went wrong.")
 		return
 	
 	for connection in _download.request_completed.get_connections():
@@ -125,24 +125,26 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 			_progress_bar.value = _download.get_downloaded_bytes()
 		if _download.get_http_client_status() == HTTPClient.STATUS_BODY:
 			if _download.get_body_size() > 0:
-				_status.text = "Downloading (%s / %s)..." % [
+				_status.text = "%s (%s / %s)..." % [
+					tr("Downloading"),
 					String.humanize_size(_download.get_downloaded_bytes()),
 					String.humanize_size(_download.get_body_size())
 				]
 			else:
-				_status.text = "Downloading (%s)..." % [
+				_status.text = "%s (%s)..." % [
+					tr("Downloading"),
 					String.humanize_size(_download.get_downloaded_bytes())
 				]
 		if _download.get_http_client_status() == HTTPClient.STATUS_RESOLVING:
-			_status.text = "Resolving..."
+			_status.text = tr("Resolving...")
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		elif _download.get_http_client_status() == HTTPClient.STATUS_CONNECTING:
-			_status.text = "Connecting..."
+			_status.text = tr("Connecting...")
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		elif _download.get_http_client_status() == HTTPClient.STATUS_REQUESTING:
-			_status.text = "Requesting..."
+			_status.text = tr("Requesting...")
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		await get_tree().create_timer(0.1).timeout

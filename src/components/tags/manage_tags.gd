@@ -57,17 +57,17 @@ func _ready() -> void:
 		_tag_error_label.visible = false
 		
 		if new_text.is_empty():
-			_tag_error_label.text = "Tag name can't be empty."
+			_tag_error_label.text = tr("Tag name can't be empty.")
 			_tag_error_label.visible = true
 		if new_text.contains(" "):
-			_tag_error_label.text = "Tag name can't contain spaces."
+			_tag_error_label.text = tr("Tag name can't contain spaces.")
 			_tag_error_label.visible = true
 		if new_text.to_lower() != new_text:
-			_tag_error_label.text = "Tag name must be lowercase."
+			_tag_error_label.text = tr("Tag name must be lowercase.")
 			_tag_error_label.visible = true
 		for forbidden_char in forbidden_characters:
 			if new_text.contains(forbidden_char):
-				_tag_error_label.text = "These characters are not allowed in tags: %s." % " ".join(forbidden_characters)
+				_tag_error_label.text = tr("These characters are not allowed in tags: %s.") % " ".join(forbidden_characters)
 				_tag_error_label.visible = true
 		
 		_update_ok_button_enabled()

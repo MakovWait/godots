@@ -13,10 +13,10 @@ var _has_update := false:
 		_has_update = value
 		if value:
 			modulate = Color.WHITE
-			tooltip_text = "There are updates. Click to visit releases page."
+			tooltip_text = tr("There are updates. Click to visit releases page.")
 		else:
 			modulate = Color(0.5, 0.5, 0.5, 0.5)
-			tooltip_text = "No updates."
+			tooltip_text = tr("No updates.")
 		queue_redraw()
 
 

@@ -18,7 +18,7 @@ func _ready() -> void:
 					selected_dirs.append(child.get_meta("abs_path"))
 		
 		var delete_confirm = ConfirmationDialogAutoFree.new()
-		delete_confirm.dialog_text = "Permanently delete %d item(s)? (No undo!)" % len(selected_dirs)
+		delete_confirm.dialog_text = tr("Permanently delete %d item(s)? (No undo!)") % len(selected_dirs)
 		delete_confirm.confirmed.connect(func():
 			for dir in selected_dirs:
 				dir_extensions.remove_recursive(dir)

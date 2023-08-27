@@ -55,7 +55,7 @@ func _update_cache():
 
 
 func _load_from_cache():
-	text = "News: %s" % Cache.get_value("news", "title", "<null>")
+	text = "%s %s" % [tr("News:"), Cache.get_value("news", "title", "<null>")]
 	uri = Cache.get_value("news", "link", "")
 
 

@@ -31,10 +31,10 @@ func _item_comparator(a, b):
 
 
 func _fill_sort_options(btn: OptionButton):
-	btn.add_item("Last Edited")
-	btn.add_item("Name")
-	btn.add_item("Path")
-	btn.add_item("Tags")
+	btn.add_item(tr("Last Edited"))
+	btn.add_item(tr("Name"))
+	btn.add_item(tr("Path"))
+	btn.add_item(tr("Tags"))
 	
 	var last_checked_sort = Cache.smart_value(self, "last_checked_sort", true)
 	btn.select(last_checked_sort.ret(1))

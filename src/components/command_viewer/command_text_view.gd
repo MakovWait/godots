@@ -9,7 +9,7 @@ var _text = ""
 
 
 func _ready() -> void:
-	_copy_to_clipboard.tooltip_text = "Copy command to clipboard"
+	_copy_to_clipboard.tooltip_text = tr("Copy command to clipboard")
 	_copy_to_clipboard.text = ""
 	_copy_to_clipboard.flat = true
 	_copy_to_clipboard.icon = get_theme_icon("ActionCopy", "EditorIcons")

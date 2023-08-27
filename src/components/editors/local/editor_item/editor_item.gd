@@ -51,28 +51,28 @@ func init(item):
 	
 	_get_actions_callback = func():
 		var run_btn = buttons.simple(
-			"Run", 
+			tr("Run"), 
 			get_theme_icon("Play", "EditorIcons"),
 			_on_run_editor.bind(item)
 		)
 		run_btn.disabled = not item.is_valid
 		
 		var rename_btn = buttons.simple(
-			"Rename", 
+			tr("Rename"), 
 			get_theme_icon("Rename", "EditorIcons"),
 			func(): _on_rename(item)
 		)
 		rename_btn.disabled = not item.is_valid
 		
 		var manage_tags_btn = buttons.simple(
-			"Manage Tags", 
+			tr("Manage Tags"), 
 			get_theme_icon("Script", "EditorIcons"),
 			func(): manage_tags_requested.emit()
 		)
 		manage_tags_btn.disabled = not item.is_valid
 
 		var view_command_btn = buttons.simple(
-			"View Command", 
+			tr("View Command"), 
 			get_theme_icon("Window", "EditorIcons"),
 			func(): 
 				var command_viewer = get_tree().current_scene.get_node_or_null(
@@ -92,7 +92,7 @@ func init(item):
 			manage_tags_btn,
 			view_command_btn,
 			buttons.simple(
-				"Remove", 
+				tr("Remove"), 
 				get_theme_icon("Remove", "EditorIcons"),
 				func(): _on_remove(item)
 			),

@@ -35,7 +35,7 @@ func _ready() -> void:
 	_project_features.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
-	_project_warning.tooltip_text = "Editor is missing"
+	_project_warning.tooltip_text = tr("Editor is missing.")
 	_tag_container.tag_clicked.connect(func(tag): tag_clicked.emit(tag))
 
 
@@ -59,7 +59,7 @@ func init(item: projects_ns.Project):
 			return []
 
 		var edit_btn = buttons.simple(
-			"Edit", 
+			tr("Edit"), 
 			get_theme_icon("Edit", "EditorIcons"),
 			_on_edit_with_editor.bind(item)
 		)
@@ -67,7 +67,7 @@ func init(item: projects_ns.Project):
 		edit_btn.init(item)
 
 		var run_btn = buttons.simple(
-			"Run", 
+			tr("Run"), 
 			get_theme_icon("Play", "EditorIcons"),
 			_on_run_with_editor.bind(item, "-g", "run", "Run", false)
 		)
@@ -75,27 +75,27 @@ func init(item: projects_ns.Project):
 		run_btn.init(item)
 
 		var bind_editor_btn = buttons.simple(
-			"Bind Editor", 
+			tr("Bind Editor"), 
 			get_theme_icon("GodotMonochrome", "EditorIcons"),
 			_on_rebind_editor.bind(item)
 		)
 		bind_editor_btn.disabled = item.is_missing
 		
 		var manage_tags_btn = buttons.simple(
-			"Manage Tags", 
+			tr("Manage Tags"), 
 			get_theme_icon("Script", "EditorIcons"),
 			func(): manage_tags_requested.emit()
 		)
 		manage_tags_btn.disabled = item.is_missing
 		
 		var remove_btn = buttons.simple(
-			"Remove", 
+			tr("Remove"), 
 			get_theme_icon("Remove", "EditorIcons"),
 			_on_remove
 		)
 		
 		var view_command_btn = buttons.simple(
-			"View Command", 
+			tr("View Command"), 
 			get_theme_icon("Window", "EditorIcons"),
 			func(): 
 				var command_viewer = get_tree().current_scene.get_node_or_null(
@@ -176,7 +176,7 @@ func _on_rebind_editor(item):
 	
 	vbox.add_spacer(false)
 	
-	title.text = "Editor: "
+	title.text = ": " % tr("Editor")
 	
 	options.item_selected.connect(func(idx):
 		bind_dialog.get_ok_button().disabled = false
@@ -213,14 +213,14 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	confirmation_dialog.get_label().hide()
 	
 	var label = Label.new()
-	label.text = "Are you sure to %s the project with the given editor?" % action_name
+	label.text = tr("Are you sure to %s the project with the given editor?") % action_name
 	
 	var editor_name = Label.new()
 	editor_name.text = item.editor_name
 	editor_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	
 	var checkbox = CheckBox.new()
-	checkbox.text = "do not show again for this project"
+	checkbox.text = tr("do not show again for this project")
 	
 	var vb = VBoxContainer.new()
 	vb.add_child(label)
@@ -291,8 +291,8 @@ func _get_alternative_process_arguments(item, editor_flag):
 
 func _on_remove():
 	var confirmation_dialog = ConfirmationDialogAutoFree.new()
-	confirmation_dialog.ok_button_text = "Remove"
-	confirmation_dialog.dialog_text = "Are you sure to remove the project from the list?"
+	confirmation_dialog.ok_button_text = tr("Remove")
+	confirmation_dialog.dialog_text = tr("Are you sure to remove the project from the list?")
 	confirmation_dialog.confirmed.connect(func():
 		queue_free()
 		removed.emit()

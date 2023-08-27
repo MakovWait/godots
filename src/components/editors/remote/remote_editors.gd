@@ -68,7 +68,7 @@ func _ready():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(Config.DOWNLOADS_PATH.ret()))
 	)
 	_open_downloads_button.icon = get_theme_icon("Load", "EditorIcons")
-	_open_downloads_button.tooltip_text = "Open Downloads Dir"
+	_open_downloads_button.tooltip_text = tr("Open Downloads Dir")
 	
 	_direct_link_button.icon = get_theme_icon("AssetLib", "EditorIcons")
 	_direct_link_button.pressed.connect(func():
@@ -268,7 +268,7 @@ func install_zip(zip_abs_path, root_unzip_folder_name, possible_editor_name, on_
 			if not accept_dialog.visible:
 				accept_dialog.queue_free()
 		)
-		accept_dialog.dialog_text = "Error extracting archive"
+		accept_dialog.dialog_text = tr("Error extracting archive.")
 		add_child(accept_dialog)
 		accept_dialog.popup_centered()
 	else:
@@ -331,7 +331,7 @@ func _load_data(root: TreeItem, reverse=false, is_tree_root=false):
 				tree_item.set_icon(0, get_theme_icon("Folder", "EditorIcons"))
 				tree_item.set_icon_modulate(0, get_theme_color("folder_icon_color", "FileDialog"))
 				var placeholder = tree.create_item(tree_item)
-				placeholder.set_text(0, "loading...")
+				placeholder.set_text(0, tr("loading..."))
 				# TODO animate
 				placeholder.set_icon(0, get_theme_icon("Progress1", "EditorIcons"))
 				tree_item.set_meta("loading_placeholder", placeholder)
