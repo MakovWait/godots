@@ -176,7 +176,7 @@ func _on_rebind_editor(item):
 	
 	vbox.add_spacer(false)
 	
-	title.text = ": " % tr("Editor")
+	title.text = "%s: " % tr("Editor")
 	
 	options.item_selected.connect(func(idx):
 		bind_dialog.get_ok_button().disabled = false
