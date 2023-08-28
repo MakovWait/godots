@@ -81,6 +81,7 @@ class Project:
 	
 	var name:
 		get: return _external_project_info.name
+		set(value): _external_project_info.name = value
 	
 	var editor_name:
 		get: return _get_editor_name()
@@ -164,8 +165,21 @@ class ExternalProjectInfo extends RefCounted:
 	var icon:
 		get: return _icon
 
-	var name:
+	var name: String:
 		get: return _name
+		set(value):
+			if value.strip_edges().is_empty() or is_missing:
+				return
+			_name = value
+			var cfg = ConfigFile.new()
+			var err = cfg.load(_project_path)
+			if not err:
+				cfg.set_value(
+					"application", 
+					"config/name", 
+					_name
+				)
+				cfg.save(_project_path)
 
 	var last_modified:
 		get: return _last_modified

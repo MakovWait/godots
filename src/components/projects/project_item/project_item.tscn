@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnrduy54kvvf8"]
+[gd_scene load_steps=9 format=3 uid="uid://cnrduy54kvvf8"]
 
 [ext_resource type="Script" path="res://src/components/projects/project_item/project_item.gd" id="1_aivn8"]
 [ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="2_4lhxn"]
+[ext_resource type="PackedScene" uid="uid://b2tm4lxm80sj0" path="res://src/components/editors/local/editor_item/rename_editor_dialog.tscn" id="2_ybiwe"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_tvtl4"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="4_m00kj"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="5_bf7vh"]
@@ -15,6 +16,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_aivn8")
+_rename_dialog_scene = ExtResource("2_ybiwe")
 
 [node name="Favorite" type="VBoxContainer" parent="."]
 layout_mode = 2

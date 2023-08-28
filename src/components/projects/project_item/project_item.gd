@@ -8,6 +8,7 @@ signal tag_clicked(tag)
 const buttons = preload("res://src/extensions/buttons.gd")
 const projects_ns = preload("res://src/services/projects.gd")
 
+@export var _rename_dialog_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
@@ -74,6 +75,13 @@ func init(item: projects_ns.Project):
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
 
+		var rename_btn = buttons.simple(
+			tr("Rename"), 
+			get_theme_icon("Rename", "EditorIcons"),
+			_on_rename.bind(item)
+		)
+		rename_btn.disabled = item.is_missing
+
 		var bind_editor_btn = buttons.simple(
 			tr("Bind Editor"), 
 			get_theme_icon("GodotMonochrome", "EditorIcons"),
@@ -114,7 +122,7 @@ func init(item: projects_ns.Project):
 #			actions.append(edit_btn)
 #			actions.append(bind_editor_btn)
 #		actions.append(remove_btn)
-		return [edit_btn, run_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
+		return [edit_btn, run_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -197,6 +205,17 @@ func _on_rebind_editor(item):
 	
 	add_child(bind_dialog)
 	bind_dialog.popup_centered()
+
+
+func _on_rename(item):
+	var dialog = _rename_dialog_scene.instantiate()
+	add_child(dialog)
+	dialog.popup_centered()
+	dialog.init(item.name)
+	dialog.editor_renamed.connect(func(new_name):
+		item.name = new_name
+		edited.emit()
+	)
 
 
 func _on_edit_with_editor(item):

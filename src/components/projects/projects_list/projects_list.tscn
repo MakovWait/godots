@@ -7,3 +7,11 @@
 [node name="ProjectsList" instance=ExtResource("1_85pab")]
 script = ExtResource("2_luch3")
 _item_scene = ExtResource("3_rbu5f")
+
+[node name="SearchBox" parent="HBoxContainer" index="0"]
+placeholder_text = "Filter Projects"
+
+[node name="Label" parent="HBoxContainer/HBoxContainer" index="0"]
+size_flags_vertical = 1
+horizontal_alignment = 1
+vertical_alignment = 1
