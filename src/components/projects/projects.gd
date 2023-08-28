@@ -1,6 +1,7 @@
 extends HBoxContainer
 
 const Projects = preload("res://src/services/projects.gd")
+const dir = preload("res://src/extensions/dir.gd")
 
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
@@ -10,6 +11,9 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _import_project_dialog: ConfirmationDialog = $ImportProjectDialog
 @onready var _new_project_button = %NewProjectButton
 @onready var _new_project_dialog = $NewProjectDialog
+@onready var _scan_button = %ScanButton
+@onready var _scan_dialog = %ScanDialog
+
 
 var _projects: Projects.Projects
 var _load_projects_queue = []
@@ -40,12 +44,25 @@ func init(projects: Projects.Projects):
 	_new_project_button.pressed.connect(_new_project_dialog.raise)
 	_new_project_button.icon = get_theme_icon("Add", "EditorIcons")
 	
+	_scan_button.icon = get_theme_icon("Search", "EditorIcons")
+	_scan_button.pressed.connect(func():
+		_scan_dialog.popup_centered_ratio(0.5)
+	)
+	_scan_dialog.title = tr("Select a Folder to Scan")
+	_scan_dialog.dir_selected.connect(func(dir):
+		_scan_projects(dir)
+	)
+	
 	_projects_list.refresh(_projects.all())
 	_load_projects()
 
 
 func _load_projects():
-	for project in _projects.all():
+	_load_projects_array(_projects.all())
+
+
+func _load_projects_array(array):
+	for project in array:
 		project.load()
 		await get_tree().process_frame
 	_projects_list.sort_items()
@@ -56,6 +73,27 @@ func import(project_path=""):
 		return
 	_import_project_dialog.init(project_path, _projects.get_editors_to_bind())
 	_import_project_dialog.popup_centered()
+
+
+func _scan_projects(dir_path):
+	var project_configs = dir.list_recursive(
+		ProjectSettings.globalize_path(dir_path), 
+		false,
+		(func(x: dir.DirListResult): 
+			return x.is_file and x.file == "project.godot"),
+		(func(x: String): 
+			return not x.get_file().begins_with("."))
+	)
+	var added_projects = []
+	for project_config in project_configs:
+		var project_path = project_config.path
+		if _projects.has(project_path):
+			continue
+		var project = _projects.add(project_path, null)
+		_projects_list.add(project)
+		added_projects.append(project)
+	_projects.save()
+	_load_projects_array(added_projects)
 
 
 func _on_projects_list_item_selected(item) -> void:

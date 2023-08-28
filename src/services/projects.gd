@@ -19,7 +19,8 @@ class Projects extends RefCounted:
 			_local_editors
 		)
 		project.favorite = false
-		project.editor_path = editor_path
+		if editor_path:
+			project.editor_path = editor_path
 		_projects[project_path] = project
 		return project
 	
@@ -48,7 +49,6 @@ class Projects extends RefCounted:
 			for tag in project.tags:
 				set.append(tag.to_lower())
 		return set.values()
-	
 	
 	func load() -> Error:
 		dict.clear_and_free(_projects)

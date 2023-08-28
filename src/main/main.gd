@@ -19,7 +19,7 @@ func _ready():
 	get_tree().root.files_dropped.connect(func(files):
 		if len(files) == 0:
 			return
-		var file = files[0]
+		var file = files[0].simplify_path()
 		if file.ends_with("project.godot"):
 			_projects.import(file)
 		elif file.ends_with(".zip"):

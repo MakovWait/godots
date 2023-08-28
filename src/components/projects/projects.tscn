@@ -31,11 +31,23 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Import"
 
+[node name="ScanButton" type="Button" parent="ActionsSidebar/TabActions" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Scan"
+
 [node name="ImportProjectDialog" parent="." instance=ExtResource("4_ooebc")]
 visible = false
 
 [node name="NewProjectDialog" parent="." instance=ExtResource("5_bycab")]
 visible = false
+
+[node name="ScanDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open a Directory"
+ok_button_text = "Select Current Folder"
+file_mode = 2
+access = 2
 
 [connection signal="item_edited" from="ProjectsList" to="." method="_on_projects_list_item_edited"]
 [connection signal="item_manage_tags_requested" from="ProjectsList" to="." method="_on_projects_list_item_manage_tags_requested"]
