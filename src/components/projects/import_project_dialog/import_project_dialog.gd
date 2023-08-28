@@ -14,6 +14,7 @@ func _ready() -> void:
 #	super._ready()
 	_update_ok_button_available()
 	_browse_project_path_button.pressed.connect(func():
+		_browse_project_path_dialog.current_dir = Config.DEFAULT_PROJECTS_PATH.ret()
 		_browse_project_path_dialog.popup_centered_ratio(0.5)
 	)
 	_browse_project_path_button.icon = get_theme_icon("Load", "EditorIcons")

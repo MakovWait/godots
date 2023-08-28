@@ -18,6 +18,12 @@ func _prepare_settings():
 			Config.SAVED_EDSCALE.bake_default(-1),
 			SettingScale,
 		))),
+		SettingChangeObserved(SettingCfg(
+			"application/config/default_projects_path",
+			Config.DEFAULT_PROJECTS_PATH,
+			SettingFilePath,
+			tr("Default folder to scan/import projects from.")
+		)),
 		
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/preset",
@@ -30,12 +36,6 @@ func _prepare_settings():
 		))),
 		
 		SettingChangeObserved(SettingCfg(
-			"application/advanced/use_github",
-			Config.USE_GITHUB,
-			SettingCheckbox,
-			tr("Will download files from github when possible, if enabled.")
-		)),
-		SettingChangeObserved(SettingCfg(
 			"application/advanced/downloads_path",
 			Config.DOWNLOADS_PATH,
 			SettingFilePath,
@@ -46,6 +46,12 @@ func _prepare_settings():
 			Config.VERSIONS_PATH,
 			SettingFilePath,
 			tr("Dir for downloaded editors.")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/use_github",
+			Config.USE_GITHUB,
+			SettingCheckbox,
+			tr("Will download files from github when possible, if enabled.")
 		)),
 		SettingChangeObserved(SettingCfg(
 			"application/advanced/show_orphan_editor_explorer",

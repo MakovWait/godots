@@ -44,13 +44,31 @@ func init(projects: Projects.Projects):
 	_new_project_button.pressed.connect(_new_project_dialog.raise)
 	_new_project_button.icon = get_theme_icon("Add", "EditorIcons")
 	
+	# hack to force select_current_dir_to_scan return path with C:/.. on windows
+	var scan_dir_state = {"use_parent_dir": false}
 	_scan_button.icon = get_theme_icon("Search", "EditorIcons")
 	_scan_button.pressed.connect(func():
+		_scan_dialog.current_dir = Config.DEFAULT_PROJECTS_PATH.ret()
 		_scan_dialog.popup_centered_ratio(0.5)
 	)
 	_scan_dialog.title = tr("Select a Folder to Scan")
-	_scan_dialog.dir_selected.connect(func(dir):
-		_scan_projects(dir)
+	_scan_dialog.dir_selected.connect(func(dir: String):
+		if scan_dir_state.use_parent_dir:
+			_scan_projects(dir.get_base_dir())
+		else:
+			_scan_projects(dir)
+		scan_dir_state.use_parent_dir = false
+	)
+	var select_current_dir_to_scan = _scan_dialog.add_button(
+		tr("Select Parent Folder")
+	) as Button
+	select_current_dir_to_scan.tooltip_text = tr(
+		"Will select the folder from 'Path:' on the top."
+	)
+	select_current_dir_to_scan.pressed.connect(func():
+		scan_dir_state.use_parent_dir = true
+		_scan_dialog.get_ok_button().pressed.emit()
+		_scan_dialog.hide()
 	)
 	
 	_projects_list.refresh(_projects.all())

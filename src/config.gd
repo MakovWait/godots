@@ -51,6 +51,15 @@ var DOWNLOADS_PATH = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var DEFAULT_PROJECTS_PATH = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"projects_path",
+	OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)
+).map_return_value(_simplify_path): 
+	set(_v): _readonly()
+
+
 var SAVED_EDSCALE = ConfigFileValue.new(
 	_cfg_auto_save, 
 	_EDITOR_PROXY_SECTION_NAME, 
