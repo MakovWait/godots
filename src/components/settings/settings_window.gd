@@ -127,7 +127,8 @@ func _ready():
 	%RestartContainer.hide()
 	
 	%OpenConfigFileButton.pressed.connect(func():
-		OS.shell_open(ProjectSettings.globalize_path(Config.APP_CONFIG_PATH.get_base_dir()))
+		var config_path = ProjectSettings.globalize_path(Config.APP_CONFIG_PATH.get_base_dir())
+		OS.shell_show_in_file_manager(config_path)
 	)
 	
 	_setup_settings()
