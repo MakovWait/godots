@@ -12,6 +12,7 @@ const dir = preload("res://src/extensions/dir.gd")
 @onready var _orphan_editors_button: Button = %OrphanEditorsButton
 @onready var _orphan_editors_explorer: ConfirmationDialog = $OrphanEditorExplorer
 @onready var _import_button: Button = %ImportButton
+@onready var _remove_missing_button = %RemoveMissingButton
 
 var _local_editors = Editors.LocalEditors
 
@@ -27,6 +28,8 @@ func _ready() -> void:
 	$EditorImport.imported.connect(func(editor_name, editor_path):
 		add(editor_name, editor_path)
 	)
+	
+	_remove_missing_button.confirmed.connect(_remove_missing)
 	
 	_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
 	Config.saved.connect(func():
@@ -47,6 +50,7 @@ func init(editors: Editors.LocalEditors):
 		_orphan_editors_explorer.before_popup()
 		_orphan_editors_explorer.popup_centered_ratio(0.4)
 	)
+	_update_remove_missing_disabled()
 
 
 func add(editor_name, exec_path):
@@ -61,6 +65,22 @@ func import(editor_name="", editor_path=""):
 		return
 	$EditorImport.init(editor_name, editor_path)
 	$EditorImport.popup_centered()
+
+
+func _remove_missing():
+	for e in _local_editors.all().filter(func(x): return not x.is_valid):
+		_local_editors.erase(e.path)
+	_sidebar.refresh_actions([])
+	_local_editors.save()
+	_editors_list.refresh(_local_editors.all())
+	_editors_list.sort_items()
+	_update_remove_missing_disabled()
+
+
+func _update_remove_missing_disabled():
+	_remove_missing_button.disabled = len(
+		_local_editors.all().filter(func(x): return not x.is_valid)
+	) == 0
 
 
 func _on_editors_list_item_selected(item) -> void:
@@ -82,6 +102,7 @@ func _on_editors_list_item_removed(item_data: Editors.LocalEditor, remove_dir: b
 		_local_editors.erase(item_data.path)
 		_local_editors.save()
 	_sidebar.refresh_actions([])
+	_update_remove_missing_disabled()
 
 
 func _on_editors_list_item_edited(item_data) -> void:

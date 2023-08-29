@@ -19,6 +19,9 @@ layout_mode = 2
 [node name="ItemActions" type="VBoxContainer" parent="."]
 layout_mode = 2
 
+[node name="RestActions" type="VBoxContainer" parent="."]
+layout_mode = 2
+
 [node name="Spacer" type="Control" parent="."]
 layout_mode = 2
 size_flags_vertical = 3

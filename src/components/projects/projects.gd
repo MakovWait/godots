@@ -13,6 +13,7 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _new_project_dialog = $NewProjectDialog
 @onready var _scan_button = %ScanButton
 @onready var _scan_dialog = %ScanDialog
+@onready var _remove_missing_button = %RemoveMissingButton
 
 
 var _projects: Projects.Projects
@@ -71,6 +72,8 @@ func init(projects: Projects.Projects):
 		_scan_dialog.hide()
 	)
 	
+	_remove_missing_button.confirmed.connect(_remove_missing)
+	
 	_projects_list.refresh(_projects.all())
 	_load_projects()
 
@@ -84,6 +87,7 @@ func _load_projects_array(array):
 		project.load()
 		await get_tree().process_frame
 	_projects_list.sort_items()
+	_update_remove_missing_disabled()
 
 
 func import(project_path=""):
@@ -114,6 +118,22 @@ func _scan_projects(dir_path):
 	_load_projects_array(added_projects)
 
 
+func _remove_missing():
+	for p in _projects.all().filter(func(x): return x.is_missing):
+		_projects.erase(p.path)
+	_projects.save()
+	_projects_list.refresh(_projects.all())
+	_projects_list.sort_items()
+	_sidebar.refresh_actions([])
+	_update_remove_missing_disabled()
+
+
+func _update_remove_missing_disabled():
+	_remove_missing_button.disabled = len(
+		_projects.all().filter(func(x): return x.is_missing)
+	) == 0
+
+
 func _on_projects_list_item_selected(item) -> void:
 	_sidebar.refresh_actions(item.get_actions())
 
@@ -123,6 +143,7 @@ func _on_projects_list_item_removed(item_data) -> void:
 		_projects.erase(item_data.path)
 		_projects.save()
 	_sidebar.refresh_actions([])
+	_update_remove_missing_disabled()
 
 
 func _on_projects_list_item_edited(item_data) -> void:
