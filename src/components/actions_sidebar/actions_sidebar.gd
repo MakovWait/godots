@@ -23,6 +23,7 @@ func _add_actions(actions):
 
 func _clear_actions():
 	for action in _item_actions.get_children():
+		action.hide()
 		action.queue_free()
 
 
