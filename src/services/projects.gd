@@ -106,7 +106,7 @@ class Project:
 		get: return dir.path_is_valid(path)
 	
 	var editors_to_bind:
-		get: return _local_editors.as_option_button_items()
+		get: return _get_editors_to_bind()
 	
 	var is_missing:
 		get: return _external_project_info.is_missing
@@ -157,6 +157,12 @@ class Project:
 	
 	func emit_internals_changed():
 		internals_changed.emit()
+	
+	func _get_editors_to_bind():
+		var options = _local_editors.as_option_button_items()
+		_external_project_info.sort_editor_options(options)
+		return options
+
 
 
 class ExternalProjectInfo extends RefCounted:
@@ -221,22 +227,27 @@ class ExternalProjectInfo extends RefCounted:
 	var _is_missing = false
 	var _tags = []
 	var _features = []
+	var _config_version = -1
+	var _has_mono_section = false
 	
-	func _init(project_path, default_icon):
+	func _init(project_path, default_icon=null):
 		_project_path = project_path
 		_default_icon = default_icon
 		_icon = default_icon
 	
-	func load():
+	func load(with_icon=true):
 		var cfg = ConfigFile.new()
 		var err = cfg.load(_project_path)
 		
 		_name = cfg.get_value("application", "config/name", "Missing Project")
 		_tags = cfg.get_value("application", "config/tags", [])
 		_features = cfg.get_value("application", "config/features", [])
+		_config_version = cfg.get_value("", "config_version", -1)
+		_has_mono_section = cfg.has_section("mono")
 		
 		_last_modified = FileAccess.get_modified_time(_project_path)
-		_icon = _load_icon(cfg)
+		if with_icon:
+			_icon = _load_icon(cfg)
 		_is_missing = bool(err)
 		
 		_is_loaded = true
@@ -257,3 +268,51 @@ class ExternalProjectInfo extends RefCounted:
 				)
 				result = ImageTexture.create_from_image(icon_image)
 		return result
+	
+	func sort_editor_options(options):
+		var has_cs_feature = "C#" in features
+		var is_mono = has_cs_feature or _has_mono_section
+		
+		var check_stable = func(label):
+			return label.contains("stable")
+		
+		var check_mono = func(label):
+			return label.contains("mono")
+		
+		var check_version = func(label: String):
+			if _config_version == 3:
+				return label.contains("3.0")
+			elif _config_version == 4:
+				return not label.contains("3.0") and not label.contains("4.")
+			elif _config_version > 4:
+				var is_version = func(feature): 
+					return feature.contains(".") and feature.substr(0, 3).is_valid_float()
+				var version_tags = Array(features).filter(is_version)
+				if len(version_tags) > 0:
+					return label.contains(version_tags[0])
+				else:
+					return label.contains("4.")
+			else:
+				return false
+
+		options.sort_custom(func(item_a, item_b):
+			var a = item_a.label.to_lower()
+			var b = item_b.label.to_lower()
+
+			if check_stable.call(a) && !check_stable.call(b):
+				return true
+			if check_stable.call(b) && !check_stable.call(a):
+				return false
+
+			if check_version.call(a) && !check_version.call(b):
+				return true
+			if check_version.call(b) && !check_version.call(a):
+				return false
+			
+			if check_mono.call(a) && !check_mono.call(b):
+				return true and is_mono
+			if check_mono.call(b) && !check_mono.call(a):
+				return false or not is_mono
+
+			return a > b
+		)
