@@ -26,7 +26,7 @@ func _ready():
 			_remote_editors.install_zip(
 				file, 
 				file.get_file().replace(".zip", ""), 
-				_remote_editors.guess_editor_name(file)
+				utils.guess_editor_name(file.replace(".zip", ""))
 			)
 		else:
 			_local_editors.import("", file)

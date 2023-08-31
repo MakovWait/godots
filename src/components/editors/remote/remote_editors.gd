@@ -254,7 +254,7 @@ func download_zip(url, file_name, tux_fallback = ""):
 		install_zip(
 			abs_path, 
 			file_name.replace(".zip", "").replace(".", "_"), 
-			guess_editor_name(file_name),
+			utils.guess_editor_name(file_name.replace(".zip", "")),
 			func(): editor_download.queue_free()
 		)
 	)
@@ -290,17 +290,6 @@ func _unzip_downloaded(downloaded_abs_path, root_unzip_folder_name):
 	zip_content_dir += "/"
 	zip.unzip(downloaded_abs_path, zip_content_dir)
 	return zip_content_dir
-
-
-func guess_editor_name(file_name):
-	var possible_editor_name = file_name.get_file()
-	var tokens_to_replace = []
-	tokens_to_replace.append_array(_current_platform.suffixes)
-	tokens_to_replace.append_array(["_", "-"])
-	for token in tokens_to_replace:
-		possible_editor_name = possible_editor_name.replace(token, " ")
-	possible_editor_name = possible_editor_name.strip_edges()
-	return possible_editor_name
 
 
 func _load_data(root: TreeItem, reverse=false, is_tree_root=false):

@@ -17,14 +17,21 @@ func _ready() -> void:
 	)
 	_browse_button.pressed.connect(func():
 		_file_dialog.popup_centered_ratio(0.5)
-		_file_dialog.current_path = _path_edit.text
+		if _path_edit.text.is_empty():
+			_file_dialog.current_dir = ProjectSettings.globalize_path(
+				Config.VERSIONS_PATH.ret()
+			)
+		else:
+			_file_dialog.current_path = _path_edit.text
 	)
 	_browse_button.icon = get_theme_icon("Load", "EditorIcons")
 	_file_dialog.file_selected.connect(func(dir):
 		_path_edit.text = dir
+		_name_edit.text = utils.guess_editor_name(dir)
 	)
 	_file_dialog.dir_selected.connect(func(path):
 		_path_edit.text = path
+		_name_edit.text = utils.guess_editor_name(path)
 	)
 	_name_edit.text_changed.connect(func(_arg): _update_ok_button())
 	_path_edit.text_changed.connect(func(_arg): _update_ok_button())
