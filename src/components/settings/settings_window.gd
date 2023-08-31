@@ -546,6 +546,7 @@ func SettingThemePreset(a1, a2, a3, a4):
 		"Default",
 		"Breeze Dark",
 		"Godot 2",
+		"Godot Dash",
 		"Gray",
 		"Light",
 		"Solarized (Dark)",

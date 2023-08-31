@@ -247,6 +247,10 @@ static func create_editor_theme(p_theme):
 		preset_accent_color = Color(0.53, 0.67, 0.89)
 		preset_base_color = Color(0.24, 0.23, 0.27)
 		preset_contrast = default_contrast
+	elif preset == "Godot Dash":
+		preset_accent_color = Color(0.388235, 0.478431, 0.996078, 1)
+		preset_base_color = Color(0.054902, 0.0627451, 0.0745098, 1)
+		preset_contrast = 0.3
 	elif preset == "Gray":
 		preset_accent_color = Color(0.44, 0.73, 0.98)
 		preset_base_color = Color(0.24, 0.24, 0.24)
@@ -281,6 +285,7 @@ static func create_editor_theme(p_theme):
 		base_color = preset_base_color
 		contrast = preset_contrast
 		draw_extra_borders = preset_draw_extra_borders
+		Config.editor_settings_proxy_set("interface/theme/icon_and_font_color", 0)
 #		EditorSettings::get_singleton().set_initial_value("interface/theme/accent_color", accent_color)
 #		EditorSettings::get_singleton().set_initial_value("interface/theme/base_color", base_color)
 #		EditorSettings::get_singleton().set_initial_value("interface/theme/contrast", contrast)
