@@ -117,7 +117,7 @@ var USE_GITHUB = ConfigFileValue.new(
 	_cfg_auto_save, 
 	"app", 
 	"use_github",
-	false
+	true
 ): 
 	set(_v): _readonly()
 
