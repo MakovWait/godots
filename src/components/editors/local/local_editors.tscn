@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bpi7ggvfe5uhq"]
+[gd_scene load_steps=8 format=3 uid="uid://bpi7ggvfe5uhq"]
 
 [ext_resource type="Script" path="res://src/components/editors/local/local_editors.gd" id="1_uc0j8"]
 [ext_resource type="PackedScene" uid="uid://datb5j88oompr" path="res://src/components/editors/local/editors_list/editors_list.tscn" id="2_a50s0"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="3_kugpf"]
 [ext_resource type="Script" path="res://src/components/misc/remove_missing_button.gd" id="4_7gmpr"]
 [ext_resource type="PackedScene" uid="uid://bgs8c8ed7oww1" path="res://src/components/editors/local/orphan_editor_explorer/orphan_editor_explorer.tscn" id="4_nupsx"]
+[ext_resource type="Script" path="res://src/components/misc/scan_file_dialog.gd" id="7_ejkq8"]
 
 [node name="Editors" type="HBoxContainer"]
 anchors_preset = 15
@@ -37,6 +38,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Remove Orphan"
 
+[node name="ScanButton" type="Button" parent="ActionsSidebar/TabActions" index="3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Scan"
+
 [node name="RemoveMissingButton" type="Button" parent="ActionsSidebar/RestActions" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -47,6 +53,10 @@ visible = false
 
 [node name="OrphanEditorExplorer" parent="." instance=ExtResource("4_nupsx")]
 visible = false
+
+[node name="ScanDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+script = ExtResource("7_ejkq8")
 
 [connection signal="item_edited" from="EditorsList" to="." method="_on_editors_list_item_edited"]
 [connection signal="item_manage_tags_requested" from="EditorsList" to="." method="_on_editors_list_item_manage_tags_requested"]

@@ -13,6 +13,9 @@ const dir = preload("res://src/extensions/dir.gd")
 @onready var _orphan_editors_explorer: ConfirmationDialog = $OrphanEditorExplorer
 @onready var _import_button: Button = %ImportButton
 @onready var _remove_missing_button = %RemoveMissingButton
+@onready var _scan_button = %ScanButton
+@onready var _scan_dialog = %ScanDialog
+
 
 var _local_editors = Editors.LocalEditors
 
@@ -34,6 +37,17 @@ func _ready() -> void:
 	_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
 	Config.saved.connect(func():
 		_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
+	)
+	
+	_scan_button.icon = get_theme_icon("Search", "EditorIcons")
+	_scan_button.pressed.connect(func():
+		_scan_dialog.current_dir = ProjectSettings.globalize_path(
+			Config.VERSIONS_PATH.ret()
+		)
+		_scan_dialog.popup_centered_ratio(0.5)
+	)
+	_scan_dialog.dir_to_scan_selected.connect(func(dir_to_scan: String):
+		_scan_editors(dir_to_scan)
 	)
 
 
@@ -75,6 +89,76 @@ func _remove_missing():
 	_editors_list.refresh(_local_editors.all())
 	_editors_list.sort_items()
 	_update_remove_missing_disabled()
+
+
+func _scan_editors(dir_to_scan: String):
+	var filter
+	if OS.has_feature("windows"):
+		filter = func(x: dir.DirListResult):
+			var evidences = [
+				x.is_file and x.extension == "exe",
+				x.file.to_lower().contains("godot_v"),
+				not x.file.to_lower().contains("console"),
+			]
+			return evidences.all(func(is_true): return is_true)
+	elif OS.has_feature("macos"):
+		filter = func(x: dir.DirListResult):
+			var evidences = [
+				x.is_dir and x.extension == "app",
+				x.file.to_lower().contains("godot")
+			]
+			return evidences.all(func(is_true): return is_true)
+	elif OS.has_feature("linux"):
+		filter = func(x: dir.DirListResult):
+			var evidences = [
+				x.is_file and (
+					x.extension.contains("32") or x.extension.contains("64")
+				),
+				x.file.to_lower().contains("godot_v")
+			]
+			return evidences.all(func(is_true): return is_true)
+
+	var editors_exec = dir.list_recursive(
+		ProjectSettings.globalize_path(dir_to_scan), 
+		false,
+		filter,
+		(func(x: String): 
+			return not x.get_file().begins_with("."))
+	)
+	for editor_exec in editors_exec:
+		var editor_exec_path = editor_exec.path
+		if _local_editors.has(editor_exec_path):
+			continue
+		var editor = _local_editors.add(
+			_guess_editor_name(editor_exec.file), 
+			editor_exec_path
+		)
+		_editors_list.add(editor)
+	_local_editors.save()
+
+
+func _guess_editor_name(file_name: String):
+	var possible_editor_name = file_name.get_file()
+	var tokens_to_replace = []
+	tokens_to_replace.append_array([
+		"x11.64", 
+		"linux.64",
+		"linux.x86_64", 
+		"linux.x86_32",
+		"osx.universal",
+		"macos.universal",
+		"osx.fat",
+		"osx32",
+		"osx64",
+		"win64",
+		"win32",
+		".%s" % file_name.get_extension()
+	])
+	tokens_to_replace.append_array(["_", "-"])
+	for token in tokens_to_replace:
+		possible_editor_name = possible_editor_name.replace(token, " ")
+	possible_editor_name = possible_editor_name.strip_edges()
+	return possible_editor_name
 
 
 func _update_remove_missing_disabled():
