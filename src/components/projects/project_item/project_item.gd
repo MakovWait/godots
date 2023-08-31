@@ -345,4 +345,6 @@ class RunButton extends Button:
 		item.internals_changed.connect(func():
 			disabled = item.has_invalid_editor or item.is_missing
 		)
+		if item.has_invalid_editor:
+			tooltip_text = tr("Bind editor first.")
 
