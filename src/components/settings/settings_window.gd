@@ -119,7 +119,7 @@ func _ready():
 		Config.save()
 		OS.set_restart_on_exit(true, OS.get_cmdline_args())
 		get_tree().quit()
-	)
+	, CONNECT_DEFERRED & CONNECT_ONE_SHOT)
 	%HideRestartButton.flat = true
 	%HideRestartButton.pressed.connect(func():
 		%RestartContainer.hide()
