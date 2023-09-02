@@ -117,8 +117,10 @@ func _ready():
 	%RestartInfoLabel.text = tr("Godots must be restarted for changes to take effect.")
 	%RestartButton.pressed.connect(func():
 		Config.save()
-		OS.set_restart_on_exit(true, OS.get_cmdline_args())
 		get_tree().quit()
+		OS.create_process(OS.get_executable_path(), OS.get_cmdline_args())
+#		OS.set_restart_on_exit(true, OS.get_cmdline_args())
+#		get_tree().quit()
 	, CONNECT_DEFERRED & CONNECT_ONE_SHOT)
 	%HideRestartButton.flat = true
 	%HideRestartButton.pressed.connect(func():
