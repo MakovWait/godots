@@ -7,7 +7,7 @@ const Editors = preload("res://src/services/local_editors.gd")
 const dir = preload("res://src/extensions/dir.gd")
 
 @onready var _editors_list: VBoxContainer = $EditorsList
-@onready var _sidebar: VBoxContainer = $ActionsSidebar
+@onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
 @onready var _download_button: Button = %DownloadButton
 @onready var _orphan_editors_button: Button = %OrphanEditorsButton
 @onready var _orphan_editors_explorer: ConfirmationDialog = $OrphanEditorExplorer

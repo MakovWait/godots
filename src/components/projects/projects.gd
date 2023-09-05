@@ -5,7 +5,7 @@ const dir = preload("res://src/extensions/dir.gd")
 
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
-@onready var _sidebar: VBoxContainer = $ActionsSidebar
+@onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
 @onready var _projects_list: VBoxContainer = $ProjectsList
 @onready var _import_project_button: Button = %ImportProjectButton
 @onready var _import_project_dialog: ConfirmationDialog = $ImportProjectDialog

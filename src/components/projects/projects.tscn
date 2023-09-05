@@ -20,25 +20,30 @@ script = ExtResource("1_p17nd")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ActionsSidebar" parent="." instance=ExtResource("1_5rf5l")]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="ActionsSidebar" parent="ScrollContainer" instance=ExtResource("1_5rf5l")]
 layout_mode = 2
 
-[node name="NewProjectButton" type="Button" parent="ActionsSidebar/TabActions" index="0"]
+[node name="NewProjectButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "New Project"
 
-[node name="ImportProjectButton" type="Button" parent="ActionsSidebar/TabActions" index="1"]
+[node name="ImportProjectButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Import"
 
-[node name="ScanButton" type="Button" parent="ActionsSidebar/TabActions" index="2"]
+[node name="ScanButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Scan"
 
-[node name="RemoveMissingButton" type="Button" parent="ActionsSidebar/RestActions" index="0"]
+[node name="RemoveMissingButton" type="Button" parent="ScrollContainer/ActionsSidebar/RestActions" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("4_2vxoc")
@@ -62,4 +67,4 @@ script = ExtResource("7_twvyr")
 [connection signal="item_removed" from="ProjectsList" to="." method="_on_projects_list_item_removed"]
 [connection signal="item_selected" from="ProjectsList" to="." method="_on_projects_list_item_selected"]
 
-[editable path="ActionsSidebar"]
+[editable path="ScrollContainer/ActionsSidebar"]
