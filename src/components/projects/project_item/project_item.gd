@@ -131,7 +131,11 @@ func init(item: projects_ns.Project):
 		item.favorite = is_favorite
 		edited.emit()
 	)
-	double_clicked.connect(_on_edit_with_editor.bind(item))
+	double_clicked.connect(func():
+		var valid = not (item.has_invalid_editor or item.is_missing)
+		if valid:
+			_on_edit_with_editor(item)
+	)
 
 
 func _fill_data(item):

@@ -106,7 +106,10 @@ func init(item):
 		item.favorite = is_favorite
 		edited.emit()
 	)
-	double_clicked.connect(_on_run_editor.bind(item))
+	double_clicked.connect(func():
+		if item.is_valid:
+			_on_run_editor(item)
+	)
 
 
 func _on_run_editor(item):
