@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://qxd7fbvfbjs5"]
+[gd_scene load_steps=9 format=3 uid="uid://qxd7fbvfbjs5"]
 
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="1_5rf5l"]
 [ext_resource type="PackedScene" uid="uid://ibwyb5nfpxpn" path="res://src/components/projects/projects_list/projects_list.tscn" id="1_hecdv"]
 [ext_resource type="Script" path="res://src/components/projects/projects.gd" id="1_p17nd"]
 [ext_resource type="Script" path="res://src/components/misc/remove_missing_button.gd" id="4_2vxoc"]
 [ext_resource type="PackedScene" uid="uid://bcn7ypx0qusqp" path="res://src/components/projects/import_project_dialog/import_project_dialog.tscn" id="4_ooebc"]
-[ext_resource type="PackedScene" uid="uid://b6v7neuq31y1q" path="res://src/components/projects/new_project_dialog/new_project_dialog.tscn" id="5_bycab"]
 [ext_resource type="Script" path="res://src/components/misc/scan_file_dialog.gd" id="7_twvyr"]
+[ext_resource type="PackedScene" uid="uid://gfg5navd0jvp" path="res://src/components/projects/install_project_dialog/install_project_simple.tscn" id="8_7b4oq"]
+[ext_resource type="PackedScene" uid="uid://canl4lc1tj7qu" path="res://src/components/projects/new_project_dialog/new_project_dialog.tscn" id="8_sityd"]
 
 [node name="Projects" type="HBoxContainer"]
 anchors_preset = 15
@@ -51,9 +52,6 @@ script = ExtResource("4_2vxoc")
 [node name="ImportProjectDialog" parent="." instance=ExtResource("4_ooebc")]
 visible = false
 
-[node name="NewProjectDialog" parent="." instance=ExtResource("5_bycab")]
-visible = false
-
 [node name="ScanDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true
 title = "Open a Directory"
@@ -61,6 +59,12 @@ ok_button_text = "Select Current Folder"
 file_mode = 2
 access = 2
 script = ExtResource("7_twvyr")
+
+[node name="InstallProjectSimpleDialog" parent="." instance=ExtResource("8_7b4oq")]
+visible = false
+
+[node name="NewProjectDialog" parent="." instance=ExtResource("8_sityd")]
+visible = false
 
 [connection signal="item_edited" from="ProjectsList" to="." method="_on_projects_list_item_edited"]
 [connection signal="item_manage_tags_requested" from="ProjectsList" to="." method="_on_projects_list_item_manage_tags_requested"]

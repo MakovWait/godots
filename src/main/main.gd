@@ -23,11 +23,28 @@ func _ready():
 		if file.ends_with("project.godot"):
 			_projects.import(file)
 		elif file.ends_with(".zip"):
-			_remote_editors.install_zip(
-				file, 
-				file.get_file().replace(".zip", ""), 
-				utils.guess_editor_name(file.replace(".zip", ""))
-			)
+			var zip_reader = ZIPReader.new()
+			var unzip_err = zip_reader.open(file)
+			if unzip_err != OK:
+				zip_reader.close()
+				return
+			var has_project_godot_file = len(
+				Array(
+					zip_reader.get_files()
+				).map(func(x): return x.get_file() == "project.godot")
+			) > 0
+			if has_project_godot_file:
+				_projects.install_zip(
+					zip_reader,
+					file.get_file().replace(".zip", "").capitalize()
+				)
+			else:
+				zip_reader.close()
+				_remote_editors.install_zip(
+					file, 
+					file.get_file().replace(".zip", ""), 
+					utils.guess_editor_name(file.replace(".zip", ""))
+				)
 		else:
 			_local_editors.import("", file)
 	)

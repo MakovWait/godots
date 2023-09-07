@@ -2,6 +2,7 @@ extends HBoxContainer
 
 const Projects = preload("res://src/services/projects.gd")
 const dir = preload("res://src/extensions/dir.gd")
+const zip = preload("res://src/extensions/zip.gd")
 
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
@@ -14,6 +15,7 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _scan_button = %ScanButton
 @onready var _scan_dialog = %ScanDialog
 @onready var _remove_missing_button = %RemoveMissingButton
+@onready var _install_project_from_zip_dialog = $InstallProjectSimpleDialog
 
 
 var _projects: Projects.Projects
@@ -81,15 +83,35 @@ func import(project_path=""):
 	_import_project_dialog.popup_centered()
 
 
-func _scan_projects(dir_path):
-	var project_configs = dir.list_recursive(
-		ProjectSettings.globalize_path(dir_path), 
-		false,
-		(func(x: dir.DirListResult): 
-			return x.is_file and x.file == "project.godot"),
-		(func(x: String): 
-			return not x.get_file().begins_with("."))
+func install_zip(zip_reader: ZIPReader, project_name):
+	if _install_project_from_zip_dialog.visible:
+		return
+	_install_project_from_zip_dialog.title = "Install Project: %s" % project_name
+	_install_project_from_zip_dialog.get_ok_button().text = tr("Install")
+	_install_project_from_zip_dialog.raise(project_name)
+	_install_project_from_zip_dialog.dialog_hide_on_ok = false
+	_install_project_from_zip_dialog.about_to_install.connect(func(final_project_name, project_dir):
+		var unzip_err = zip.unzip_to_path(zip_reader, project_dir)
+		zip_reader.close()
+		if unzip_err != OK:
+			_install_project_from_zip_dialog.error(tr("Failed to unzip."))
+			return
+		var project_configs = _find_project_godot_files(project_dir)
+		if len(project_configs) == 0:
+			_install_project_from_zip_dialog.error(tr("No project.godot found."))
+			return
+		
+		var project_file_path = project_configs[0]
+		_install_project_from_zip_dialog.hide()
+		import(project_file_path.path)
+		pass,
+		CONNECT_ONE_SHOT
 	)
+	
+
+
+func _scan_projects(dir_path):
+	var project_configs = _find_project_godot_files(dir_path)
 	var added_projects = []
 	for project_config in project_configs:
 		var project_path = project_config.path
@@ -100,6 +122,18 @@ func _scan_projects(dir_path):
 		added_projects.append(project)
 	_projects.save()
 	_load_projects_array(added_projects)
+
+
+func _find_project_godot_files(dir_path):
+	var project_configs = dir.list_recursive(
+		ProjectSettings.globalize_path(dir_path), 
+		false,
+		(func(x: dir.DirListResult): 
+			return x.is_file and x.file == "project.godot"),
+		(func(x: String): 
+			return not x.get_file().begins_with("."))
+	)
+	return project_configs
 
 
 func _remove_missing():
