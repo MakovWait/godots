@@ -139,8 +139,10 @@ func _enter_tree() -> void:
 
 func _setup_scale():
 	AUTO_EDSCALE = _get_auto_display_scale()
-	var saved_scale = SAVED_EDSCALE.ret(AUTO_EDSCALE)
-	EDSCALE = clamp(saved_scale, 0.5, 4)
+	var saved_scale = SAVED_EDSCALE.ret(-1)
+	if saved_scale == -1:
+		saved_scale = AUTO_EDSCALE
+	EDSCALE = clamp(saved_scale, 0.75, 4)
 
 
 #https://github.com/godotengine/godot/blob/master/editor/editor_settings.cpp#L1400

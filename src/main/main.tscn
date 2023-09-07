@@ -116,7 +116,7 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -135.0
+offset_left = -69.0
 offset_bottom = 31.0
 grow_horizontal = 0
 alignment = 2
@@ -127,6 +127,8 @@ layout_mode = 2
 focus_mode = 0
 text = "settings"
 flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
 
 [node name="ManageTags" parent="." instance=ExtResource("6_xaluk")]
 visible = false
