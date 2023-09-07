@@ -49,6 +49,7 @@ func init(project_path, editor_options):
 	_project_path_edit.clear()
 	_project_path_edit.text = project_path
 	_update_ok_button_available()
+	_sort_options()
 
 
 func _set_editor_options(options):
