@@ -85,6 +85,7 @@ func import(project_path=""):
 
 func install_zip(zip_reader: ZIPReader, project_name):
 	if _install_project_from_zip_dialog.visible:
+		zip_reader.close()
 		return
 	_install_project_from_zip_dialog.title = "Install Project: %s" % project_name
 	_install_project_from_zip_dialog.get_ok_button().text = tr("Install")
