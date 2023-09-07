@@ -248,8 +248,22 @@ func download_zip(url, file_name, tux_fallback = ""):
 	var editor_download = _editor_download_scene.instantiate()
 	%EditorDownloads.add_child(editor_download)
 	editor_download.start(
-		url, Config.DOWNLOADS_PATH.ret() + "/", file_name, tux_fallback
+		url, Config.DOWNLOADS_PATH.ret() + "/", file_name
 	)
+	editor_download.download_failed.connect(func(response_code):
+		Output.push(
+			"Failed to download editor: %s" % response_code
+		)
+	)
+	if not tux_fallback.is_empty():
+		editor_download.download_failed.connect(func(_response_code):
+			Output.push(
+				"Attempt to download with tux_fallback: %s" % tux_fallback
+			)
+			editor_download.start(tux_fallback, Config.DOWNLOADS_PATH.ret() + "/", file_name)
+			pass,
+			CONNECT_ONE_SHOT + CONNECT_DEFERRED
+		)
 	editor_download.downloaded.connect(func(abs_path):
 		install_zip(
 			abs_path, 
