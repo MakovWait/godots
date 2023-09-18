@@ -16,6 +16,7 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _scan_dialog = %ScanDialog
 @onready var _remove_missing_button = %RemoveMissingButton
 @onready var _install_project_from_zip_dialog = $InstallProjectSimpleDialog
+@onready var _refresh_button = %RefreshButton
 
 
 var _projects: Projects.Projects
@@ -58,6 +59,9 @@ func init(projects: Projects.Projects):
 		_scan_projects(dir_to_scan)
 	)
 	
+	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
+	_refresh_button.pressed.connect(_refresh)
+	
 	_remove_missing_button.confirmed.connect(_remove_missing)
 	
 	_projects_list.refresh(_projects.all())
@@ -74,6 +78,12 @@ func _load_projects_array(array):
 		await get_tree().process_frame
 	_projects_list.sort_items()
 	_update_remove_missing_disabled()
+
+
+func _refresh():
+	_projects.load()
+	_projects_list.refresh(_projects.all())
+	_load_projects()
 
 
 func import(project_path=""):

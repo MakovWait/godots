@@ -15,6 +15,7 @@ const dir = preload("res://src/extensions/dir.gd")
 @onready var _remove_missing_button = %RemoveMissingButton
 @onready var _scan_button = %ScanButton
 @onready var _scan_dialog = %ScanDialog
+@onready var _refresh_button = %RefreshButton
 
 
 var _local_editors = Editors.LocalEditors
@@ -38,6 +39,9 @@ func _ready() -> void:
 	Config.saved.connect(func():
 		_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
 	)
+	
+	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
+	_refresh_button.pressed.connect(_refresh)
 	
 	_scan_button.icon = get_theme_icon("Search", "EditorIcons")
 	_scan_button.pressed.connect(func():
@@ -79,6 +83,13 @@ func import(editor_name="", editor_path=""):
 		return
 	$EditorImport.init(editor_name, editor_path)
 	$EditorImport.popup_centered()
+
+
+func _refresh():
+	_local_editors.load()
+	_editors_list.refresh(_local_editors.all())
+	_editors_list.sort_items()
+	_update_remove_missing_disabled()
 
 
 func _remove_missing():
