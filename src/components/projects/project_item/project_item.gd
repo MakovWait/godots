@@ -115,8 +115,8 @@ func init(item: projects_ns.Project):
 				)
 				if command_viewer:
 					command_viewer.raise(
-						_get_process_arguments(item, "-e"),
-						_get_alternative_process_arguments(item, "-e")
+						item.get_process_arguments("-e"),
+						item.get_alternative_process_arguments("-e")
 					)
 		)
 		view_command_btn.disabled = not item.is_valid
@@ -273,51 +273,9 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	
 
 func _run_with_editor(item, editor_flag, auto_close):
-	var output = []
-	var process_schema = _get_process_arguments(item, editor_flag)
-	OS.create_process(process_schema.path, process_schema.args)
-	Output.push_array(output)
+	item.run_with_editor(editor_flag)
 	if auto_close:
 		AutoClose.close_if_should()
-
-
-func _get_process_arguments(item, editor_flag):
-	if OS.has_feature("windows") or OS.has_feature("linux"):
-		return {
-			"path": ProjectSettings.globalize_path(item.editor_path),
-			"args": [
-				"--path",
-				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				editor_flag
-			]
-		}
-	elif OS.has_feature("macos"):
-		return {
-			"path": "open",
-			"args": [
-				ProjectSettings.globalize_path(item.editor_path),
-				"-n",
-				"--args",
-				"--path",
-				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				editor_flag
-			]
-		}
-
-
-func _get_alternative_process_arguments(item, editor_flag):
-	if not OS.has_feature("macos"):
-		return null
-	else:
-		return {
-			"path": ProjectSettings.globalize_path(item.editor_path).path_join("Contents/MacOS/Godot"),
-			"args": [
-#				"-n",
-				"--path",
-				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				editor_flag
-			]
-		}
 
 
 func _on_remove():

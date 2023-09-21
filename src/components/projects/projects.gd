@@ -29,7 +29,7 @@ func init(projects: Projects.Projects):
 	
 	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
 	_import_project_button.pressed.connect(func(): import())
-	_import_project_dialog.imported.connect(func(project_path, editor_path):
+	_import_project_dialog.imported.connect(func(project_path, editor_path, edit):
 		var project
 		if projects.has(project_path):
 			project = projects.retrieve(project_path)
@@ -41,6 +41,10 @@ func init(projects: Projects.Projects):
 			_projects_list.add(project)
 		_projects.save()
 		_projects_list.sort_items()
+		
+		if edit:
+			project.run_with_editor('-e')
+			AutoClose.close_if_should()
 	)
 	
 	_new_project_dialog.created.connect(func(project_path):

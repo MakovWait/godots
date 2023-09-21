@@ -1,7 +1,7 @@
 extends ConfirmationDialog
 
 
-signal imported(project_path, editor_path)
+signal imported(project_path, editor_path, and_edit)
 
 
 const Projects = preload("res://src/services/projects.gd")
@@ -41,6 +41,17 @@ func _ready() -> void:
 		_update_ok_button_available()
 		_sort_options()
 	)
+	
+	custom_action.connect(func(action):
+		if action == "just_import":
+			imported.emit(
+				_project_path_edit.text, 
+				_editors_option_button.get_item_metadata(_editors_option_button.selected),
+				false
+			)
+	)
+
+	add_button(tr("Import"), false, "just_import")
 
 
 func init(project_path, editor_options):
@@ -63,7 +74,8 @@ func _set_editor_options(options):
 func _on_confirmed() -> void:
 	imported.emit(
 		_project_path_edit.text, 
-		_editors_option_button.get_item_metadata(_editors_option_button.selected)
+		_editors_option_button.get_item_metadata(_editors_option_button.selected),
+		true
 	)
 
 
