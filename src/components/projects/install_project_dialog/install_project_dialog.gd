@@ -143,7 +143,12 @@ func _set_message(text, type):
 
 
 func _handle_dir_is_not_empty(_path):
-	_warning(tr(
-		"The selected path is not empty. Choosing an empty folder is highly recommended."
-	))
+	if Config.ALLOW_INSTALL_TO_NOT_EMPTY_DIR.ret():
+		_warning(tr(
+			"The selected path is not empty. Choosing an empty folder is highly recommended."
+		))
+	else:
+		_error(tr(
+			"The selected path is not empty."
+		))
 	return true

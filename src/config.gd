@@ -123,6 +123,15 @@ var USE_GITHUB = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var ALLOW_INSTALL_TO_NOT_EMPTY_DIR = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"allow_install_to_not_empty_dir",
+	false
+): 
+	set(_v): _readonly()
+
+
 var RANDOM_PROJECT_PREFIXES = ConfigFileValue.new(
 	_cfg_auto_save, 
 	"random-project-names", 

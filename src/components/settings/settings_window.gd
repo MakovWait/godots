@@ -58,6 +58,12 @@ func _prepare_settings():
 			Config.SHOW_ORPHAN_EDITOR,
 			SettingCheckbox,
 			tr("Check if there are some leaked Godot binaries on the filesystem that can be safely removed. For advanced users.")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/allow_install_to_not_empty_dir",
+			Config.ALLOW_INSTALL_TO_NOT_EMPTY_DIR,
+			SettingCheckbox,
+			tr("By default the project installing is forbidden if the target dir is not empty. To allow it, check the checkbox.")
 		))
 	]
 
