@@ -132,7 +132,7 @@ func _enter_tree():
 	theme = theme_source.create_custom_theme(null)
 	
 	var window = get_window()
-	window.min_size = Vector2(520, 350) * Config.EDSCALE
+	window.min_size = Vector2(520, 370) * Config.EDSCALE
 	
 	var scale_factor = max(1, Config.EDSCALE * 0.75)
 	if scale_factor > 1:

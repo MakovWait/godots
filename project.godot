@@ -29,7 +29,7 @@ window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/expand-region/plugin.cfg", "res://addons/find-everywhere/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/previous-tab/plugin.cfg", "res://addons/script-tabs/plugin.cfg")
+enabled=PackedStringArray("res://addons/expand-region/plugin.cfg", "res://addons/find-everywhere/plugin.cfg", "res://addons/previous-tab/plugin.cfg", "res://addons/script-tabs/plugin.cfg")
 
 [filesystem]
 

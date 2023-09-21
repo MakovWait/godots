@@ -68,9 +68,13 @@ script = ExtResource("7_twvyr")
 [node name="InstallProjectSimpleDialog" parent="." instance=ExtResource("8_7b4oq")]
 visible = false
 
+[node name="DuplicateProjectDialog" parent="." instance=ExtResource("8_7b4oq")]
+visible = false
+
 [node name="NewProjectDialog" parent="." instance=ExtResource("8_sityd")]
 visible = false
 
+[connection signal="item_duplicate_requested" from="ProjectsList" to="." method="_on_projects_list_item_duplicate_requested"]
 [connection signal="item_edited" from="ProjectsList" to="." method="_on_projects_list_item_edited"]
 [connection signal="item_manage_tags_requested" from="ProjectsList" to="." method="_on_projects_list_item_manage_tags_requested"]
 [connection signal="item_removed" from="ProjectsList" to="." method="_on_projects_list_item_removed"]

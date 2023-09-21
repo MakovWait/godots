@@ -3,6 +3,7 @@ extends HBoxListItem
 signal edited
 signal removed
 signal manage_tags_requested
+signal duplicate_requested
 signal tag_clicked(tag)
 
 const buttons = preload("res://src/extensions/buttons.gd")
@@ -41,10 +42,6 @@ func _ready() -> void:
 
 
 func init(item: projects_ns.Project):
-	if item.is_missing:
-		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
-		modulate = Color(1, 1, 1, 0.498)
-
 	item.loaded.connect(func():
 		_fill_data(item)
 	)
@@ -58,6 +55,13 @@ func init(item: projects_ns.Project):
 	_get_actions_callback = func():
 		if not item.is_loaded:
 			return []
+
+		var duplicate_btn = buttons.simple(
+			tr("Duplicate"), 
+			get_theme_icon("Duplicate", "EditorIcons"),
+			func(): duplicate_requested.emit()
+		)
+		duplicate_btn.disabled = item.is_missing
 
 		var edit_btn = buttons.simple(
 			tr("Edit"), 
@@ -122,7 +126,7 @@ func init(item: projects_ns.Project):
 #			actions.append(edit_btn)
 #			actions.append(bind_editor_btn)
 #		actions.append(remove_btn)
-		return [edit_btn, run_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
+		return [edit_btn, run_btn, duplicate_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -139,6 +143,10 @@ func init(item: projects_ns.Project):
 
 
 func _fill_data(item):
+	if item.is_missing:
+		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
+		modulate = Color(1, 1, 1, 0.498)
+		
 	_project_warning.visible = item.has_invalid_editor
 	_favorite_button.button_pressed = item.favorite
 	_title_label.text = item.name
