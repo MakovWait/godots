@@ -24,6 +24,11 @@ func _prepare_settings():
 			SettingFilePath,
 			tr("Default folder to scan/import projects from.")
 		)),
+		SettingFiltered(SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/config/use_system_titlebar",
+			Config.USE_SYSTEM_TITLE_BAR,
+			SettingCheckbox
+		))), func(): return DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE)),
 		
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/preset",
@@ -150,7 +155,7 @@ func raise_settings():
 
 
 func _setup_settings():
-	var settings = _prepare_settings()
+	var settings = _prepare_settings().filter(func(x): return x != null)
 	
 	for setting in settings:
 		setting.validate()
@@ -207,6 +212,13 @@ func SettingCfg(category, cfg_value, prop_factory, tooltip=""):
 
 func SettingChangeObserved(origin: Setting):
 	return origin.on_value_changed(func(_a): _settings_changed.emit())
+
+
+func SettingFiltered(origin: Setting, filter):
+	if filter.call():
+		return origin
+	else:
+		return null
 
 
 func SettingRestartRequired(origin: Setting):
