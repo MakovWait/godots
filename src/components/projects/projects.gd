@@ -210,7 +210,16 @@ func _on_projects_list_item_duplicate_requested(project: Projects.Project) -> vo
 		if OS.has_feature("macos") or OS.has_feature("linux"):
 			err = OS.execute("cp", ["-r", project.path.get_base_dir().path_join("."), project_dir])
 		elif OS.has_feature("windows"):
-			err = OS.execute("xcopy", [project.path.get_base_dir().path_join("*"), project_dir, "/E"])
+			err = OS.execute(
+				"powershell.exe", 
+				[
+					"-command",
+					"\"Copy-Item -Path '%s' -Destination '%s' -Recurse\"" % [ 
+						ProjectSettings.globalize_path(project.path.get_base_dir().path_join("*")), 
+						ProjectSettings.globalize_path(project_dir)
+					]
+				]
+			)
 		if err != 0:
 			_duplicate_project_dialog.error(tr("Error. Code: %s" % err))
 			return
