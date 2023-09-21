@@ -16,6 +16,7 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _scan_dialog = %ScanDialog
 @onready var _remove_missing_button = %RemoveMissingButton
 @onready var _install_project_from_zip_dialog = $InstallProjectSimpleDialog
+@onready var _duplicate_project_dialog = $DuplicateProjectDialog
 @onready var _refresh_button = %RefreshButton
 
 
@@ -191,4 +192,37 @@ func _on_projects_list_item_manage_tags_requested(item_data) -> void:
 		func(new_tags):
 			item_data.tags = new_tags
 			_on_projects_list_item_edited(item_data)
+	)
+
+
+func _on_projects_list_item_duplicate_requested(project: Projects.Project) -> void:
+	if _duplicate_project_dialog.visible:
+		return
+	
+	_duplicate_project_dialog.title = "Duplicate Project: %s" % project.name
+	_duplicate_project_dialog.get_ok_button().text = tr("Duplicate")
+	
+	_duplicate_project_dialog.raise(project.name)
+	
+	_duplicate_project_dialog.dialog_hide_on_ok = false
+	_duplicate_project_dialog.about_to_install.connect(func(final_project_name, project_dir):
+		var err = 0
+		if OS.has_feature("macos") or OS.has_feature("linux"):
+			err = OS.execute("cp", ["-r", project.path.get_base_dir().path_join("."), project_dir])
+		elif OS.has_feature("windows"):
+			err = OS.execute("xcopy", [project.path.get_base_dir().path_join("*"), project_dir, "/E"])
+		if err != 0:
+			_duplicate_project_dialog.error(tr("Error. Code: %s" % err))
+			return
+
+		var project_configs = _find_project_godot_files(project_dir)
+		if len(project_configs) == 0:
+			_duplicate_project_dialog.error(tr("No project.godot found."))
+			return
+		
+		var project_file_path = project_configs[0]
+		_duplicate_project_dialog.hide()
+		import(project_file_path.path)
+		pass,
+		CONNECT_ONE_SHOT
 	)
