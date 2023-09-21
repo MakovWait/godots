@@ -9,8 +9,10 @@ extends ConfirmationDialog
 @onready var _status_rect = %StatusRect
 @onready var _create_folder_failed_dialog = $CreateFolderFailedDialog
 @onready var _file_dialog = $FileDialog
+@onready var _randomize_name_button = %RandomizeNameButton
 
 var _create_folder_failed_label: Label
+
 
 func _ready():
 	_create_folder_failed_label = Label.new()
@@ -41,6 +43,11 @@ func _ready():
 	)
 	_file_dialog.dir_selected.connect(func(dir): 
 		_project_path_line_edit.text = dir
+		_validate()
+	)
+	
+	_randomize_name_button.pressed.connect(func():
+		_project_name_edit.text = Config.next_random_project_name()
 		_validate()
 	)
 	

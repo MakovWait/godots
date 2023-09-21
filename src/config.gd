@@ -18,6 +18,7 @@ const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/god
 
 const _EDITOR_PROXY_SECTION_NAME = "theme"
 
+var _random_project_names = RandomProjectNames.new()
 var _cfg = ConfigFile.new()
 var _cfg_auto_save = ConfigFileSaveOnSet.new(
 	_cfg, 
@@ -122,12 +123,43 @@ var USE_GITHUB = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var RANDOM_PROJECT_PREFIXES = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"random-project-names", 
+	"prefixes",
+	[]
+): 
+	set(_v): _readonly()
+
+
+var RANDOM_PROJECT_TOPICS = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"random-project-names", 
+	"topics",
+	[]
+): 
+	set(_v): _readonly()
+
+
+var RANDOM_PROJECT_SUFFIXES = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"random-project-names", 
+	"suffixes",
+	[]
+): 
+	set(_v): _readonly()
+
+
 func _enter_tree() -> void:
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))
 	_cfg.load(APP_CONFIG_PATH)
 	assert(not DEFAULT_VERSIONS_PATH.ends_with("/"))
 	assert(not DEFAULT_DOWNLOADS_PATH.ends_with("/"))
+	
+	_random_project_names.set_prefixes(RANDOM_PROJECT_PREFIXES.ret())
+	_random_project_names.set_suffixes(RANDOM_PROJECT_SUFFIXES.ret())
+	_random_project_names.set_topics(RANDOM_PROJECT_TOPICS.ret())
 	
 	AGENT = "Godots/%s (%s) Godot/%s" % [
 		VERSION, 
@@ -183,6 +215,10 @@ func editor_settings_proxy_get(key, default):
 
 func editor_settings_proxy_set(key, value):
 	_cfg.set_value(_EDITOR_PROXY_SECTION_NAME, key, value)
+
+
+func next_random_project_name():
+	return _random_project_names.next()
 
 
 func _readonly():

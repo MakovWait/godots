@@ -5,7 +5,7 @@
 [node name="InstallProjectDialog" type="ConfirmationDialog"]
 title = "Create New Project"
 position = Vector2i(0, 36)
-size = Vector2i(200, 210)
+size = Vector2i(299, 210)
 visible = true
 ok_button_text = "Create"
 script = ExtResource("1_kupc3")
@@ -13,7 +13,7 @@ script = ExtResource("1_kupc3")
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 192.0
+offset_right = 291.0
 offset_bottom = 161.0
 
 [node name="Label" type="Label" parent="VBoxContainer"]
@@ -27,6 +27,11 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="RandomizeNameButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Randomize"
 
 [node name="CreateFolderButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
