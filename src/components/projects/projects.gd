@@ -60,6 +60,10 @@ func init(projects: Projects.Projects):
 		_scan_projects(dir_to_scan)
 	)
 	
+	_duplicate_project_dialog.handle_dir_is_not_empty = func(this, path):
+		this.error(tr("The selected path is not empty."))
+		return true
+	
 	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
 	_refresh_button.pressed.connect(_refresh)
 	

@@ -84,10 +84,8 @@ func _validate():
 	dir.list_dir_end()
 
 	if not dir_is_empty:
-		_warning(tr(
-			"The selected path is not empty. Choosing an empty folder is highly recommended."
-		))
-		return
+		if _handle_dir_is_not_empty(path):
+			return
 	
 	_success("")
 
@@ -135,3 +133,10 @@ func _set_message(text, type):
 			max(window_size.x, contents_min_size.x), 
 			max(window_size.y, contents_min_size.y)
 		)
+
+
+func _handle_dir_is_not_empty(_path):
+	_warning(tr(
+		"The selected path is not empty. Choosing an empty folder is highly recommended."
+	))
+	return true
