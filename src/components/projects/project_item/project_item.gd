@@ -126,7 +126,7 @@ func init(item: projects_ns.Project):
 #			actions.append(edit_btn)
 #			actions.append(bind_editor_btn)
 #		actions.append(remove_btn)
-		return [duplicate_btn, edit_btn, run_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
+		return [edit_btn, run_btn, duplicate_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
