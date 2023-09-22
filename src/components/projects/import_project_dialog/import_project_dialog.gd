@@ -35,7 +35,6 @@ func _ready() -> void:
 	)
 	_editors_option_button.item_selected.connect(func(_arg): 
 		_update_ok_button_available()
-		_sort_options()
 	)
 	_project_path_edit.text_changed.connect(func(arg: String):
 		_update_ok_button_available()
@@ -49,6 +48,7 @@ func _ready() -> void:
 				_editors_option_button.get_item_metadata(_editors_option_button.selected),
 				false
 			)
+			hide()
 	)
 
 	add_button(tr("Import"), false, "just_import")
