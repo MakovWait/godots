@@ -40,18 +40,18 @@ func _prepare_settings():
 			SettingThemePreset,
 		))),
 		
-		SettingChangeObserved(SettingCfg(
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/advanced/downloads_path",
 			Config.DOWNLOADS_PATH,
 			SettingFilePath,
 			tr("Temp dir for downloaded zips.")
-		)),
-		SettingChangeObserved(SettingCfg(
+		))),
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/advanced/versions_path",
 			Config.VERSIONS_PATH,
 			SettingFilePath,
 			tr("Dir for downloaded editors.")
-		)),
+		))),
 		SettingChangeObserved(SettingCfg(
 			"application/advanced/use_github",
 			Config.USE_GITHUB,
