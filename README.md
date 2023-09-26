@@ -22,4 +22,10 @@ sudo xattr -r -d com.apple.quarantine /Applications/Godots.app
 
 ![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot1.png)
 
+- **Theming Support**: Customize your Godots experience with theming support. Make it truly your own with personalized themes that match your style and mood. [Theming readme](https://github.com/MakovWait/godots/blob/main/.github/assets/THEMING.md)
+
+![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot3.png)
+> Used theme: https://github.com/bitbrain/godot-dash
+
+*****
 Godots is your ticket to a world of creativity, style, and control. Elevate your Godot journey today with Godots, where innovation and design collide. Your Godot experience will never be the same again! 🌟🎉
