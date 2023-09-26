@@ -1,70 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b6v7neuq31y1q"]
+[gd_scene load_steps=3 format=3 uid="uid://canl4lc1tj7qu"]
 
-[ext_resource type="Script" path="res://src/components/projects/new_project_dialog/new_project_dialog.gd" id="1_k4pv4"]
+[ext_resource type="PackedScene" uid="uid://d10kvn2s6suxh" path="res://src/components/projects/install_project_dialog/install_project_dialog.tscn" id="1_1a1ca"]
+[ext_resource type="Script" path="res://src/components/projects/new_project_dialog/new_project_dialog.gd" id="2_f5jc0"]
 
-[node name="NewProjectDialog" type="ConfirmationDialog"]
-title = "Create New Project"
-position = Vector2i(0, 36)
-size = Vector2i(200, 210)
-visible = true
-ok_button_text = "Create"
-script = ExtResource("1_k4pv4")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 192.0
-offset_bottom = 161.0
-
-[node name="Label" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-text = "Project Name:"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="ProjectNameEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CreateFolderButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Create Folder"
-
-[node name="ProjectPath" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-text = "Project Path:"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="ProjectPathLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="StatusRect" type="TextureRect" parent="VBoxContainer/HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-stretch_mode = 3
-
-[node name="BrowseProjectPathButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Browse"
-
-[node name="MessageLabel" type="Label" parent="VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CreateFolderFailedDialog" type="AcceptDialog" parent="."]
-
-[node name="FileDialog" type="FileDialog" parent="."]
-title = "Open a Directory"
-ok_button_text = "Select Current Folder"
-file_mode = 2
-access = 2
+[node name="InstallProjectDialog" instance=ExtResource("1_1a1ca")]
+script = ExtResource("2_f5jc0")

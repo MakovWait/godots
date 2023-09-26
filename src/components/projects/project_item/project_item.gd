@@ -3,6 +3,7 @@ extends HBoxListItem
 signal edited
 signal removed
 signal manage_tags_requested
+signal duplicate_requested
 signal tag_clicked(tag)
 
 const buttons = preload("res://src/extensions/buttons.gd")
@@ -41,10 +42,6 @@ func _ready() -> void:
 
 
 func init(item: projects_ns.Project):
-	if item.is_missing:
-		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
-		modulate = Color(1, 1, 1, 0.498)
-
 	item.loaded.connect(func():
 		_fill_data(item)
 	)
@@ -58,6 +55,13 @@ func init(item: projects_ns.Project):
 	_get_actions_callback = func():
 		if not item.is_loaded:
 			return []
+
+		var duplicate_btn = buttons.simple(
+			tr("Duplicate"), 
+			get_theme_icon("Duplicate", "EditorIcons"),
+			func(): duplicate_requested.emit()
+		)
+		duplicate_btn.disabled = item.is_missing
 
 		var edit_btn = buttons.simple(
 			tr("Edit"), 
@@ -111,8 +115,8 @@ func init(item: projects_ns.Project):
 				)
 				if command_viewer:
 					command_viewer.raise(
-						_get_process_arguments(item, "-e"),
-						_get_alternative_process_arguments(item, "-e")
+						item.get_process_arguments("-e"),
+						item.get_alternative_process_arguments("-e")
 					)
 		)
 		view_command_btn.disabled = not item.is_valid
@@ -122,7 +126,7 @@ func init(item: projects_ns.Project):
 #			actions.append(edit_btn)
 #			actions.append(bind_editor_btn)
 #		actions.append(remove_btn)
-		return [edit_btn, run_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
+		return [edit_btn, run_btn, duplicate_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -131,10 +135,18 @@ func init(item: projects_ns.Project):
 		item.favorite = is_favorite
 		edited.emit()
 	)
-	double_clicked.connect(_on_edit_with_editor.bind(item))
+	double_clicked.connect(func():
+		var valid = not (item.has_invalid_editor or item.is_missing)
+		if valid:
+			_on_edit_with_editor(item)
+	)
 
 
 func _fill_data(item):
+	if item.is_missing:
+		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
+		modulate = Color(1, 1, 1, 0.498)
+		
 	_project_warning.visible = item.has_invalid_editor
 	_favorite_button.button_pressed = item.favorite
 	_title_label.text = item.name
@@ -261,51 +273,9 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	
 
 func _run_with_editor(item, editor_flag, auto_close):
-	var output = []
-	var process_schema = _get_process_arguments(item, editor_flag)
-	OS.create_process(process_schema.path, process_schema.args)
-	Output.push_array(output)
+	item.run_with_editor(editor_flag)
 	if auto_close:
 		AutoClose.close_if_should()
-
-
-func _get_process_arguments(item, editor_flag):
-	if OS.has_feature("windows") or OS.has_feature("linux"):
-		return {
-			"path": ProjectSettings.globalize_path(item.editor_path),
-			"args": [
-				"--path",
-				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				editor_flag
-			]
-		}
-	elif OS.has_feature("macos"):
-		return {
-			"path": "open",
-			"args": [
-				ProjectSettings.globalize_path(item.editor_path),
-				"-n",
-				"--args",
-				"--path",
-				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				editor_flag
-			]
-		}
-
-
-func _get_alternative_process_arguments(item, editor_flag):
-	if not OS.has_feature("macos"):
-		return null
-	else:
-		return {
-			"path": ProjectSettings.globalize_path(item.editor_path).path_join("Contents/MacOS/Godot"),
-			"args": [
-#				"-n",
-				"--path",
-				ProjectSettings.globalize_path(item.path).get_base_dir(),
-				editor_flag
-			]
-		}
 
 
 func _on_remove():

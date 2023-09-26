@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dxnoecc3ruw3t"]
 
 [ext_resource type="Script" path="res://src/components/editors/remote/remote_editors.gd" id="1_80m0a"]
-[ext_resource type="PackedScene" uid="uid://c5gkkg0g1tofs" path="res://src/components/editors/remote/remote_editor_download/remote_editor_download.tscn" id="2_5cbw2"]
+[ext_resource type="PackedScene" uid="uid://cb6u1mub27xo" path="res://src/components/asset_download/asset_download.tscn" id="2_obpx8"]
 [ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.tscn" id="3_wvg3b"]
 [ext_resource type="PackedScene" uid="uid://dhvesrdvhm6lv" path="res://src/components/editors/remote/remote_editor_direct_link/remote_editor_direct_link.tscn" id="4_nu1uq"]
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="4_s82j0"]
@@ -14,7 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_80m0a")
-_editor_download_scene = ExtResource("2_5cbw2")
+_editor_download_scene = ExtResource("2_obpx8")
 _editor_install_scene = ExtResource("3_wvg3b")
 _remote_editor_direct_link_scene = ExtResource("4_nu1uq")
 

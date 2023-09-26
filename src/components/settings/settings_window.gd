@@ -24,6 +24,11 @@ func _prepare_settings():
 			SettingFilePath,
 			tr("Default folder to scan/import projects from.")
 		)),
+		SettingFiltered(SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/config/use_system_titlebar",
+			Config.USE_SYSTEM_TITLE_BAR,
+			SettingCheckbox
+		))), func(): return DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE)),
 		
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/preset",
@@ -35,18 +40,18 @@ func _prepare_settings():
 			SettingThemePreset,
 		))),
 		
-		SettingChangeObserved(SettingCfg(
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/advanced/downloads_path",
 			Config.DOWNLOADS_PATH,
 			SettingFilePath,
 			tr("Temp dir for downloaded zips.")
-		)),
-		SettingChangeObserved(SettingCfg(
+		))),
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/advanced/versions_path",
 			Config.VERSIONS_PATH,
 			SettingFilePath,
 			tr("Dir for downloaded editors.")
-		)),
+		))),
 		SettingChangeObserved(SettingCfg(
 			"application/advanced/use_github",
 			Config.USE_GITHUB,
@@ -58,6 +63,12 @@ func _prepare_settings():
 			Config.SHOW_ORPHAN_EDITOR,
 			SettingCheckbox,
 			tr("Check if there are some leaked Godot binaries on the filesystem that can be safely removed. For advanced users.")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/allow_install_to_not_empty_dir",
+			Config.ALLOW_INSTALL_TO_NOT_EMPTY_DIR,
+			SettingCheckbox,
+			tr("By default the project installing is forbidden if the target dir is not empty. To allow it, check the checkbox.")
 		))
 	]
 
@@ -144,7 +155,7 @@ func raise_settings():
 
 
 func _setup_settings():
-	var settings = _prepare_settings()
+	var settings = _prepare_settings().filter(func(x): return x != null)
 	
 	for setting in settings:
 		setting.validate()
@@ -201,6 +212,13 @@ func SettingCfg(category, cfg_value, prop_factory, tooltip=""):
 
 func SettingChangeObserved(origin: Setting):
 	return origin.on_value_changed(func(_a): _settings_changed.emit())
+
+
+func SettingFiltered(origin: Setting, filter):
+	if filter.call():
+		return origin
+	else:
+		return null
 
 
 func SettingRestartRequired(origin: Setting):

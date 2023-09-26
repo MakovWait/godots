@@ -3,8 +3,12 @@ extends PanelContainer
 const uuid = preload("res://addons/uuid.gd")
 
 signal downloaded(abs_zip_path: String)
+signal download_failed(response_code: int)
+signal request_failed(error: int)
 
 var _retry_callback
+var _host
+var _requesting = false
 
 @onready var _progress_bar: ProgressBar = get_node("%ProgressBar")
 @onready var _status: Label = get_node("%Status")
@@ -13,6 +17,11 @@ var _retry_callback
 @onready var _title_label: Label = %TitleLabel
 @onready var _install_button: Button = %InstallButton
 @onready var _retry_button: Button = %RetryButton
+
+## for customizing icon
+## icon.texture = ...
+var icon: TextureRect:
+	get: return %Icon
 
 
 func _ready() -> void:
@@ -31,22 +40,13 @@ func _ready() -> void:
 	_install_button.pressed.connect(func():
 		downloaded.emit(_download.download_file)
 	)
-
-
-func start(url, target_abs_dir, file_name, tux_fallback = ""):
-	var download_completed_callback = func(result: int, response_code: int,
-			headers, body, download_completed_callback: Callable):
+	
+	_download.request_completed.connect(func(result: int, response_code: int, headers, body):
+		_requesting = false
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
-		var host = url
+		var host = _host
 		var error_text = null
 		var status = ""
-		
-		if ((result != HTTPRequest.RESULT_SUCCESS or response_code != 200)
-				and "github.com" in url and tux_fallback):
-			print("Failure!  Falling back to TuxFamily.")
-			_download.request_completed.disconnect(download_completed_callback)
-			start(tux_fallback, target_abs_dir, file_name, "")
-			return
 		
 		match result:
 			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
@@ -56,7 +56,7 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 				error_text = tr("Can't connect to host") + ": " + host
 				status = tr("Can't connect")
 			HTTPRequest.RESULT_NO_RESPONSE:
-				error_text = "No response from host" + ": " + host
+				error_text = tr("No response from host") + ": " + host
 				status = tr("No response")
 			HTTPRequest.RESULT_CANT_RESOLVE:
 				error_text = tr("Can't resolve hostname") + ": " + host
@@ -85,14 +85,20 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 			$AcceptErrorDialog.popup_centered()
 			_retry_button.show()
 			_status.text = status
+			download_failed.emit(response_code)
 		else:
 			_install_button.disabled = false
 			_status.text = tr("Ready to install")
 			downloaded.emit(_download.download_file)
-	
+	)
+
+
+func start(url, target_abs_dir, file_name):
+	assert(not _requesting)
 	assert(target_abs_dir.ends_with("/"))
-	print("Downloading " + url)
 	
+	_requesting = true
+	_host = url
 	_retry_callback = func(): start(url, target_abs_dir, file_name)
 	
 	_retry_button.hide()
@@ -112,11 +118,8 @@ func start(url, target_abs_dir, file_name, tux_fallback = ""):
 			_status.text = tr("Invalid URL scheme.")
 		else:
 			_status.text = tr("Something went wrong.")
+		request_failed.emit(request_err)
 		return
-	
-	for connection in _download.request_completed.get_connections():
-		_download.request_completed.disconnect(connection.callable)
-	_download.request_completed.connect(download_completed_callback.bind(download_completed_callback))
 	
 	#TODO handle deadlock
 	while _download.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED:

@@ -20,30 +20,40 @@ script = ExtResource("1_uc0j8")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ActionsSidebar" parent="." instance=ExtResource("3_kugpf")]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="ActionsSidebar" parent="ScrollContainer" instance=ExtResource("3_kugpf")]
 layout_mode = 2
 
-[node name="ImportButton" type="Button" parent="ActionsSidebar/TabActions" index="0"]
+[node name="ImportButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Import"
 
-[node name="DownloadButton" type="Button" parent="ActionsSidebar/TabActions" index="1"]
+[node name="DownloadButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Download"
 
-[node name="OrphanEditorsButton" type="Button" parent="ActionsSidebar/TabActions" index="2"]
+[node name="OrphanEditorsButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Remove Orphan"
 
-[node name="ScanButton" type="Button" parent="ActionsSidebar/TabActions" index="3"]
+[node name="ScanButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="3"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Scan"
 
-[node name="RemoveMissingButton" type="Button" parent="ActionsSidebar/RestActions" index="0"]
+[node name="RefreshButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="4"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Refresh"
+
+[node name="RemoveMissingButton" type="Button" parent="ScrollContainer/ActionsSidebar/RestActions" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("4_7gmpr")
@@ -63,4 +73,4 @@ script = ExtResource("7_ejkq8")
 [connection signal="item_removed" from="EditorsList" to="." method="_on_editors_list_item_removed"]
 [connection signal="item_selected" from="EditorsList" to="." method="_on_editors_list_item_selected"]
 
-[editable path="ActionsSidebar"]
+[editable path="ScrollContainer/ActionsSidebar"]

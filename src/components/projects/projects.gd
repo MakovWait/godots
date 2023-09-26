@@ -2,10 +2,11 @@ extends HBoxContainer
 
 const Projects = preload("res://src/services/projects.gd")
 const dir = preload("res://src/extensions/dir.gd")
+const zip = preload("res://src/extensions/zip.gd")
 
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
-@onready var _sidebar: VBoxContainer = $ActionsSidebar
+@onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
 @onready var _projects_list: VBoxContainer = $ProjectsList
 @onready var _import_project_button: Button = %ImportProjectButton
 @onready var _import_project_dialog: ConfirmationDialog = $ImportProjectDialog
@@ -14,6 +15,9 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _scan_button = %ScanButton
 @onready var _scan_dialog = %ScanDialog
 @onready var _remove_missing_button = %RemoveMissingButton
+@onready var _install_project_from_zip_dialog = $InstallProjectSimpleDialog
+@onready var _duplicate_project_dialog = $DuplicateProjectDialog
+@onready var _refresh_button = %RefreshButton
 
 
 var _projects: Projects.Projects
@@ -25,7 +29,7 @@ func init(projects: Projects.Projects):
 	
 	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
 	_import_project_button.pressed.connect(func(): import())
-	_import_project_dialog.imported.connect(func(project_path, editor_path):
+	_import_project_dialog.imported.connect(func(project_path, editor_path, edit):
 		var project
 		if projects.has(project_path):
 			project = projects.retrieve(project_path)
@@ -37,6 +41,10 @@ func init(projects: Projects.Projects):
 			_projects_list.add(project)
 		_projects.save()
 		_projects_list.sort_items()
+		
+		if edit:
+			project.run_with_editor('-e')
+			AutoClose.close_if_should()
 	)
 	
 	_new_project_dialog.created.connect(func(project_path):
@@ -56,6 +64,9 @@ func init(projects: Projects.Projects):
 		_scan_projects(dir_to_scan)
 	)
 	
+	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
+	_refresh_button.pressed.connect(_refresh)
+	
 	_remove_missing_button.confirmed.connect(_remove_missing)
 	
 	_projects_list.refresh(_projects.all())
@@ -74,6 +85,12 @@ func _load_projects_array(array):
 	_update_remove_missing_disabled()
 
 
+func _refresh():
+	_projects.load()
+	_projects_list.refresh(_projects.all())
+	_load_projects()
+
+
 func import(project_path=""):
 	if _import_project_dialog.visible:
 		return
@@ -81,15 +98,36 @@ func import(project_path=""):
 	_import_project_dialog.popup_centered()
 
 
-func _scan_projects(dir_path):
-	var project_configs = dir.list_recursive(
-		ProjectSettings.globalize_path(dir_path), 
-		false,
-		(func(x: dir.DirListResult): 
-			return x.is_file and x.file == "project.godot"),
-		(func(x: String): 
-			return not x.get_file().begins_with("."))
+func install_zip(zip_reader: ZIPReader, project_name):
+	if _install_project_from_zip_dialog.visible:
+		zip_reader.close()
+		return
+	_install_project_from_zip_dialog.title = "Install Project: %s" % project_name
+	_install_project_from_zip_dialog.get_ok_button().text = tr("Install")
+	_install_project_from_zip_dialog.raise(project_name)
+	_install_project_from_zip_dialog.dialog_hide_on_ok = false
+	_install_project_from_zip_dialog.about_to_install.connect(func(final_project_name, project_dir):
+		var unzip_err = zip.unzip_to_path(zip_reader, project_dir)
+		zip_reader.close()
+		if unzip_err != OK:
+			_install_project_from_zip_dialog.error(tr("Failed to unzip."))
+			return
+		var project_configs = _find_project_godot_files(project_dir)
+		if len(project_configs) == 0:
+			_install_project_from_zip_dialog.error(tr("No project.godot found."))
+			return
+		
+		var project_file_path = project_configs[0]
+		_install_project_from_zip_dialog.hide()
+		import(project_file_path.path)
+		pass,
+		CONNECT_ONE_SHOT
 	)
+	
+
+
+func _scan_projects(dir_path):
+	var project_configs = _find_project_godot_files(dir_path)
 	var added_projects = []
 	for project_config in project_configs:
 		var project_path = project_config.path
@@ -100,6 +138,18 @@ func _scan_projects(dir_path):
 		added_projects.append(project)
 	_projects.save()
 	_load_projects_array(added_projects)
+
+
+func _find_project_godot_files(dir_path):
+	var project_configs = dir.list_recursive(
+		ProjectSettings.globalize_path(dir_path), 
+		false,
+		(func(x: dir.DirListResult): 
+			return x.is_file and x.file == "project.godot"),
+		(func(x: String): 
+			return not x.get_file().begins_with("."))
+	)
+	return project_configs
 
 
 func _remove_missing():
@@ -146,4 +196,46 @@ func _on_projects_list_item_manage_tags_requested(item_data) -> void:
 		func(new_tags):
 			item_data.tags = new_tags
 			_on_projects_list_item_edited(item_data)
+	)
+
+
+func _on_projects_list_item_duplicate_requested(project: Projects.Project) -> void:
+	if _duplicate_project_dialog.visible:
+		return
+	
+	_duplicate_project_dialog.title = "Duplicate Project: %s" % project.name
+	_duplicate_project_dialog.get_ok_button().text = tr("Duplicate")
+	
+	_duplicate_project_dialog.raise(project.name)
+	
+	_duplicate_project_dialog.dialog_hide_on_ok = false
+	_duplicate_project_dialog.about_to_install.connect(func(final_project_name, project_dir):
+		var err = 0
+		if OS.has_feature("macos") or OS.has_feature("linux"):
+			err = OS.execute("cp", ["-r", project.path.get_base_dir().path_join("."), project_dir])
+		elif OS.has_feature("windows"):
+			err = OS.execute(
+				"powershell.exe", 
+				[
+					"-command",
+					"\"Copy-Item -Path '%s' -Destination '%s' -Recurse\"" % [ 
+						ProjectSettings.globalize_path(project.path.get_base_dir().path_join("*")), 
+						ProjectSettings.globalize_path(project_dir)
+					]
+				]
+			)
+		if err != 0:
+			_duplicate_project_dialog.error(tr("Error. Code: %s" % err))
+			return
+
+		var project_configs = _find_project_godot_files(project_dir)
+		if len(project_configs) == 0:
+			_duplicate_project_dialog.error(tr("No project.godot found."))
+			return
+		
+		var project_file_path = project_configs[0]
+		_duplicate_project_dialog.hide()
+		import(project_file_path.path)
+		pass,
+		CONNECT_ONE_SHOT
 	)
