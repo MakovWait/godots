@@ -50,15 +50,6 @@ unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-vertical_scroll_mode = 0
-
-[node name="EditorDownloads" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/ScrollContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="ActionsSidebar" parent="VBoxContainer/HBoxContainer" instance=ExtResource("4_s82j0")]
 layout_mode = 2
 

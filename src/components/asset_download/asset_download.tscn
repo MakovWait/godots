@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cb6u1mub27xo"]
+[gd_scene load_steps=4 format=3 uid="uid://cb6u1mub27xo"]
 
 [ext_resource type="Script" path="res://src/components/asset_download/asset_download.gd" id="1_k7oda"]
 [ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_kpoqj"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_dhqxd"]
 
 [node name="EditorDownload" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 125)
@@ -31,6 +32,7 @@ unique_name_in_owner = true
 layout_mode = 2
 texture = ExtResource("2_kpoqj")
 stretch_mode = 5
+script = ExtResource("3_dhqxd")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2

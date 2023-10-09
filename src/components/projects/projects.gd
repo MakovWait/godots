@@ -2,7 +2,6 @@ extends HBoxContainer
 
 const Projects = preload("res://src/services/projects.gd")
 const dir = preload("res://src/extensions/dir.gd")
-const zip = preload("res://src/extensions/zip.gd")
 
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 

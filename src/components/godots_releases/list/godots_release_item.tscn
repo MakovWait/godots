@@ -1,0 +1,67 @@
+[gd_scene load_steps=8 format=3 uid="uid://vbsd3276dgjy"]
+
+[ext_resource type="Script" path="res://src/components/godots_releases/list/godots_release_item.gd" id="1_jtjh2"]
+[ext_resource type="Texture2D" uid="uid://iiuvg75aspkd" path="res://icon.svg" id="2_qyqxi"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_qpve0"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="4_rkft6"]
+[ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="5_ulgdq"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="6_qipsy"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="7_yoatf"]
+
+[node name="GodotsReleaseItem" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jtjh2")
+
+[node name="Icon" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_qyqxi")
+script = ExtResource("3_qpve0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Control" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 1)
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/Title"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "test"
+script = ExtResource("4_rkft6")
+
+[node name="Control" type="Control" parent="VBoxContainer/Title"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+
+[node name="TagContainer" type="HBoxContainer" parent="VBoxContainer/Title"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("5_ulgdq")
+
+[node name="Path" type="HBoxContainer" parent="VBoxContainer"]
+modulate = Color(1, 1, 1, 0.498039)
+layout_mode = 2
+
+[node name="ExploreButton" type="Button" parent="VBoxContainer/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+flat = true
+script = ExtResource("6_qipsy")
+_theme_icon_name = "ExternalLink"
+
+[node name="PathLabel" type="Label" parent="VBoxContainer/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "/home/kovkel/editor/path"
+script = ExtResource("7_yoatf")

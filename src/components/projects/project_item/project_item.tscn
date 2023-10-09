@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_tvtl4"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="4_m00kj"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="5_bf7vh"]
-[ext_resource type="Script" path="res://src/components/misc/explore_button.gd" id="6_8vyss"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="6_8vyss"]
 [ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="6_k6uq1"]
 
 [node name="ProjectItem" type="HBoxContainer"]

@@ -1,3 +1,4 @@
+class_name AssetDownload
 extends PanelContainer
 
 const uuid = preload("res://addons/uuid.gd")

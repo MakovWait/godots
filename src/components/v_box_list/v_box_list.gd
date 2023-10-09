@@ -8,6 +8,7 @@ signal item_selected(item)
 
 @onready var _items_container: VBoxContainer = %ItemsContainer
 @onready var _sort_option_button: OptionButton = %SortOptionButton
+@onready var _search_box = %SearchBox
 
 
 func _ready():
@@ -20,11 +21,16 @@ func _ready():
 
 
 func _update_theme():
-	%SearchBox.right_icon = get_theme_icon("Search", "EditorIcons")
+	_search_box.right_icon = get_theme_icon("Search", "EditorIcons")
 	$ScrollContainer.add_theme_stylebox_override(
 		"panel",
 		get_theme_stylebox("search_panel", "ProjectManager")
 	)
+
+
+func set_search_box_text(text):
+	_search_box.text = text
+	_update_filters()
 
 
 func refresh(data):
@@ -32,6 +38,7 @@ func refresh(data):
 		child.queue_free()
 	for item_data in data:
 		add(item_data)
+	_update_filters()
 
 
 func add(item_data):
@@ -44,10 +51,8 @@ func add(item_data):
 	if item_control.has_signal("tag_clicked"):
 		item_control.tag_clicked.connect(
 			func(tag): 
-				var search_box = %SearchBox
-				search_box.text = "tag:%s" % tag
-				search_box.text_changed.emit(search_box.text)
-				search_box.grab_focus()
+				set_search_box_text("tag:%s" % tag)
+				_search_box.grab_focus()
 		)
 	_post_add(item_data, item_control)
 
@@ -85,10 +90,14 @@ func _on_item_clicked(item):
 	item_selected.emit(item)
 
 
-func _on_search_box_text_changed(new_text: String) -> void:
+func _on_search_box_text_changed(_new_text: String) -> void:
+	_update_filters()
+
+
+func _update_filters():
 	var search_tag = ""
 	var search_term = ""
-	for part in new_text.split(" "):
+	for part in _search_box.text.split(" "):
 		if part.begins_with("tag:"):
 			var tag_parts = part.split(":")
 			if len(tag_parts) > 1:

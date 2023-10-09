@@ -69,6 +69,12 @@ func _prepare_settings():
 			Config.ALLOW_INSTALL_TO_NOT_EMPTY_DIR,
 			SettingCheckbox,
 			tr("By default the project installing is forbidden if the target dir is not empty. To allow it, check the checkbox.")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"application/advanced/check_only_stable_updates",
+			Config.ONLY_STABLE_UPDATES,
+			SettingCheckbox,
+			tr("Will check only stable Godots releases.")
 		))
 	]
 

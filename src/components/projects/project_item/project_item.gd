@@ -6,7 +6,6 @@ signal manage_tags_requested
 signal duplicate_requested
 signal tag_clicked(tag)
 
-const buttons = preload("res://src/extensions/buttons.gd")
 const projects_ns = preload("res://src/services/projects.gd")
 
 @export var _rename_dialog_scene: PackedScene

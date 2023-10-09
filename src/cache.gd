@@ -10,6 +10,10 @@ func _enter_tree():
 	_cache.load(APP_CACHE_PATH)
 
 
+func has_value(section: String, key: String):
+	return _cache.has_section_key(section, key)
+
+
 func get_value(section: String, key: String, default: Variant = null):
 	return _cache.get_value(section, key, default)
 
