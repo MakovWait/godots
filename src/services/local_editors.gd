@@ -1,3 +1,5 @@
+class_name EditorTypes
+
 class LocalEditors extends RefCounted:
 	const dir = preload("res://src/extensions/dir.gd")
 	const dict = preload("res://src/extensions/dict.gd")
@@ -40,6 +42,13 @@ class LocalEditors extends RefCounted:
 	
 	func retrieve(editor_path) -> LocalEditor:
 		return _editors[editor_path]
+	
+	func filter_by_name_pattern(name: String) -> Array[LocalEditor]:
+		var result: Array[LocalEditor] = []
+		for editor in all():
+			if editor.name.findn(name) > -1:
+				result.push_back(editor)
+		return result
 	
 	func has(editor_path) -> bool:
 		return _editors.has(editor_path)
@@ -95,6 +104,9 @@ class LocalEditor extends Object:
 	
 	const dir = preload("res://src/extensions/dir.gd")
 	
+	var mac_os_editor_path_postfix:
+		get: return _section.get_value("mac_os_editor_path_postfix", "/Contents/MacOS/Godot")
+	
 	signal name_changed(new_name)
 	
 	var path:
@@ -124,3 +136,24 @@ class LocalEditor extends Object:
 	
 	func emit_tags_edited():
 		tags_edited.emit()
+	
+	func open(args: PackedStringArray):
+		Output.push("Run editor with arguments: %s" % args)
+		
+		var process_args = _get_process_arguments(args)
+		var pid = OS.create_process(process_args.path, process_args.args)
+		
+		if (pid == -1):
+			Output.push('An error occured when create editor process')
+	
+	func _get_process_arguments(args: PackedStringArray):
+		if OS.has_feature("windows") or OS.has_feature("linux"):
+			return {
+				"path": ProjectSettings.globalize_path(path),
+				"args": args
+			}
+		elif OS.has_feature("macos"):
+			return {
+				"path": ProjectSettings.globalize_path(path + mac_os_editor_path_postfix),
+				"args": args
+			}
