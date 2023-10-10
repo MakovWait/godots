@@ -7,6 +7,7 @@ signal tag_clicked(tag)
 
 
 @export var _rename_dialog_scene: PackedScene
+@export var _add_extra_arguments_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
@@ -69,7 +70,14 @@ func init(item):
 			func(): manage_tags_requested.emit()
 		)
 		manage_tags_btn.disabled = not item.is_valid
-
+		
+		var add_extra_arguments_btn = buttons.simple(
+			tr("Add Extra Args"), 
+			get_theme_icon("ConfirmationDialog", "EditorIcons"),
+			func(): _on_add_extra_arguments(item)
+		)
+		add_extra_arguments_btn.disabled = not item.is_valid
+		
 		var view_command_btn = buttons.simple(
 			tr("View Command"), 
 			get_theme_icon("Window", "EditorIcons"),
@@ -86,6 +94,7 @@ func init(item):
 			run_btn,
 			rename_btn,
 			manage_tags_btn,
+			add_extra_arguments_btn,
 			view_command_btn,
 			buttons.simple(
 				tr("Remove"), 
@@ -125,6 +134,15 @@ func _on_rename(item):
 		edited.emit()
 	)
 
+func _on_add_extra_arguments(item):
+	var dialog = _add_extra_arguments_scene.instantiate()
+	add_child(dialog)
+	dialog.popup_centered()
+	dialog.init(item.extra_arguments)
+	dialog.editor_add_extra_arguments.connect(func(new_extra_arguments):
+		item.extra_arguments = new_extra_arguments
+		edited.emit()
+	)
 
 func _on_remove(item):
 	var confirmation_dialog = ConfirmationDialogAutoFree.new()

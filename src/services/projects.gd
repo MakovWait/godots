@@ -167,8 +167,10 @@ class Item:
 
 	func as_process(args: PackedStringArray):
 		assert(!has_invalid_editor)
+		var editor_extra_arguments = _local_editors.retrieve(editor_path).extra_arguments if editor_path else ""
 		var editor = _local_editors.retrieve(editor_path)
 		var result_args = [
+			editor_extra_arguments,
 			"--path",
 			ProjectSettings.globalize_path(path).get_base_dir(),
 		]
