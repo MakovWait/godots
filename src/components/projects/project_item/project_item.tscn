@@ -47,6 +47,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "test"
+text_overrun_behavior = 3
 script = ExtResource("4_m00kj")
 
 [node name="Control" type="Control" parent="InfoVBox/Title"]
@@ -56,9 +57,7 @@ layout_mode = 2
 [node name="ProjectFeatures" type="Label" parent="InfoVBox/Title"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
 horizontal_alignment = 2
-clip_text = true
 text_overrun_behavior = 3
 
 [node name="TagContainer" type="HBoxContainer" parent="InfoVBox/Title"]

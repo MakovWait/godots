@@ -168,7 +168,7 @@ func _set_features(features):
 	if len(features_to_print) > 0:
 		var str = ", ".join(features_to_print)
 		_project_features.text = str
-		_project_features.custom_minimum_size = Vector2(25 * 15, 10) * Config.EDSCALE
+#		_project_features.custom_minimum_size = Vector2(25 * 15, 10) * Config.EDSCALE
 		_project_features.show()
 	else:
 		_project_features.hide()
