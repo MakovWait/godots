@@ -5,7 +5,6 @@ signal removed(remove_dir: bool)
 signal manage_tags_requested
 signal tag_clicked(tag)
 
-const buttons = preload("res://src/extensions/buttons.gd")
 
 @export var _rename_dialog_scene: PackedScene
 

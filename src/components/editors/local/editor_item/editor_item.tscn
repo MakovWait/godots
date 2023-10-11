@@ -7,7 +7,7 @@
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="5_48fct"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="6_qnxw1"]
 [ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="7_0bi54"]
-[ext_resource type="Script" path="res://src/components/misc/explore_button.gd" id="7_dupbh"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="8_3j1qu"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="8_d5wg1"]
 
 [node name="EditorItem" type="HBoxContainer"]
@@ -70,7 +70,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 flat = true
-script = ExtResource("7_dupbh")
+script = ExtResource("8_3j1qu")
 
 [node name="PathLabel" type="Label" parent="InfoVBox/Path"]
 unique_name_in_owner = true

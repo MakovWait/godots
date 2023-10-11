@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnweym2t3je6y"]
+
+[ext_resource type="Script" path="res://src/components/downloads_container/downloads_container.gd" id="1_mnyxf"]
+
+[node name="DownloadsContainer" type="ScrollContainer"]
+vertical_scroll_mode = 0
+script = ExtResource("1_mnyxf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2

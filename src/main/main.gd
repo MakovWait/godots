@@ -7,6 +7,9 @@ const theme_source = preload("res://theme/theme.gd")
 @export var _remote_editors: Control
 @export var _local_editors: Control
 @export var _projects: Control
+@export var _godots_releases: Control
+@export var _auto_updates: Node
+@export var _asset_download: PackedScene
 
 @onready var _gui_base: Panel = get_node("%GuiBase")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
@@ -113,9 +116,12 @@ func _ready():
 
 	_projects.init(projects_service)
 	_local_editors.init(local_editors)
-	
+	_remote_editors.init(%DownloadsContainer)
+
 	_projects.manage_tags_requested.connect(_popup_manage_tags)
 	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
+
+	_setup_godots_releases()
 
 
 func _notification(what: int) -> void:
@@ -154,3 +160,30 @@ func _enter_tree():
 func _popup_manage_tags(item_tags, all_tags, on_confirm):
 	$ManageTags.popup_centered(Vector2(500, 0) * Config.EDSCALE)
 	$ManageTags.init(item_tags, all_tags, on_confirm)
+
+
+func _setup_godots_releases():
+	var godots_releases = GodotsReleases.Default.new(
+		GodotsReleases.SrcGithub.new()
+	)
+	var godots_install: GodotsInstall.I
+	if OS.has_feature("template"):
+		godots_install = GodotsInstall.Default.new(
+			OS.get_executable_path(),
+			get_tree()
+		)
+	else:
+		godots_install = GodotsInstall.Forbidden.new(self)
+
+	_auto_updates.init(
+		GodotsRecentReleases.Cached.new(
+			GodotsRecentReleases.Default.new(godots_releases)
+		), 
+		func(): 
+			_tab_container.current_tab = _tab_container.get_tab_idx_from_control(_godots_releases)
+	)
+	_godots_releases.init(
+		godots_releases,
+		GodotsDownloads.Default.new(%DownloadsContainer, _asset_download),
+		godots_install
+	)

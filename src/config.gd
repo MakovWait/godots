@@ -13,8 +13,10 @@ const EDITORS_CONFIG_PATH = "user://editors.cfg"
 const PROJECTS_CONFIG_PATH = "user://projects.cfg"
 const DEFAULT_VERSIONS_PATH = "user://versions"
 const DEFAULT_DOWNLOADS_PATH = "user://downloads"
+const DEFAULT_UPDATES_PATH = "user://updates"
 const RELEASES_URL = "https://github.com/MakovWait/godots/releases"
 const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases/latest"
+const RELEASES_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases"
 
 const _EDITOR_PROXY_SECTION_NAME = "theme"
 
@@ -48,6 +50,15 @@ var DOWNLOADS_PATH = ConfigFileValue.new(
 	"app", 
 	"downloads_path",
 	DEFAULT_DOWNLOADS_PATH
+).map_return_value(_simplify_path): 
+	set(_v): _readonly()
+
+
+var UPDATES_PATH = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"updates_path",
+	DEFAULT_UPDATES_PATH
 ).map_return_value(_simplify_path): 
 	set(_v): _readonly()
 
@@ -132,6 +143,15 @@ var ALLOW_INSTALL_TO_NOT_EMPTY_DIR = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var ONLY_STABLE_UPDATES = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"only_stable_updates",
+	true
+): 
+	set(_v): _readonly()
+
+
 var RANDOM_PROJECT_PREFIXES = ConfigFileValue.new(
 	_cfg_auto_save, 
 	"random-project-names", 
@@ -162,6 +182,7 @@ var RANDOM_PROJECT_SUFFIXES = ConfigFileValue.new(
 func _enter_tree() -> void:
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))
+	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_UPDATES_PATH))
 	_cfg.load(APP_CONFIG_PATH)
 	assert(not DEFAULT_VERSIONS_PATH.ends_with("/"))
 	assert(not DEFAULT_DOWNLOADS_PATH.ends_with("/"))

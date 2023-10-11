@@ -22,6 +22,7 @@ Config="*res://src/config.gd"
 Output="*res://src/output.gd"
 AutoClose="*res://src/auto_close.gd"
 Cache="*res://src/cache.gd"
+HttpClient="*res://src/http_client.gd"
 
 [display]
 

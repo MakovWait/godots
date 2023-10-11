@@ -1,3 +1,5 @@
+class_name zip
+
 static func unzip(zip_path, target_dir):
 	DirAccess.make_dir_absolute(target_dir)
 

@@ -5,7 +5,6 @@ signal _loadings_number_changed(value)
 
 const exml = preload("res://src/extensions/xml.gd")
 const uuid = preload("res://addons/uuid.gd")
-const zip = preload("res://src/extensions/zip.gd")
 
 
 const url = "https://downloads.tuxfamily.org/godotengine/"
@@ -42,27 +41,17 @@ var _current_loadings_number = 0:
 var _remote_editors_checkbox_checked = Cache.smart_section(
 	Cache.section_of(self) + ".checkbox_checked", true
 )
+var _editor_downloads
+
+
+func init(editor_downloads):
+	_editor_downloads = editor_downloads
 
 
 func _ready():
 	_detect_platform()
 	_setup_tree()
 	_setup_checkboxes()
-	
-	var scroll_container = %ScrollContainer
-	var editors_downloads = %EditorDownloads
-	var update_scroll_container_visibility = func():
-		if not is_instance_valid(scroll_container) or not is_instance_valid(editors_downloads):
-			return
-		scroll_container.visible = editors_downloads.get_child_count() > 0
-	scroll_container.add_theme_stylebox_override("panel", get_theme_stylebox("panel", "Tree"))
-	editors_downloads.child_entered_tree.connect(func(_node):
-		update_scroll_container_visibility.call_deferred()
-	)
-	editors_downloads.child_exiting_tree.connect(func(_node):
-		update_scroll_container_visibility.call_deferred()
-	)
-	update_scroll_container_visibility.call()
 	
 	_open_downloads_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(Config.DOWNLOADS_PATH.ret()))
@@ -246,7 +235,7 @@ func _setup_tree():
 
 func download_zip(url, file_name, tux_fallback = ""):
 	var editor_download = _editor_download_scene.instantiate()
-	%EditorDownloads.add_child(editor_download)
+	_editor_downloads.add_download_item(editor_download)
 	editor_download.start(
 		url, Config.DOWNLOADS_PATH.ret() + "/", file_name
 	)
