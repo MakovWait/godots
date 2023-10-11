@@ -12,10 +12,6 @@ func _ready() -> void:
 	confirmed.connect(func():
 		editor_add_extra_arguments.emit(_line_edit.text.strip_edges())
 	)
-	_line_edit.text_changed.connect(func(new_text):
-		get_ok_button().disabled = new_text.strip_edges().is_empty()
-	)
-
 
 func init(initial_name):
 	_line_edit.text = initial_name
