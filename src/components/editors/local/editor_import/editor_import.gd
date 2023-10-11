@@ -28,6 +28,7 @@ func _ready() -> void:
 	_file_dialog.file_selected.connect(func(dir):
 		_path_edit.text = dir
 		_name_edit.text = utils.guess_editor_name(dir)
+		_update_ok_button()
 	)
 	_file_dialog.dir_selected.connect(func(path):
 		_path_edit.text = path
