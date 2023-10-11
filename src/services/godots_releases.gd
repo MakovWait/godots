@@ -37,7 +37,7 @@ class Default extends I:
 			check_is_latest.call(release)
 		
 		var release: Release
-		if Config.ONLY_STABLE_UPDATES and latest.value:
+		if Config.ONLY_STABLE_UPDATES.ret() and latest.value:
 			release = latest.value
 		elif len(_data) > 0:
 			release = _data[0]
