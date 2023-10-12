@@ -16,6 +16,8 @@ mono_crash.*.json
 .idea/
 .plugged/
 
+trash/
+
 addons/gd-plug-ui
 addons/expand-region
 addons/find-everywhere
