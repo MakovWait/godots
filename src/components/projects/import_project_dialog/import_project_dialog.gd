@@ -11,6 +11,8 @@ const Projects = preload("res://src/services/projects.gd")
 @onready var _browse_project_path_dialog: FileDialog = $BrowseProjectPathDialog
 @onready var _project_path_edit: LineEdit = %ProjectPathEdit
 @onready var _editors_option_button: OptionButton = $VBoxContainer/HBoxContainer2/EditorsOptionButton
+@onready var _version_hint_value = %VersionHintValue
+@onready var _version_hint_container = %VersionHintContainer
 
 var _editor_options = []
 
@@ -88,4 +90,11 @@ func _sort_options():
 		var cfg = Projects.ExternalProjectInfo.new(_project_path_edit.text)
 		cfg.load(false)
 		cfg.sort_editor_options(_editor_options)
+		if cfg.has_version_hint:
+			_version_hint_value.text = cfg.version_hint
+			_version_hint_container.show()
+		else:
+			_version_hint_container.hide()
 		_set_editor_options(_editor_options)
+	else:
+		_version_hint_container.hide()

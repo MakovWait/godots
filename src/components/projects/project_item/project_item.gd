@@ -193,6 +193,20 @@ func _on_rebind_editor(item):
 	var options = OptionButton.new()
 	hbox.add_child(options)
 	
+	if item.has_version_hint:
+		var hbox2 = HBoxContainer.new()
+		hbox2.modulate = Color(0.5, 0.5, 0.5, 0.5)
+		hbox2.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_child(hbox2)
+		
+		var version_hint_title = Label.new()
+		version_hint_title.text = tr("version hint:")
+		hbox2.add_child(version_hint_title)
+		
+		var version_hint_value = Label.new()
+		version_hint_value.text = item.version_hint
+		hbox2.add_child(version_hint_value)
+	
 	vbox.add_spacer(false)
 	
 	title.text = "%s: " % tr("Editor")

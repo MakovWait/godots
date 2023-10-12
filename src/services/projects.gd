@@ -127,7 +127,10 @@ class Project:
 	var version_hint:
 		get: return _external_project_info.version_hint
 		set(value): _external_project_info.version_hint = value
-	
+
+	var has_version_hint: bool:
+		get: return _external_project_info.has_version_hint
+
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors
@@ -233,7 +236,10 @@ class ExternalProjectInfo extends RefCounted:
 					_name
 				)
 				cfg.save(_project_path)
-
+	
+	var has_version_hint: bool:
+		get: return _version_hint != null
+	
 	var version_hint: String:
 		get: return '' if _version_hint == null else _version_hint
 		set(value):
