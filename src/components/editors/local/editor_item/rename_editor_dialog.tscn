@@ -4,7 +4,7 @@
 
 [node name="RenameEditorDialog" type="ConfirmationDialog"]
 position = Vector2i(0, 36)
-size = Vector2i(200, 126)
+size = Vector2i(200, 187)
 visible = true
 script = ExtResource("1_pj6gv")
 
@@ -12,7 +12,7 @@ script = ExtResource("1_pj6gv")
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 192.0
-offset_bottom = 77.0
+offset_bottom = 138.0
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 unique_name_in_owner = true
@@ -20,6 +20,16 @@ layout_mode = 2
 text = "Name: "
 
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Version Hint: "
+
+[node name="LineEdit2" type="LineEdit" parent="VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

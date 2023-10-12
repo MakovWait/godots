@@ -59,7 +59,8 @@ class LocalEditors extends RefCounted:
 			func(x): return self.editor_is_valid(x.path)
 		).map(func(x: LocalEditor): return {
 			'label': x.name,
-			'path': x.path
+			'path': x.path,
+			'version_hint': x.version_hint
 		})
 	
 	func get_all_tags():
@@ -116,6 +117,10 @@ class LocalEditor extends Object:
 	
 	var is_valid:
 		get: return dir.path_is_valid(path)
+	
+	var version_hint: String:
+		get: return _section.get_value("version_hint", self.name)
+		set(value): _section.set_value("version_hint", value)
 	
 	var _section: ConfigFileSection
 	

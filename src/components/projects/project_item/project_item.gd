@@ -222,9 +222,10 @@ func _on_rename(item):
 	var dialog = _rename_dialog_scene.instantiate()
 	add_child(dialog)
 	dialog.popup_centered()
-	dialog.init(item.name)
-	dialog.editor_renamed.connect(func(new_name):
+	dialog.init(item.name, item.version_hint)
+	dialog.editor_renamed.connect(func(new_name, version_hint):
 		item.name = new_name
+		item.version_hint = version_hint
 		edited.emit()
 	)
 

@@ -124,6 +124,10 @@ class Project:
 	var features:
 		get: return _external_project_info.features
 	
+	var version_hint:
+		get: return _external_project_info.version_hint
+		set(value): _external_project_info.version_hint = value
+	
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors
@@ -230,6 +234,22 @@ class ExternalProjectInfo extends RefCounted:
 				)
 				cfg.save(_project_path)
 
+	var version_hint: String:
+		get: return '' if _version_hint == null else _version_hint
+		set(value):
+			if is_missing:
+				return
+			_version_hint = value
+			var cfg = ConfigFile.new()
+			var err = cfg.load(_project_path)
+			if not err:
+				cfg.set_value(
+					"godots", 
+					"version_hint", 
+					_version_hint
+				)
+				cfg.save(_project_path)
+
 	var last_modified:
 		get: return _last_modified
 	
@@ -272,6 +292,7 @@ class ExternalProjectInfo extends RefCounted:
 	var _features = []
 	var _config_version = -1
 	var _has_mono_section = false
+	var _version_hint = null
 	
 	func _init(project_path, default_icon=null):
 		_project_path = project_path
@@ -287,6 +308,8 @@ class ExternalProjectInfo extends RefCounted:
 		_features = cfg.get_value("application", "config/features", [])
 		_config_version = cfg.get_value("", "config_version", -1)
 		_has_mono_section = cfg.has_section("mono")
+		if cfg.has_section_key("godots", "version_hint"):
+			_version_hint = cfg.get_value("godots", "version_hint")
 		
 		_last_modified = FileAccess.get_modified_time(_project_path)
 		if with_icon:
@@ -323,6 +346,9 @@ class ExternalProjectInfo extends RefCounted:
 			return label.contains("mono")
 		
 		var check_version = func(label: String):
+			if _version_hint != null:
+				if VersionHint.same_version(_version_hint, label):
+					return true
 			if _config_version == 3:
 				return label.contains("3.0")
 			elif _config_version == 4:
@@ -338,10 +364,19 @@ class ExternalProjectInfo extends RefCounted:
 			else:
 				return false
 
-		options.sort_custom(func(item_a, item_b):
-			var a = item_a.label.to_lower()
-			var b = item_b.label.to_lower()
+		var check_version_hint = func(version_hint: String):
+			return VersionHint.are_equal(_version_hint, version_hint)
 
+		options.sort_custom(func(item_a, item_b):
+			var a = item_a.version_hint.to_lower()
+			var b = item_b.version_hint.to_lower()
+			
+			if _version_hint != null:
+				if check_version_hint.call(a) && !check_version_hint.call(b):
+					return true
+				if check_version_hint.call(b) && !check_version_hint.call(a):
+					return false
+			
 			if check_stable.call(a) && !check_stable.call(b):
 				return true
 			if check_stable.call(b) && !check_stable.call(a):
