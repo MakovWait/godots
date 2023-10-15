@@ -22,6 +22,8 @@ layout_mode = 2
 [node name="Label4" type="Label" parent="FilterSortOptions"]
 layout_mode = 2
 text = "Version:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="VersionOption" type="OptionButton" parent="FilterSortOptions"]
 unique_name_in_owner = true
@@ -35,6 +37,8 @@ layout_mode = 2
 [node name="Label" type="Label" parent="FilterSortOptions"]
 layout_mode = 2
 text = "Sort:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SortOption" type="OptionButton" parent="FilterSortOptions"]
 unique_name_in_owner = true
@@ -62,6 +66,8 @@ layout_mode = 2
 [node name="Label2" type="Label" parent="FilterSortOptions"]
 layout_mode = 2
 text = "Category:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CategoryOption" type="OptionButton" parent="FilterSortOptions"]
 unique_name_in_owner = true
@@ -85,6 +91,8 @@ layout_mode = 2
 [node name="Label3" type="Label" parent="FilterSortOptions"]
 layout_mode = 2
 text = "Site:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SiteOption" type="OptionButton" parent="FilterSortOptions"]
 unique_name_in_owner = true
