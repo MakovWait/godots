@@ -45,6 +45,7 @@ var _fetched_versions: bool = false:
 @onready var _site_option: OptionButton = %SiteOption
 @onready var _support_options: MenuButton = %SupportOptions
 @onready var _asset_querier: HTTPRequest = $AssetQuerier
+@onready var _scroll_container: ScrollContainer = %ScrollContainer
 @onready var _asset_list: HFlowContainer = %AssetList
 @onready var _navigation_buttons: HBoxContainer = %NavigationButtons
 @onready var _page_buttons: HBoxContainer = _navigation_buttons.get_node("PageButtons")
@@ -52,7 +53,6 @@ var _fetched_versions: bool = false:
 @onready var _previous_button: Button = _navigation_buttons.get_node("PreviousButton")
 @onready var _next_button: Button = _navigation_buttons.get_node("NextButton")
 @onready var _last_button: Button = _navigation_buttons.get_node("LastButton")
-@onready var _color_rect: ColorRect = %ColorRect
 @onready var _status_label: Label = %StatusLabel
 @onready var _refresh_button: Button = %RefreshButton
 @onready var _overlay_contents: CenterContainer = %OverlayContents
@@ -331,7 +331,7 @@ func _on_page_button_pressed(button: Button):
 func _message(failure: bool, message: String):
 	_overlay_contents.show()
 	_status_label.text = message
-	_color_rect.show()
+	_scroll_container.modulate = Color(1, 1, 1, 0.5)
 	if failure:
 		_refresh_button.show()
 	else:
@@ -340,7 +340,7 @@ func _message(failure: bool, message: String):
 
 ## Hides the loading/message overlay.
 func _clear_message():
-	_color_rect.hide()
+	_scroll_container.modulate = Color(1, 1, 1, 1)
 	_overlay_contents.hide()
 
 
