@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cb6u1mub27xo" path="res://src/components/asset_download/asset_download.tscn" id="2_mn2nn"]
 [ext_resource type="Script" path="res://src/main/gui/gui_main.gd" id="2_nqr5a"]
 [ext_resource type="PackedScene" uid="uid://qxd7fbvfbjs5" path="res://src/components/projects/projects.tscn" id="3_oipyf"]
-[ext_resource type="PackedScene" uid="uid://c1sh1x6y1kwc2" path="res://src/components/assetlib_projects/asset_library_projects.tscn" id="4_tq8p8"]
+[ext_resource type="PackedScene" uid="uid://c1sh1x6y1kwc2" path="res://src/components/assetlib_projects/main_screen/asset_library_projects.tscn" id="4_tq8p8"]
 [ext_resource type="PackedScene" uid="uid://bpi7ggvfe5uhq" path="res://src/components/editors/local/local_editors.tscn" id="4_y2wp0"]
 [ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote/remote_editors.tscn" id="5_gdaat"]
 [ext_resource type="Script" path="res://src/components/misc/news_button.gd" id="6_i1ihb"]

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c1sh1x6y1kwc2"]
+[gd_scene load_steps=3 format=3 uid="uid://c1sh1x6y1kwc2"]
 
-[ext_resource type="Script" path="res://src/components/assetlib_projects/asset_library_projects.gd" id="1_m0pc7"]
+[ext_resource type="Script" path="res://src/components/assetlib_projects/main_screen/asset_library_projects.gd" id="1_mchir"]
+[ext_resource type="PackedScene" uid="uid://c8pmyv7l64bmy" path="res://src/components/assetlib_projects/main_screen/navigation_buttons.tscn" id="2_m0qb4"]
 
 [node name="AssetLibraryProjects" type="VBoxContainer"]
 anchors_preset = 15
@@ -8,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_m0pc7")
+script = ExtResource("1_mchir")
 
 [node name="SearchField" type="LineEdit" parent="."]
 unique_name_in_owner = true
@@ -129,74 +130,23 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NavigationButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="NavigationButtons" parent="MarginContainer/ScrollContainer/VBoxContainer" instance=ExtResource("2_m0qb4")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-alignment = 1
-
-[node name="FirstButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
-layout_mode = 2
-text = "First"
-
-[node name="PreviousButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
-layout_mode = 2
-text = "Previous"
-
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
-layout_mode = 2
-
-[node name="PageButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
-layout_mode = 2
-
-[node name="VSeparator2" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
-layout_mode = 2
-
-[node name="NextButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
-layout_mode = 2
-text = "Next"
-
-[node name="LastButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons"]
-layout_mode = 2
-text = "Last"
 
 [node name="AssetList" type="HFlowContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="NavigationButtons2" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="NavigationButtons2" parent="MarginContainer/ScrollContainer/VBoxContainer" instance=ExtResource("2_m0qb4")]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
-size_flags_vertical = 8
-alignment = 1
-
-[node name="FirstButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
-layout_mode = 2
-text = "First"
-
-[node name="PreviousButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
-layout_mode = 2
-text = "Previous"
-
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
-layout_mode = 2
-
-[node name="PageButtons" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
-layout_mode = 2
-
-[node name="VSeparator2" type="VSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
-layout_mode = 2
-
-[node name="NextButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
-layout_mode = 2
-text = "Next"
-
-[node name="LastButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/NavigationButtons2"]
-layout_mode = 2
-text = "Last"
 
 [node name="OverlayContents" type="CenterContainer" parent="MarginContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/OverlayContents"]

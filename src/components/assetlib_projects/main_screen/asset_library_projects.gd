@@ -19,7 +19,11 @@ var _current_page: int = 0:
 	set(value):
 		_internal_current_page = value
 		_fetch_assets(null, false)
-var _internal_current_page: int = 0
+var _internal_current_page: int = 0:
+	set(value):
+		_internal_current_page = value
+		_pb[0].current_page = value
+		_pb[1].current_page = value
 var _current_assets: Dictionary: set = _display_assets
 var _last_text_edit: int = 0
 var _fetched_versions: bool = false:
@@ -47,12 +51,14 @@ var _fetched_versions: bool = false:
 @onready var _asset_querier: HTTPRequest = $AssetQuerier
 @onready var _scroll_container: ScrollContainer = %ScrollContainer
 @onready var _asset_list: HFlowContainer = %AssetList
-@onready var _navigation_buttons: HBoxContainer = %NavigationButtons
-@onready var _page_buttons: HBoxContainer = _navigation_buttons.get_node("PageButtons")
-@onready var _first_button: Button = _navigation_buttons.get_node("FirstButton")
-@onready var _previous_button: Button = _navigation_buttons.get_node("PreviousButton")
-@onready var _next_button: Button = _navigation_buttons.get_node("NextButton")
-@onready var _last_button: Button = _navigation_buttons.get_node("LastButton")
+# TODO rename
+# First element is top navigation buttons, second is bottom navigation
+# buttons.
+@onready var _pb: Array[HBoxContainer] = [
+	%NavigationButtons,
+	%NavigationButtons2,
+]
+#@onready var _navigation_buttons: HBoxContainer = %NavigationButtons
 @onready var _status_label: Label = %StatusLabel
 @onready var _refresh_button: Button = %RefreshButton
 @onready var _overlay_contents: CenterContainer = %OverlayContents
@@ -66,30 +72,13 @@ func _ready():
 	
 	_support_options.get_popup().id_pressed.connect(_fetch_assets)
 	
-	# Populate PageButtons
-	for i in _MAX_PAGE_BUTTONS:
-		var button = Button.new()
-		button.name = "PageButton" + str(i)
-		_page_buttons.add_child(button)
-		button.pressed.connect(func():
-				_on_page_button_pressed(button)
-		)
+	var on_page_selected = func(page_num):
+			_current_page = page_num
+			_pb[0].current_page = page_num
+			_pb[1].current_page = page_num
 	
-	_first_button.pressed.connect(func():
-		_current_page = 0
-	)
-	_previous_button.pressed.connect(func():
-		_current_page = max(0, _current_page - 1)
-	)
-	_next_button.pressed.connect(func():
-		if _current_assets:
-			_current_page = min(_current_assets.pages - 1, _current_page + 1)
-		else:
-			_current_page = 0
-	)
-	_last_button.pressed.connect(func():
-		_current_page = _current_assets.pages - 1 if _current_assets else 0
-	)
+	_pb[0].page_selected.connect(on_page_selected)
+	_pb[1].page_selected.connect(on_page_selected)
 	
 	await _setup_version_button()
 	
@@ -148,7 +137,10 @@ func _display_assets(current_assets: Dictionary):
 	if current_assets == {} or current_assets.total_items == 0:
 		return
 	
-	_display_navigation()
+	_pb[0].max_pages = current_assets.pages
+	_pb[1].max_pages = current_assets.pages
+	_pb[0].display_navigation()
+	_pb[1].display_navigation()
 	
 	var assets = current_assets.result
 	for asset_data in assets:
@@ -164,51 +156,10 @@ func _display_assets(current_assets: Dictionary):
 		_asset_list.add_child(asset)
 
 
-func _clear_navigation_buttons():
-	for button in _page_buttons.get_children():
-		button.hide()
-
-
-## Sets up the navigation buttons, taking into account number of pages
-## and current page number.
-func _display_navigation():
-	_clear_navigation_buttons()
-	if not _current_assets or _current_assets.pages == 0:
-		_navigation_buttons.hide()
-		return
-	_navigation_buttons.show()
-	var buttons = _page_buttons.get_children()
-	@warning_ignore("integer_division")
-	var center_offset = _MAX_PAGE_BUTTONS / 2
-	var start_page = max(0, _current_page - center_offset)
-	for i in _MAX_PAGE_BUTTONS:
-		var page = start_page + i
-		if page > _current_assets.pages - 1:
-			break
-		buttons[i].show()
-		buttons[i].text = str(start_page + i + 1)
-		buttons[i].disabled = start_page + i == _current_page
-	
-	if _current_page == 0:
-		_first_button.disabled = true
-		_previous_button.disabled = true
-		_next_button.disabled = false # Assumes more than one page
-		_last_button.disabled = false
-	elif _current_page == _current_assets.pages - 1:
-		_first_button.disabled = false
-		_previous_button.disabled = false
-		_next_button.disabled = true
-		_last_button.disabled = true
-	else:
-		_first_button.disabled = false
-		_previous_button.disabled = false
-		_next_button.disabled = false
-		_last_button.disabled = false
-
-
 ## Clears all assets being displayed.
 func _clear_asset_display():
-	_navigation_buttons.hide()
+	_pb[0].hide()
+	_pb[1].hide()
 	for child in _asset_list.get_children():
 		child.queue_free()
 
@@ -319,10 +270,6 @@ func _generate_query_dictionary() -> Dictionary:
 			result.reverse = true
 	
 	return result
-
-
-func _on_page_button_pressed(button: Button):
-	_current_page = int(button.text) - 1
 
 
 ## Displays the overlay screen with the message [param message].  If

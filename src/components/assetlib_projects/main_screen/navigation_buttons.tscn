@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8pmyv7l64bmy"]
+
+[ext_resource type="Script" path="res://src/components/assetlib_projects/main_screen/navigation_buttons.gd" id="1_q45me"]
+
+[node name="NavigationButtons" type="HBoxContainer"]
+alignment = 1
+script = ExtResource("1_q45me")
+
+[node name="FirstButton" type="Button" parent="."]
+layout_mode = 2
+text = "First"
+
+[node name="PreviousButton" type="Button" parent="."]
+layout_mode = 2
+text = "Previous"
+
+[node name="VSeparator" type="VSeparator" parent="."]
+layout_mode = 2
+
+[node name="PageButtons" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="VSeparator2" type="VSeparator" parent="."]
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="."]
+layout_mode = 2
+text = "Next"
+
+[node name="LastButton" type="Button" parent="."]
+layout_mode = 2
+text = "Last"
