@@ -81,7 +81,8 @@ func _ready():
 	_tab_container.current_tab = main_current_tab.ret(0)
 
 	_local_editors.editor_download_pressed.connect(func():
-		_tab_container.current_tab = _tab_container.get_tab_idx_from_control(_remote_editors)
+		$Window.popup_centered(Vector2(520, 370) * Config.EDSCALE)
+#		_tab_container.current_tab = _tab_container.get_tab_idx_from_control(_remote_editors)
 	)
 
 	_version_button.text = Config.VERSION.substr(1)

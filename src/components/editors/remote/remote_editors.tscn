@@ -1,10 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://dxnoecc3ruw3t"]
+[gd_scene load_steps=7 format=3 uid="uid://dxnoecc3ruw3t"]
 
 [ext_resource type="Script" path="res://src/components/editors/remote/remote_editors.gd" id="1_80m0a"]
 [ext_resource type="PackedScene" uid="uid://cb6u1mub27xo" path="res://src/components/asset_download/asset_download.tscn" id="2_obpx8"]
 [ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.tscn" id="3_wvg3b"]
 [ext_resource type="PackedScene" uid="uid://dhvesrdvhm6lv" path="res://src/components/editors/remote/remote_editor_direct_link/remote_editor_direct_link.tscn" id="4_nu1uq"]
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="4_s82j0"]
+
+[sub_resource type="GDScript" id="GDScript_cjkcr"]
+script/source = "extends PanelContainer
+
+
+func _ready():
+	self.add_theme_stylebox_override(\"panel\", get_theme_stylebox(\"panel\", \"Tree\"))
+
+"
 
 [node name="RemoteEditors" type="Control"]
 layout_mode = 3
@@ -34,6 +43,27 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+script = SubResource("GDScript_cjkcr")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+text = "TuxFamily"
+flat = true
+
+[node name="Button2" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+text = "Github"
+flat = true
+
 [node name="Tree" type="Tree" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -50,27 +80,42 @@ unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="ActionsSidebar" parent="VBoxContainer/HBoxContainer" instance=ExtResource("4_s82j0")]
+[node name="Sidebar" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="OpenDownloadsButton" type="Button" parent="VBoxContainer/HBoxContainer/ActionsSidebar/TabActions" index="0"]
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/Sidebar"]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "TuxFamily"
+popup/item_0/id = 0
+popup/item_1/text = "Github"
+popup/item_1/id = 1
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/HBoxContainer/Sidebar"]
+layout_mode = 2
+
+[node name="ActionsSidebar" parent="VBoxContainer/HBoxContainer/Sidebar" instance=ExtResource("4_s82j0")]
+layout_mode = 2
+
+[node name="OpenDownloadsButton" type="Button" parent="VBoxContainer/HBoxContainer/Sidebar/ActionsSidebar/TabActions" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Downloads"
 
-[node name="DirectLinkButton" type="Button" parent="VBoxContainer/HBoxContainer/ActionsSidebar/TabActions" index="1"]
+[node name="DirectLinkButton" type="Button" parent="VBoxContainer/HBoxContainer/Sidebar/ActionsSidebar/TabActions" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Direct Link"
 
-[node name="RefreshButton" type="Button" parent="VBoxContainer/HBoxContainer/ActionsSidebar/TabActions" index="2"]
+[node name="RefreshButton" type="Button" parent="VBoxContainer/HBoxContainer/Sidebar/ActionsSidebar/TabActions" index="2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Refresh"
 
-[node name="HSeparator" parent="VBoxContainer/HBoxContainer/ActionsSidebar" index="1"]
+[node name="HSeparator" parent="VBoxContainer/HBoxContainer/Sidebar/ActionsSidebar" index="1"]
 visible = false
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 
-[editable path="VBoxContainer/HBoxContainer/ActionsSidebar"]
+[editable path="VBoxContainer/HBoxContainer/Sidebar/ActionsSidebar"]
