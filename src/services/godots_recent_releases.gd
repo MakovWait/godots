@@ -13,7 +13,6 @@ class Default extends I:
 		_releases = releases
 
 	func async_has_updates():
-		print("call")
 		var has_updates = await _releases.async_has_newest_version()
 		return has_updates
 

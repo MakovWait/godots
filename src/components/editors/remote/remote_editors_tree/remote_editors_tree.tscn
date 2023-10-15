@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://jq7lowjivf6a"]
+
+[ext_resource type="Script" path="res://src/components/editors/remote/remote_editors_tree/remote_editors_tree.gd" id="1_exg7g"]
+
+[node name="RemoteEditorsTree" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_exg7g")
+
+[node name="Tree" type="Tree" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+hide_root = true
+
+[node name="CheckBoxPanelContainer" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CheckBoxContainer" type="HFlowContainer" parent="CheckBoxPanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
