@@ -27,7 +27,7 @@ script = ExtResource("2_nqr5a")
 _remote_editors = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Remote Editors")
 _local_editors = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Local Editors")
 _projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Projects")
-_asset_library_projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/AssetLibraryProjects")
+_asset_library_projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Asset Library Projects")
 _godots_releases = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Updates")
 _auto_updates = NodePath("AutoUpdates")
 _asset_download = ExtResource("2_mn2nn")
@@ -77,7 +77,7 @@ size_flags_vertical = 3
 [node name="Projects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("3_oipyf")]
 layout_mode = 2
 
-[node name="AssetLibraryProjects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("4_tq8p8")]
+[node name="Asset Library Projects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("4_tq8p8")]
 visible = false
 layout_mode = 2
 
