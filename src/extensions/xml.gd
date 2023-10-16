@@ -1,3 +1,5 @@
+class_name exml
+
 class XMLNodeSmart extends RefCounted:
 	var o : XMLNode
 	

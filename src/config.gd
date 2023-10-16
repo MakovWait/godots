@@ -125,15 +125,6 @@ var USE_SYSTEM_TITLE_BAR = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
-var USE_GITHUB = ConfigFileValue.new(
-	_cfg_auto_save, 
-	"app", 
-	"use_github",
-	true
-): 
-	set(_v): _readonly()
-
-
 var ALLOW_INSTALL_TO_NOT_EMPTY_DIR = ConfigFileValue.new(
 	_cfg_auto_save, 
 	"app", 

@@ -53,12 +53,6 @@ func _prepare_settings():
 			tr("Dir for downloaded editors.")
 		))),
 		SettingChangeObserved(SettingCfg(
-			"application/advanced/use_github",
-			Config.USE_GITHUB,
-			SettingCheckbox,
-			tr("Will download files from github when possible, if enabled.")
-		)),
-		SettingChangeObserved(SettingCfg(
 			"application/advanced/show_orphan_editor_explorer",
 			Config.SHOW_ORPHAN_EDITOR,
 			SettingCheckbox,

@@ -1,7 +1,5 @@
 extends LinkButton
 
-const exml = preload("res://src/extensions/xml.gd")
-
 const HOUR = 60 * 60
 const NEWS_CACHE_LIFETIME_SEC = 12 * HOUR
 
