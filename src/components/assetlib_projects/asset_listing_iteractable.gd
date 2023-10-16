@@ -13,13 +13,16 @@ const _ASSET_DIALOG_SCENE = preload("res://src/components/assetlib_projects/asse
 var _id: int
 var _asset_dialog: ConfirmationDialog
 var _projects: Control
+var _asset_downloader_scene: PackedScene
+var _download_container
 
 
 func _ready():
 	super._ready()
 	
 	_asset_dialog = _ASSET_DIALOG_SCENE.instantiate().init(
-			_id, _title, _category, _author, _license, _projects
+			_id, _title, _category, _author, _license, _projects,
+			_asset_downloader_scene, _download_container
 	)
 	_asset_dialog.hide()
 	add_child(_asset_dialog)
@@ -32,10 +35,13 @@ func _ready():
 ## root node for the local projects tab.
 func init_asset_listing_interactible(id: int, title: String,
 		category: String, author: String, license: String,
-		projects: Control):
+		projects: Control, asset_downloader_scene: PackedScene,
+		download_container):
 	init_asset_listing(title, category, author, license)
 	_id = id
 	_projects = projects
+	_asset_downloader_scene = asset_downloader_scene
+	_download_container = download_container
 	return self
 
 

@@ -118,6 +118,7 @@ func _ready():
 	_projects.init(projects_service)
 	_local_editors.init(local_editors)
 	_remote_editors.init(%DownloadsContainer)
+	_asset_library_projects.init(%DownloadsContainer)
 
 	_projects.manage_tags_requested.connect(_popup_manage_tags)
 	_local_editors.manage_tags_requested.connect(_popup_manage_tags)

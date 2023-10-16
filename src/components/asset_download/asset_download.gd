@@ -96,7 +96,6 @@ func _ready() -> void:
 
 func start(url, target_abs_dir, file_name):
 	assert(not _requesting)
-	assert(target_abs_dir.ends_with("/"))
 	
 	_requesting = true
 	_host = url
@@ -108,9 +107,9 @@ func start(url, target_abs_dir, file_name):
 	_title_label.text = file_name
 	
 	DirAccess.make_dir_absolute(target_abs_dir)
-	if FileAccess.file_exists(target_abs_dir + file_name):
+	if FileAccess.file_exists(target_abs_dir.path_join(file_name)):
 		file_name = uuid.v4().substr(0, 8) + "-" + file_name
-	_download.download_file = target_abs_dir + file_name
+	_download.download_file = target_abs_dir.path_join(file_name)
 	var request_err = _download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
 	
 	if request_err:

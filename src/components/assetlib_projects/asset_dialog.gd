@@ -17,6 +17,8 @@ var _id: int
 var _asset_listing: AssetListing
 var _download_url: String
 var _projects: Control
+var _asset_downloader_scene: PackedScene
+var _download_container
 
 @onready var _description_label: RichTextLabel = %DescriptionLabel
 @onready var _asset_info_downloader: HTTPRequest = $AssetInfoDownloader
@@ -25,6 +27,8 @@ var _projects: Control
 
 
 func _ready():
+	_new_project_dialog.asset_downloader_scene = _asset_downloader_scene
+	_new_project_dialog.download_container = _download_container
 	get_ok_button().disabled = true
 	dialog_hide_on_ok = false
 	var listing_parent = $HBoxContainer/VBoxContainer
@@ -35,13 +39,16 @@ func _ready():
 
 @warning_ignore("shadowed_variable_base_class")
 func init(id: int, title: String, category: String, author: String,
-		license: String, projects: Control):
+		license: String, projects: Control,
+		asset_downloader_scene: PackedScene, download_container):
 	_id = id
 	_projects = projects
 	self.title = title
 	_asset_listing = _ASSET_LISTING_SCENE.instantiate().init_asset_listing(
 			title, category, author, license
 	)
+	_asset_downloader_scene = asset_downloader_scene
+	_download_container = download_container
 	return self
 
 

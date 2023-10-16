@@ -80,6 +80,7 @@ layout_mode = 2
 [node name="Asset Library Projects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("4_tq8p8")]
 visible = false
 layout_mode = 2
+asset_download_scene = ExtResource("2_mn2nn")
 
 [node name="Local Editors" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("4_y2wp0")]
 visible = false

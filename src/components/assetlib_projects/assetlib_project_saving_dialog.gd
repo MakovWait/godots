@@ -13,88 +13,49 @@ const _DIR = preload("res://src/extensions/dir.gd")
 ## [code]download_url[/code] field from asset's description given by
 ## asset library's API.
 var download_url: String
-
-@onready var _project_downloader: HTTPRequest = $ProjectDownloader
+var asset_downloader_scene: PackedScene
+var download_container
 
 
 func _ready():
-	dialog_hide_on_ok = false
 	super._ready()
 
 
 func _save_assetlib_project():
-	_set_message(tr("Downloading..."), null)
-	_message_label.modulate = Color(1, 1, 1, 1)
-	get_ok_button().disabled = true
-	
-	_project_downloader.download_file = Config.DOWNLOADS_PATH.ret().path_join(download_url.get_file())
-	var err = _project_downloader.request(download_url)
-	if err != OK:
-		_error(error_string(err))
-		get_ok_button().disabled = false
-	
-	while _project_downloader.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED:
-		if _project_downloader.get_http_client_status() == HTTPClient.STATUS_BODY:
-			if _project_downloader.get_body_size() > 0:
-				_message_label.text = "%s (%s / %s)..." % [
-					tr("Downloading"),
-					String.humanize_size(_project_downloader.get_downloaded_bytes()),
-					String.humanize_size(_project_downloader.get_body_size())
-				]
-			else:
-				_message_label.text = "%s (%s)..." % [
-					tr("Downloading"),
-					String.humanize_size(_project_downloader.get_downloaded_bytes())
-				]
-		if _project_downloader.get_http_client_status() == HTTPClient.STATUS_RESOLVING:
-			_message_label.text = tr("Resolving...")
-		elif _project_downloader.get_http_client_status() == HTTPClient.STATUS_CONNECTING:
-			_message_label.text = tr("Connecting...")
-		elif _project_downloader.get_http_client_status() == HTTPClient.STATUS_REQUESTING:
-			_message_label.text = tr("Requesting...")
-		await get_tree().create_timer(0.1).timeout
+	var project_download = asset_downloader_scene.instantiate()
+	project_download.downloaded.connect(func(zip_path: String):
+			var dir = _project_path_line_edit.text.strip_edges()
+			var project_name = _project_name_edit.text.strip_edges()
 
+			var zip = ZIPReader.new()
+			zip.open(zip_path)
+			var err = _unzip_to_path(zip, dir)
+			if err != OK:
+				assert(err != ERR_FILE_NOT_FOUND)
+				_download_cleanup()
+				return
 
-func _on_project_downloader_request_completed(result: int,
-		response_code: int, _headers: PackedStringArray,
-		_body: PackedByteArray):
-	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
-		_error(tr("Download failed."))
-		get_ok_button().disabled = false
-		_download_cleanup()
-		return
+			var cfg = ConfigFile.new()
+			err = cfg.load(dir.path_join("project.godot"))
+			if err != OK:
+				_download_cleanup()
+				return
+			cfg.set_value("application", "config/name", project_name)
+			err = cfg.save(dir.path_join("project.godot"))
+			if err != OK:
+				get_ok_button().disabled = false
+				_download_cleanup()
+				return
+			
+			_download_cleanup()
+			created.emit(dir)
+	)
 	
-	var dir = _project_path_line_edit.text.strip_edges()
+	download_container.add_download_item(project_download)
 	var project_name = _project_name_edit.text.strip_edges()
-	
-	var zip = ZIPReader.new()
-	zip.open(_project_downloader.download_file)
-	var err = _unzip_to_path(zip, dir)
-	if err != OK:
-		assert(err != ERR_FILE_NOT_FOUND)
-		_error(error_string(err))
-		get_ok_button().disabled = false
-		_download_cleanup()
-		return
-
-	var cfg = ConfigFile.new()
-	err = cfg.load(dir.path_join("project.godot"))
-	if err != OK:
-		_error(error_string(err))
-		get_ok_button().disabled = false
-		_download_cleanup()
-		return
-	cfg.set_value("application", "config/name", project_name)
-	err = cfg.save(dir.path_join("project.godot"))
-	if err != OK:
-		_error(error_string(err))
-		get_ok_button().disabled = false
-		_download_cleanup()
-		return
-	
-	_success("Download completed.")
-	_download_cleanup()
-	created.emit(dir)
+	project_download.start(
+			download_url, Config.DOWNLOADS_PATH.ret(), project_name
+	)
 
 
 ## A procedure that unzips a zip file to a target directory, keeping the

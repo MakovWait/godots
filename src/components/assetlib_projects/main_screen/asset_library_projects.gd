@@ -3,6 +3,8 @@ extends VBoxContainer
 ## (ie. projects available in the asset library).
 
 
+@export var asset_download_scene: PackedScene
+
 ## The projects menu, to update the project list, when needed.
 var projects: Control
 
@@ -13,6 +15,7 @@ const _TUXFAMILY_VERSION_LISTING = "https://downloads.tuxfamily.org/godotengine/
 const _EXML = preload("res://src/extensions/xml.gd")
 const _ASSET_LISTING = preload("res://src/components/assetlib_projects/asset_listing_iteractable.tscn")
 
+var _downloads_container
 var _current_page: int = 0:
 	get:
 		return _internal_current_page
@@ -62,6 +65,10 @@ var _fetched_versions: bool = false:
 @onready var _status_label: Label = %StatusLabel
 @onready var _refresh_button: Button = %RefreshButton
 @onready var _overlay_contents: CenterContainer = %OverlayContents
+
+
+func init(downloads_container):
+	_downloads_container = downloads_container
 
 
 func _ready():
@@ -150,7 +157,9 @@ func _display_assets(current_assets: Dictionary):
 				asset_data.category,
 				asset_data.author,
 				asset_data.cost,
-				projects
+				projects,
+				asset_download_scene,
+				_downloads_container
 		)
 		
 		_asset_list.add_child(asset)
