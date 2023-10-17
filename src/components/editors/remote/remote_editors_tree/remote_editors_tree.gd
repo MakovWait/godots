@@ -48,7 +48,8 @@ func set_data_source(src: RemoteEditorsTreeDataSource.I):
 		_src.cleanup(_tree)
 	_src = src
 	_src.setup(_tree)
-	_refresh()
+	if is_visible_in_tree():
+		_refresh()
 
 
 func _refresh():
