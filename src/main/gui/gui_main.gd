@@ -49,7 +49,7 @@ func _ready():
 					utils.guess_editor_name(file.replace(".zip", ""))
 				)
 		else:
-			_local_editors.import("", file)
+			_local_editors.import(utils.guess_editor_name(file), file)
 	)
 	
 	_gui_base.set(
