@@ -15,6 +15,6 @@ text = "Repository:"
 [node name="RepositoryEdit" type="LineEdit" parent="VBoxContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "https://github.com/MakovWait/godots.git"
+placeholder_text = "url to use in 'git clone <url>' (e.g. https://github.com/MakovWait/godots.git)"
 
 [node name="CloneFailedDialog" type="AcceptDialog" parent="." index="6"]
