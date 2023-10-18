@@ -10,3 +10,6 @@ func _init(long: String, short: String, description: String, usage: String):
 	self.short = "-%s" % short
 	self.description = description
 	self.usage = usage
+
+func to_help_string() -> String:
+	return "%s|%s \t %s" % [long, short, description]
