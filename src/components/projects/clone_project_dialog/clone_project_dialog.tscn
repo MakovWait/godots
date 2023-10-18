@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cgtn4575ktf6s"]
+
+[ext_resource type="PackedScene" uid="uid://d10kvn2s6suxh" path="res://src/components/projects/install_project_dialog/install_project_dialog.tscn" id="1_muj6h"]
+[ext_resource type="Script" path="res://src/components/projects/clone_project_dialog/clone_project_dialog.gd" id="2_35chb"]
+
+[node name="CloneProjectDialog" instance=ExtResource("1_muj6h")]
+title = "Clone Project"
+ok_button_text = "Clone"
+script = ExtResource("2_35chb")
+
+[node name="Repository" type="Label" parent="VBoxContainer" index="0"]
+layout_mode = 2
+text = "Repository:"
+
+[node name="RepositoryEdit" type="LineEdit" parent="VBoxContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "https://github.com/MakovWait/godots.git"
+
+[node name="CloneFailedDialog" type="AcceptDialog" parent="." index="6"]

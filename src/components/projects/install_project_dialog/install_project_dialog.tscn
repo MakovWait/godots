@@ -5,7 +5,7 @@
 [node name="InstallProjectDialog" type="ConfirmationDialog"]
 title = "Create New Project"
 position = Vector2i(0, 36)
-size = Vector2i(299, 210)
+size = Vector2i(299, 275)
 visible = true
 ok_button_text = "Create"
 script = ExtResource("1_kupc3")
@@ -14,7 +14,7 @@ script = ExtResource("1_kupc3")
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 291.0
-offset_bottom = 161.0
+offset_bottom = 226.0
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2

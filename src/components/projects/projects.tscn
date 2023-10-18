@@ -1,13 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://qxd7fbvfbjs5"]
+[gd_scene load_steps=11 format=3 uid="uid://qxd7fbvfbjs5"]
 
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="1_5rf5l"]
 [ext_resource type="PackedScene" uid="uid://ibwyb5nfpxpn" path="res://src/components/projects/projects_list/projects_list.tscn" id="1_hecdv"]
 [ext_resource type="Script" path="res://src/components/projects/projects.gd" id="1_p17nd"]
 [ext_resource type="Script" path="res://src/components/misc/remove_missing_button.gd" id="4_2vxoc"]
 [ext_resource type="PackedScene" uid="uid://bcn7ypx0qusqp" path="res://src/components/projects/import_project_dialog/import_project_dialog.tscn" id="4_ooebc"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="4_ynd78"]
 [ext_resource type="Script" path="res://src/components/misc/scan_file_dialog.gd" id="7_twvyr"]
 [ext_resource type="PackedScene" uid="uid://gfg5navd0jvp" path="res://src/components/projects/install_project_dialog/install_project_simple.tscn" id="8_7b4oq"]
 [ext_resource type="PackedScene" uid="uid://canl4lc1tj7qu" path="res://src/components/projects/new_project_dialog/new_project_dialog.tscn" id="8_sityd"]
+[ext_resource type="PackedScene" uid="uid://cgtn4575ktf6s" path="res://src/components/projects/clone_project_dialog/clone_project_dialog.tscn" id="10_4khs0"]
 
 [node name="Projects" type="HBoxContainer"]
 anchors_preset = 15
@@ -39,12 +41,19 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Import"
 
-[node name="ScanButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="2"]
+[node name="CloneProjectButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Clone"
+script = ExtResource("4_ynd78")
+_theme_icon_name = "VcsBranches"
+
+[node name="ScanButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="3"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Scan"
 
-[node name="RefreshButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="3"]
+[node name="RefreshButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="4"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Refresh"
@@ -75,6 +84,9 @@ visible = false
 
 [node name="NewProjectDialog" parent="." instance=ExtResource("8_sityd")]
 size = Vector2i(200, 210)
+visible = false
+
+[node name="CloneProjectDialog" parent="." instance=ExtResource("10_4khs0")]
 visible = false
 
 [connection signal="item_duplicate_requested" from="ProjectsList" to="." method="_on_projects_list_item_duplicate_requested"]

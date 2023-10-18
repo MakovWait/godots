@@ -17,6 +17,8 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _install_project_from_zip_dialog = $InstallProjectSimpleDialog
 @onready var _duplicate_project_dialog = $DuplicateProjectDialog
 @onready var _refresh_button = %RefreshButton
+@onready var _clone_project_dialog = $CloneProjectDialog
+@onready var _clone_project_button = %CloneProjectButton
 
 
 var _projects: Projects.Projects
@@ -44,6 +46,14 @@ func init(projects: Projects.Projects):
 		if edit:
 			project.run_with_editor('-e')
 			AutoClose.close_if_should()
+	)
+	
+	_clone_project_dialog.cloned.connect(func(path: String):
+		assert(path.get_file() == "project.godot")
+		import(path)
+	)
+	_clone_project_button.pressed.connect(func():
+		_clone_project_dialog.raise()
 	)
 	
 	_new_project_dialog.created.connect(func(project_path):
@@ -111,7 +121,7 @@ func install_zip(zip_reader: ZIPReader, project_name):
 		if unzip_err != OK:
 			_install_project_from_zip_dialog.error(tr("Failed to unzip."))
 			return
-		var project_configs = _find_project_godot_files(project_dir)
+		var project_configs = utils.find_project_godot_files(project_dir)
 		if len(project_configs) == 0:
 			_install_project_from_zip_dialog.error(tr("No project.godot found."))
 			return
@@ -122,11 +132,10 @@ func install_zip(zip_reader: ZIPReader, project_name):
 		pass,
 		CONNECT_ONE_SHOT
 	)
-	
 
 
 func _scan_projects(dir_path):
-	var project_configs = _find_project_godot_files(dir_path)
+	var project_configs = utils.find_project_godot_files(dir_path)
 	var added_projects = []
 	for project_config in project_configs:
 		var project_path = project_config.path
@@ -137,18 +146,6 @@ func _scan_projects(dir_path):
 		added_projects.append(project)
 	_projects.save()
 	_load_projects_array(added_projects)
-
-
-func _find_project_godot_files(dir_path):
-	var project_configs = dir.list_recursive(
-		ProjectSettings.globalize_path(dir_path), 
-		false,
-		(func(x: dir.DirListResult): 
-			return x.is_file and x.file == "project.godot"),
-		(func(x: String): 
-			return not x.get_file().begins_with("."))
-	)
-	return project_configs
 
 
 func _remove_missing():
@@ -227,7 +224,7 @@ func _on_projects_list_item_duplicate_requested(project: Projects.Project) -> vo
 			_duplicate_project_dialog.error(tr("Error. Code: %s" % err))
 			return
 
-		var project_configs = _find_project_godot_files(project_dir)
+		var project_configs = utils.find_project_godot_files(project_dir)
 		if len(project_configs) == 0:
 			_duplicate_project_dialog.error(tr("No project.godot found."))
 			return

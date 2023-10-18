@@ -54,9 +54,10 @@ func _ready():
 	min_size = Vector2(640, 215) * Config.EDSCALE
 
 
-func raise(project_name="New Game Project"):
+func raise(project_name="New Game Project", args=null):
 	_project_name_edit.text = project_name
 	_project_path_line_edit.text = Config.DEFAULT_PROJECTS_PATH.ret()
+	_on_raise(args)
 	popup_centered()
 	_validate()
 
@@ -152,3 +153,7 @@ func _handle_dir_is_not_empty(_path):
 			"The selected path is not empty."
 		))
 	return true
+
+
+func _on_raise(args=null):
+	pass
