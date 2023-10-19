@@ -3,8 +3,6 @@ extends HBoxContainer
 signal editor_download_pressed
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
-const Editors = preload("res://src/services/local_editors.gd")
-
 @onready var _editors_list: VBoxContainer = $EditorsList
 @onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
 @onready var _download_button: Button = %DownloadButton
@@ -17,7 +15,7 @@ const Editors = preload("res://src/services/local_editors.gd")
 @onready var _refresh_button = %RefreshButton
 
 
-var _local_editors = Editors.LocalEditors
+var _local_editors = LocalEditors.List
 
 
 func _ready() -> void:
@@ -54,7 +52,7 @@ func _ready() -> void:
 	)
 
 
-func init(editors: Editors.LocalEditors):
+func init(editors: LocalEditors.List):
 	_local_editors = editors
 	_editors_list.refresh(_local_editors.all())
 	_editors_list.sort_items()
@@ -157,7 +155,7 @@ func _on_editors_list_item_selected(item) -> void:
 	_sidebar.refresh_actions(item.get_actions())
 
 
-func _on_editors_list_item_removed(item_data: Editors.LocalEditor, remove_dir: bool) -> void:
+func _on_editors_list_item_removed(item_data: LocalEditors.Item, remove_dir: bool) -> void:
 	if remove_dir:
 		var base_dir = ProjectSettings.globalize_path(item_data.path.get_base_dir())
 		var versions_dir = ProjectSettings.globalize_path(Config.VERSIONS_PATH.ret())

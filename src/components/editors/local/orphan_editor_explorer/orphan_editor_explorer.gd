@@ -1,10 +1,8 @@
 extends ConfirmationDialog
 
-const editors_ns = preload("res://src/services/local_editors.gd")
-
 @onready var _tree: Tree = $VBoxContainer/Tree
 
-var _local_editors: editors_ns.LocalEditors
+var _local_editors: LocalEditors.List
 var _versions_abs_path: String
 
 

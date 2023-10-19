@@ -1,6 +1,5 @@
 extends Control
 
-const editors = preload("res://src/services/local_editors.gd")
 const theme_source = preload("res://theme/theme.gd")
 
 @export var _remote_editors: Control
@@ -101,7 +100,7 @@ func _ready():
 		$Settings.raise_settings()
 	)
 	
-	var local_editors = editors.LocalEditors.new(
+	var local_editors = LocalEditors.List.new(
 		Config.EDITORS_CONFIG_PATH
 	)
 	var projects_service = Projects.List.new(

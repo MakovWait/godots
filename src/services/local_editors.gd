@@ -1,4 +1,6 @@
-class LocalEditors extends RefCounted:
+class_name LocalEditors
+
+class List extends RefCounted:
 	const dict = preload("res://src/extensions/dict.gd")
 	
 	signal editor_removed(editor_path)
@@ -11,8 +13,8 @@ class LocalEditors extends RefCounted:
 	func _init(cfg_path) -> void:
 		_cfg_path = cfg_path
 	
-	func add(name, editor_path) -> LocalEditor:
-		var editor = LocalEditor.new(
+	func add(name, editor_path) -> Item:
+		var editor = Item.new(
 			ConfigFileSection.new(editor_path, _cfg),
 		)
 		if OS.has_feature("linux"):
@@ -31,13 +33,13 @@ class LocalEditors extends RefCounted:
 		_editors[editor_path] = editor
 		return editor
 	
-	func all() -> Array[LocalEditor]:
-		var result: Array[LocalEditor] = []
+	func all() -> Array[Item]:
+		var result: Array[Item] = []
 		for x in _editors.values():
 			result.append(x)
 		return result
 	
-	func retrieve(editor_path) -> LocalEditor:
+	func retrieve(editor_path) -> Item:
 		return _editors[editor_path]
 	
 	func has(editor_path) -> bool:
@@ -56,7 +58,7 @@ class LocalEditors extends RefCounted:
 	func as_option_button_items():
 		return all().filter(
 			func(x): return self.editor_is_valid(x.path)
-		).map(func(x: LocalEditor): return {
+		).map(func(x: Item): return {
 			'label': x.name,
 			'path': x.path,
 			'version_hint': x.version_hint
@@ -74,7 +76,7 @@ class LocalEditors extends RefCounted:
 		var err = _cfg.load(_cfg_path)
 		if err: return err
 		for section in _cfg.get_sections():
-			var editor = LocalEditor.new(
+			var editor = Item.new(
 				ConfigFileSection.new(section, _cfg)
 			)
 			_connect_name_changed(editor)
@@ -84,15 +86,14 @@ class LocalEditors extends RefCounted:
 	func save() -> Error:
 		return _cfg.save(_cfg_path)
 	
-	func _connect_name_changed(editor: LocalEditor):
+	func _connect_name_changed(editor: Item):
 		editor.name_changed.connect(func(_new_name): 
 			editor_name_changed.emit(editor.path)
 		)
 
 
-class LocalEditor extends Object:
+class Item extends Object:
 	signal tags_edited
-	
 	signal name_changed(new_name)
 	
 	var mac_os_editor_path_postfix:
