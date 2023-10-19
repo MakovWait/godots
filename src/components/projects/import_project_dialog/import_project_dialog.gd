@@ -19,6 +19,7 @@ var _editor_options = []
 
 func _ready() -> void:
 #	super._ready()
+	min_size = Vector2i(300, 0) * Config.EDSCALE
 	_update_ok_button_available()
 	_browse_project_path_button.pressed.connect(func():
 		if _project_path_edit.text.is_empty():
