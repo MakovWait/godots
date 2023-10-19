@@ -42,6 +42,13 @@ class List extends RefCounted:
 	func retrieve(editor_path) -> Item:
 		return _editors[editor_path]
 	
+	func filter_by_name_pattern(name: String) -> Array[Item]:
+		var result: Array[Item] = []
+		for editor in all():
+			if editor.name.findn(name) > -1:
+				result.push_back(editor)
+		return result
+	
 	func has(editor_path) -> bool:
 		return _editors.has(editor_path)
 	
