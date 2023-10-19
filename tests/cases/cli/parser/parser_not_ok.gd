@@ -6,14 +6,14 @@ func test_invalid_namespace():
 	var result = parser.parse_command(["invalidNamespace"])
 	assert(result.namesp.is_empty())
 	assert(result.verb.is_empty())
-	assert(result.names[0] == "invalidNamespace")
+	assert(result.args.names[0] == "invalidNamespace")
 
 func test_invalid_command():
 	var parser = CliParser.CommandParser.new(TestGrammar.grammar)
 	var result = parser.parse_command(["namespace1", "invalidVerb"])
 	assert(result.namesp == "namespace1")
 	assert(result.verb.is_empty())
-	assert(result.names[0] == "invalidVerb")
+	assert(result.args.names[0] == "invalidVerb")
 
 func test_invalid_option():
 	var parser = CliParser.CommandParser.new(TestGrammar.grammar)

@@ -8,15 +8,13 @@ static func _to_array_string(array: Array) -> Array[String]:
 class ParsedOption:
 	var long_name: String
 	var short_name: String
-	var failed: bool = false
 
 	var values: Array[String] = []
 
-	func _init(long, short, values: Array[String], failed):
+	func _init(long, short, values: Array[String]):
 		long_name = long
 		short_name = short
 		self.values = values
-		self.failed = failed
 
 	func has_name(name: String) -> bool:
 		return name == long_name or name  == short_name
@@ -24,51 +22,54 @@ class ParsedOption:
 	func names_equal(option: ParsedOption) -> bool:
 		return has_name(option.long_name) or has_name(option.short_name)
 
-class ParsedCommandResult:
-	var namesp: String
-	var verb: String
-	var options: Dictionary = {}
-	var names: Array[String] = []
-	var errors: Array[String] = []
+class ParsedArguments:
+	var _options: Dictionary = {}
 
-	func _init(namesp: String, verb: String, options: Array[ParsedOption], names: Array[String]):
-		self.namesp = namesp
-		self.verb = verb
+	var names: Array[String]
+
+	func _init(names: Array[String], options: Array[ParsedOption]) -> void:
 		self.names = names
 		for option in options:
-			self.options[option.long_name] = option
-			self.options[option.short_name] = option
-
-	func has_error() -> bool:
-		return not errors.is_empty()
+			_options[option.long_name] = option
+			_options[option.short_name] = option
 
 	func has_options(names: Array[String]) -> bool:
 		for name in names:
-			if options.has(name):
+			if _options.has(name):
 				return true
 		return false
 
-	func get_first_present_option_value(names: Array[String]) -> String:
-		for name in names:
-			if options.has(name) and not options[name].values.is_empty():
-				return options[name].values.front()
-		return ""
+	func first_option_value(names: Array[String]) -> String:
+		return first_option_values(names).front()
 
-	func get_first_present_option_values(names: Array[String]) -> Array[String]:
+	func first_option_values(names: Array[String]) -> Array[String]:
 		for name in names:
-			if options.has(name):
-				return options[name].values
+			if _options.has(name):
+				return _options[name].values
 		return []
 
 	func option_value(name: String) -> String:
-		if options.has(name) and not options[name].values.is_empty():
-			return options[name].values.front()
-		return ""
-
+		var result = option_values(name)
+		return "" if result.is_empty() else result.front()
+	
 	func option_values(name: String) -> Array[String]:
-		if options.has(name):
-			return options[name].values
+		if _options.has(name):
+			return _options[name].values
 		return []
+
+class ParsedCommandResult:
+	var namesp: String
+	var verb: String
+	var args: ParsedArguments
+	var errors: Array[String] = []
+
+	func _init(namesp: String, verb: String, args: ParsedArguments):
+		self.namesp = namesp
+		self.verb = verb
+		self.args = args
+
+	func has_error() -> bool:
+		return not errors.is_empty()
 
 class CommandParser: 
 	var _tokens : Array = []
@@ -98,9 +99,9 @@ class CommandParser:
 		var names: Array[String] = _parse_names()
 
 		while _has_tokens():
-			var option: ParsedOption = _parse_option(namesp, verb)
+			var option = _parse_option(namesp, verb)
 
-			if option.failed:
+			if option == null:
 				break;
 
 			if options.any(func(o): return o.names_equal(option)):
@@ -108,7 +109,7 @@ class CommandParser:
 			else:
 				options.append(option)
 
-		var command = ParsedCommandResult.new(namesp, verb, options, names)
+		var command = ParsedCommandResult.new(namesp, verb, ParsedArguments.new(names, options))
 		command.errors = _last_errors
 		return command
 
@@ -137,8 +138,11 @@ class CommandParser:
 			_raise_error("Invalid token found instead of option name: %s" % token)
 			failed = true
 			_next_token()
-
-		return ParsedOption.new(long_name, short_name, values, failed)
+		
+		if failed:
+			return null
+		else:
+			return ParsedOption.new(long_name, short_name, values)
 
 	func _parse_names() -> Array[String]:
 		var result: Array[String] = []
