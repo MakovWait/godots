@@ -1,7 +1,5 @@
 class_name utils
 
-const dir = preload("res://src/extensions/dir.gd")
-
 
 static func guess_editor_name(file_name: String):
 	var possible_editor_name = file_name.get_file()
@@ -27,11 +25,11 @@ static func guess_editor_name(file_name: String):
 	return possible_editor_name
 
 
-static func find_project_godot_files(dir_path) -> Array[dir.DirListResult]:
-	var project_configs = dir.list_recursive(
+static func find_project_godot_files(dir_path) -> Array[edir.DirListResult]:
+	var project_configs = edir.list_recursive(
 		ProjectSettings.globalize_path(dir_path), 
 		false,
-		(func(x: dir.DirListResult): 
+		(func(x: edir.DirListResult): 
 			return x.is_file and x.file == "project.godot"),
 		(func(x: String): 
 			return not x.get_file().begins_with("."))

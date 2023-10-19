@@ -3,14 +3,13 @@ extends AcceptDialog
 
 signal installed(editor_name, editor_exec_path)
 
-const dir = preload("res://src/extensions/dir.gd")
 
 @onready var _editor_name_edit: LineEdit = %EditorNameEdit
 @onready var _select_exec_file_tree: Tree = %SelectExecFileTree
 @onready var _file_dialog = $FileDialog
 @onready var _show_all_check_box = %ShowAllCheckBox
 
-var _dir_content = [] as Array[dir.DirListResult]
+var _dir_content = [] as Array[edir.DirListResult]
 var _show_all: bool:
 	get: return _show_all_check_box.button_pressed
 
@@ -35,7 +34,7 @@ func _ready():
 func init(editor_name, editor_exec_path):
 	assert(editor_exec_path.ends_with("/"))
 	Output.push("Installing editor: %s" % editor_exec_path)
-	_dir_content = dir.list_recursive(editor_exec_path)
+	_dir_content = edir.list_recursive(editor_exec_path)
 	_editor_name_edit.text = editor_name
 	_select_exec_file_tree.show()
 	_setup_editor_select_tree()
@@ -64,21 +63,21 @@ func _setup_editor_select_tree():
 	var filter
 	var should_be_selected
 	if OS.has_feature("macos"):
-		filter = func(x: dir.DirListResult):
+		filter = func(x: edir.DirListResult):
 			return x.is_dir and x.extension == "app"
-		should_be_selected = func(x: dir.DirListResult):
+		should_be_selected = func(x: edir.DirListResult):
 			return x.is_dir and x.extension == "app"
 	if OS.has_feature("windows"):
-		filter = func(x: dir.DirListResult):
+		filter = func(x: edir.DirListResult):
 			return x.is_file and x.extension == "exe"
-		should_be_selected = func(x: dir.DirListResult):
+		should_be_selected = func(x: edir.DirListResult):
 			return x.is_file and x.extension == "exe" and not x.file.contains("console")
 	if OS.has_feature("linux"):
-		filter = func(x: dir.DirListResult):
+		filter = func(x: edir.DirListResult):
 			return x.is_file and (
 				x.extension.contains("32") or x.extension.contains("64")
 			)
-		should_be_selected = func(x: dir.DirListResult):
+		should_be_selected = func(x: edir.DirListResult):
 			return x.is_file and (
 				x.extension.contains("32") or x.extension.contains("64")
 			)

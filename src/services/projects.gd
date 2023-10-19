@@ -67,8 +67,6 @@ class Projects extends RefCounted:
 
 
 class Project:
-	const dir = preload("res://src/extensions/dir.gd")
-	
 	signal internals_changed
 	signal loaded
 	
@@ -103,7 +101,7 @@ class Project:
 		get: return not _local_editors.editor_is_valid(editor_path)
 	
 	var is_valid:
-		get: return dir.path_is_valid(path)
+		get: return edir.path_is_valid(path)
 	
 	var editors_to_bind:
 		get: return _get_editors_to_bind()

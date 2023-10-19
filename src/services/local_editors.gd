@@ -1,5 +1,4 @@
 class LocalEditors extends RefCounted:
-	const dir = preload("res://src/extensions/dir.gd")
 	const dict = preload("res://src/extensions/dict.gd")
 	
 	signal editor_removed(editor_path)
@@ -45,7 +44,7 @@ class LocalEditors extends RefCounted:
 		return _editors.has(editor_path)
 	
 	func editor_is_valid(editor_path):
-		return has(editor_path) and dir.path_is_valid(editor_path)
+		return has(editor_path) and edir.path_is_valid(editor_path)
 	
 	func erase(editor_path) -> void:
 		var editor = retrieve(editor_path)
@@ -94,8 +93,6 @@ class LocalEditors extends RefCounted:
 class LocalEditor extends Object:
 	signal tags_edited
 	
-	const dir = preload("res://src/extensions/dir.gd")
-	
 	signal name_changed(new_name)
 	
 	var mac_os_editor_path_postfix:
@@ -119,7 +116,7 @@ class LocalEditor extends Object:
 		set(value): _section.set_value("tags", value)
 	
 	var is_valid:
-		get: return dir.path_is_valid(path)
+		get: return edir.path_is_valid(path)
 	
 	var version_hint: String:
 		get: return _section.get_value("version_hint", self.name)

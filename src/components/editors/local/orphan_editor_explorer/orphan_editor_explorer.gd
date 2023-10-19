@@ -1,6 +1,5 @@
 extends ConfirmationDialog
 
-const dir_extensions = preload("res://src/extensions/dir.gd")
 const editors_ns = preload("res://src/services/local_editors.gd")
 
 @onready var _tree: Tree = $VBoxContainer/Tree
@@ -21,7 +20,7 @@ func _ready() -> void:
 		delete_confirm.dialog_text = tr("Permanently delete %d item(s)? (No undo!)") % len(selected_dirs)
 		delete_confirm.confirmed.connect(func():
 			for dir in selected_dirs:
-				dir_extensions.remove_recursive(dir)
+				edir.remove_recursive(dir)
 			hide()
 		)
 		add_child(delete_confirm)

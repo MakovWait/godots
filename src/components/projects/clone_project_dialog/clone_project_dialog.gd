@@ -1,6 +1,5 @@
 extends "res://src/components/projects/install_project_dialog/install_project_dialog.gd"
 
-const dir = preload("res://src/extensions/dir.gd")
 
 signal cloned(path)
 

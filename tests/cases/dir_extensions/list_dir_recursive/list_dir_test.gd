@@ -1,10 +1,9 @@
 class_name GdUnitExampleTest
 extends GdUnitTestSuite
 
-const dir = preload("res://src/extensions/dir.gd")
 
 func test_list_dir():
-	var result = dir.list_recursive(
+	var result = edir.list_recursive(
 		"res://tests/cases/dir_extensions/list_dir_recursive/assets/1/"
 	)
 	assert_int(len(result)).is_equal(8)

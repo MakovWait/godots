@@ -1,3 +1,5 @@
+class_name edir
+
 # https://www.davidepesce.com/?p=1365
 static func remove_recursive(path):
 	var directory = DirAccess.open(path)

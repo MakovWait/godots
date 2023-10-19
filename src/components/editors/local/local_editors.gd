@@ -4,7 +4,6 @@ signal editor_download_pressed
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
 const Editors = preload("res://src/services/local_editors.gd")
-const dir = preload("res://src/extensions/dir.gd")
 
 @onready var _editors_list: VBoxContainer = $EditorsList
 @onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
@@ -105,7 +104,7 @@ func _remove_missing():
 func _scan_editors(dir_to_scan: String):
 	var filter
 	if OS.has_feature("windows"):
-		filter = func(x: dir.DirListResult):
+		filter = func(x: edir.DirListResult):
 			var evidences = [
 				x.is_file and x.extension == "exe",
 				x.file.to_lower().contains("godot_v"),
@@ -113,14 +112,14 @@ func _scan_editors(dir_to_scan: String):
 			]
 			return evidences.all(func(is_true): return is_true)
 	elif OS.has_feature("macos"):
-		filter = func(x: dir.DirListResult):
+		filter = func(x: edir.DirListResult):
 			var evidences = [
 				x.is_dir and x.extension == "app",
 				x.file.to_lower().contains("godot")
 			]
 			return evidences.all(func(is_true): return is_true)
 	elif OS.has_feature("linux"):
-		filter = func(x: dir.DirListResult):
+		filter = func(x: edir.DirListResult):
 			var evidences = [
 				x.is_file and (
 					x.extension.contains("32") or x.extension.contains("64")
@@ -129,7 +128,7 @@ func _scan_editors(dir_to_scan: String):
 			]
 			return evidences.all(func(is_true): return is_true)
 
-	var editors_exec = dir.list_recursive(
+	var editors_exec = edir.list_recursive(
 		ProjectSettings.globalize_path(dir_to_scan), 
 		false,
 		filter,
@@ -166,7 +165,7 @@ func _on_editors_list_item_removed(item_data: Editors.LocalEditor, remove_dir: b
 			base_dir = base_dir.to_lower()
 			versions_dir = versions_dir.to_lower()
 		if base_dir != versions_dir and base_dir.begins_with(versions_dir):
-			dir.remove_recursive(base_dir)
+			edir.remove_recursive(base_dir)
 		else:
 			Output.push("skipping removing path {%s}" % base_dir)
 	if _local_editors.has(item_data.path):
