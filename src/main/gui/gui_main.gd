@@ -1,6 +1,5 @@
 extends Control
 
-const projects = preload("res://src/services/projects.gd")
 const editors = preload("res://src/services/local_editors.gd")
 const theme_source = preload("res://theme/theme.gd")
 
@@ -105,7 +104,7 @@ func _ready():
 	var local_editors = editors.LocalEditors.new(
 		Config.EDITORS_CONFIG_PATH
 	)
-	var projects_service = projects.Projects.new(
+	var projects_service = Projects.List.new(
 		Config.PROJECTS_CONFIG_PATH,
 		local_editors,
 		get_theme_icon("DefaultProjectIcon", "EditorIcons")

@@ -1,4 +1,6 @@
-class Projects extends RefCounted:
+class_name Projects
+
+class List extends RefCounted:
 	const dict = preload("res://src/extensions/dict.gd")
 	
 	var _cfg = ConfigFile.new()
@@ -12,8 +14,8 @@ class Projects extends RefCounted:
 		_local_editors = local_editors
 		_default_icon = default_icon
 	
-	func add(project_path, editor_path) -> Project:
-		var project = Project.new(
+	func add(project_path, editor_path) -> Item:
+		var project = Item.new(
 			ConfigFileSection.new(project_path, _cfg),
 			ExternalProjectInfo.new(project_path, _default_icon),
 			_local_editors
@@ -24,13 +26,13 @@ class Projects extends RefCounted:
 		_projects[project_path] = project
 		return project
 	
-	func all() -> Array[Project]:
-		var result: Array[Project] = []
+	func all() -> Array[Item]:
+		var result: Array[Item] = []
 		for x in _projects.values():
 			result.append(x)
 		return result
 	
-	func retrieve(project_path) -> Project:
+	func retrieve(project_path) -> Item:
 		return _projects[project_path]
 	
 	func has(project_path) -> bool:
@@ -55,7 +57,7 @@ class Projects extends RefCounted:
 		var err = _cfg.load(_cfg_path)
 		if err: return err
 		for section in _cfg.get_sections():
-			_projects[section] = Project.new(
+			_projects[section] = Item.new(
 				ConfigFileSection.new(section, _cfg),
 				ExternalProjectInfo.new(section, _default_icon),
 				_local_editors
@@ -66,7 +68,7 @@ class Projects extends RefCounted:
 		return _cfg.save(_cfg_path)
 
 
-class Project:
+class Item:
 	signal internals_changed
 	signal loaded
 	
@@ -177,7 +179,6 @@ class Project:
 		var options = _local_editors.as_option_button_items()
 		_external_project_info.sort_editor_options(options)
 		return options
-
 
 
 class ExternalProjectInfo extends RefCounted:

@@ -1,7 +1,5 @@
 extends HBoxContainer
 
-const Projects = preload("res://src/services/projects.gd")
-
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
 @onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
@@ -20,11 +18,11 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 @onready var _clone_project_button = %CloneProjectButton
 
 
-var _projects: Projects.Projects
+var _projects: Projects.List
 var _load_projects_queue = []
 
 
-func init(projects: Projects.Projects):
+func init(projects: Projects.List):
 	self._projects = projects
 	
 	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
@@ -194,7 +192,7 @@ func _on_projects_list_item_manage_tags_requested(item_data) -> void:
 	)
 
 
-func _on_projects_list_item_duplicate_requested(project: Projects.Project) -> void:
+func _on_projects_list_item_duplicate_requested(project: Projects.Item) -> void:
 	if _duplicate_project_dialog.visible:
 		return
 	

@@ -4,9 +4,6 @@ extends ConfirmationDialog
 signal imported(project_path, editor_path, and_edit)
 
 
-const Projects = preload("res://src/services/projects.gd")
-
-
 @onready var _browse_project_path_button: Button = %BrowseProjectPathButton
 @onready var _browse_project_path_dialog: FileDialog = $BrowseProjectPathDialog
 @onready var _project_path_edit: LineEdit = %ProjectPathEdit

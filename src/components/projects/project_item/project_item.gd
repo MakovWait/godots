@@ -6,8 +6,6 @@ signal manage_tags_requested
 signal duplicate_requested
 signal tag_clicked(tag)
 
-const projects_ns = preload("res://src/services/projects.gd")
-
 @export var _rename_dialog_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
@@ -40,7 +38,7 @@ func _ready() -> void:
 	_tag_container.tag_clicked.connect(func(tag): tag_clicked.emit(tag))
 
 
-func init(item: projects_ns.Project):
+func init(item: Projects.Item):
 	item.loaded.connect(func():
 		_fill_data(item)
 	)
