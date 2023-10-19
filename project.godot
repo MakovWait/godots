@@ -23,6 +23,7 @@ Output="*res://src/output.gd"
 AutoClose="*res://src/auto_close.gd"
 Cache="*res://src/cache.gd"
 HttpClient="*res://src/http_client.gd"
+Context="*res://addons/use-context/context_node.gd"
 
 [display]
 
@@ -30,7 +31,7 @@ window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/expand-region/plugin.cfg", "res://addons/find-everywhere/plugin.cfg", "res://addons/previous-tab/plugin.cfg", "res://addons/script-tabs/plugin.cfg")
+enabled=PackedStringArray("res://addons/expand-region/plugin.cfg", "res://addons/find-everywhere/plugin.cfg", "res://addons/previous-tab/plugin.cfg", "res://addons/script-tabs/plugin.cfg", "res://addons/use-context/plugin.cfg")
 
 [filesystem]
 

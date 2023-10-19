@@ -109,15 +109,14 @@ func init(item: projects_ns.Project):
 			tr("View Command"), 
 			get_theme_icon("Window", "EditorIcons"),
 			func(): 
-				var command_viewer = get_tree().current_scene.get_node_or_null(
-					"%CommandViewer"
-				)
+				var command_viewer = Context.use(self, CommandViewer) as CommandViewer
 				if command_viewer:
 					command_viewer.raise(
-						item.as_process(["-e"]).to_dict()
+						item.as_process(["-e"])
 					)
 		)
-		view_command_btn.disabled = not item.is_valid
+		view_command_btn.set_script(RunButton)
+		view_command_btn.init(item)
 		
 #		var actions = []
 #		if not item.is_missing:

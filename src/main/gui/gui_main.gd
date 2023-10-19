@@ -122,6 +122,8 @@ func _ready():
 	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
 
 	_setup_godots_releases()
+	
+	Context.add(self, %CommandViewer)
 
 
 func _notification(what: int) -> void:

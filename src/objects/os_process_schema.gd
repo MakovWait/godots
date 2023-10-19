@@ -18,7 +18,7 @@ func create_process(open_console:=false) -> int:
 	return OS.create_process(_path, _args, open_console)
 
 
-func to_dict():
+func to_dict() -> Dictionary:
 	return {
 		'path': _path,
 		'args': _args.duplicate()
