@@ -42,10 +42,11 @@ class List extends RefCounted:
 	func retrieve(editor_path) -> Item:
 		return _editors[editor_path]
 	
-	func filter_by_name_pattern(name: String) -> Array[Item]:
+	func filter_by_name_pattern(name_pattern: String) -> Array[Item]:
+		var sanitized_name_pattern = _sanitize_name(name_pattern)
 		var result: Array[Item] = []
 		for editor in all():
-			if editor.name.findn(name) > -1:
+			if _sanitize_name(editor.name).findn(sanitized_name_pattern) > -1:
 				result.push_back(editor)
 		return result
 	
@@ -97,7 +98,9 @@ class List extends RefCounted:
 		editor.name_changed.connect(func(_new_name): 
 			editor_name_changed.emit(editor.path)
 		)
-
+		
+	func _sanitize_name(name: String):
+		return name.replace(" ", "")
 
 class Item extends Object:
 	signal tags_edited

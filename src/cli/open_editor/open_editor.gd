@@ -19,7 +19,10 @@ func execute(req: Request) -> void:
 		if editors.size() == 1:
 			_run_editor(editors[0], req.user_args)
 		elif editors.size() > 1:
-			Output.push("There is ambiguity between editors to run.")
+			var names: Array[String] = []
+			for e in editors:
+				names.append(e.name)
+			Output.push("There is ambiguity between editors to run.\n%s" % "\n".join(names))
 		else:
 			Output.push("Required editor is not found!")
 	else:
