@@ -8,6 +8,8 @@ func test_filter_by_name_return(name: String, expected: int, test_parameters:= [
 	["4.1s", 1],
 	["4.1   s", 1],
 	["   4.1   s", 1],
+	["4.1 StAble", 1],
+	["invalid", 0],
 ]):
 	var editors = LocalEditors.List.new(config_path)
 	editors.load()
