@@ -8,7 +8,7 @@ func _ready() -> void:
 	title = tr("Command Viewer")
 
 
-func raise(main_schema, alternative_schema):
+func raise(main_schema, alternative_schema=null):
 	_main_command_view.set_text(
 		"%s:" % tr("Command"), 
 		"", 

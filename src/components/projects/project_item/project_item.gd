@@ -114,8 +114,7 @@ func init(item: projects_ns.Project):
 				)
 				if command_viewer:
 					command_viewer.raise(
-						item.get_process_arguments("-e"),
-						item.get_alternative_process_arguments("-e")
+						item.as_process(["-e"]).to_dict()
 					)
 		)
 		view_command_btn.disabled = not item.is_valid
@@ -287,7 +286,7 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	
 
 func _run_with_editor(item, editor_flag, auto_close):
-	item.run_with_editor(editor_flag)
+	item.as_process([editor_flag]).create_process()
 	if auto_close:
 		AutoClose.close_if_should()
 

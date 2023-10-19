@@ -73,14 +73,13 @@ func init(item):
 		var view_command_btn = buttons.simple(
 			tr("View Command"), 
 			get_theme_icon("Window", "EditorIcons"),
-			func(): 
+			func():
 				var command_viewer = get_tree().current_scene.get_node_or_null(
 					"%CommandViewer"
 				)
 				if command_viewer:
 					command_viewer.raise(
-						_get_process_arguments(item),
-						_get_alternative_process_arguments(item)
+						item.as_project_manager_process().to_dict(),
 					)
 		)
 		view_command_btn.disabled = not item.is_valid
@@ -112,34 +111,8 @@ func init(item):
 
 
 func _on_run_editor(item):
-	var output = []
-	var process_schema = _get_process_arguments(item)
-	OS.create_process(process_schema.path, process_schema.args)
-#	Output.push_array(output)
+	item.as_project_manager_process().create_process()
 	AutoClose.close_if_should()
-
-
-func _get_process_arguments(item):
-	if OS.has_feature("windows") or OS.has_feature("linux"):
-		return {
-			"path": ProjectSettings.globalize_path(item.path),
-			"args": ["-p"] 
-		}
-	elif OS.has_feature("macos"):
-		return {
-			"path": "open",
-			"args": [ProjectSettings.globalize_path(item.path), "-n"],
-		}
-
-
-func _get_alternative_process_arguments(item):
-	if not OS.has_feature("macos"):
-		return null
-	else:
-		return {
-			"path": ProjectSettings.globalize_path(item.path).path_join("Contents/MacOS/Godot"),
-			"args": [],
-		}
 
 
 func _on_rename(item):

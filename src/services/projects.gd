@@ -164,50 +164,17 @@ class Project:
 	
 	func emit_internals_changed():
 		internals_changed.emit()
-	
-	func run_with_editor(editor_flag):
-		var output = []
-		var process_schema = get_process_arguments(editor_flag)
-		OS.create_process(process_schema.path, process_schema.args)
-		Output.push_array(output)
 
-	func get_process_arguments(editor_flag):
-		if OS.has_feature("windows") or OS.has_feature("linux"):
-			return {
-				"path": ProjectSettings.globalize_path(editor_path),
-				"args": [
-					"--path",
-					ProjectSettings.globalize_path(path).get_base_dir(),
-					editor_flag
-				]
-			}
-		elif OS.has_feature("macos"):
-			return {
-				"path": "open",
-				"args": [
-					ProjectSettings.globalize_path(editor_path),
-					"-n",
-					"--args",
-					"--path",
-					ProjectSettings.globalize_path(path).get_base_dir(),
-					editor_flag
-				]
-			}
+	func as_process(args: PackedStringArray):
+		assert(!has_invalid_editor)
+		var editor = _local_editors.retrieve(editor_path)
+		var result_args = [
+			"--path",
+			ProjectSettings.globalize_path(path).get_base_dir(),
+		]
+		result_args.append_array(args)
+		return editor.as_process(result_args)
 
-	func get_alternative_process_arguments(editor_flag):
-		if not OS.has_feature("macos"):
-			return null
-		else:
-			return {
-				"path": ProjectSettings.globalize_path(editor_path).path_join("Contents/MacOS/Godot"),
-				"args": [
-	#				"-n",
-					"--path",
-					ProjectSettings.globalize_path(path).get_base_dir(),
-					editor_flag
-				]
-			}
-	
 	func _get_editors_to_bind():
 		var options = _local_editors.as_option_button_items()
 		_external_project_info.sort_editor_options(options)

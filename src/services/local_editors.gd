@@ -98,6 +98,9 @@ class LocalEditor extends Object:
 	
 	signal name_changed(new_name)
 	
+	var mac_os_editor_path_postfix:
+		get: return _section.get_value("mac_os_editor_path_postfix", "/Contents/MacOS/Godot")
+	
 	var path:
 		get: return _section.name
 	
@@ -126,6 +129,17 @@ class LocalEditor extends Object:
 	
 	func _init(section: ConfigFileSection) -> void:
 		self._section = section
+
+	func as_process(args: PackedStringArray) -> OSProcessSchema:
+		var process_path
+		if OS.has_feature("windows") or OS.has_feature("linux"):
+			process_path = ProjectSettings.globalize_path(path)
+		elif OS.has_feature("macos"):
+			process_path = ProjectSettings.globalize_path(path + mac_os_editor_path_postfix)
+		return OSProcessSchema.new(process_path, args)
+
+	func as_project_manager_process() -> OSProcessSchema:
+		return as_process(["-p"])
 	
 	func emit_tags_edited():
 		tags_edited.emit()
