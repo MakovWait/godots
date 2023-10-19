@@ -35,7 +35,7 @@ class Default extends I:
 			var release = Release.new(el)
 			_data.append(release)
 			check_is_latest.call(release)
-		
+
 		var release: Release
 		if Config.ONLY_STABLE_UPDATES.ret() and latest.value:
 			release = latest.value
@@ -53,7 +53,7 @@ class Default extends I:
 			return false
 		else:
 			var release: GodotsReleases.Release
-			if Config.ONLY_STABLE_UPDATES:
+			if Config.ONLY_STABLE_UPDATES.ret():
 				var json = await _src.async_latest()
 				release = _to_release_or_null(json)
 			else:
