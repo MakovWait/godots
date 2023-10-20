@@ -32,6 +32,10 @@ class ParsedArguments:
 		for option in options:
 			_options[option.long_name] = option
 			_options[option.short_name] = option
+			
+	func get_first_name(default:="") -> String:
+		var name = names.front()
+		return default if name == null else name
 
 	func has_options(names: Array[String]) -> bool:
 		for name in names:
@@ -40,7 +44,8 @@ class ParsedArguments:
 		return false
 
 	func first_option_value(names: Array[String]) -> String:
-		return first_option_values(names).front()
+		var values = first_option_values(names)
+		return "" if values.is_empty() else values.front()
 
 	func first_option_values(names: Array[String]) -> Array[String]:
 		for name in names:

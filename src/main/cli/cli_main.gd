@@ -5,7 +5,8 @@ static func execute(cmd: CliParser.ParsedCommandResult, user_args: PackedStringA
 		Help.new().print_commands(GodotsCommands.commands)
 	elif cmd.namesp == "editor" and cmd.verb == "run":
 		var name = cmd.args.first_option_value(["name", "n"])
-		OpenEditor.new().execute(OpenEditor.Request.new(name, user_args))
+		var working_dir = cmd.args.get_first_name(".") if name.is_empty() else ""
+		OpenEditor.new().execute(OpenEditor.Request.new(name, user_args, working_dir))
 
 static func main(args: PackedStringArray, app_args: PackedStringArray):
 	if (args.size() >= 1):
