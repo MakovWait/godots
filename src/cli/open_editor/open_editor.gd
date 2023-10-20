@@ -20,7 +20,7 @@ func execute(req: Request) -> void:
 		var editor: LocalEditors.Item = null
 
 		if req.name_pattern.is_empty():
-			var project_path = DirAccess.open(req.working_dir).get_current_dir() + "/project.godot"
+			var project_path = DirAccess.open(req.working_dir).get_current_dir().path_join("project.godot")
 			editor = _find_editor_by_proj_godot(project_path)
 		else:
 			editor = _find_editor_by_name(req.name_pattern)
@@ -32,17 +32,39 @@ func execute(req: Request) -> void:
 
 func _find_editor_by_proj_godot(project_path: String) -> LocalEditors.Item:
 	var result: LocalEditors.Item = null
-	
-	if FileAccess.file_exists(project_path):
-		var project_info = Projects.ExternalProjectInfo.new(project_path)
-		project_info.load(false)
 
-		if project_info.has_version_hint:
-			result = _editors.retrieve_by_version_hint(project_info.version_hint)
-		else:
-			Output.push("Editor not found as `project.godot` does not have `version_hint`.")
+	if FileAccess.file_exists(project_path):
+		result = _find_editor_by_project(project_path)
+		result = result if result else _find_editor_by_external_project(project_path)
+	
+		if not result:
+			Output.push("Editor not found because it was either not imported into godots or the `project.godot` file does not contain a `version_hint`.")
 	else:
 		Output.push("Editor not found as path to `project.godot` does not exist.")
+
+	return result
+	
+func _find_editor_by_project(project_path) -> LocalEditors.Item:
+	var result: LocalEditors.Item = null
+	var projects = Projects.List.new(
+		Config.PROJECTS_CONFIG_PATH,
+		_editors,
+		null)
+	projects.load()
+	
+	if projects.has(project_path):
+		var project = projects.retrieve(project_path)
+		result = project.editor
+	
+	return result
+	
+func _find_editor_by_external_project(project_path) -> LocalEditors.Item:
+	var result: LocalEditors.Item = null
+	var project_info = Projects.ExternalProjectInfo.new(project_path)
+	project_info.load(false)
+
+	if project_info.has_version_hint:
+		result = _editors.retrieve_by_version_hint(project_info.version_hint)
 
 	return result
 
