@@ -38,7 +38,7 @@ func _find_editor_by_proj_godot(project_path: String) -> LocalEditors.Item:
 		result = result if result else _find_editor_by_external_project(project_path)
 	
 		if not result:
-			Output.push("Editor not found because it was either not imported into godots or the `project.godot` file does not contain a `version_hint`.")
+			Output.push("Editor not found: either the project isn't bound to an editor or `project.godot` lacks a `version_hint`.")
 	else:
 		Output.push("Editor not found as path to `project.godot` does not exist.")
 
