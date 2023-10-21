@@ -93,6 +93,12 @@ class Item:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
 	
+	var editor:
+		get: 
+			if has_invalid_editor:
+				return null
+			return _local_editors.retrieve(editor_path)
+	
 	var editor_path:
 		get: return _section.get_value("editor_path", "")
 		set(value): 
@@ -133,12 +139,12 @@ class Item:
 
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
-	var _local_editors
+	var _local_editors: LocalEditors.List
 	
 	func _init(
 		section: ConfigFileSection, 
 		project_info: ExternalProjectInfo,
-		local_editors
+		local_editors: LocalEditors.List
 	) -> void:
 		self._section = section
 		self._external_project_info = project_info

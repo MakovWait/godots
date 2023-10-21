@@ -42,6 +42,12 @@ class List extends RefCounted:
 	func retrieve(editor_path) -> Item:
 		return _editors[editor_path]
 	
+	func retrieve_by_version_hint(version_hint: String) -> Item:
+		for e in all():
+			if VersionHint.are_equal(e.version_hint, version_hint):
+				return e
+		return null
+	
 	func filter_by_name_pattern(name_pattern: String) -> Array[Item]:
 		var sanitized_name_pattern = _sanitize_name(name_pattern)
 		var result: Array[Item] = []
