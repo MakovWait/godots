@@ -5,7 +5,7 @@ static func execute(cmd: CliParser.ParsedCommandResult, user_args: PackedStringA
 		if cmd.args.has_options(["ghelp", "gh"]):
 			Help.new().print_commands(GodotsCommands.commands)
 		elif cmd.args.has_options(["recent", "r"]):
-			OpenRecentProject.new().execute(OpenRecentProject.Request.new(user_args))
+			OpenRecentProject.new().execute()
 	elif cmd.namesp == "editor" and cmd.verb == "run":
 		var name = cmd.args.first_option_value(["name", "n"])
 		var working_dir = cmd.args.get_first_name(".") if name.is_empty() else ""
