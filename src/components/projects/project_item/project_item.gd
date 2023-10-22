@@ -71,7 +71,7 @@ func init(item: Projects.Item):
 		var run_btn = buttons.simple(
 			tr("Run"), 
 			get_theme_icon("Play", "EditorIcons"),
-			_on_run_with_editor.bind(item, "-g", "run", "Run", false)
+			_on_run_with_editor.bind(item, func(item): item.run(), "run", "Run", false)
 		)
 		run_btn.set_script(RunButton)
 		run_btn.init(item)
@@ -241,7 +241,7 @@ func _on_rename(item):
 
 
 func _on_edit_with_editor(item):
-	_on_run_with_editor(item, "-e", "edit", "Edit", true)
+	_on_run_with_editor(item, func(item): item.edit(), "edit", "Edit", true)
 
 
 func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_close):
@@ -283,7 +283,8 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	
 
 func _run_with_editor(item: Projects.Item, editor_flag, auto_close):
-	item.edit([editor_flag])
+	editor_flag.call(item)
+
 	if auto_close:
 		AutoClose.close_if_should()
 

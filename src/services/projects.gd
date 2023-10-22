@@ -184,12 +184,12 @@ class Item:
 		result_args.append_array(args)
 		return editor.as_process(result_args)
 	
-	func edit(args: PackedStringArray = []):
-		var patched_args = args.duplicate()
-		if not (patched_args.has("-e") or patched_args.has("--editor")):
-			patched_args.push_back("-e")
-		as_process(patched_args).create_process()
+	func edit():
+		as_process(["-e"]).create_process()
 		_ProjectsCache.set_last_opened_project(path)
+	
+	func run():
+		as_process(["-g"]).create_process()
 	
 	func _get_editors_to_bind():
 		var options = _local_editors.as_option_button_items()

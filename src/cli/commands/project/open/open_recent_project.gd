@@ -1,11 +1,5 @@
 class_name OpenRecentProject
 
-class Request:
-	var user_args: PackedStringArray
-	
-	func _init(user_args: PackedStringArray):
-		self.user_args = user_args
-
 var _editors: LocalEditors.List
 var _projects: Projects.List
 
@@ -16,14 +10,14 @@ func _init():
 		_editors,
 		null)
 
-func execute(req: Request) -> void:
+func execute() -> void:
 	_editors.load()
 	_projects.load()
 
 	var project = _projects.get_last_opened()
 	if project:
 		project.load(false)
-		project.edit(req.user_args)
+		project.edit()
 	else:
 		Output.push("Recent project does not exist.")
 
