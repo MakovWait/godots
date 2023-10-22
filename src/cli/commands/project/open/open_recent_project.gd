@@ -1,5 +1,12 @@
 class_name OpenRecentProject
 
+class Route extends Routes.Item:
+	func route(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray):
+		OpenRecentProject.new().execute()
+
+	func match(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray) -> bool:
+		return cmd.args.has_options(["recent", "r"])
+
 var _editors: LocalEditors.List
 var _projects: Projects.List
 
