@@ -1,9 +1,22 @@
 class_name Help
 
-func print_commands(commands: Array[CliCommand]):
+class Route extends Routes.Item:
+	func route(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray):
+		Help.new().execute(Request.new(GodotsCommands.commands))
+	
+	func match(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray) -> bool:
+		return cmd.args.has_options(["ghelp", "gh"])
+
+class Request:
+	var commands: Array[CliCommand]
+	
+	func _init(commands: Array[CliCommand]) -> void:
+		self.commands = commands
+
+func execute(req: Request) -> void:
 	var commands_by_namespace: Dictionary = {}
 
-	for command in commands:
+	for command in req.commands:
 		if not commands_by_namespace.has(command.namesp):
 			commands_by_namespace[command.namesp] = []
 		commands_by_namespace[command.namesp].append(command)

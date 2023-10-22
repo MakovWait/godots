@@ -1,5 +1,14 @@
 class_name OpenEditor
 
+class Route extends Routes.Item:
+	func route(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray):
+		var name = cmd.args.first_option_value(["name", "n"])
+		var working_dir = cmd.args.get_first_name(".") if name.is_empty() else ""
+		OpenEditor.new().execute(OpenEditor.Request.new(name, user_args, working_dir))
+
+	func match(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray) -> bool:
+		return cmd.verb == "run"
+
 class Request:
 	var name_pattern: String
 	var user_args: PackedStringArray
