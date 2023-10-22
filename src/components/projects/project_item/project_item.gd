@@ -282,8 +282,8 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	confirmation_dialog.popup_centered()
 	
 
-func _run_with_editor(item, editor_flag, auto_close):
-	item.as_process([editor_flag]).create_process()
+func _run_with_editor(item: Projects.Item, editor_flag, auto_close):
+	item.edit([editor_flag])
 	if auto_close:
 		AutoClose.close_if_should()
 
