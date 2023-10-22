@@ -28,7 +28,7 @@ func init(projects: Projects.List):
 	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
 	_import_project_button.pressed.connect(func(): import())
 	_import_project_dialog.imported.connect(func(project_path, editor_path, edit):
-		var project
+		var project: Projects.Item
 		if projects.has(project_path):
 			project = projects.retrieve(project_path)
 			project.editor_path = editor_path
@@ -41,7 +41,7 @@ func init(projects: Projects.List):
 		_projects_list.sort_items()
 		
 		if edit:
-			project.run_with_editor('-e')
+			project.edit()
 			AutoClose.close_if_should()
 	)
 	

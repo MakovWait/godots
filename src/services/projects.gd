@@ -66,8 +66,11 @@ class List extends RefCounted:
 	
 	func save() -> Error:
 		return _cfg.save(_cfg_path)
-
-
+	
+	func get_last_opened() -> Projects.Item:
+		var last_opened = _ProjectsCache.get_last_opened_project()
+		return retrieve(last_opened) if has(last_opened) else null
+	
 class Item:
 	signal internals_changed
 	signal loaded
@@ -155,8 +158,8 @@ class Item:
 		self._local_editors.editor_name_changed.connect(_check_editor_changes)
 		project_info.loaded.connect(func(): loaded.emit())
 	
-	func load():
-		_external_project_info.load()
+	func load(with_icon=true):
+		_external_project_info.load(with_icon)
 	
 	func _get_editor_name():
 		if has_invalid_editor:
@@ -171,7 +174,7 @@ class Item:
 	func emit_internals_changed():
 		internals_changed.emit()
 
-	func as_process(args: PackedStringArray):
+	func as_process(args: PackedStringArray) -> OSProcessSchema:
 		assert(!has_invalid_editor)
 		var editor = _local_editors.retrieve(editor_path)
 		var result_args = [
@@ -180,12 +183,27 @@ class Item:
 		]
 		result_args.append_array(args)
 		return editor.as_process(result_args)
-
+	
+	func edit(args: PackedStringArray = []):
+		var patched_args = args.duplicate()
+		if not (patched_args.has("-e") or patched_args.has("--editor")):
+			patched_args.push_back("-e")
+		as_process(patched_args).create_process()
+		_ProjectsCache.set_last_opened_project(path)
+	
 	func _get_editors_to_bind():
 		var options = _local_editors.as_option_button_items()
 		_external_project_info.sort_editor_options(options)
 		return options
 
+class _ProjectsCache:
+	static func set_last_opened_project(path: String) -> void:
+		Cache.set_value("projects", "last_opened_project", path)
+		Cache.save()
+
+	static func get_last_opened_project() -> String:
+		var result = Cache.get_value("projects", "last_opened_project")
+		return result if result else ""
 
 class ExternalProjectInfo extends RefCounted:
 	signal loaded

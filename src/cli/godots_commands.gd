@@ -10,7 +10,12 @@ static var commands: Array[CliCommand] = [
 				"ghelp",
 				"gh",
 				"Displays global help information.",
-				"--ghelp or -gh")
+				"--ghelp or -gh"),
+			CliOption.new(
+				"recent",
+				"r",
+				"Open last modified project.",
+				"--recent"),
 		]
 	),
 	CliCommand.new(
