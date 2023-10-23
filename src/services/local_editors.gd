@@ -30,6 +30,7 @@ class List extends RefCounted:
 		_connect_name_changed(editor)
 		editor.name = name
 		editor.favorite = false
+		editor.extra_arguments = ""
 		_editors[editor_path] = editor
 		return editor
 	
@@ -123,7 +124,12 @@ class Item extends Object:
 		set(value): 
 			_section.set_value("name", value)
 			name_changed.emit(value)
-
+		
+	var extra_arguments:
+		get: return _section.get_value("extra_arguments", "")
+		set(value): 
+			_section.set_value("extra_arguments", value)
+			
 	var favorite:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
@@ -153,7 +159,7 @@ class Item extends Object:
 		return OSProcessSchema.new(process_path, args)
 
 	func as_project_manager_process() -> OSProcessSchema:
-		return as_process(["-p"])
+		return as_process([extra_arguments,"-p"])
 	
 	func emit_tags_edited():
 		tags_edited.emit()
