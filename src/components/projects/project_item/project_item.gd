@@ -42,7 +42,10 @@ func init(item: Projects.Item):
 	item.loaded.connect(func():
 		_fill_data(item)
 	)
-
+	
+	_editor_button.pressed.connect(_on_rebind_editor.bind(item))
+	_editor_button.disabled = item.is_missing
+	
 	item.internals_changed.connect(func():
 		_fill_data(item)
 	)
