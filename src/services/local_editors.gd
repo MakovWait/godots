@@ -156,10 +156,13 @@ class Item extends Object:
 			process_path = ProjectSettings.globalize_path(path)
 		elif OS.has_feature("macos"):
 			process_path = ProjectSettings.globalize_path(path + mac_os_editor_path_postfix)
-		return OSProcessSchema.new(process_path, args)
+		var final_args = []
+		final_args.append(extra_arguments)
+		final_args.append_array(args)
+		return OSProcessSchema.new(process_path, final_args)
 
 	func as_project_manager_process() -> OSProcessSchema:
-		return as_process([extra_arguments,"-p"])
+		return as_process(["-p"])
 	
 	func emit_tags_edited():
 		tags_edited.emit()
