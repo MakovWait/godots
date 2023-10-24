@@ -59,6 +59,11 @@ script = ExtResource("6_qnxw1")
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
+[node name="EditorFeatures" type="Label" parent="InfoVBox/Title"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
 [node name="TagContainer" type="HBoxContainer" parent="InfoVBox/Title"]
 unique_name_in_owner = true
 layout_mode = 2

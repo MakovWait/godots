@@ -14,6 +14,7 @@ signal tag_clicked(tag)
 @onready var _explore_button: Button = %ExploreButton
 @onready var _favorite_button: TextureButton = %FavoriteButton
 @onready var _tag_container: HBoxContainer = %TagContainer
+@onready var _editor_features = %EditorFeatures
 
 var _get_actions_callback: Callable
 var _tags = []
@@ -25,9 +26,12 @@ var _sort_data = {
 func _ready():
 	super._ready()
 	_tag_container.tag_clicked.connect(func(tag): tag_clicked.emit(tag))
+	
+	_editor_features.add_theme_font_override("font", get_theme_font("title", "EditorFonts"))
+	_editor_features.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))
 
 
-func init(item):
+func init(item: LocalEditors.Item):
 	if not item.is_valid:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
@@ -44,6 +48,12 @@ func init(item):
 	_tag_container.set_tags(item.tags)
 	_tags = item.tags
 	
+	if item.is_self_contained():
+		_editor_features.text = tr("Self-contained")
+		_editor_features.show()
+	else:
+		_editor_features.hide()
+
 	_sort_data.favorite = item.favorite
 	_sort_data.name = item.name
 	_sort_data.path = item.path

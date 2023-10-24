@@ -116,7 +116,7 @@ class Item extends Object:
 	var mac_os_editor_path_postfix:
 		get: return _section.get_value("mac_os_editor_path_postfix", "/Contents/MacOS/Godot")
 	
-	var path:
+	var path: String:
 		get: return _section.name
 	
 	var name: String:
@@ -172,3 +172,10 @@ class Item extends Object:
 	
 	func emit_tags_edited():
 		tags_edited.emit()
+	
+	func is_self_contained():
+		if not is_valid:
+			return false
+		var sub_file_exists = func(file):
+			return FileAccess.file_exists(path.get_base_dir().path_join(file))
+		return sub_file_exists.call("_sc_") or sub_file_exists.call("._sc_")
