@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg height="128px" width="128px" viewBox="-7 0 192 192" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+<svg height="256px" width="256px" viewBox="-7 0 192 192" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
   <rect width="124" height="124" rx="14" stroke-width="4" style="fill: rgb(51, 51, 51); stroke: rgb(51, 51, 51);" x="27.159" y="35.945"/>
   <g transform="matrix(1, 0, 0, 1, 154.014816, 84.845367)" bx:origin="0.694758 0.499979">
     <g transform="matrix(0.101, 0, 0, 0.101, -150.889008, -86.309654)">
