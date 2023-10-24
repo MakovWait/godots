@@ -39,7 +39,7 @@ import/blender/enabled=false
 
 [godots]
 
-version_hint="v4.1.2 stable"
+version_hint="4.1.2"
 
 [rendering]
 

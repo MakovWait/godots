@@ -12,7 +12,11 @@ static func same_version(a: String, b: String):
 
 
 static func parse(version_hint: String) -> Item:
-	var tags = version_hint.to_lower().split(" ")
+	var tags = null
+	if " " in version_hint.to_lower():
+		tags = version_hint.to_lower().split(" ")
+	else:
+		tags = version_hint.to_lower().split("-")
 	var item = Item.new()
 	var parsers = [
 		_ParsedVersion.new(),

@@ -119,7 +119,7 @@ class Item extends Object:
 	var path:
 		get: return _section.name
 	
-	var name:
+	var name: String:
 		get: return _section.get_value("name", "")
 		set(value): 
 			_section.set_value("name", value)
@@ -142,7 +142,13 @@ class Item extends Object:
 		get: return edir.path_is_valid(path)
 	
 	var version_hint: String:
-		get: return _section.get_value("version_hint", self.name)
+		get: return _section.get_value(
+			"version_hint", 
+			self.name.to_lower()
+				.replace("godot", "")
+				.strip_edges()
+				.replace(" ", "-")
+		)
 		set(value): _section.set_value("version_hint", value)
 	
 	var _section: ConfigFileSection
