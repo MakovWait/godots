@@ -134,7 +134,7 @@ func init(item: Projects.Item):
 							CommandViewer.Command.new(
 								tr("Edit"), 
 								["-e"], 
-								true, 
+								false, 
 								base_process, 
 								[CommandViewer.Actions.EXECUTE, CommandViewer.Actions.CREATE_PROCESS]
 							)

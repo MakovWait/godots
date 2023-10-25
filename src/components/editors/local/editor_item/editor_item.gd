@@ -116,7 +116,7 @@ func init(item: LocalEditors.Item):
 							CommandViewer.Command.new(
 								tr("Project Manager"), 
 								["-p"], 
-								true, 
+								false, 
 								base_process, 
 								[CommandViewer.Actions.EXECUTE, CommandViewer.Actions.CREATE_PROCESS]
 							)

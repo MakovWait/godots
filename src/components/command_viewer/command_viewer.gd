@@ -116,8 +116,9 @@ func _add_view(command: Command, commands: Commands):
 
 
 func _set_text_to_command_view(command, command_view):
+	var local_badge = tr("Local") if command.is_local() else tr("Global")
 	command_view.set_text(
-		"%s:" % command.name(), 
+		"%s (%s):" % [command.name(), local_badge], 
 		"", 
 		str(command)
 	)
@@ -157,6 +158,9 @@ class Command:
 		_is_local = is_local
 		_base_process = base_process
 		_allowed_actions = allowed_actions
+	
+	func is_local() -> bool:
+		return _is_local
 	
 	func is_action_allowed(action: String) -> bool:
 		return action in _allowed_actions
