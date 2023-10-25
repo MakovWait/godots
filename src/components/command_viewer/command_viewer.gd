@@ -1,12 +1,17 @@
 class_name CommandViewer
 extends AcceptDialog
 
+const NEW_COMMAND_ACTIONS = [
+	Actions.REMOVE, Actions.EXECUTE, Actions.CREATE_PROCESS, Actions.EDIT
+]
+
 @export var _command_view_scene: PackedScene
 @export var _new_command_dialog_scene: PackedScene
 @onready var _execute_output_dialog = $ExecuteOutputDialog
 
 var _create_new_command_btn: Button
 var _commands: Commands
+var _command_creation_allowed = false
 
 
 func _ready() -> void:
@@ -20,23 +25,25 @@ func _ready() -> void:
 	
 	_create_new_command_btn = add_button(tr("New Command"))
 	_create_new_command_btn.pressed.connect(func():
-		var new_dialog = _new_command_dialog_scene.instantiate() as CommandViewerNewCommandDialog
-		add_child(new_dialog)
-		new_dialog.popup_centered()
-		new_dialog.created.connect(func(cmd_name, cmd_args, is_local):
+		_popup_new_command_dialog("", [], func(cmd_name, cmd_args, is_local):
 			if _commands:
 				var command = _commands.add(
 					cmd_name, cmd_args, is_local, 
-					[Actions.REMOVE, Actions.EXECUTE, Actions.CREATE_PROCESS]
+					NEW_COMMAND_ACTIONS.duplicate()
 				)
-				_add_view(command, _commands)
+				_refresh()
 		)
 	)
 
 
 func raise(commands: Commands, command_creation_allowed=false):
 	_commands = commands
-	
+	_command_creation_allowed = command_creation_allowed
+	_update_view(_commands, _command_creation_allowed)
+	popup_centered_ratio(0.4)
+
+
+func _update_view(commands: Commands, command_creation_allowed=false):
 	if command_creation_allowed:
 		_create_new_command_btn.show()
 	else:
@@ -50,17 +57,15 @@ func raise(commands: Commands, command_creation_allowed=false):
 	for command in commands.all():
 		_add_view(command, commands)
 
-	popup_centered_ratio(0.4)
+
+func _refresh():
+	_update_view(_commands, _command_creation_allowed)
 
 
 func _add_view(command: Command, commands: Commands):
 	var command_view = _command_view_scene.instantiate() as CommandTextView
 	%VBoxContainer.add_child(command_view)
-	command_view.set_text(
-		"%s:" % command.name(), 
-		"", 
-		str(command)
-	)
+	_set_text_to_command_view(command, command_view)
 	if command.is_action_allowed(Actions.CREATE_PROCESS):
 		command_view.create_process_btn.disabled = false
 		command_view.create_process_btn.pressed.connect(func():
@@ -73,8 +78,7 @@ func _add_view(command: Command, commands: Commands):
 			confirm.dialog_text = tr("Are you sure to remove the command?")
 			confirm.confirmed.connect(func():
 				command.remove_from(commands)
-				command_view.hide()
-				command_view.queue_free()
+				_refresh()
 			)
 			add_child(confirm)
 			confirm.popup_centered()
@@ -96,12 +100,42 @@ func _add_view(command: Command, commands: Commands):
 			%ErrorCodeLabel.text = str(err)
 			_execute_output_dialog.popup_centered()
 		)
+	if command.is_action_allowed(Actions.EDIT):
+		command_view.edit_btn.disabled = false
+		command_view.edit_btn.pressed.connect(func():
+			_popup_new_command_dialog(command.name(), command.args(), 
+			func(cmd_name, cmd_args, is_local):
+				if _commands:
+					_commands.add(
+						cmd_name, cmd_args, is_local, 
+						NEW_COMMAND_ACTIONS.duplicate()
+					)
+					_refresh()
+			)
+		)
+
+
+func _set_text_to_command_view(command, command_view):
+	command_view.set_text(
+		"%s:" % command.name(), 
+		"", 
+		str(command)
+	)
+
+
+func _popup_new_command_dialog(cmd_name, cmd_args, created_callback: Callable):
+	var new_dialog = _new_command_dialog_scene.instantiate() as CommandViewerNewCommandDialog
+	new_dialog.created.connect(created_callback)
+	add_child(new_dialog)
+	new_dialog.init(cmd_name, cmd_args)
+	new_dialog.popup_centered()
 
 
 class Actions:
 	const CREATE_PROCESS = "create_process"
 	const EXECUTE = "execute"
 	const REMOVE = "remove"
+	const EDIT = "edit"
 
 
 class Command:
@@ -126,6 +160,9 @@ class Command:
 	
 	func is_action_allowed(action: String) -> bool:
 		return action in _allowed_actions
+	
+	func args() -> PackedStringArray:
+		return _args
 	
 	func name() -> String:
 		return _name
@@ -295,11 +332,23 @@ class CommandsGeneric extends Commands:
 	func add(name: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
 		if is_local == _is_local:
 			var commands = _custom_commands_source.custom_commands
-			commands.append({
-				"name": name,
-				"args": args,
-				"allowed_actions": allowed_actions
-			})
+			if _has_by_name(name):
+				commands = commands.map(func(x):
+					if x.name != name:
+						return x
+					else:
+						return {
+							"name": name,
+							"args": args,
+							"allowed_actions": allowed_actions
+						}
+				)
+			else:
+				commands.append({
+					"name": name,
+					"args": args,
+					"allowed_actions": allowed_actions
+				})
 			_custom_commands_source.custom_commands = commands
 			return _to_command(name, args, allowed_actions, is_local)
 		else:
@@ -313,6 +362,11 @@ class CommandsGeneric extends Commands:
 			_custom_commands_source.custom_commands = commands
 		else:
 			assert(true, "Not implemented")
-
+	
+	func _has_by_name(name: String):
+		return len(
+			_custom_commands_source.custom_commands.filter(func(x): return x.name == name)
+		) > 0
+	
 	func _to_command(name: String, args: PackedStringArray, allowed_actions: PackedStringArray, is_local: bool) -> Command:
 		return Command.new(name, args, is_local, _base_process, allowed_actions)

@@ -29,6 +29,15 @@ flat = true
 script = ExtResource("2_ol025")
 _theme_icon_name = "Remove"
 
+[node name="Edit" type="Button" parent="HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Remove command from list"
+disabled = true
+flat = true
+script = ExtResource("2_ol025")
+_theme_icon_name = "Edit"
+
 [node name="CopyToClipboard" type="Button" parent="HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2

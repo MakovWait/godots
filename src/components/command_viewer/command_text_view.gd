@@ -24,6 +24,10 @@ var execute_btn: Button:
 	get: return %Execute
 
 
+var edit_btn: Button:
+	get: return %Edit
+
+
 func _ready() -> void:
 	_rich_text_label.custom_minimum_size = Vector2i(0, 100) * Config.EDSCALE
 	_copy_to_clipboard.pressed.connect(func():

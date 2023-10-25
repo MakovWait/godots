@@ -28,6 +28,11 @@ func _ready():
 	)
 
 
+func init(cmd_name, cmd_args):
+	_name_edit.text = cmd_name
+	_args_edit.override_array(cmd_args)
+
+
 func _process(delta):
 	var ok_button = get_ok_button()
 	ok_button.disabled = name_text.is_empty() or len(args_array) == 0
