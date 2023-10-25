@@ -70,12 +70,6 @@ func _prepare_settings():
 			SettingCheckbox,
 			tr("Will check only stable Godots releases.")
 		)),
-		SettingChangeObserved(SettingCfg(
-			"application/advanced/show_default_custom_commands",
-			Config.SHOW_DEFAULT_CUSTOM_COMMANDS,
-			SettingCheckbox,
-			tr("Will include default custom commands in Command Viewer.")
-		))
 	]
 
 

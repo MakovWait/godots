@@ -156,7 +156,7 @@ class Item extends Object:
 		set(value): _section.set_value("version_hint", value)
 
 	var custom_commands:
-		get: return _section.get_value("custom_commands", [])
+		get: return _get_custom_commands()
 		set(value): _section.set_value("custom_commands", value)
 
 	var _section: ConfigFileSection
@@ -176,7 +176,11 @@ class Item extends Object:
 		return OSProcessSchema.new(process_path, final_args)
 
 	func as_project_manager_process() -> OSProcessSchema:
-		return as_process(["-p"])
+		return as_process(_get_project_manager_args())
+	
+	func _get_project_manager_args():
+		var command = _find_custom_command_by_name("Run", custom_commands)
+		return command.args
 	
 	func emit_tags_edited():
 		tags_edited.emit()
@@ -187,3 +191,23 @@ class Item extends Object:
 		var sub_file_exists = func(file):
 			return FileAccess.file_exists(path.get_base_dir().path_join(file))
 		return sub_file_exists.call("_sc_") or sub_file_exists.call("._sc_")
+
+	func _find_custom_command_by_name(name: String, src=[]):
+		for command in src:
+			if command.name == name:
+				return command
+		return null
+
+	func _get_custom_commands():
+		var commands = _section.get_value("custom_commands", [])
+		if not _find_custom_command_by_name("Run", commands):
+			commands.append({
+				'name': 'Run',
+				'args': ['-p'],
+				'allowed_actions': [
+					CommandViewer.Actions.EXECUTE, 
+					CommandViewer.Actions.EDIT, 
+					CommandViewer.Actions.CREATE_PROCESS
+				]
+			})
+		return commands

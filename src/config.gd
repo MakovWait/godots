@@ -188,15 +188,6 @@ var GLOBAL_CUSTOM_COMMANDS_EDITORS = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
-var SHOW_DEFAULT_CUSTOM_COMMANDS = ConfigFileValue.new(
-	_cfg_auto_save, 
-	"global-custom-commands", 
-	"show_default_commands",
-	true
-): 
-	set(_v): _readonly()
-
-
 func _enter_tree() -> void:
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))

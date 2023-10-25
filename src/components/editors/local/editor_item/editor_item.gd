@@ -97,31 +97,19 @@ func init(item: LocalEditors.Item):
 					var base_process = item.as_process([])
 					var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
 					cmd_src.edited.connect(func(): edited.emit())
-					var default_commands: Array[CommandViewer.Command] = []
-					if Config.SHOW_DEFAULT_CUSTOM_COMMANDS.ret():
-						default_commands.append(CommandViewer.Command.new(
-							tr("Project Manager"), 
-							["-p"], 
-							false, 
-							base_process, 
-							[CommandViewer.Actions.EXECUTE, CommandViewer.Actions.CREATE_PROCESS]
-						))
-					var commands = CommandViewer.CommandsWithBasic.new(
-						CommandViewer.CommandsDuo.new(
-							CommandViewer.CommandsGeneric.new(
-								base_process,
-								cmd_src,
-								true
-							),
-							CommandViewer.CommandsGeneric.new(
-								base_process,
-								Config.CustomCommandsSourceConfig.new(
-									Config.GLOBAL_CUSTOM_COMMANDS_EDITORS
-								),
-								false
-							)
+					var commands = CommandViewer.CommandsDuo.new(
+						CommandViewer.CommandsGeneric.new(
+							base_process,
+							cmd_src,
+							true
 						),
-						default_commands
+						CommandViewer.CommandsGeneric.new(
+							base_process,
+							Config.CustomCommandsSourceConfig.new(
+								Config.GLOBAL_CUSTOM_COMMANDS_EDITORS
+							),
+							false
+						)
 					)
 					command_viewer.raise(
 						commands, true
