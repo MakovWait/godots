@@ -141,7 +141,7 @@ class Item:
 		get: return _external_project_info.has_version_hint
 
 	var custom_commands:
-		get: return _section.get_value("custom_commands", [])
+		get: return _get_custom_commands()
 		set(value): _section.set_value("custom_commands", value)
 
 	var _external_project_info: ExternalProjectInfo
@@ -189,11 +189,49 @@ class Item:
 		return editor.as_process(result_args)
 	
 	func edit():
-		as_process(["-e"]).create_process()
+		as_process(_get_edit_args()).create_process()
 		_ProjectsCache.set_last_opened_project(path)
 	
 	func run():
-		as_process(["-g"]).create_process()
+		as_process(_get_run_args()).create_process()
+	
+	func _get_run_args():
+		var command = _find_custom_command_by_name("Run", custom_commands)
+		return command.args
+	
+	func _get_edit_args():
+		var command = _find_custom_command_by_name("Edit", custom_commands)
+		return command.args
+	
+	func _find_custom_command_by_name(name: String, src=[]):
+		for command in src:
+			if command.name == name:
+				return command
+		return null
+	
+	func _get_custom_commands():
+		var commands = _section.get_value("custom_commands", [])
+		if not _find_custom_command_by_name("Edit", commands):
+			commands.append({
+				'name': 'Edit',
+				'args': ['-e'],
+				'allowed_actions': [
+					CommandViewer.Actions.EXECUTE, 
+					CommandViewer.Actions.EDIT, 
+					CommandViewer.Actions.CREATE_PROCESS
+				]
+			})
+		if not _find_custom_command_by_name("Run", commands):
+			commands.append({
+				'name': 'Run',
+				'args': ['-g'],
+				'allowed_actions': [
+					CommandViewer.Actions.EXECUTE, 
+					CommandViewer.Actions.EDIT, 
+					CommandViewer.Actions.CREATE_PROCESS
+				]
+			})
+		return commands
 	
 	func _get_editors_to_bind():
 		var options = _local_editors.as_option_button_items()
