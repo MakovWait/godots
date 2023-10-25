@@ -1,17 +1,60 @@
-[gd_scene load_steps=3 format=3 uid="uid://btxxnjmhy4bqw"]
+[gd_scene load_steps=4 format=3 uid="uid://btxxnjmhy4bqw"]
 
 [ext_resource type="Script" path="res://src/components/command_viewer/command_viewer.gd" id="1_y3wae"]
 [ext_resource type="PackedScene" uid="uid://bybb4iix45wcj" path="res://src/components/command_viewer/command_text_view.tscn" id="2_f5lq3"]
+[ext_resource type="PackedScene" uid="uid://fpg0tt5sks6a" path="res://src/components/command_viewer/new_command_dialog.tscn" id="3_57s3s"]
 
 [node name="CommandViewer" type="AcceptDialog"]
 position = Vector2i(0, 36)
 script = ExtResource("1_y3wae")
+_command_view_scene = ExtResource("2_f5lq3")
+_new_command_dialog_scene = ExtResource("3_57s3s")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 92.0
+offset_bottom = 51.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ExecuteOutputDialog" type="AcceptDialog" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ExecuteOutputDialog"]
 offset_right = 40.0
 offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="MainCommandView" parent="VBoxContainer" instance=ExtResource("2_f5lq3")]
+[node name="VBoxContainer2" type="VBoxContainer" parent="ExecuteOutputDialog/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="ExecuteOutputDialog/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Output:
+"
+
+[node name="OutputLabel" type="RichTextLabel" parent="ExecuteOutputDialog/VBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="VBoxContainer" type="HBoxContainer" parent="ExecuteOutputDialog/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ExecuteOutputDialog/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Error Code:"
+
+[node name="ErrorCodeLabel" type="Label" parent="ExecuteOutputDialog/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2

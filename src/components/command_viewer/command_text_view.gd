@@ -1,5 +1,5 @@
+class_name CommandTextView
 extends VBoxContainer
-
 
 @onready var _copy_to_clipboard: Button = %CopyToClipboard
 @onready var _rich_text_label: RichTextLabel = %RichTextLabel
@@ -8,11 +8,24 @@ extends VBoxContainer
 var _text = ""
 
 
+var remove_btn: Button:
+	get: return %Delete
+
+
+var copy_btn: Button:
+	get: return %Copy
+
+
+var create_process_btn: Button:
+	get: return %CreateProcess
+
+
+var execute_btn: Button:
+	get: return %Execute
+
+
 func _ready() -> void:
-	_copy_to_clipboard.tooltip_text = tr("Copy command to clipboard")
-	_copy_to_clipboard.text = ""
-	_copy_to_clipboard.flat = true
-	_copy_to_clipboard.icon = get_theme_icon("ActionCopy", "EditorIcons")
+	_rich_text_label.custom_minimum_size = Vector2i(0, 100) * Config.EDSCALE
 	_copy_to_clipboard.pressed.connect(func():
 		if _text and not _text.is_empty():
 			DisplayServer.clipboard_set(_text)

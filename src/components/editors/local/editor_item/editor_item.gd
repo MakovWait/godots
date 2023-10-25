@@ -94,8 +94,36 @@ func init(item: LocalEditors.Item):
 			func():
 				var command_viewer = Context.use(self, CommandViewer) as CommandViewer
 				if command_viewer:
+					var base_process = item.as_process([])
+					var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
+					cmd_src.edited.connect(func(): edited.emit())
+					var commands = CommandViewer.CommandsWithBasic.new(
+						CommandViewer.CommandsDuo.new(
+							CommandViewer.CommandsGeneric.new(
+								base_process,
+								cmd_src,
+								true
+							),
+							CommandViewer.CommandsGeneric.new(
+								base_process,
+								Config.CustomCommandsSourceConfig.new(
+									Config.GLOBAL_CUSTOM_COMMANDS_EDITORS
+								),
+								false
+							)
+						),
+						[
+							CommandViewer.Command.new(
+								tr("Project Manager"), 
+								["-p"], 
+								true, 
+								base_process, 
+								[CommandViewer.Actions.EXECUTE, CommandViewer.Actions.CREATE_PROCESS]
+							)
+						]
+					)
 					command_viewer.raise(
-						item.as_project_manager_process(),
+						commands, true
 					)
 		)
 		view_command_btn.disabled = not item.is_valid

@@ -170,6 +170,24 @@ var RANDOM_PROJECT_SUFFIXES = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var GLOBAL_CUSTOM_COMMANDS_PROJECTS = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"global-custom-commands", 
+	"projects",
+	[]
+): 
+	set(_v): _readonly()
+
+
+var GLOBAL_CUSTOM_COMMANDS_EDITORS = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"global-custom-commands", 
+	"editors",
+	[]
+): 
+	set(_v): _readonly()
+
+
 func _enter_tree() -> void:
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))
@@ -248,3 +266,16 @@ func _readonly():
 
 func _simplify_path(s: String):
 	return s.simplify_path()
+
+
+class CustomCommandsSourceConfig extends CommandViewer.CustomCommandsSource:
+	var _val: ConfigFileValue
+	
+	func _init(val: ConfigFileValue):
+		_val = val
+	
+	func _get_custom_commands():
+		return _val.ret()
+	
+	func _set_custom_commands(value):
+		_val.put(value)

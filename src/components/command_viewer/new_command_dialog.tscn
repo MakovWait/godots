@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://fpg0tt5sks6a"]
+
+[ext_resource type="Script" path="res://src/components/command_viewer/new_command_dialog.gd" id="1_on62d"]
+[ext_resource type="Script" path="res://src/components/misc/array_edit.gd" id="2_jjvyf"]
+
+[node name="NewCommandDialog" type="ConfirmationDialog"]
+script = ExtResource("1_on62d")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 3
+
+[node name="Name" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/Name"]
+layout_mode = 2
+text = "Name:"
+
+[node name="NameEdit" type="LineEdit" parent="VBoxContainer/Name"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Args" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/Args"]
+layout_mode = 2
+text = "Args:"
+
+[node name="ArgsEdit" type="VBoxContainer" parent="VBoxContainer/Args"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_jjvyf")
+_add_item_text = "Add Arg"
+
+[node name="IsLocal" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/IsLocal"]
+layout_mode = 2
+text = "Is Local:"
+
+[node name="IsLocalCheckbox" type="CheckBox" parent="VBoxContainer/IsLocal"]
+unique_name_in_owner = true
+layout_mode = 2

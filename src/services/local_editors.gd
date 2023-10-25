@@ -150,7 +150,11 @@ class Item extends Object:
 				.replace(" ", "-")
 		)
 		set(value): _section.set_value("version_hint", value)
-	
+
+	var custom_commands:
+		get: return _section.get_value("custom_commands", [])
+		set(value): _section.set_value("custom_commands", value)
+
 	var _section: ConfigFileSection
 	
 	func _init(section: ConfigFileSection) -> void:

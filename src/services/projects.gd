@@ -140,6 +140,10 @@ class Item:
 	var has_version_hint: bool:
 		get: return _external_project_info.has_version_hint
 
+	var custom_commands:
+		get: return _section.get_value("custom_commands", [])
+		set(value): _section.set_value("custom_commands", value)
+
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors: LocalEditors.List
@@ -196,6 +200,7 @@ class Item:
 		_external_project_info.sort_editor_options(options)
 		return options
 
+
 class _ProjectsCache:
 	static func set_last_opened_project(path: String) -> void:
 		Cache.set_value("projects", "last_opened_project", path)
@@ -204,6 +209,7 @@ class _ProjectsCache:
 	static func get_last_opened_project() -> String:
 		var result = Cache.get_value("projects", "last_opened_project")
 		return result if result else ""
+
 
 class ExternalProjectInfo extends RefCounted:
 	signal loaded
