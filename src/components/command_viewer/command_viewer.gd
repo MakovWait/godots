@@ -25,7 +25,7 @@ func _ready() -> void:
 	
 	_create_new_command_btn = add_button(tr("New Command"))
 	_create_new_command_btn.pressed.connect(func():
-		_popup_new_command_dialog("", [], func(cmd_name, cmd_args, is_local):
+		_popup_new_command_dialog("", [], false, func(cmd_name, cmd_args, is_local):
 			if _commands:
 				var command = _commands.add(
 					cmd_name, cmd_args, is_local, 
@@ -103,7 +103,7 @@ func _add_view(command: Command, commands: Commands):
 	if command.is_action_allowed(Actions.EDIT):
 		command_view.edit_btn.disabled = false
 		command_view.edit_btn.pressed.connect(func():
-			_popup_new_command_dialog(command.name(), command.args(), 
+			_popup_new_command_dialog(command.name(), command.args(), command.is_local(),
 			func(cmd_name, cmd_args, is_local):
 				if _commands:
 					_commands.add(
@@ -124,11 +124,11 @@ func _set_text_to_command_view(command, command_view):
 	)
 
 
-func _popup_new_command_dialog(cmd_name, cmd_args, created_callback: Callable):
+func _popup_new_command_dialog(cmd_name, cmd_args, is_local, created_callback: Callable):
 	var new_dialog = _new_command_dialog_scene.instantiate() as CommandViewerNewCommandDialog
 	new_dialog.created.connect(created_callback)
 	add_child(new_dialog)
-	new_dialog.init(cmd_name, cmd_args)
+	new_dialog.init(cmd_name, cmd_args, is_local)
 	new_dialog.popup_centered()
 
 

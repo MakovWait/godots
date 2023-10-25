@@ -28,9 +28,10 @@ func _ready():
 	)
 
 
-func init(cmd_name, cmd_args):
+func init(cmd_name, cmd_args, is_local):
 	_name_edit.text = cmd_name
 	_args_edit.override_array(cmd_args)
+	_is_local_checkbox.button_pressed = is_local
 
 
 func _process(delta):
