@@ -69,9 +69,15 @@ func _add_view(command: Command, commands: Commands):
 	if command.is_action_allowed(Actions.REMOVE):
 		command_view.remove_btn.disabled = false
 		command_view.remove_btn.pressed.connect(func():
-			command.remove_from(commands)
-			command_view.hide()
-			command_view.queue_free()
+			var confirm = ConfirmationDialogAutoFree.new()
+			confirm.dialog_text = tr("Are you sure to remove the command?")
+			confirm.confirmed.connect(func():
+				command.remove_from(commands)
+				command_view.hide()
+				command_view.queue_free()
+			)
+			add_child(confirm)
+			confirm.popup_centered()
 		)
 	if command.is_action_allowed(Actions.EXECUTE):
 		command_view.execute_btn.disabled = false
