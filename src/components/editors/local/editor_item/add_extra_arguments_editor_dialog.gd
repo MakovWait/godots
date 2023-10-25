@@ -1,8 +1,8 @@
 extends ConfirmationDialogAutoFree
 
-signal editor_add_extra_arguments(new_name)
+signal editor_add_extra_arguments(args: PackedStringArray)
 
-@onready var _line_edit: LineEdit = %LineEdit
+@onready var _array_edit = %ArrayEdit as ArrayEdit
 
 
 func _ready() -> void:
@@ -10,10 +10,9 @@ func _ready() -> void:
 	min_size = Vector2(300, 0) * Config.EDSCALE
 	
 	confirmed.connect(func():
-		editor_add_extra_arguments.emit(_line_edit.text.strip_edges())
+		editor_add_extra_arguments.emit(_array_edit.get_array())
 	)
 
-func init(initial_name):
-	_line_edit.text = initial_name
 
-
+func init(initial_args: PackedStringArray):
+	_array_edit.override_array(initial_args)

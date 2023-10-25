@@ -26,3 +26,7 @@ func set_value(section, key, value):
 
 func get_value(section, key, default):
 	return _origin.get_value(section, key, default)
+
+
+func has_section_key(section, key):
+	return _origin.has_section_key(section, key)

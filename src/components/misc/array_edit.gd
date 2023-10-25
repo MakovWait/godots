@@ -18,8 +18,18 @@ func _ready():
 	_add_item_btn.text = tr(_add_item_text)
 
 
-func add_item():
-	_items_vbox.add_child(Item.new())
+func override_array(array: PackedStringArray):
+	for item in _items_vbox.get_children():
+		item.hide()
+		item.queue_free()
+	
+	for el in array:
+		add_item(el) 
+
+
+func add_item(value=""):
+	var item = Item.new(value)
+	_items_vbox.add_child(item)
 
 
 func get_array() -> PackedStringArray:
@@ -40,8 +50,9 @@ class Item extends HBoxContainer:
 	var _line_edit: LineEdit = LineEdit.new()
 	var _free_btn: Button = Button.new()
 	
-	func _init():
+	func _init(value):
 		_line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_line_edit.text = value
 		add_child(_line_edit)
 		add_child(_free_btn)
 	

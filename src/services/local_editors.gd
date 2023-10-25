@@ -126,10 +126,14 @@ class Item extends Object:
 			name_changed.emit(value)
 		
 	var extra_arguments:
-		get: return _section.get_value("extra_arguments", "")
+		get: return _section.get_typed_value(
+			"extra_arguments", 
+			func(x): return x is PackedStringArray, 
+			[]
+		)
 		set(value): 
 			_section.set_value("extra_arguments", value)
-			
+	
 	var favorite:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
@@ -167,7 +171,7 @@ class Item extends Object:
 		elif OS.has_feature("macos"):
 			process_path = ProjectSettings.globalize_path(path + mac_os_editor_path_postfix)
 		var final_args = []
-		final_args.append(extra_arguments)
+		final_args.append_array(extra_arguments)
 		final_args.append_array(args)
 		return OSProcessSchema.new(process_path, final_args)
 
