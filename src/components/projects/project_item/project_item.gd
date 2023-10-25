@@ -137,6 +137,13 @@ func init(item: Projects.Item):
 								false, 
 								base_process, 
 								[CommandViewer.Actions.EXECUTE, CommandViewer.Actions.CREATE_PROCESS]
+							),
+							CommandViewer.Command.new(
+								tr("Run"), 
+								["-g"], 
+								false, 
+								base_process, 
+								[CommandViewer.Actions.EXECUTE, CommandViewer.Actions.CREATE_PROCESS]
 							)
 						]
 					)
