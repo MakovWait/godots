@@ -22,7 +22,7 @@ func _ready():
 
 func _update_theme():
 	_search_box.right_icon = get_theme_icon("Search", "EditorIcons")
-	$ScrollContainer.add_theme_stylebox_override(
+	%ScrollContainer.add_theme_stylebox_override(
 		"panel",
 		get_theme_stylebox("search_panel", "ProjectManager")
 	)

@@ -2,19 +2,19 @@ extends HBoxContainer
 
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
-@onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
-@onready var _projects_list: VBoxContainer = $ProjectsList
+@onready var _sidebar: VBoxContainer = %ActionsSidebar
+@onready var _projects_list: VBoxContainer = %ProjectsList
 @onready var _import_project_button: Button = %ImportProjectButton
-@onready var _import_project_dialog: ConfirmationDialog = $ImportProjectDialog
+@onready var _import_project_dialog: ConfirmationDialog = %ImportProjectDialog
 @onready var _new_project_button = %NewProjectButton
-@onready var _new_project_dialog = $NewProjectDialog
+@onready var _new_project_dialog = %NewProjectDialog
 @onready var _scan_button = %ScanButton
 @onready var _scan_dialog = %ScanDialog
 @onready var _remove_missing_button = %RemoveMissingButton
-@onready var _install_project_from_zip_dialog = $InstallProjectSimpleDialog
-@onready var _duplicate_project_dialog = $DuplicateProjectDialog
+@onready var _install_project_from_zip_dialog = %InstallProjectSimpleDialog
+@onready var _duplicate_project_dialog = %DuplicateProjectDialog
 @onready var _refresh_button = %RefreshButton
-@onready var _clone_project_dialog = $CloneProjectDialog
+@onready var _clone_project_dialog = %CloneProjectDialog
 @onready var _clone_project_button = %CloneProjectButton
 
 
