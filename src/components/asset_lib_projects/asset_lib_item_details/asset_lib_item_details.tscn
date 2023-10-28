@@ -33,6 +33,7 @@ script = ExtResource("3_qam18")
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Preview" type="TextureRect" parent="HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true

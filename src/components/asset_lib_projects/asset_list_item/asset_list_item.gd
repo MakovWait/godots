@@ -24,7 +24,7 @@ func _ready():
 	_cost.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
 
 
-func init(item: AssetLib.Item):
+func init(item: AssetLib.Item, images: RemoteImageSrc.I):
 	_title.text = item.title
 	_category.text = item.category
 	_author.text = item.author
@@ -39,3 +39,9 @@ func init(item: AssetLib.Item):
 	_author.pressed.connect(func():
 		author_pressed.emit(item)
 	)
+	
+	images.async_load_img(item.icon_url, func(img): _icon.texture = img)
+
+
+func get_icon_texture() -> Texture2D:
+	return _icon.texture

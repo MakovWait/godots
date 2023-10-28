@@ -227,6 +227,9 @@ class Item:
 	var download_url: String:
 		get: return _data.get("download_url", "")
 	
+	var icon_url: String:
+		get: return _data.get("icon_url", "")
+	
 	var previews: Array[ItemPreview]:
 		get:
 			var result: Array[ItemPreview] = []

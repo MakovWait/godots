@@ -198,7 +198,8 @@ func _setup_asset_lib_projects():
 	_asset_lib_projects.init(
 		asset_lib_factory,
 		category_src,
-		version_src
+		version_src,
+		RemoteImageSrc.AlwaysBroken.new(self)
 	)
 
 

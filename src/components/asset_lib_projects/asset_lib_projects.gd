@@ -33,12 +33,25 @@ var _load_started = false
 func init(
 	asset_lib_factory: AssetLib.Factory, 
 	category_src: AssetCategoryOptionButton.Src,
-	version_src: GodotVersionOptionButton.Src
+	version_src: GodotVersionOptionButton.Src,
+	images_src: RemoteImageSrc.I
 ):
 	_category_option_button.init(category_src)
 	_version_option_button.init(version_src)
 	_asset_lib_factory = asset_lib_factory
 	
+	_assets_container.init(images_src)
+	_assets_container.title_pressed.connect(func(item: AssetLib.Item):
+		var asset_lib = _get_asset_lib()
+		var item_details = _item_details_scene.instantiate()
+		item_details.download_requested.connect(func(download_url, icon):
+			download_requested.emit(download_url, icon)
+		)
+		item_details.init(item.id, asset_lib, images_src)
+		add_child(item_details)
+		item_details.popup_centered()
+	)
+
 	if is_visible_in_tree():
 		_async_fetch()
 		_load_started = true
@@ -69,17 +82,6 @@ func _ready():
 	_site_option_button.site_selected.connect(func():
 		_config_loaded = false
 		_async_fetch()
-	)
-	
-	_assets_container.title_pressed.connect(func(item: AssetLib.Item):
-		var asset_lib = _get_asset_lib()
-		var item_details = _item_details_scene.instantiate()
-		item_details.download_requested.connect(func(download_url, icon):
-			download_requested.emit(download_url, icon)
-		)
-		item_details.init(item.id, asset_lib)
-		add_child(item_details)
-		item_details.popup_centered()
 	)
 	
 	%TopPagesContainer.page_changed.connect(_change_page)
