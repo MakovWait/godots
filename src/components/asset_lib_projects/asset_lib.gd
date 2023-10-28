@@ -227,6 +227,9 @@ class Item:
 	var download_url: String:
 		get: return _data.get("download_url", "")
 	
+	var download_hash: String:
+		get: return _data.get("download_hash", "")
+	
 	var icon_url: String:
 		get: return _data.get("icon_url", "")
 	

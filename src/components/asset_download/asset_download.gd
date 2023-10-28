@@ -56,8 +56,7 @@ func _ready() -> void:
 		_progress_bar.modulate = Color(0, 0, 0, 0)
 		
 		if error_text:
-			$AcceptErrorDialog.dialog_text = tr("Download Error") + ":\n" + error_text
-			$AcceptErrorDialog.popup_centered()
+			popup_error_dialog(tr("Download Error") + ":\n" + error_text)
 			_retry_button.show()
 			_status.text = status
 			download_failed.emit(response_code)
@@ -126,6 +125,15 @@ func start(url, target_abs_dir, file_name):
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		await get_tree().create_timer(0.1).timeout
+
+
+func set_status(text):
+	_status.text = text
+
+
+func popup_error_dialog(text):
+	$AcceptErrorDialog.dialog_text = text
+	$AcceptErrorDialog.popup_centered()
 
 
 func _notification(what: int) -> void:

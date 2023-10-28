@@ -1,6 +1,6 @@
 extends ConfirmationDialog
 
-signal download_requested(download_url, icon)
+signal download_requested(item: AssetLib.Item, icon)
 
 @onready var _asset_list_item = %AssetListItem as AssetListItemView
 @onready var _description_label = %DescriptionLabel
@@ -32,7 +32,7 @@ func _ready():
 
 func _configure(item: AssetLib.Item):
 	confirmed.connect(func():
-		download_requested.emit(item.download_url, _asset_list_item.get_icon_texture())
+		download_requested.emit(item, _asset_list_item.get_icon_texture())
 	)
 	_asset_list_item.init(item, _images_src)
 	_description_label.configure(item)

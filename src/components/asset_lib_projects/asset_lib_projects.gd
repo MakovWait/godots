@@ -1,7 +1,7 @@
 class_name AssetLibProjects
 extends PanelContainer
 
-signal download_requested(download_url, icon)
+signal download_requested(item: AssetLib.Item, icon)
 
 @export var _params_sources: Array[Node] = []
 @export var _item_details_scene: PackedScene
@@ -44,8 +44,8 @@ func init(
 	_assets_container.title_pressed.connect(func(item: AssetLib.Item):
 		var asset_lib = _get_asset_lib()
 		var item_details = _item_details_scene.instantiate()
-		item_details.download_requested.connect(func(download_url, icon):
-			download_requested.emit(download_url, icon)
+		item_details.download_requested.connect(func(item, icon):
+			download_requested.emit(item, icon)
 		)
 		item_details.init(item.id, asset_lib, images_src)
 		add_child(item_details)

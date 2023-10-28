@@ -176,13 +176,21 @@ func _setup_asset_lib_projects():
 	
 	var category_src = AssetCategoryOptionButton.SrcRemote.new()
 	
-	_asset_lib_projects.download_requested.connect(func(url, icon):
+	_asset_lib_projects.download_requested.connect(func(item: AssetLib.Item, icon):
 		var asset_download = _asset_download.instantiate() as AssetDownload
 		%DownloadsContainer.add_download_item(asset_download)
 		if icon != null:
 			asset_download.icon.texture = icon
-		asset_download.start(url, Config.DOWNLOADS_PATH.ret() + "/", "project.zip")
+		asset_download.start(item.download_url, Config.DOWNLOADS_PATH.ret() + "/", "project.zip")
 		asset_download.downloaded.connect(func(abs_zip_path):
+			if not item.download_hash.is_empty():
+				var download_hash = FileAccess.get_sha256(abs_zip_path)
+				if item.download_hash != download_hash:
+					asset_download.set_status(tr("Failed SHA-256 hash check"))
+					var error = tr("Bad download hash, assuming file has been tampered with.") + "\n"
+					error += tr("Expected:") + " " + item.download_hash + "\n" + tr("Got:") + " " + download_hash
+					asset_download.popup_error_dialog(error)
+					return
 			var zip_reader = ZIPReader.new()
 			var unzip_err = zip_reader.open(abs_zip_path)
 			if unzip_err != OK:
