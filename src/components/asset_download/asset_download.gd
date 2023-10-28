@@ -46,38 +46,12 @@ func _ready() -> void:
 		_requesting = false
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
 		var host = _host
-		var error_text = null
-		var status = ""
-		
-		match result:
-			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
-				error_text = tr("Connection error, prease try again.")
-				status = tr("Can't connect")
-			HTTPRequest.RESULT_CANT_CONNECT, HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
-				error_text = tr("Can't connect to host") + ": " + host
-				status = tr("Can't connect")
-			HTTPRequest.RESULT_NO_RESPONSE:
-				error_text = tr("No response from host") + ": " + host
-				status = tr("No response")
-			HTTPRequest.RESULT_CANT_RESOLVE:
-				error_text = tr("Can't resolve hostname") + ": " + host
-				status = tr("Can't resolve.")
-			HTTPRequest.RESULT_REQUEST_FAILED:
-				error_text = tr("Request failed, return code") + ": " + str(response_code)
-				status = tr("Request failed.")
-			HTTPRequest.RESULT_DOWNLOAD_FILE_CANT_OPEN, HTTPRequest.RESULT_DOWNLOAD_FILE_WRITE_ERROR:
-				error_text = tr("Cannot save response to") + ": " + _download.download_file
-				status = tr("Write error.")
-			HTTPRequest.RESULT_REDIRECT_LIMIT_REACHED:
-				error_text = tr("Request failed, too many redirects")
-				status = tr("Redirect loop.")
-			HTTPRequest.RESULT_TIMEOUT:
-				error_text = tr("Request failed, timeout")
-				status = tr("Timeout.")
-			_:
-				if response_code != 200:
-					error_text = tr("Request failed, return code") + ": " + str(response_code)
-					status = tr("Failed") + ": " + str(response_code)
+		var response = HttpClient.Response.new([
+			result, response_code, headers, body
+		])
+		var status_error_pair = response.to_response_info(host, _download.download_file)
+		var error_text = status_error_pair.error_text
+		var status = status_error_pair.status
 		
 		_progress_bar.modulate = Color(0, 0, 0, 0)
 		

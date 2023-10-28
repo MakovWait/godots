@@ -5,6 +5,7 @@ const theme_source = preload("res://theme/theme.gd")
 @export var _remote_editors: Control
 @export var _local_editors: Control
 @export var _projects: Control
+@export var _asset_lib_projects: AssetLibProjects
 @export var _godots_releases: Control
 @export var _auto_updates: Node
 @export var _asset_download: PackedScene
@@ -120,6 +121,7 @@ func _ready():
 	_local_editors.manage_tags_requested.connect(_popup_manage_tags)
 
 	_setup_godots_releases()
+	_setup_asset_lib_projects()
 	
 	Context.add(self, %CommandViewer)
 
@@ -160,6 +162,44 @@ func _enter_tree():
 func _popup_manage_tags(item_tags, all_tags, on_confirm):
 	$ManageTags.popup_centered(Vector2(500, 0) * Config.EDSCALE)
 	$ManageTags.init(item_tags, all_tags, on_confirm)
+
+
+func _setup_asset_lib_projects():
+	var version_src = GodotVersionOptionButton.SrcGithubYml.new(
+		RemoteEditorsTreeDataSourceGithub.YmlSourceGithub.new()
+	)
+#	var version_src = GodotVersionOptionButton.SrcMock.new(["4.1"])
+	
+	var request = HTTPRequest.new()
+	add_child(request)
+	var asset_lib_factory = AssetLib.FactoryDefault.new(request)
+	
+	var category_src = AssetCategoryOptionButton.SrcRemote.new()
+	
+	_asset_lib_projects.download_requested.connect(func(url, icon):
+		var asset_download = _asset_download.instantiate() as AssetDownload
+		%DownloadsContainer.add_download_item(asset_download)
+		if icon != null:
+			asset_download.icon.texture = icon
+		asset_download.start(url, Config.DOWNLOADS_PATH.ret() + "/", "project.zip")
+		asset_download.downloaded.connect(func(abs_zip_path):
+			var zip_reader = ZIPReader.new()
+			var unzip_err = zip_reader.open(abs_zip_path)
+			if unzip_err != OK:
+				zip_reader.close()
+				return
+			_projects.install_zip(
+				zip_reader,
+				abs_zip_path.get_file().replace(".zip", "").capitalize()
+			)
+		)
+	)
+	
+	_asset_lib_projects.init(
+		asset_lib_factory,
+		category_src,
+		version_src
+	)
 
 
 func _setup_godots_releases():

@@ -337,7 +337,7 @@ class GithubVersionSourceFileJson extends GithubVersionSource:
 
 
 class YmlSource:
-	func async_load() -> String:
+	func async_load(errors: Array[String]=[]) -> String:
 		return ""
 
 
@@ -347,16 +347,19 @@ class YmlSourceFile extends YmlSource:
 	func _init(file_path: String):
 		_file_path = file_path
 	
-	func async_load() -> String:
+	func async_load(errors: Array[String]=[]) -> String:
 		var text = FileAccess.open(_file_path, FileAccess.READ).get_as_text() 
 		return text
 
 
 class YmlSourceGithub extends YmlSource:
 	const url = "https://raw.githubusercontent.com/godotengine/godot-website/master/_data/versions.yml"
-	func async_load() -> String:
-		var response = await HttpClient.async_http_get(url)
-		var text = response[3].get_string_from_utf8()
+	func async_load(errors: Array[String]=[]) -> String:
+		var response = HttpClient.Response.new(await HttpClient.async_http_get(url))
+		var info = response.to_response_info(url)
+		if info.error_text:
+			errors.append(info.error_text)
+		var text = response.get_string_from_utf8()
 		return text
 
 

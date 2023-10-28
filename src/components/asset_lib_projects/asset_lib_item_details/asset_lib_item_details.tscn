@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=3 uid="uid://ghboyar5pdi7"]
+
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/asset_lib_item_details/asset_lib_item_details.gd" id="1_76thn"]
+[ext_resource type="PackedScene" uid="uid://db2ha8gx6ak03" path="res://src/components/asset_lib_projects/asset_list_item/asset_list_item.tscn" id="1_fkn0f"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/asset_lib_item_details/description_label.gd" id="3_qam18"]
+
+[node name="AssetLibItemDetails" type="ConfirmationDialog"]
+position = Vector2i(0, 36)
+ok_button_text = "Download"
+cancel_button_text = "Close"
+script = ExtResource("1_76thn")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 192.0
+offset_bottom = 51.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="AssetListItem" parent="HBoxContainer/VBoxContainer" instance=ExtResource("1_fkn0f")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_qam18")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Preview" type="TextureRect" parent="HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PreviewBg" type="PanelContainer" parent="HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer2/PreviewBg"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="PreviewsContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer2/PreviewBg/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
