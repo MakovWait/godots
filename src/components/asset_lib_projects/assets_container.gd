@@ -46,8 +46,6 @@ func _update_columns():
 #	prints(size.x, new_columns, (size.x / new_columns) - (100 * Config.EDSCALE))
 	if new_columns != columns:
 		columns = new_columns
-#	for c in _assets_container.get_children():
-#		c.custom_minimum_size = Vector2i(
-#			(size.x / new_columns) - (100 * Config.EDSCALE),
-#			c.custom_minimum_size.y
-#		)
+#	for c in get_children():
+#		if c.has_method('clamp_width'):
+#			c.clamp_width((size.x / new_columns) - (100 * Config.EDSCALE))

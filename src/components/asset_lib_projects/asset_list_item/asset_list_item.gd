@@ -1,19 +1,24 @@
 class_name AssetListItemView
 extends HBoxContainer
 
+const DEFAULT_MIN_SIZE_X = 400
+
 signal title_pressed(item: AssetLib.Item)
 signal category_pressed(item: AssetLib.Item)
 signal author_pressed(item: AssetLib.Item)
 
-@onready var _title = %Title
+@onready var _title = %Title as LinkButton
 @onready var _category = %Category
 @onready var _author = %Author
 @onready var _cost = %Cost
 @onready var _icon = %Icon
 
 
+var _original_title_text: String
+
+
 func _init():
-	custom_minimum_size = Vector2i(400, 100) * Config.EDSCALE
+	custom_minimum_size = Vector2i(DEFAULT_MIN_SIZE_X, 100) * Config.EDSCALE
 	add_theme_constant_override("separation", 15 * Config.EDSCALE)
 
 
@@ -30,6 +35,8 @@ func init(item: AssetLib.Item, images: RemoteImageSrc.I):
 	_author.text = item.author
 	_cost.text = item.cost
 	
+	_original_title_text = item.title
+	
 	_title.pressed.connect(func():
 		title_pressed.emit(item)
 	)
@@ -41,7 +48,22 @@ func init(item: AssetLib.Item, images: RemoteImageSrc.I):
 	)
 	
 	images.async_load_img(item.icon_url, func(img): _icon.texture = img)
+	clamp_width(DEFAULT_MIN_SIZE_X)
 
 
 func get_icon_texture() -> Texture2D:
 	return _icon.texture
+
+
+func clamp_width(max_width):
+	var _title_font: Font = _title.get_theme_font("font")
+	var text_pixel_width = _title_font.get_string_size(_original_title_text).x * Config.EDSCALE
+
+	var full_text = _original_title_text
+	_title.tooltip_text = full_text
+
+	if text_pixel_width > max_width:
+		# Truncate title text to within the current column width.
+		var max_length = max_width / (text_pixel_width / full_text.length())
+		var truncated_text = full_text.left(max_length - 3) + "..."
+		_title.text = truncated_text

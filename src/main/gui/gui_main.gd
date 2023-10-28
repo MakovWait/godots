@@ -198,7 +198,7 @@ func _setup_asset_lib_projects():
 				return
 			_projects.install_zip(
 				zip_reader,
-				abs_zip_path.get_file().replace(".zip", "").capitalize()
+				item.title
 			)
 		)
 	)
