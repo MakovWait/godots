@@ -14,6 +14,7 @@ const PROJECTS_CONFIG_PATH = "user://projects.cfg"
 const DEFAULT_VERSIONS_PATH = "user://versions"
 const DEFAULT_DOWNLOADS_PATH = "user://downloads"
 const DEFAULT_UPDATES_PATH = "user://updates"
+const DEFAULT_CACHE_DIR_PATH = "user://cache"
 const RELEASES_URL = "https://github.com/MakovWait/godots/releases"
 const RELEASES_LATEST_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases/latest"
 const RELEASES_API_ENDPOINT = "https://api.github.com/repos/MakovWait/godots/releases"
@@ -50,6 +51,15 @@ var DOWNLOADS_PATH = ConfigFileValue.new(
 	"app", 
 	"downloads_path",
 	DEFAULT_DOWNLOADS_PATH
+).map_return_value(_simplify_path): 
+	set(_v): _readonly()
+
+
+var CACHE_DIR_PATH = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"cache_dir_path",
+	DEFAULT_CACHE_DIR_PATH
 ).map_return_value(_simplify_path): 
 	set(_v): _readonly()
 
@@ -188,10 +198,11 @@ var GLOBAL_CUSTOM_COMMANDS_EDITORS = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
-func _enter_tree() -> void:
+func _enter_tree() -> void:	
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_UPDATES_PATH))
+	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_CACHE_DIR_PATH))
 	_cfg.load(APP_CONFIG_PATH)
 	assert(not DEFAULT_VERSIONS_PATH.ends_with("/"))
 	assert(not DEFAULT_DOWNLOADS_PATH.ends_with("/"))

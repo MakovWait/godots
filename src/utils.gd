@@ -35,3 +35,29 @@ static func find_project_godot_files(dir_path) -> Array[edir.DirListResult]:
 			return not x.get_file().begins_with("."))
 	)
 	return project_configs
+
+
+static func response_to_json(response, safe=true):
+	var string = response[3].get_string_from_utf8()
+	if safe:
+		return parse_json_safe(string)
+	else:
+		return JSON.parse_string(string)
+
+
+static func parse_json_safe(string):
+	var json = JSON.new()
+	var err = json.parse(string)
+	if err != OK:
+		return null
+	else:
+		return json.data
+
+
+static func fit_height(max_height, cur_size: Vector2i, callback):
+	var scale_ratio = max_height / (cur_size.y * Config.EDSCALE)
+	if scale_ratio < 1:
+		callback.call(Vector2i(
+			cur_size.x * Config.EDSCALE * scale_ratio,
+			cur_size.y * Config.EDSCALE * scale_ratio
+		))

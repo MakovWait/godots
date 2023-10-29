@@ -1,0 +1,185 @@
+[gd_scene load_steps=16 format=3 uid="uid://cdyq5l2atcuap"]
+
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/asset_lib_projects.gd" id="1_fn8cl"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/version_option_button.gd" id="2_1nxlp"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/sort_option_button.gd" id="2_actq8"]
+[ext_resource type="PackedScene" uid="uid://ghboyar5pdi7" path="res://src/components/asset_lib_projects/asset_lib_item_details/asset_lib_item_details.tscn" id="2_ckq1w"]
+[ext_resource type="PackedScene" uid="uid://db2ha8gx6ak03" path="res://src/components/asset_lib_projects/asset_list_item/asset_list_item.tscn" id="2_d1s0v"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/support_menu_button.gd" id="2_ijehd"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/category_option_button.gd" id="2_p84kh"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/filter_edit.gd" id="2_t0xar"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/assets_container.gd" id="3_ymc38"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/site_option_button.gd" id="4_b1ik8"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/retry_button_container.gd" id="9_bqy5j"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/scroll_container.gd" id="9_goqgb"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/pagination_container.gd" id="9_uoavf"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/error_container.gd" id="11_urlyh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1dth3"]
+
+[node name="AssetLibProjects" type="PanelContainer" node_paths=PackedStringArray("_params_sources")]
+clip_children = 1
+clip_contents = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1dth3")
+script = ExtResource("1_fn8cl")
+_params_sources = [NodePath("Container/HBoxContainer/VersionContainer/VersionOptionButton"), NodePath("Container/HBoxContainer/SortContainer/SortOptionButton"), NodePath("Container/HBoxContainer/CategoryContainer/CategoryOptionButton"), NodePath("Container/HBoxContainer/SupportMenuButton"), NodePath("Container/FilterEdit"), NodePath("Container/HBoxContainer/SiteContainer/SiteOptionButton")]
+_item_details_scene = ExtResource("2_ckq1w")
+
+[node name="Container" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="FilterEdit" type="LineEdit" parent="Container"]
+unique_name_in_owner = true
+layout_mode = 2
+clear_button_enabled = true
+script = ExtResource("2_t0xar")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+
+[node name="VersionContainer" type="HBoxContainer" parent="Container/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Container/HBoxContainer/VersionContainer"]
+layout_mode = 2
+text = "Version:"
+
+[node name="VersionOptionButton" type="OptionButton" parent="Container/HBoxContainer/VersionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+clip_text = true
+script = ExtResource("2_1nxlp")
+
+[node name="VSeparator" type="VSeparator" parent="Container/HBoxContainer/VersionContainer"]
+layout_mode = 2
+
+[node name="SortContainer" type="HBoxContainer" parent="Container/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Container/HBoxContainer/SortContainer"]
+layout_mode = 2
+text = "Sort:"
+
+[node name="SortOptionButton" type="OptionButton" parent="Container/HBoxContainer/SortContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+clip_text = true
+script = ExtResource("2_actq8")
+
+[node name="VSeparator" type="VSeparator" parent="Container/HBoxContainer/SortContainer"]
+layout_mode = 2
+
+[node name="CategoryContainer" type="HBoxContainer" parent="Container/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="Container/HBoxContainer/CategoryContainer"]
+layout_mode = 2
+text = "Category:"
+
+[node name="CategoryOptionButton" type="OptionButton" parent="Container/HBoxContainer/CategoryContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+clip_text = true
+script = ExtResource("2_p84kh")
+
+[node name="VSeparator2" type="VSeparator" parent="Container/HBoxContainer/CategoryContainer"]
+layout_mode = 2
+
+[node name="SiteContainer" type="HBoxContainer" parent="Container/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label3" type="Label" parent="Container/HBoxContainer/SiteContainer"]
+layout_mode = 2
+text = "Site:"
+
+[node name="SiteOptionButton" type="OptionButton" parent="Container/HBoxContainer/SiteContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+clip_text = true
+script = ExtResource("4_b1ik8")
+
+[node name="VSeparator3" type="VSeparator" parent="Container/HBoxContainer/SiteContainer"]
+layout_mode = 2
+
+[node name="SupportMenuButton" type="MenuButton" parent="Container/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Support"
+script = ExtResource("2_ijehd")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("9_goqgb")
+
+[node name="LibVb" type="VBoxContainer" parent="Container/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ScrollContainer/LibVb"]
+layout_mode = 2
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Container/ScrollContainer/LibVb/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Loading...."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RetryButtonContainer" type="HBoxContainer" parent="Container/ScrollContainer/LibVb/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("9_bqy5j")
+
+[node name="TopPagesContainer" type="HBoxContainer" parent="Container/ScrollContainer/LibVb"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+script = ExtResource("9_uoavf")
+
+[node name="AssetsContainer" type="GridContainer" parent="Container/ScrollContainer/LibVb" node_paths=PackedStringArray("_size_source")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_ymc38")
+_list_item_scene = ExtResource("2_d1s0v")
+_size_source = NodePath("../../../..")
+
+[node name="BotPagesContainer" type="HBoxContainer" parent="Container/ScrollContainer/LibVb"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+script = ExtResource("9_uoavf")
+
+[node name="Control" type="Control" parent="Container/ScrollContainer/LibVb"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ErrorContainer" type="HBoxContainer" parent="Container"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("11_urlyh")

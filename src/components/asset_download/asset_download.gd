@@ -46,44 +46,17 @@ func _ready() -> void:
 		_requesting = false
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
 		var host = _host
-		var error_text = null
-		var status = ""
-		
-		match result:
-			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
-				error_text = tr("Connection error, prease try again.")
-				status = tr("Can't connect")
-			HTTPRequest.RESULT_CANT_CONNECT, HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
-				error_text = tr("Can't connect to host") + ": " + host
-				status = tr("Can't connect")
-			HTTPRequest.RESULT_NO_RESPONSE:
-				error_text = tr("No response from host") + ": " + host
-				status = tr("No response")
-			HTTPRequest.RESULT_CANT_RESOLVE:
-				error_text = tr("Can't resolve hostname") + ": " + host
-				status = tr("Can't resolve.")
-			HTTPRequest.RESULT_REQUEST_FAILED:
-				error_text = tr("Request failed, return code") + ": " + str(response_code)
-				status = tr("Request failed.")
-			HTTPRequest.RESULT_DOWNLOAD_FILE_CANT_OPEN, HTTPRequest.RESULT_DOWNLOAD_FILE_WRITE_ERROR:
-				error_text = tr("Cannot save response to") + ": " + _download.download_file
-				status = tr("Write error.")
-			HTTPRequest.RESULT_REDIRECT_LIMIT_REACHED:
-				error_text = tr("Request failed, too many redirects")
-				status = tr("Redirect loop.")
-			HTTPRequest.RESULT_TIMEOUT:
-				error_text = tr("Request failed, timeout")
-				status = tr("Timeout.")
-			_:
-				if response_code != 200:
-					error_text = tr("Request failed, return code") + ": " + str(response_code)
-					status = tr("Failed") + ": " + str(response_code)
+		var response = HttpClient.Response.new([
+			result, response_code, headers, body
+		])
+		var status_error_pair = response.to_response_info(host, _download.download_file)
+		var error_text = status_error_pair.error_text
+		var status = status_error_pair.status
 		
 		_progress_bar.modulate = Color(0, 0, 0, 0)
 		
 		if error_text:
-			$AcceptErrorDialog.dialog_text = tr("Download Error") + ":\n" + error_text
-			$AcceptErrorDialog.popup_centered()
+			popup_error_dialog(tr("Download Error") + ":\n" + error_text)
 			_retry_button.show()
 			_status.text = status
 			download_failed.emit(response_code)
@@ -94,18 +67,18 @@ func _ready() -> void:
 	)
 
 
-func start(url, target_abs_dir, file_name):
+func start(url, target_abs_dir, file_name, title_name=null):
 	assert(not _requesting)
 	assert(target_abs_dir.ends_with("/"))
 	
 	_requesting = true
 	_host = url
-	_retry_callback = func(): start(url, target_abs_dir, file_name)
+	_retry_callback = func(): start(url, target_abs_dir, file_name, title_name)
 	
 	_retry_button.hide()
 	_install_button.disabled = true
 	_progress_bar.modulate = Color(1, 1, 1, 1)
-	_title_label.text = file_name
+	_title_label.text = file_name if title_name == null else title_name
 	
 	DirAccess.make_dir_absolute(target_abs_dir)
 	if FileAccess.file_exists(target_abs_dir + file_name):
@@ -152,6 +125,15 @@ func start(url, target_abs_dir, file_name):
 			_progress_bar.value = 0
 			_progress_bar.max_value = 1
 		await get_tree().create_timer(0.1).timeout
+
+
+func set_status(text):
+	_status.text = text
+
+
+func popup_error_dialog(text):
+	$AcceptErrorDialog.dialog_text = text
+	$AcceptErrorDialog.popup_centered()
 
 
 func _notification(what: int) -> void:

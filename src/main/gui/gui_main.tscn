@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://omgg45dpxftx"]
+[gd_scene load_steps=16 format=3 uid="uid://omgg45dpxftx"]
 
 [ext_resource type="Script" path="res://src/main/gui/gui_main.gd" id="1_yjveq"]
 [ext_resource type="PackedScene" uid="uid://cb6u1mub27xo" path="res://src/components/asset_download/asset_download.tscn" id="2_gfvot"]
@@ -9,13 +9,14 @@
 [ext_resource type="PackedScene" uid="uid://dxnoecc3ruw3t" path="res://src/components/editors/remote/remote_editors.tscn" id="7_m50ss"]
 [ext_resource type="PackedScene" uid="uid://pa8k1h8e2ib" path="res://src/components/godots_releases/godots_releases.tscn" id="8_aidwm"]
 [ext_resource type="PackedScene" uid="uid://cnweym2t3je6y" path="res://src/components/downloads_container/downloads_container.tscn" id="9_drkdu"]
+[ext_resource type="PackedScene" uid="uid://cdyq5l2atcuap" path="res://src/components/asset_lib_projects/asset_lib_projects.tscn" id="9_drvxo"]
 [ext_resource type="Script" path="res://src/components/misc/news_button.gd" id="10_ciylo"]
 [ext_resource type="Script" path="res://src/components/misc/notifications_button.gd" id="11_qd3hf"]
 [ext_resource type="PackedScene" uid="uid://buwhvihmtjeff" path="res://src/components/tags/manage_tags.tscn" id="12_6d5cn"]
 [ext_resource type="PackedScene" uid="uid://btxxnjmhy4bqw" path="res://src/components/command_viewer/command_viewer.tscn" id="13_mk5sf"]
 [ext_resource type="PackedScene" uid="uid://b3aprmu6od0wa" path="res://src/components/settings/settings_window.tscn" id="14_3j6hr"]
 
-[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_godots_releases", "_auto_updates")]
+[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_asset_lib_projects", "_godots_releases", "_auto_updates")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,7 +26,8 @@ grow_vertical = 2
 script = ExtResource("1_yjveq")
 _remote_editors = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Remote Editors")
 _local_editors = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Local Editors")
-_projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Projects")
+_projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Local Projects")
+_asset_lib_projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Asset Library Projects")
 _godots_releases = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Updates")
 _auto_updates = NodePath("AutoUpdates")
 _asset_download = ExtResource("2_gfvot")
@@ -72,7 +74,11 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Projects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("5_dexs5")]
+[node name="Local Projects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("5_dexs5")]
+layout_mode = 2
+
+[node name="Asset Library Projects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("9_drvxo")]
+visible = false
 layout_mode = 2
 
 [node name="Local Editors" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("6_tm278")]

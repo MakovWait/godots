@@ -115,7 +115,10 @@ class SrcGithub extends Src:
 	
 	func async_all():
 		var json = await _get_json(Config.RELEASES_API_ENDPOINT)
-		return json
+		if json:
+			return json
+		else:
+			return []
 
 	func async_latest():
 		var json = await _get_json(Config.RELEASES_LATEST_API_ENDPOINT)
@@ -132,10 +135,10 @@ class SrcGithub extends Src:
 		return null
 	
 	func _get_json(url):
-		var response = await HttpClient.async_http_get(url, headers)
-		var json = JSON.parse_string(
-			response[3].get_string_from_utf8()
+		var response = HttpClient.Response.new(
+			await HttpClient.async_http_get(url, headers)
 		)
+		var json = response.to_json()
 		return json
 
 
