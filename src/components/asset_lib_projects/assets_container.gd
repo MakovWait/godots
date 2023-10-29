@@ -41,7 +41,7 @@ func clear():
 
 
 func _update_columns():
-	var new_columns = _size_source.size.x / (450 * Config.EDSCALE)
+	var new_columns = _size_source.size.x / (400 * Config.EDSCALE)
 	new_columns = max(1, new_columns)
 #	prints(size.x, new_columns, (size.x / new_columns) - (100 * Config.EDSCALE))
 	if new_columns != columns:

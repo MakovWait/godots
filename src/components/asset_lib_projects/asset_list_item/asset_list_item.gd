@@ -1,7 +1,7 @@
 class_name AssetListItemView
 extends HBoxContainer
 
-const DEFAULT_MIN_SIZE_X = 400
+const DEFAULT_MIN_SIZE_X = 390
 
 signal title_pressed(item: AssetLib.Item)
 signal category_pressed(item: AssetLib.Item)
