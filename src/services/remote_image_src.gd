@@ -63,7 +63,7 @@ class LoadFileBuffer extends I:
 			load_err = img.load_webp_from_buffer(buffer)
 		elif bmp_signature == buffer.slice(0, 2):
 			load_err = img.load_bmp_from_buffer(buffer)
-		
+		# TODO load_svg_from_buffer in Godot 4.2
 		return load_err
 
 
@@ -75,7 +75,35 @@ class FileByUrlSrc:
 class FileByUrlSrcAsIs extends FileByUrlSrc:
 	func async_load(url: String) -> String:
 		var file_path = Config.CACHE_DIR_PATH.ret().path_join(url.md5_text())
-		var response = await HttpClient.async_http_get(url, [], file_path)
+		var response = HttpClient.Response.new(
+			await HttpClient.async_http_get(url, [], file_path)
+		)
 		if response.code != 200:
 			return ""
 		return file_path
+
+
+class FileByUrlCachedEtag extends FileByUrlSrc:
+	func async_load(url: String) -> String:
+		var file_path_base = Config.CACHE_DIR_PATH.ret().path_join("assetimage_" + url.md5_text())
+		var etag_path = file_path_base + ".etag"
+		var data_path = file_path_base + ".data"
+		var headers = []
+		if FileAccess.file_exists(etag_path) and FileAccess.file_exists(data_path):
+			var etag = FileAccess.open(etag_path, FileAccess.READ)
+			if etag:
+				headers.push_back("If-None-Match: " + etag.get_line())
+		var response = HttpClient.Response.new(
+			await HttpClient.async_http_get(url, headers, data_path)
+		)
+		if response.result == HTTPRequest.RESULT_SUCCESS and response.result < HTTPClient.RESPONSE_BAD_REQUEST:
+			if response.code != HTTPClient.RESPONSE_NOT_MODIFIED:
+				for header in response.headers:
+					header = header as String
+					if header.findn("ETag:") == 0:
+						var new_etag = header.substr(header.find(":") + 1, header.length()).strip_edges()
+						var file = FileAccess.open(etag_path, FileAccess.WRITE)
+						if file:
+							file.store_line(new_etag)
+						break
+		return data_path

@@ -43,6 +43,9 @@ class Response:
 	func get_string_from_utf8():
 		return body.get_string_from_utf8()
 	
+	func _to_string():
+		return "[Response] Result: %s; Code: %s; Headers: %s" % [result, code, headers]
+	
 	func to_response_info(host, download_file=null) -> ResponseInfo:
 		var error_text = null
 		var status = ""
