@@ -51,6 +51,9 @@ func init(
 		add_child(item_details)
 		item_details.popup_centered()
 	)
+	_assets_container.category_pressed.connect(func(item: AssetLib.Item):
+		_category_option_button.force_select_by_label(item.category)
+	)
 
 	if is_visible_in_tree():
 		_async_fetch()

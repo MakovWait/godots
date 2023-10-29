@@ -23,7 +23,7 @@ func async_load_items(url):
 	var errors: Array[String] = []
 	var json = await _src.async_load(url, errors)
 	for category in json.get("categories", []):
-		add_item(category.name, int(category.id))
+		add_item(tr(category.name), int(category.id))
 	return errors
 
 
@@ -41,6 +41,13 @@ func _on_fetch_disable():
 
 func _on_fetch_enable():
 	disabled = false
+
+
+func force_select_by_label(opt_label):
+	for i in item_count:
+		if get_item_text(i) == tr(opt_label):
+			select(i)
+			changed.emit()
 
 
 class Src:
