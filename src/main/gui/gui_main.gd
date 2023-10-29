@@ -212,7 +212,11 @@ func _setup_asset_lib_projects():
 		asset_lib_factory,
 		category_src,
 		version_src,
-		RemoteImageSrc.AlwaysBroken.new(self)
+#		RemoteImageSrc.AlwaysBroken.new(self)
+		RemoteImageSrc.LoadFileBuffer.new(
+			RemoteImageSrc.FileByUrlSrcAsIs.new(),
+			self.get_theme_icon("FileBrokenBigThumb", "EditorIcons")
+		)
 	)
 
 

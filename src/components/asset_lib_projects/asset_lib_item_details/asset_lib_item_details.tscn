@@ -45,7 +45,6 @@ stretch_mode = 5
 [node name="PreviewBg" type="PanelContainer" parent="HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer2/PreviewBg"]
 layout_mode = 2

@@ -51,12 +51,22 @@ func add_preview(item: AssetLib.ItemPreview):
 	btn.toggle_mode = true
 	btn.pressed.connect(_handle_btn_pressed.bind(item, btn))
 	_previews_container.add_child(btn)
-	_images_src.async_load_img(item.thumbnail, func(img: Texture2D):
+	_images_src.async_load_img(item.thumbnail, func(tex: Texture2D):
 		if not item.is_video:
-			btn.icon = img
+			if tex is ImageTexture:
+				utils.fit_height(85 * Config.EDSCALE, tex.get_size(), func(new_size): 
+					tex.set_size_override(new_size)
+				)
+			btn.icon = tex
 		else:
 			var overlay = get_theme_icon("PlayOverlay", "EditorIcons").get_image()
-			var thumbnail = img.get_image().duplicate() as Image
+			var tex_image: Image = tex.get_image()
+			if tex_image == null:
+				tex_image = get_theme_icon("FileBrokenBigThumb", "EditorIcons").get_image()
+			utils.fit_height(85 * Config.EDSCALE, tex_image.get_size(), func(new_size): 
+				tex_image.resize(new_size.x, new_size.y, Image.INTERPOLATE_LANCZOS)
+			)
+			var thumbnail = tex_image.duplicate() as Image
 			var overlay_pos = Vector2i(
 				(thumbnail.get_width() - overlay.get_width()) / 2,
 				(thumbnail.get_height() - overlay.get_height()) / 2
@@ -76,8 +86,12 @@ func _handle_btn_pressed(item: AssetLib.ItemPreview, btn):
 	if item.is_video:
 		OS.shell_open(item.link)
 	else:
-		_images_src.async_load_img(item.link, func(img: Texture2D):
-			_preview.texture = img
+		_images_src.async_load_img(item.link, func(tex: Texture2D):
+			if tex is ImageTexture:
+				utils.fit_height(397 * Config.EDSCALE, tex.get_size(), func(new_size): 
+					tex.set_size_override(new_size)
+				)
+			_preview.texture = tex
 		)
 
 

@@ -46,8 +46,12 @@ func init(item: AssetLib.Item, images: RemoteImageSrc.I):
 	_author.pressed.connect(func():
 		author_pressed.emit(item)
 	)
-	
-	images.async_load_img(item.icon_url, func(img): _icon.texture = img)
+
+	images.async_load_img(item.icon_url, func(tex: Texture2D):
+		if tex is ImageTexture:
+			tex.set_size_override(Vector2i(64, 64) * Config.EDSCALE)
+		_icon.texture = tex
+	)
 	clamp_width(DEFAULT_MIN_SIZE_X)
 
 

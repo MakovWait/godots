@@ -52,3 +52,12 @@ static func parse_json_safe(string):
 		return null
 	else:
 		return json.data
+
+
+static func fit_height(max_height, cur_size: Vector2i, callback):
+	var scale_ratio = max_height / (cur_size.y * Config.EDSCALE)
+	if scale_ratio < 1:
+		callback.call(Vector2i(
+			cur_size.x * Config.EDSCALE * scale_ratio,
+			cur_size.y * Config.EDSCALE * scale_ratio
+		))
