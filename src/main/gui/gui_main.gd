@@ -107,7 +107,7 @@ func _ready():
 	var projects_service = Projects.List.new(
 		Config.PROJECTS_CONFIG_PATH,
 		local_editors,
-		get_theme_icon("DefaultProjectIcon", "EditorIcons")
+		preload("res://assets/default_project_icon.svg")
 	)
 	
 	local_editors.load()

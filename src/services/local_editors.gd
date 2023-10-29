@@ -45,15 +45,14 @@ class List extends RefCounted:
 	
 	func retrieve_by_version_hint(version_hint: String) -> Item:
 		for e in all():
-			if VersionHint.are_equal(e.version_hint, version_hint):
+			if e.match_version_hint(version_hint):
 				return e
 		return null
 	
 	func filter_by_name_pattern(name_pattern: String) -> Array[Item]:
-		var sanitized_name_pattern = _sanitize_name(name_pattern)
 		var result: Array[Item] = []
 		for editor in all():
-			if _sanitize_name(editor.name).findn(sanitized_name_pattern) > -1:
+			if editor.match_name(name_pattern):
 				result.push_back(editor)
 		return result
 	
@@ -105,9 +104,7 @@ class List extends RefCounted:
 		editor.name_changed.connect(func(_new_name): 
 			editor_name_changed.emit(editor.path)
 		)
-		
-	func _sanitize_name(name: String):
-		return name.replace(" ", "")
+
 
 class Item extends Object:
 	signal tags_edited
@@ -124,7 +121,7 @@ class Item extends Object:
 		set(value): 
 			_section.set_value("name", value)
 			name_changed.emit(value)
-		
+	
 	var extra_arguments:
 		get: return _section.get_typed_value(
 			"extra_arguments", 
@@ -191,7 +188,47 @@ class Item extends Object:
 		var sub_file_exists = func(file):
 			return FileAccess.file_exists(path.get_base_dir().path_join(file))
 		return sub_file_exists.call("_sc_") or sub_file_exists.call("._sc_")
-
+	
+	func match_name(search):
+		return _sanitize_name(name).findn(search) > -1
+	
+	func match_version_hint(hint):
+		return VersionHint.are_equal(self.version_hint, hint)
+	
+	func get_version() -> String:
+		var parsed = VersionHint.parse(version_hint)
+		if parsed.is_valid:
+			return parsed.version
+		else:
+			return ""
+	
+	func get_cfg_file_path() -> String:
+		var cfg_file_name = get_cfg_file_name()
+		if cfg_file_name.is_empty():
+			return ""
+		var cfg_folder = ""
+		if is_self_contained():
+			cfg_folder = path.get_base_dir().path_join("editor_data")
+		else:
+			cfg_folder = OS.get_config_dir().path_join("Godot")
+		if cfg_folder.is_empty():
+			return ""
+		return cfg_folder.path_join(cfg_file_name)
+	
+	func get_cfg_file_name() -> String:
+		var version = get_version()
+		if version.is_empty():
+			return ""
+		if version.begins_with("3"):
+			return "editor_settings-3.tres"
+		elif version.begins_with("4"):
+			return "editor_settings-4.tres"
+		else:
+			return ""
+	
+	func _sanitize_name(name: String):
+		return name.replace(" ", "")
+	
 	func _find_custom_command_by_name(name: String, src=[]):
 		for command in src:
 			if command.name == name:
@@ -211,3 +248,59 @@ class Item extends Object:
 				]
 			})
 		return commands
+	
+	func _to_string() -> String:
+		return "%s (%s)" % [name, VersionHint.parse(version_hint)]
+
+
+class Selector:
+	var _filter: Callable
+	
+	func _init(filter=null):
+		if filter == null:
+			filter = func(x): return true
+		_filter = filter
+	
+	func by_name(name) -> Selector:
+		return Selector.new(func(el: Item):
+			return _filter.call(el) and el.match_name(name)
+		)
+	
+	func by_version_hint(hint) -> Selector:
+		return Selector.new(func(el: Item):
+			return _filter.call(el) and el.match_version_hint(hint)
+		)
+	
+	func select(editors: List) -> Array[Item]:
+		var result: Array[Item] = []
+		for el in editors.all():
+			if _filter.call(el):
+				result.append(el)
+		return result
+	
+	func select_first_or_null(editors: List) -> Item:
+		var res = select(editors)
+		if len(res) > 0:
+			return res[0]
+		else:
+			return null
+	
+	func select_exact_one(editors: List) -> Item:
+		var res = select(editors)
+		if len(res) == 1:
+			return res[0]
+		else:
+			if len(res) <= 1:
+				Output.push("There is ambiguity between editors to run.\n%s" % "\n".join(res))
+			return null
+	
+	static func from_cmd(cmd: CliParser.ParsedCommandResult) -> Selector:
+		var name = cmd.args.first_option_value(["name", "n"])
+		var version_hint = cmd.args.first_option_value(["version-hint", "vh"])
+		var selector = Selector.new()
+		prints(name, version_hint)
+		if not name.is_empty():
+			selector = selector.by_name(name)
+		if not version_hint.is_empty():
+			selector = selector.by_version_hint(version_hint)
+		return selector

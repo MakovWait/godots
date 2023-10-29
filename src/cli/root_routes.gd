@@ -1,8 +1,8 @@
 class_name RootRoutes
 extends Routes.List
 
-func _init() -> void:
+func _init(ctx: CliContext) -> void:
 	self._items = [
-		DefaultRoutes.new(),
-		EditorsRoutes.new()
+		DefaultRoutes.new(ctx),
+		EditorsRoutes.new(ctx)
 	]

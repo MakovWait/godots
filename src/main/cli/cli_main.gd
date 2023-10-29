@@ -6,7 +6,8 @@ static func main(args: PackedStringArray, app_args: PackedStringArray):
 		var cmd = parser.parse_command(args)
 
 		if not cmd.has_error():
-			var root = RootRoutes.new()
+			var ctx = CliContext.new()
+			var root = RootRoutes.new(ctx)
 			if root.match(cmd, app_args):
 				root.route(cmd, app_args)
 			else:

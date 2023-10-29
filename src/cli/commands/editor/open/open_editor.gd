@@ -1,6 +1,11 @@
 class_name OpenEditor
 
 class Route extends Routes.Item:
+	var _ctx: CliContext
+	
+	func _init(ctx: CliContext) -> void:
+		_ctx = ctx
+	
 	func route(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray):
 		var name = cmd.args.first_option_value(["name", "n"])
 		var working_dir = cmd.args.get_first_name(".") if name.is_empty() else ""

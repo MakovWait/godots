@@ -1,9 +1,11 @@
 class_name EditorsRoutes
 extends Routes.List
 
-func _init() -> void:
+func _init(ctx: CliContext) -> void:
 	self._items = [
-		OpenEditor.Route.new()
+		OpenEditor.Route.new(ctx),
+		#EditorCfgCommand.Route.new(ctx),
+		EditorListCommand.Route.new(ctx)
 	]
 
 func match(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray) -> bool:
