@@ -181,7 +181,12 @@ func _setup_asset_lib_projects():
 		%DownloadsContainer.add_download_item(asset_download)
 		if icon != null:
 			asset_download.icon.texture = icon
-		asset_download.start(item.download_url, Config.DOWNLOADS_PATH.ret() + "/", "project.zip")
+		asset_download.start(
+			item.download_url, 
+			Config.DOWNLOADS_PATH.ret() + "/", 
+			"project.zip",
+			item.title
+		)
 		asset_download.downloaded.connect(func(abs_zip_path):
 			if not item.download_hash.is_empty():
 				var download_hash = FileAccess.get_sha256(abs_zip_path)

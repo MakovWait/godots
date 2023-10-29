@@ -67,18 +67,18 @@ func _ready() -> void:
 	)
 
 
-func start(url, target_abs_dir, file_name):
+func start(url, target_abs_dir, file_name, title_name=null):
 	assert(not _requesting)
 	assert(target_abs_dir.ends_with("/"))
 	
 	_requesting = true
 	_host = url
-	_retry_callback = func(): start(url, target_abs_dir, file_name)
+	_retry_callback = func(): start(url, target_abs_dir, file_name, title_name)
 	
 	_retry_button.hide()
 	_install_button.disabled = true
 	_progress_bar.modulate = Color(1, 1, 1, 1)
-	_title_label.text = file_name
+	_title_label.text = file_name if title_name == null else title_name
 	
 	DirAccess.make_dir_absolute(target_abs_dir)
 	if FileAccess.file_exists(target_abs_dir + file_name):
