@@ -60,6 +60,15 @@ class Item:
 		if not other.is_valid:
 			return false
 		return self.version == other.version and self.stage == other.stage and self.is_mono == other.is_mono
+	
+	func _to_string():
+		if not is_valid:
+			return 'unknown version'
+		else:
+			var base = '%s-%s' % [version, stage]
+			if is_mono:
+				base += '-%s' % 'mono'
+			return base
 
 
 class _ParsedVersion:
@@ -85,8 +94,9 @@ class _ParsedStage:
 				continue
 			if tag == 'mono':
 				continue
-			if tag in _known_stages:
-				item.stage = tag
+			for stage in _known_stages:
+				if tag.begins_with(stage):
+					item.stage = tag
 
 
 class _ParsedIsMono:
