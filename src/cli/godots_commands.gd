@@ -33,25 +33,25 @@ static var commands: Array[CliCommand] = [
 			)
 		]
 	),
-#	CliCommand.new(
-#		"editor",
-#		"cfg",
-#		"Manipulate editor cfg",
-#		[
-#			CliOption.new(
-#				"name",
-#				"n",
-#				"Name of the editor",
-#				"--name <partial-editor-name> or -n <partial-editor-name>"
-#			),
-#			CliOption.new(
-#				"version-hint",
-#				"vh",
-#				"Version hint of the editor",
-#				"--version-hint <version-hint> or -vh <version-hint>"
-#			)
-#		]
-#	),
+	CliCommand.new(
+		"editor",
+		"cfg",
+		"Manipulate editor cfg",
+		[
+			CliOption.new(
+				"name",
+				"n",
+				"Name of the editor",
+				"--name <partial-editor-name> or -n <partial-editor-name>"
+			),
+			CliOption.new(
+				"version-hint",
+				"vh",
+				"Version hint of the editor",
+				"--version-hint <version-hint> or -vh <version-hint>"
+			)
+		]
+	),
 	CliCommand.new(
 		"editor",
 		"list",

@@ -4,7 +4,7 @@ extends Routes.List
 func _init(ctx: CliContext) -> void:
 	self._items = [
 		OpenEditor.Route.new(ctx),
-		#EditorCfgCommand.Route.new(ctx),
+		EditorCfgCommand.Route.new(ctx),
 		EditorListCommand.Route.new(ctx)
 	]
 
