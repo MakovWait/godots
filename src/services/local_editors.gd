@@ -290,7 +290,7 @@ class Selector:
 		if len(res) == 1:
 			return res[0]
 		else:
-			if len(res) <= 1:
+			if len(res) > 1:
 				Output.push("There is ambiguity between editors to run.\n%s" % "\n".join(res))
 			return null
 	

@@ -58,5 +58,24 @@ static var commands: Array[CliCommand] = [
 		"Show editors list",
 		[
 		]
+	),
+	CliCommand.new(
+		"exec",
+		"",
+		"Execute the command on specific editor. godots exec -- <args to pass to the editor>",
+		[
+			CliOption.new(
+				"name",
+				"n",
+				"Name of the editor",
+				"--name <partial-editor-name> or -n <partial-editor-name>"
+			),
+			CliOption.new(
+				"version-hint",
+				"vh",
+				"Version hint of the editor",
+				"--version-hint <version-hint> or -vh <version-hint>"
+			)
+		]
 	)
 ]

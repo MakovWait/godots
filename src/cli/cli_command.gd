@@ -14,8 +14,8 @@ func _init(namesp: String, verb: String, description: String, options: Array[Cli
 func to_help_string(padding: int) -> String:
 	var result: PackedStringArray = []
 
-	if not self.verb.is_empty():
-		result.append("\t%s - %s" % [ljust(self.verb, padding), description])
+#	if not self.verb.is_empty():
+	result.append("\t%s - %s" % [ljust(self.verb, padding), description])
 
 	for option in options:
 		result.append("\t\t%s" % option.to_help_string())
