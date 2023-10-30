@@ -298,7 +298,6 @@ class Selector:
 		var name = cmd.args.first_option_value(["name", "n"])
 		var version_hint = cmd.args.first_option_value(["version-hint", "vh"])
 		var selector = Selector.new()
-		prints(name, version_hint)
 		if not name.is_empty():
 			selector = selector.by_name(name)
 		if not version_hint.is_empty():
