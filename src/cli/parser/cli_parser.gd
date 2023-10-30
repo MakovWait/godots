@@ -34,7 +34,9 @@ class ParsedArguments:
 			_options[option.short_name] = option
 			
 	func get_first_name(default:="") -> String:
-		var name = names.front()
+		var name = null
+		if len(names) > 0:
+			name = names.front()
 		return default if name == null else name
 
 	func has_options(names: Array[String]) -> bool:
