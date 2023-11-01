@@ -1,10 +1,10 @@
 class_name VersionHint
 
 
-static func are_equal(a: String, b: String):
+static func are_equal(a: String, b: String, ignore_mono=false):
 	if a == b:
 		return true
-	return parse(a).eq(parse(b))
+	return parse(a).eq(parse(b), ignore_mono)
 
 
 static func version_or_nothing(hint):
@@ -93,12 +93,16 @@ class Item:
 	var is_mono = false
 	var is_valid = false
 	
-	func eq(other: Item):
+	func eq(other: Item, ignore_mono=false):
 		if not self.is_valid:
 			return false
 		if not other.is_valid:
 			return false
-		return self.version == other.version and self.stage == other.stage and self.is_mono == other.is_mono
+		var result = self.version == other.version and self.stage == other.stage
+		if not ignore_mono:
+			return result and self.is_mono == other.is_mono
+		else:
+			return result
 	
 	func _to_string():
 		if not is_valid:

@@ -43,19 +43,6 @@ class List extends RefCounted:
 	func retrieve(editor_path) -> Item:
 		return _editors[editor_path]
 	
-	func retrieve_by_version_hint(version_hint: String) -> Item:
-		for e in all():
-			if e.match_version_hint(version_hint):
-				return e
-		return null
-	
-	func filter_by_name_pattern(name_pattern: String) -> Array[Item]:
-		var result: Array[Item] = []
-		for editor in all():
-			if editor.match_name(name_pattern):
-				result.push_back(editor)
-		return result
-	
 	func has(editor_path) -> bool:
 		return _editors.has(editor_path)
 	
@@ -192,8 +179,8 @@ class Item extends Object:
 	func match_name(search):
 		return _sanitize_name(name).findn(search) > -1
 	
-	func match_version_hint(hint):
-		return VersionHint.are_equal(self.version_hint, hint)
+	func match_version_hint(hint, ignore_mono=false):
+		return VersionHint.are_equal(self.version_hint, hint, ignore_mono)
 	
 	func get_version() -> String:
 		var parsed = VersionHint.parse(version_hint)
@@ -266,9 +253,9 @@ class Selector:
 			return _filter.call(el) and el.match_name(name)
 		)
 	
-	func by_version_hint(hint) -> Selector:
+	func by_version_hint(hint, ignore_mono=false) -> Selector:
 		return Selector.new(func(el: Item):
-			return _filter.call(el) and el.match_version_hint(hint)
+			return _filter.call(el) and el.match_version_hint(hint, ignore_mono)
 		)
 	
 	func select(editors: List) -> Array[Item]:
@@ -297,9 +284,10 @@ class Selector:
 	static func from_cmd(cmd: CliParser.ParsedCommandResult) -> Selector:
 		var name = cmd.args.first_option_value(["name", "n"])
 		var version_hint = cmd.args.first_option_value(["version-hint", "vh"])
+		var ignore_mono = cmd.args.has_options(["ignore-mono", "im"])
 		var selector = Selector.new()
 		if not name.is_empty():
 			selector = selector.by_name(name)
 		if not version_hint.is_empty():
-			selector = selector.by_version_hint(version_hint)
+			selector = selector.by_version_hint(version_hint, ignore_mono)
 		return selector

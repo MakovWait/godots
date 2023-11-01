@@ -62,6 +62,12 @@ static var commands: Array[CliCommand] = [
 				"vh",
 				"Version hint of the editor",
 				"--version-hint <version-hint> or -vh <version-hint>"
+			),
+			CliOption.new(
+				"ignore-mono",
+				"im",
+				"Whether to take mono version into account if it is not explicitly specified",
+				"--ignore-mono or -im"
 			)
 		]
 	)

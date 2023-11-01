@@ -9,11 +9,12 @@ class Route extends Routes.Item:
 
 	func route(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray):
 		var selector = LocalEditors.Selector.from_cmd(cmd)
-		var explicit = false
-		if cmd.args.has_options(["name", "n", "version-hint", "vh"]):
-			explicit = true
+		var explicit = cmd.args.has_options(["name", "n", "version-hint", "vh"])
+		var ignore_mono = cmd.args.has_options(["ignore-mono", "im"])
 		var cfg_path = cmd.args.get_first_name()
-		ExecCommand.new(_ctx.editors, _ctx.projects).execute(Request.new(selector, user_args, explicit))
+		ExecCommand.new(_ctx.editors, _ctx.projects, ignore_mono).execute(
+			Request.new(selector, user_args, explicit)
+		)
 
 	func match(cmd: CliParser.ParsedCommandResult, user_args: PackedStringArray) -> bool:
 		return cmd.namesp == "exec"
@@ -32,10 +33,12 @@ class Request:
 
 var _editors: LocalEditors.List
 var _projects: Projects.List
+var _ignore_mono: bool
 
 
-func _init(editors: LocalEditors.List, projects: Projects.List):
+func _init(editors: LocalEditors.List, projects: Projects.List, ignore_mono: bool):
 	_editors = editors
+	_ignore_mono = ignore_mono
 	_projects = projects
 
 
@@ -88,7 +91,7 @@ func _find_editor_by_dir(base_dir: String, upwards: bool) -> LocalEditors.Item:
 		return editor
 	
 	if not upwards:
-		Output.push("-u|--upwards was not provided; neither 'project.godot' nor '.godot-version' was found at %s" % base_dir)
+		Output.push("-u|--upwards was not provided; neither 'project.godot' nor '.godot-version' was not found at %s" % base_dir)
 	
 	if upwards and not (base_dir == "/" or base_dir.is_empty()):
 		return _find_editor_by_dir(base_dir.get_base_dir(), upwards)
@@ -102,7 +105,8 @@ func _find_by_godot_version_file(base_dir: String) -> LocalEditors.Item:
 		return null
 	var file = FileAccess.open(godot_version_file, FileAccess.READ)
 	var version_hint = file.get_line()
-	return LocalEditors.Selector.new().by_version_hint(version_hint).select_exact_one(_editors)
+	Output.push("Extracted version hint '%s' from .godot-version" % version_hint)
+	return LocalEditors.Selector.new().by_version_hint(version_hint, _ignore_mono).select_exact_one(_editors)
 
 
 func _find_by_project_godot_file(base_dir: String) -> LocalEditors.Item:
@@ -118,7 +122,8 @@ func _find_by_project_godot_file(base_dir: String) -> LocalEditors.Item:
 	project_info.load(false)
 	
 	var version_hint = project_info.version_hint
-	return LocalEditors.Selector.new().by_version_hint(version_hint).select_exact_one(_editors)
+	Output.push("Extracted version hint '%s' from .project-godot" % version_hint)
+	return LocalEditors.Selector.new().by_version_hint(version_hint, _ignore_mono).select_exact_one(_editors)
 
 
 func _get_wd(req: Request):
@@ -156,7 +161,6 @@ func _get_game_path(req: Request):
 
 func _get_positional_with_any_suffix(suffixes: Array[String], args: PackedStringArray):
 	for arg in args:
-		prints(arg, suffixes, arg.is_empty(), arg.begins_with("-"), suffixes.any(func(suff): return arg.ends_with(suff)))
 		if not arg.is_empty() and not arg.begins_with("-"):
 			if suffixes.any(func(suff): return arg.ends_with(suff)):
 				return arg

@@ -403,9 +403,6 @@ class ExternalProjectInfo extends RefCounted:
 					return label.contains("4.")
 			else:
 				return false
-
-		var check_version_hint = func(version_hint: String):
-			return VersionHint.are_equal(_version_hint, version_hint)
 		
 		var check_version_hint_similarity = func(version_hint: String):
 			var score = VersionHint.similarity(_version_hint, version_hint)
