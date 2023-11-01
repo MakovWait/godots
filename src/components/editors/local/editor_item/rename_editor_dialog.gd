@@ -9,7 +9,7 @@ signal editor_renamed(new_name, version_tag)
 func _ready() -> void:
 	super._ready()
 	
-	min_size = Vector2(300, 0) * Config.EDSCALE
+	min_size = Vector2(350, 0) * Config.EDSCALE
 	
 	confirmed.connect(func():
 		editor_renamed.emit(
