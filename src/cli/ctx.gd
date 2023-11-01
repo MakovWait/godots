@@ -13,6 +13,11 @@ func _init():
 		editors,
 		preload("res://assets/default_project_icon.svg")
 	)
-	
+
 	editors.load()
 	projects.load()
+
+
+func cleanup():
+	editors.cleanup()
+	projects.cleanup()

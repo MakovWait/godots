@@ -53,7 +53,7 @@ class List extends RefCounted:
 		return set.values()
 	
 	func load() -> Error:
-		dict.clear_and_free(_projects)
+		cleanup()
 		var err = _cfg.load(_cfg_path)
 		if err: return err
 		for section in _cfg.get_sections():
@@ -64,13 +64,17 @@ class List extends RefCounted:
 			)
 		return Error.OK
 	
+	func cleanup():
+		dict.clear_and_free(_projects)
+	
 	func save() -> Error:
 		return _cfg.save(_cfg_path)
 	
 	func get_last_opened() -> Projects.Item:
 		var last_opened = _ProjectsCache.get_last_opened_project()
 		return retrieve(last_opened) if has(last_opened) else null
-	
+
+
 class Item:
 	signal internals_changed
 	signal loaded
@@ -161,6 +165,11 @@ class Item:
 		)
 		self._local_editors.editor_name_changed.connect(_check_editor_changes)
 		project_info.loaded.connect(func(): loaded.emit())
+	
+	func before_delete_as_ref_counted():
+		utils.disconnect_all(self)
+		if _external_project_info:
+			_external_project_info.before_delete_as_ref_counted()
 	
 	func load(with_icon=true):
 		_external_project_info.load(with_icon)
@@ -338,6 +347,9 @@ class ExternalProjectInfo extends RefCounted:
 		_project_path = project_path
 		_default_icon = default_icon
 		_icon = default_icon
+	
+	func before_delete_as_ref_counted():
+		utils.disconnect_all(self)
 	
 	func load(with_icon=true):
 		var cfg = ConfigFile.new()

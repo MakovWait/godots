@@ -73,7 +73,7 @@ class List extends RefCounted:
 		return set.values()
 	
 	func load() -> Error:
-		dict.clear_and_free(_editors)
+		cleanup()
 		var err = _cfg.load(_cfg_path)
 		if err: return err
 		for section in _cfg.get_sections():
@@ -83,6 +83,9 @@ class List extends RefCounted:
 			_connect_name_changed(editor)
 			_editors[section] = editor
 		return Error.OK
+	
+	func cleanup():
+		dict.clear_and_free(_editors)
 	
 	func save() -> Error:
 		return _cfg.save(_cfg_path)
@@ -147,6 +150,10 @@ class Item extends Object:
 	
 	func _init(section: ConfigFileSection) -> void:
 		self._section = section
+
+	func _notification(what):
+		if NOTIFICATION_PREDELETE == what:
+			utils.disconnect_all(self)
 
 	func as_process(args: PackedStringArray) -> OSProcessSchema:
 		var process_path

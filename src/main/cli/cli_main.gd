@@ -12,6 +12,7 @@ static func main(args: PackedStringArray, app_args: PackedStringArray):
 				root.route(cmd, app_args)
 			else:
 				Output.push("Invalid command!")
+			ctx.cleanup()
 		else:
 			Output.push("Errors: \n" + "\t\n".join(cmd.errors))
 	pass

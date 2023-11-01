@@ -61,3 +61,9 @@ static func fit_height(max_height, cur_size: Vector2i, callback):
 			cur_size.x * Config.EDSCALE * scale_ratio,
 			cur_size.y * Config.EDSCALE * scale_ratio
 		))
+
+
+static func disconnect_all(obj: Object):
+	for obj_signal in obj.get_signal_list():
+		for connection in obj.get_signal_connection_list(obj_signal.name):
+			obj.disconnect(obj_signal.name, connection.callable)

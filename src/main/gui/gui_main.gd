@@ -17,6 +17,9 @@ const theme_source = preload("res://theme/theme.gd")
 @onready var _settings_button = %SettingsButton
 
 
+var _on_exit_tree_callbacks: Array[Callable] = []
+
+
 func _ready():
 	get_tree().root.files_dropped.connect(func(files):
 		if len(files) == 0:
@@ -109,6 +112,8 @@ func _ready():
 		local_editors,
 		preload("res://assets/default_project_icon.svg")
 	)
+	_on_exit_tree_callbacks.append(func(): local_editors.cleanup())
+	_on_exit_tree_callbacks.append(func(): projects_service.cleanup())
 	
 	local_editors.load()
 	projects_service.load()
@@ -157,6 +162,11 @@ func _enter_tree():
 			)
 			DisplayServer.window_set_position(window_position)
 	window.min_size = Vector2(700, 350) * Config.EDSCALE
+
+
+func _exit_tree():
+	for callback in _on_exit_tree_callbacks:
+		callback.call()
 
 
 func _popup_manage_tags(item_tags, all_tags, on_confirm):
