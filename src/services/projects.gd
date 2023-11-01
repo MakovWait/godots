@@ -406,16 +406,21 @@ class ExternalProjectInfo extends RefCounted:
 
 		var check_version_hint = func(version_hint: String):
 			return VersionHint.are_equal(_version_hint, version_hint)
+		
+		var check_version_hint_similarity = func(version_hint: String):
+			var score = VersionHint.similarity(_version_hint, version_hint)
+			return score
 
 		options.sort_custom(func(item_a, item_b):
 			var a = item_a.version_hint.to_lower()
 			var b = item_b.version_hint.to_lower()
 			
 			if _version_hint != null:
-				if check_version_hint.call(a) && !check_version_hint.call(b):
-					return true
-				if check_version_hint.call(b) && !check_version_hint.call(a):
-					return false
+				var sim_a = check_version_hint_similarity.call(a)
+				var sim_b = check_version_hint_similarity.call(b)
+				if sim_a != sim_b:
+					return sim_a > sim_b
+				return VersionHint.version_or_nothing(a) > VersionHint.version_or_nothing(b)
 			
 			if check_stable.call(a) && !check_stable.call(b):
 				return true
@@ -431,6 +436,6 @@ class ExternalProjectInfo extends RefCounted:
 				return true and is_mono
 			if check_mono.call(b) && !check_mono.call(a):
 				return false or not is_mono
-
-			return a > b
+			
+			return VersionHint.version_or_nothing(a) > VersionHint.version_or_nothing(b)
 		)

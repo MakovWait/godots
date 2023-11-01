@@ -7,6 +7,42 @@ static func are_equal(a: String, b: String):
 	return parse(a).eq(parse(b))
 
 
+static func version_or_nothing(hint):
+	var parsed = parse(hint)
+	if parsed.is_valid:
+		return parsed.version
+	else:
+		return hint
+
+
+static func similarity(a: String, b: String):
+	if a == b:
+		return 100
+	
+	var parsed_a = parse(a)
+	var parsed_b = parse(b)
+	var score = 0
+	
+	if not parsed_a.is_valid or not parsed_b.is_valid:
+		return 0
+	
+	if parsed_a.major_version == parsed_b.major_version:
+		score += 6
+	if parsed_a.minor_version == parsed_b.minor_version:
+		score += 6
+	if parsed_a.version == parsed_b.version:
+		score += 6
+	if parsed_a.is_mono == parsed_b.is_mono:
+		score += 2
+	if parsed_a.stage == parsed_b.stage:
+		score += 2
+	elif parsed_a.stage.begins_with(parsed_b.stage):
+		score += 1
+	elif parsed_b.stage.begins_with(parsed_a.stage):
+		score += 1
+	return score
+
+
 static func same_version(a: String, b: String):
 	return parse(a).version == parse(b).version
 
@@ -50,11 +86,13 @@ static func _is_version(tag: String):
 
 
 class Item:
-	var version
+	var version = ""
+	var major_version = ""
+	var minor_version = ""
 	var stage = 'stable'
 	var is_mono = false
 	var is_valid = false
-
+	
 	func eq(other: Item):
 		if not self.is_valid:
 			return false
@@ -78,6 +116,8 @@ class _ParsedVersion:
 			var version = VersionHint._as_version(tag)
 			if version != null:
 				item.version = version
+				item.major_version = version.substr(0, 1)
+				item.minor_version = version.substr(0, 3)
 				item.is_valid = true
 				return
 		item.is_valid = false
