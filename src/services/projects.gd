@@ -362,6 +362,8 @@ class ExternalProjectInfo extends RefCounted:
 		_has_mono_section = cfg.has_section("mono")
 		if cfg.has_section_key("godots", "version_hint"):
 			_version_hint = cfg.get_value("godots", "version_hint")
+			if _version_hint == '':
+				_version_hint = null
 		
 		_last_modified = FileAccess.get_modified_time(_project_path)
 		if with_icon:
@@ -430,21 +432,21 @@ class ExternalProjectInfo extends RefCounted:
 				if sim_a != sim_b:
 					return sim_a > sim_b
 				return VersionHint.version_or_nothing(a) > VersionHint.version_or_nothing(b)
-			
-			if check_stable.call(a) && !check_stable.call(b):
-				return true
-			if check_stable.call(b) && !check_stable.call(a):
-				return false
 
 			if check_version.call(a) && !check_version.call(b):
 				return true
 			if check_version.call(b) && !check_version.call(a):
 				return false
-			
+
 			if check_mono.call(a) && !check_mono.call(b):
 				return true and is_mono
 			if check_mono.call(b) && !check_mono.call(a):
 				return false or not is_mono
+
+			if check_stable.call(a) && !check_stable.call(b):
+				return true
+			if check_stable.call(b) && !check_stable.call(a):
+				return false
 			
 			return VersionHint.version_or_nothing(a) > VersionHint.version_or_nothing(b)
 		)
