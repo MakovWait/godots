@@ -29,6 +29,12 @@ func _prepare_settings():
 			Config.USE_SYSTEM_TITLE_BAR,
 			SettingCheckbox
 		))), func(): return DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE)),
+		SettingChangeObserved(SettingCfg(
+			"application/config/remember_window_rect",
+			Config.REMEMBER_WINDOW_SIZE,
+			SettingCheckbox,
+			tr("Restore last window size and position on startup.")
+		)),
 		
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/preset",

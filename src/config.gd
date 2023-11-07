@@ -135,6 +135,24 @@ var USE_SYSTEM_TITLE_BAR = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var LAST_WINDOW_RECT = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"last_window_rect",
+	Rect2i()
+): 
+	set(_v): _readonly()
+
+
+var REMEMBER_WINDOW_SIZE = ConfigFileValue.new(
+	_cfg_auto_save, 
+	"app", 
+	"remember_window_size",
+	false
+): 
+	set(_v): _readonly()
+
+
 var ALLOW_INSTALL_TO_NOT_EMPTY_DIR = ConfigFileValue.new(
 	_cfg_auto_save, 
 	"app", 

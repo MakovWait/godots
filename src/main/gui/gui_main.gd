@@ -161,12 +161,23 @@ func _enter_tree():
 				screen_rect.position.y + (screen_rect.size.y - window_size.y) / 2
 			)
 			DisplayServer.window_set_position(window_position)
+
 	window.min_size = Vector2(700, 350) * Config.EDSCALE
+	if Config.REMEMBER_WINDOW_SIZE.ret():
+		var rect = Config.LAST_WINDOW_RECT.ret(Rect2i(
+			window.position,
+			window.min_size
+		)) as Rect2i
+		if DisplayServer.get_screen_from_rect(rect) != -1:
+			window.size = rect.size
+			window.position = rect.position
 
 
 func _exit_tree():
 	for callback in _on_exit_tree_callbacks:
 		callback.call()
+	var window = get_window()
+	Config.LAST_WINDOW_RECT.put(Rect2i(window.position, window.size))
 
 
 func _popup_manage_tags(item_tags, all_tags, on_confirm):
