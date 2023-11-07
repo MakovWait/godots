@@ -5,7 +5,7 @@ class Self extends RemoteEditorsTreeDataSource.I:
 	var _assets: RemoteEditorsTreeDataSource.RemoteAssets
 	const platforms = {
 		"X11": {
-			"suffixes": ["_x11.64.zip", "_linux.64.zip", "_linux.x86_64.zip", "_linux.x86_32.zip"],
+			"suffixes": ["_x11.64.zip", "_linux.64.zip", "_linux.x86_64.zip", "_linux.x86_32.zip", "_linux_x86_64.zip", "_linux_x86_32.zip"],
 		},
 		"OSX": {
 			"suffixes": ["_osx.universal.zip", "_macos.universal.zip", "_osx.fat.zip", "_osx32.zip", "_osx64.zip"],
