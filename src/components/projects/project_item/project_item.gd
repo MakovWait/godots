@@ -151,12 +151,12 @@ func init(item: Projects.Item):
 		edited.emit()
 	)
 	double_clicked.connect(func():
-		if item.has_invalid_editor:
-			_on_rebind_editor(item)
+		if item.is_missing:
 			return
 		
-		var valid = not (item.has_invalid_editor or item.is_missing)
-		if valid:
+		if item.has_invalid_editor:
+			_on_rebind_editor(item)
+		else:
 			_on_edit_with_editor(item)
 	)
 
