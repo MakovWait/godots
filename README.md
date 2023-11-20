@@ -15,6 +15,8 @@ sudo xattr -r -d com.apple.quarantine /Applications/Godots.app
 
 Fear not Linux users, unleashing the power of Godots on any distribution is just a command away in the form of a Flatpak! Ready to run the app? Just install it from Flathub!
 
+**Note: This Flatpak is community maintained**
+
 <div align="start">
 <a href='https://flathub.org/apps/details/io.github.MakovWait.Godots'><img width="250" alt='Download on Flathub' src='https://raw.githubusercontent.com/flxzt/rnote/main/misc/assets/flathub-badge.svg'/></a>
 </div><br>
