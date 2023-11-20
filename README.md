@@ -11,6 +11,16 @@ For all the macOS aficionados out there, unleashing the power of Godots is just 
 sudo xattr -r -d com.apple.quarantine /Applications/Godots.app
 ```
 
+## What about Linux? 🐧
+
+Fear not Linux users, unleashing the power of Godots on any distribution is just a command away in the form of a Flatpak! Ready to run the app? Just install it from Flathub!
+
+<div align="start">
+<a href='https://flathub.org/apps/details/io.github.MakovWait.Godots'><img width="250" alt='Download on Flathub' src='https://raw.githubusercontent.com/flxzt/rnote/main/misc/assets/flathub-badge.svg'/></a>
+</div><br>
+
+Don't have Flatpak? Just download the [latest release](https://github.com/MakovWait/godots/releases/tag/v1.2.2.stable)!
+
 ## Features That Redefine Cool 😎
 - **HIDPI Magic**: Feast your eyes on Godots like never before! With pixel-perfect support for Retina displays, zero blur, and stunning visuals, it's a visual extravaganza.
 
