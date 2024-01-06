@@ -5,3 +5,17 @@
 
 [node name="InstallProjectDialog" instance=ExtResource("1_1a1ca")]
 script = ExtResource("2_f5jc0")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer" index="4"]
+layout_mode = 2
+
+[node name="SvgLabel" type="Label" parent="VBoxContainer/HBoxContainer3" index="0"]
+layout_mode = 2
+text = "Create icon.svg:"
+
+[node name="SvgCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer3" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FileDialog" parent="." index="5"]
+size = Vector2i(762, 159)
