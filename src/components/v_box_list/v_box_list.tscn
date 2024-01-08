@@ -13,6 +13,9 @@ script = ExtResource("1_psfnh")
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
+[node name="TabActions" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
 [node name="SearchBox" type="LineEdit" parent="HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -22,7 +25,6 @@ clear_button_enabled = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="HBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -30,16 +32,31 @@ text = "Sort:"
 
 [node name="SortOptionButton" type="OptionButton" parent="HBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ItemsContainer" type="VBoxContainer" parent="ScrollContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ItemsContainer" type="VBoxContainer" parent="HBoxContainer2/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SidebarContainer" type="ScrollContainer" parent="HBoxContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [connection signal="text_changed" from="HBoxContainer/SearchBox" to="." method="_on_search_box_text_changed"]

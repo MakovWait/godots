@@ -3,11 +3,11 @@ extends HBoxContainer
 signal editor_download_pressed
 signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
-@onready var _editors_list: VBoxContainer = $EditorsList
-@onready var _sidebar: VBoxContainer = $ScrollContainer/ActionsSidebar
+@onready var _editors_list: VBoxContainer = %EditorsList
+@onready var _sidebar: VBoxContainer = %ActionsSidebar
 @onready var _download_button: Button = %DownloadButton
 @onready var _orphan_editors_button: Button = %OrphanEditorsButton
-@onready var _orphan_editors_explorer: ConfirmationDialog = $OrphanEditorExplorer
+@onready var _orphan_editors_explorer: ConfirmationDialog = %OrphanEditorExplorer
 @onready var _import_button: Button = %ImportButton
 @onready var _remove_missing_button = %RemoveMissingButton
 @onready var _scan_button = %ScanButton
@@ -26,7 +26,7 @@ func _ready() -> void:
 	_import_button.pressed.connect(func(): import())
 	_download_button.pressed.connect(func(): editor_download_pressed.emit())
 	
-	$EditorImport.imported.connect(func(editor_name, editor_path):
+	%EditorImport.imported.connect(func(editor_name, editor_path):
 		add(editor_name, editor_path)
 	)
 	
@@ -76,10 +76,10 @@ func add(editor_name, exec_path):
 
 
 func import(editor_name="", editor_path=""):
-	if $EditorImport.visible: 
+	if %EditorImport.visible: 
 		return
-	$EditorImport.init(editor_name, editor_path)
-	$EditorImport.popup_centered()
+	%EditorImport.init(editor_name, editor_path)
+	%EditorImport.popup_centered()
 
 
 func _refresh():

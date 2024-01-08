@@ -8,9 +8,9 @@
 script = ExtResource("2_sso4i")
 _item_scene = ExtResource("3_oonyu")
 
-[node name="SearchBox" parent="HBoxContainer" index="0"]
+[node name="SearchBox" parent="HBoxContainer" index="1"]
 placeholder_text = "Filter Releases"
 clear_button_enabled = true
 
-[node name="HBoxContainer" parent="HBoxContainer" index="1"]
+[node name="HBoxContainer" parent="HBoxContainer" index="2"]
 visible = false

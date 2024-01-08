@@ -8,7 +8,7 @@
 script = ExtResource("2_luch3")
 _item_scene = ExtResource("3_rbu5f")
 
-[node name="SearchBox" parent="HBoxContainer" index="0"]
+[node name="SearchBox" parent="HBoxContainer" index="1"]
 placeholder_text = "Filter Projects"
 
 [node name="Label" parent="HBoxContainer/HBoxContainer" index="0"]

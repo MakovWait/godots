@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://src/components/godots_releases/godots_releases.gd" id="1_bk20r"]
 [ext_resource type="PackedScene" uid="uid://blg65v3a661e5" path="res://src/components/godots_releases/list/godots_releases_list.tscn" id="1_ft2bg"]
-[ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="2_pdwbk"]
 [ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="4_q1uy2"]
+[ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="4_udfy0"]
 
 [node name="GodotsReleases" type="HBoxContainer"]
 anchors_preset = 15
@@ -14,26 +14,26 @@ grow_vertical = 2
 script = ExtResource("1_bk20r")
 
 [node name="GodotsReleasesList" parent="." instance=ExtResource("1_ft2bg")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
-layout_mode = 2
-horizontal_scroll_mode = 0
-vertical_scroll_mode = 3
-
-[node name="ActionsSidebar" parent="ScrollContainer" instance=ExtResource("2_pdwbk")]
-layout_mode = 2
-
-[node name="RefreshButton" type="Button" parent="ScrollContainer/ActionsSidebar/TabActions" index="0"]
+[node name="RefreshButton" type="Button" parent="GodotsReleasesList/HBoxContainer/TabActions" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Refresh"
 script = ExtResource("4_q1uy2")
 _theme_icon_name = "Reload"
 
+[node name="SortOptionButton" parent="GodotsReleasesList/HBoxContainer/HBoxContainer" index="1"]
+size_flags_horizontal = 3
+
+[node name="ActionsSidebar" parent="GodotsReleasesList/HBoxContainer2/VBoxContainer/SidebarContainer" index="0" instance=ExtResource("4_udfy0")]
+unique_name_in_owner = true
+layout_mode = 2
+
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="download_and_install_requested" from="GodotsReleasesList" to="." method="_on_godots_releases_list_download_and_install_requested"]
 [connection signal="item_selected" from="GodotsReleasesList" to="." method="_on_godots_releases_list_item_selected"]
 
-[editable path="ScrollContainer/ActionsSidebar"]
+[editable path="GodotsReleasesList"]
