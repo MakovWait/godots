@@ -11,10 +11,13 @@ config_version=5
 [application]
 
 config/name="Godots"
+config/description="Ultimate go-to hub for managing your Godot versions and projects!"
 run/main_scene="res://src/main/main.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 run/low_processor_mode=true
+boot_splash/bg_color=Color(0.113725, 0.133333, 0.160784, 1)
 config/icon="res://icon.svg"
+config/tags=PackedStringArray("application")
 
 [autoload]
 
@@ -31,11 +34,12 @@ window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/expand-region/plugin.cfg", "res://addons/find-everywhere/plugin.cfg", "res://addons/previous-tab/plugin.cfg", "res://addons/script-tabs/plugin.cfg", "res://addons/use-context/plugin.cfg")
+enabled=PackedStringArray("res://addons/use-context/plugin.cfg")
 
 [filesystem]
 
 import/blender/enabled=false
+import/fbx/enabled=false
 
 [godots]
 
@@ -45,3 +49,4 @@ version_hint="4.1.2"
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.113725, 0.133333, 0.160784, 1)
