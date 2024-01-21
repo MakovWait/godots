@@ -42,7 +42,7 @@ func _ready():
 		RemoteEditorsTreeDataSource.RemoteAssetsCallable.new(download_zip)
 	)
 	
-	_tree_mirror_button.add_item("Github", MIRROR_GITHUB_ID)
+	_tree_mirror_button.add_item("GitHub", MIRROR_GITHUB_ID)
 	_tree_mirror_button.add_item("TuxFamily", MIRROR_TUX_FAMILY_ID)
 	_tree_mirror_button.selected = _tree_mirror_button.get_item_index(
 		_active_mirror_cache.ret(MIRROR_DEFAULT)
