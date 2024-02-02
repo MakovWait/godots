@@ -7,7 +7,7 @@ var _src: Src
 
 
 func _init():
-	item_selected.connect(func(_idx): changed.emit())
+	item_selected.connect(func(_idx): changed.emit(false))
 
 
 func init(src: Src):

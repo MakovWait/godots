@@ -39,7 +39,7 @@ var data = {
 
 
 func _init():
-	item_selected.connect(func(_idx): changed.emit())
+	item_selected.connect(func(_idx): changed.emit(false))
 	for key in data.keys():
 		add_item(data[key].text, int(key))
 

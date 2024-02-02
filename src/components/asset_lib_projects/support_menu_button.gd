@@ -34,7 +34,7 @@ func _init():
 	popup.id_pressed.connect(func(id):
 		var idx = popup.get_item_index(id)
 		popup.set_item_checked(idx, not popup.is_item_checked(idx))
-		changed.emit()
+		changed.emit(false)
 	)
 
 

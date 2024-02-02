@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://db2ha8gx6ak03" path="res://src/components/asset_lib_projects/asset_list_item/asset_list_item.tscn" id="2_d1s0v"]
 [ext_resource type="Script" path="res://src/components/asset_lib_projects/support_menu_button.gd" id="2_ijehd"]
 [ext_resource type="Script" path="res://src/components/asset_lib_projects/category_option_button.gd" id="2_p84kh"]
-[ext_resource type="Script" path="res://src/components/asset_lib_projects/filter_edit.gd" id="2_t0xar"]
+[ext_resource type="Script" path="res://src/components/asset_lib_projects/search_bar.gd" id="3_37g3f"]
 [ext_resource type="Script" path="res://src/components/asset_lib_projects/assets_container.gd" id="3_ymc38"]
 [ext_resource type="Script" path="res://src/components/asset_lib_projects/site_option_button.gd" id="4_b1ik8"]
 [ext_resource type="Script" path="res://src/components/asset_lib_projects/retry_button_container.gd" id="9_bqy5j"]
@@ -28,17 +28,30 @@ grow_vertical = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxEmpty_1dth3")
 script = ExtResource("1_fn8cl")
-_params_sources = [NodePath("Container/HBoxContainer/VersionContainer/VersionOptionButton"), NodePath("Container/HBoxContainer/SortContainer/SortOptionButton"), NodePath("Container/HBoxContainer/CategoryContainer/CategoryOptionButton"), NodePath("Container/HBoxContainer/SupportMenuButton"), NodePath("Container/FilterEdit"), NodePath("Container/HBoxContainer/SiteContainer/SiteOptionButton")]
+_params_sources = [NodePath("Container/HBoxContainer/VersionContainer/VersionOptionButton"), NodePath("Container/HBoxContainer/SortContainer/SortOptionButton"), NodePath("Container/HBoxContainer/CategoryContainer/CategoryOptionButton"), NodePath("Container/HBoxContainer/SupportMenuButton"), NodePath("Container/SearchBar"), NodePath("Container/HBoxContainer/SiteContainer/SiteOptionButton")]
 _item_details_scene = ExtResource("2_ckq1w")
 
 [node name="Container" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="FilterEdit" type="LineEdit" parent="Container"]
+[node name="SearchBar" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+script = ExtResource("3_37g3f")
+
+[node name="FilterEdit" type="LineEdit" parent="Container/SearchBar"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search for..."
 clear_button_enabled = true
-script = ExtResource("2_t0xar")
+
+[node name="VSeparator" type="VSeparator" parent="Container/SearchBar"]
+layout_mode = 2
+
+[node name="SearchButton" type="Button" parent="Container/SearchBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Search"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Container"]
 layout_mode = 2

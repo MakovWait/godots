@@ -72,14 +72,14 @@ func _ready():
 	_params_sources_composed = ParamSources.new(_params_sources)
 	
 	%LibVb.add_theme_constant_override("separation", 20 * Config.EDSCALE)
-	_filter_edit.placeholder_text = tr("Search Templates, Projects, and Demos")
 	
 	_assets_container.add_theme_constant_override("h_separation", 10 * Config.EDSCALE)
 	_assets_container.add_theme_constant_override("v_separation", 10 * Config.EDSCALE)
 	
-	_params_sources_composed.connect_changed(func():
-		_current_page = 0
-		_async_fetch()
+	_params_sources_composed.connect_changed(func(fetch):
+		if fetch:
+			_current_page = 0
+			_async_fetch()
 	)
 	
 	_site_option_button.site_selected.connect(func():
@@ -117,8 +117,7 @@ func __async_load_versions_list():
 	var return_error
 	if len(versions_load_errors) > 0:
 #		_show_config_error(config_load_errors)
-		_status_label.show()
-		_status_label.text = tr("Failed to get versions list.")
+		_set_status(tr("Failed to get versions list."))
 		_error_container.set_text(versions_load_errors[0])
 		_retry_button_container.create(func(): _async_fetch())
 		return_error = FAILED
@@ -138,7 +137,7 @@ func __async_load_configuration():
 	_assets_container.clear()
 	_clear_pages()
 	_scroll_container.dim()
-	_error_container.hide()
+	_error_container.visible = false
 
 	var config_load_errors = await _category_option_button.async_load_items(
 		_site_option_button.get_selected_site()
@@ -161,7 +160,7 @@ func __async_load_configuration():
 
 func __async_fetch_assets():
 	_retry_button_container.clear()
-	_error_container.hide()
+	_error_container.visible = false
 	_scroll_container.dim()
 	_params_sources_composed.disable()
 
@@ -207,7 +206,7 @@ func _update_fetch_assets_status_label(items: AssetLib.Items, params: AssetLib.P
 				]
 			))
 	else:
-		_status_label.hide()
+		_status_label.visible = false
 
 
 func _change_page(p):
@@ -234,7 +233,7 @@ func _notification(what):
 
 
 func _set_status(text):
-	_status_label.show()
+	_status_label.visible = true
 	_status_label.text = text
 
 

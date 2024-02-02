@@ -13,7 +13,7 @@ func init(src: Src):
 
 
 func _init():
-	item_selected.connect(func(_idx): changed.emit())
+	item_selected.connect(func(_idx): changed.emit(false))
 	add_item(tr("All"), 0)
 
 
