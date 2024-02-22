@@ -1,7 +1,7 @@
 extends HBoxContainer
 
-@onready var _godots_releases_list = $GodotsReleasesList as VBoxList
-@onready var _sidebar = $ScrollContainer/ActionsSidebar
+@onready var _godots_releases_list = %GodotsReleasesList as VBoxList
+@onready var _sidebar = %ActionsSidebar
 @onready var _refresh_button = %RefreshButton
 
 var _releases: GodotsReleases.I
