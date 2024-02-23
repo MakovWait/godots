@@ -2,7 +2,7 @@ extends "res://addons/gd-plug/plug.gd"
 
 
 func _plugging():
-	plug("MikeSchulze/gdUnit4", {"commit": "353946d7e345d4e6cb05c338be667d73c6da5575"})
+	plug("MikeSchulze/gdUnit4", {"commit": "8226bc34faaa9fde7829b065fa51b63a8fe140c4"})
 	plug("MakovWait/godot-use-context")
 	
 	if "--include-editor" in OS.get_cmdline_args():
