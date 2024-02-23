@@ -13,5 +13,5 @@ func test_filter_by_name_pattern(name: String, expected: int, test_parameters:= 
 ]):
 	var editors = LocalEditors.List.new(config_path)
 	editors.load()
-	var result = editors.filter_by_name_pattern(name)
-	assert(result.size() == expected)
+	var result = LocalEditors.Selector.new().by_name(name).select(editors)
+	assert_int(result.size()).is_equal(expected)

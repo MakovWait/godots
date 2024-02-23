@@ -184,7 +184,10 @@ class Item extends Object:
 		return sub_file_exists.call("_sc_") or sub_file_exists.call("._sc_")
 	
 	func match_name(search):
-		return _sanitize_name(name).findn(search) > -1
+		var sanitazed_name = _sanitize_name(name)
+		var sanitazed_search = _sanitize_name(search)
+		var findn = sanitazed_name.findn(sanitazed_search)
+		return findn > -1
 	
 	func match_version_hint(hint, ignore_mono=false):
 		return VersionHint.are_equal(self.version_hint, hint, ignore_mono)
