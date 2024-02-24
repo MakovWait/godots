@@ -290,7 +290,7 @@ func next_random_project_name():
 
 
 func _readonly():
-	assert(false, "Property is readonly")
+	utils.prop_is_readonly()
 
 
 func _simplify_path(s: String):

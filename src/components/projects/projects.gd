@@ -4,29 +4,96 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
 @onready var _sidebar: VBoxContainer = %ActionsSidebar
 @onready var _projects_list: VBoxContainer = %ProjectsList
-@onready var _import_project_button: Button = %ImportProjectButton
 @onready var _import_project_dialog: ConfirmationDialog = %ImportProjectDialog
-@onready var _new_project_button = %NewProjectButton
 @onready var _new_project_dialog = %NewProjectDialog
-@onready var _scan_button = %ScanButton
 @onready var _scan_dialog = %ScanDialog
-@onready var _remove_missing_button = %RemoveMissingButton
 @onready var _install_project_from_zip_dialog = %InstallProjectSimpleDialog
 @onready var _duplicate_project_dialog = %DuplicateProjectDialog
-@onready var _refresh_button = %RefreshButton
 @onready var _clone_project_dialog = %CloneProjectDialog
-@onready var _clone_project_button = %CloneProjectButton
 
 
 var _projects: Projects.List
 var _load_projects_queue = []
+var _remove_missing_action: Action.Self
 
 
 func init(projects: Projects.List):
 	self._projects = projects
 	
-	_import_project_button.icon = get_theme_icon("Load", "EditorIcons")
-	_import_project_button.pressed.connect(func(): import())
+	var remove_missing_popup = RemoveMissingDialog.new(_remove_missing)
+	add_child(remove_missing_popup)
+	
+	var actions := Action.List.new([
+		Action.from_dict({
+			"key": "new-project",
+			"icon": Action.IconTheme.new(self, "Add", "EditorIcons"),
+			"act": _new_project_dialog.raise,
+			"label": tr("New"),
+		}),
+		Action.from_dict({
+			"label": tr("Import"),
+			"key": "import-project",
+			"icon": Action.IconTheme.new(self, "Load", "EditorIcons"),
+			"act": func(): import()
+		}),
+		Action.from_dict({
+			"label": tr("Clone"),
+			"key": "clone-project",
+			"icon": Action.IconTheme.new(self, "VcsBranches", "EditorIcons"),
+			"act": func(): _clone_project_dialog.raise()
+		}),
+		Action.from_dict({
+			"label": tr("Scan"),
+			"key": "scan-projects",
+			"icon": Action.IconTheme.new(self, "Search", "EditorIcons"),
+			"act": func():
+				_scan_dialog.current_dir = ProjectSettings.globalize_path(
+					Config.DEFAULT_PROJECTS_PATH.ret()
+				)
+				_scan_dialog.popup_centered_ratio(0.5)
+				pass\
+		}),
+		Action.from_dict({
+			"label": tr("Remove Missing"),
+			"key": "remove-missing",
+			"icon": Action.IconTheme.new(self, "Clear", "EditorIcons"),
+			"act": func(): remove_missing_popup.popup_centered()
+		}),
+		Action.from_dict({
+			"label": tr("Refresh List"),
+			"key": "refresh",
+			"icon": Action.IconTheme.new(self, "Reload", "EditorIcons"),
+			"act": _refresh
+		})
+	])
+	
+	_remove_missing_action = actions.by_key('remove-missing')
+
+	var project_actions = TabActions.Menu.new(
+		actions.sub_list([
+			'new-project',
+			'import-project',
+			'clone-project',
+			'scan-projects',
+		]).all(), 
+		TabActions.Settings.new(
+			Cache.section_of(self), 
+			[
+				"new-project",
+				"import-project",
+				"scan-projects"
+			]
+		)
+	)
+	project_actions.add_controls_to_node($ProjectsList/HBoxContainer/TabActions)
+	project_actions.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
+	$ProjectsList/HBoxContainer/TabActions.add_child(project_actions)
+	$ProjectsList/HBoxContainer/TabActions.add_child(VSeparator.new())
+
+	$ProjectsList/HBoxContainer.add_child(VSeparator.new())
+	$ProjectsList/HBoxContainer.add_child(_remove_missing_action.to_btn().make_flat(true).show_text(false))
+	$ProjectsList/HBoxContainer.add_child(actions.by_key('refresh').to_btn().make_flat(true).show_text(false))
+
 	_import_project_dialog.imported.connect(func(project_path, editor_path, edit):
 		var project: Projects.Item
 		if projects.has(project_path):
@@ -49,31 +116,14 @@ func init(projects: Projects.List):
 		assert(path.get_file() == "project.godot")
 		import(path)
 	)
-	_clone_project_button.pressed.connect(func():
-		_clone_project_dialog.raise()
-	)
 	
 	_new_project_dialog.created.connect(func(project_path):
 		import(project_path)
 	)
-	_new_project_button.pressed.connect(_new_project_dialog.raise)
-	_new_project_button.icon = get_theme_icon("Add", "EditorIcons")
 	
-	_scan_button.icon = get_theme_icon("Search", "EditorIcons")
-	_scan_button.pressed.connect(func():
-		_scan_dialog.current_dir = ProjectSettings.globalize_path(
-			Config.DEFAULT_PROJECTS_PATH.ret()
-		)
-		_scan_dialog.popup_centered_ratio(0.5)
-	)
 	_scan_dialog.dir_to_scan_selected.connect(func(dir_to_scan: String):
 		_scan_projects(dir_to_scan)
 	)
-	
-	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
-	_refresh_button.pressed.connect(_refresh)
-	
-	_remove_missing_button.confirmed.connect(_remove_missing)
 	
 	_projects_list.refresh(_projects.all())
 	_load_projects()
@@ -156,9 +206,9 @@ func _remove_missing():
 
 
 func _update_remove_missing_disabled():
-	_remove_missing_button.disabled = len(
+	_remove_missing_action.disable(len(
 		_projects.all().filter(func(x): return x.is_missing)
-	) == 0
+	) == 0)
 
 
 func _on_projects_list_item_selected(item) -> void:

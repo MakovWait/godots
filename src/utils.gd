@@ -67,3 +67,15 @@ static func disconnect_all(obj: Object):
 	for obj_signal in obj.get_signal_list():
 		for connection in obj.get_signal_connection_list(obj_signal.name):
 			obj.disconnect(obj_signal.name, connection.callable)
+
+
+static func prop_is_readonly():
+	assert(false, "Property is readonly")
+
+
+static func not_implemeted():
+	assert(false, "Not Implemented")
+
+
+static func empty_func():
+	pass

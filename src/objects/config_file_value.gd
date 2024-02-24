@@ -15,6 +15,10 @@ func _init(cfg, section, key, baked_default=null):
 	_baked_default = baked_default
 
 
+func exists():
+	return _cfg.has_section_key(_section, _key)
+
+
 func ret(default=null):
 	default = _baked_default if default == null else default
 	var value = _cfg.get_value(_section, _key, default) 
