@@ -87,12 +87,11 @@ func init(projects: Projects.List):
 	)
 	project_actions.add_controls_to_node($ProjectsList/HBoxContainer/TabActions)
 	project_actions.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
-	$ProjectsList/HBoxContainer/TabActions.add_child(project_actions)
-	$ProjectsList/HBoxContainer/TabActions.add_child(VSeparator.new())
+	#$ProjectsList/HBoxContainer/TabActions.add_child(project_actions)
 
-	$ProjectsList/HBoxContainer.add_child(VSeparator.new())
 	$ProjectsList/HBoxContainer.add_child(_remove_missing_action.to_btn().make_flat(true).show_text(false))
 	$ProjectsList/HBoxContainer.add_child(actions.by_key('refresh').to_btn().make_flat(true).show_text(false))
+	$ProjectsList/HBoxContainer.add_child(project_actions)
 
 	_import_project_dialog.imported.connect(func(project_path, editor_path, edit):
 		var project: Projects.Item

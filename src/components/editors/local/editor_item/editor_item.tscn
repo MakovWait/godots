@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b2tm4lxm80sj0" path="res://src/components/editors/local/editor_item/rename_editor_dialog.tscn" id="2_6et78"]
 [ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_8fw8m"]
 [ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="3_8hshq"]
-[ext_resource type="PackedScene" uid="uid://dgm66rd6ay24" path="res://src/components/editors/local/editor_item/add_extra_arguments_editor_dialog.tscn" id="3_dx4xf"]
+[ext_resource type="PackedScene" path="res://src/components/editors/local/editor_item/add_extra_arguments_editor_dialog.tscn" id="3_dx4xf"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="5_48fct"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="6_qnxw1"]
 [ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="7_0bi54"]

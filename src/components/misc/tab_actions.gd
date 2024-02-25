@@ -63,27 +63,44 @@ class Settings:
 class Menu extends MenuButton:
 	var _views: Views
 	var _settings: Settings
+	var _settings_popup: PopupMenu
 	
 	func _init(actions: Array[Action.Self], settings: Settings):
 		_views = Views.new(actions, settings)
 		_settings = settings
-		_setup_popup()
+		ready.connect(_setup_popup)
 	
 	func _setup_popup():
 		var popup := get_popup()
 		popup.hide_on_checkable_item_selection = false
 		popup.id_pressed.connect(func(id):
-			get_popup().get_item_metadata(
-				get_popup().get_item_index(id)
+			popup.get_item_metadata(
+				popup.get_item_index(id)
 			).get('on_pressed', utils.empty_func).call()
 		)
+		
+		_settings_popup = PopupMenu.new()
+		_settings_popup.name = "Settings"
+		_settings_popup.hide_on_checkable_item_selection = false
+		_settings_popup.id_pressed.connect(func(id):
+			_settings_popup.get_item_metadata(
+				_settings_popup.get_item_index(id)
+			).get('on_pressed', utils.empty_func).call()
+		)
+		popup.add_child(_settings_popup)
+		
 		for view in _views.all():
 			view.add_to_popup(popup.item_count, popup)
-		popup.add_separator(tr("Visible"))
+		
+		popup.add_separator()
+		popup.add_submenu_item("Config", "Settings")
+		popup.set_item_icon(popup.item_count - 1, popup.get_theme_icon("Tools", "EditorIcons"))
+		
+		_settings_popup.add_separator(tr("Visibility"))
 		for view in _views.all():
-			view.add_to_show_section(popup.item_count, popup)
-		popup.add_separator(tr("Appearance"))
-		_settings.add_to_popup(popup.item_count, popup)
+			view.add_to_show_section(_settings_popup.item_count, _settings_popup)
+		_settings_popup.add_separator(tr("Appearance"))
+		_settings.add_to_popup(_settings_popup.item_count, _settings_popup)
 	
 	func add_controls_to_node(control: Control):
 		for view in _views.all():

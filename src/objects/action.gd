@@ -69,6 +69,9 @@ class Self:
 		_is_disabled = val
 		disabled.emit(val)
 	
+	func is_disabled():
+		return _is_disabled
+	
 	func to_btn() -> ButtonControl:
 		return ButtonControl.new(self)
 

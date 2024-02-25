@@ -77,6 +77,7 @@ class Settings:
 class Menu extends MenuButton:
 	var _views: Views
 	var _settings: Settings
+	var _settings_popup: PopupMenu
 	
 	func _init(actions: Array[Action.Self], settings: Settings):
 		_views = Views.new(actions, settings)
@@ -90,21 +91,37 @@ class Menu extends MenuButton:
 		)
 		popup.hide_on_checkable_item_selection = false
 		popup.id_pressed.connect(func(id):
-			get_popup().get_item_metadata(
-				get_popup().get_item_index(id)
+			popup.get_item_metadata(
+				popup.get_item_index(id)
 			).get('on_pressed', utils.empty_func).call()
 		)
+		
+		_settings_popup = PopupMenu.new()
+		_settings_popup.name = "Settings"
+		_settings_popup.hide_on_checkable_item_selection = false
+		_settings_popup.id_pressed.connect(func(id):
+			_settings_popup.get_item_metadata(
+				_settings_popup.get_item_index(id)
+			).get('on_pressed', utils.empty_func).call()
+		)
+		popup.add_child(_settings_popup)
 
 	func refill_popup():
 		var popup := get_popup()
 		popup.clear()
+		_settings_popup.clear()
 		for view in _views.all():
 			view.add_to_popup(popup.item_count, popup)
-		popup.add_separator(tr("Visible"))
+		
+		popup.add_separator()
+		popup.add_submenu_item("Config", "Settings")
+		popup.set_item_icon(popup.item_count - 1, popup.get_theme_icon("Tools", "EditorIcons"))
+		
+		_settings_popup.add_separator(tr("Visibility"))
 		for view in _views.all():
-			view.add_to_show_section(popup.item_count, popup)
-		popup.add_separator(tr("Appearance"))
-		_settings.add_to_popup(popup.item_count, popup)
+			view.add_to_show_section(_settings_popup.item_count, _settings_popup)
+		_settings_popup.add_separator(tr("Appearance"))
+		_settings.add_to_popup(_settings_popup.item_count, _settings_popup)
 
 	func add_controls_to_node(control: Control):
 		for view in _views.all():
@@ -126,9 +143,10 @@ class Menu extends MenuButton:
 			popup.add_item(_o.label, idx)
 			popup.set_item_icon(idx, _o.icon.texture())
 			popup.set_item_metadata(idx, {'on_pressed': _o.act})
+			popup.set_item_disabled(idx, _o.is_disabled())
 		
 		func add_to_show_section(idx: int, popup: PopupMenu):
-			popup.add_check_item(_o.label)
+			popup.add_check_item(_o.label, idx)
 			popup.set_item_icon(idx, _o.icon.texture())
 			popup.set_item_metadata(idx, {'on_pressed': func():
 				popup.toggle_item_checked(idx)
