@@ -15,16 +15,14 @@ class Settings:
 		_show_features = Cache.smart_value(cache_section, 'show-features', true) 
 		_default_visible_keys = default_visible_keys
 	
-	func add_to_popup(idx: int, popup: PopupMenu, on_about_to_popup: Array[Callable]):
+	func add_to_popup(idx: int, popup: PopupMenu):
 		popup.add_check_item(tr("Show Tags"))
 		popup.set_item_metadata(idx, {
 			'on_pressed': func():
 				popup.toggle_item_checked(idx)
 				set_show_tags(popup.is_item_checked(idx))
 		})
-		on_about_to_popup.append(func():
-			popup.set_item_checked(idx, is_show_tags())
-		)
+		popup.set_item_checked(idx, is_show_tags())
 
 		idx = idx + 1
 		popup.add_check_item(tr("Show Features"))
@@ -33,10 +31,7 @@ class Settings:
 				popup.toggle_item_checked(idx)
 				set_show_features(popup.is_item_checked(idx))
 		})
-		on_about_to_popup.append(func():
-			popup.set_item_checked(idx, is_show_features())
-		)
-
+		popup.set_item_checked(idx, is_show_features())
 
 	func is_flat() -> bool:
 		return true
@@ -82,18 +77,16 @@ class Settings:
 class Menu extends MenuButton:
 	var _views: Views
 	var _settings: Settings
-	var _on_about_to_popup: Array[Callable]
 	
 	func _init(actions: Array[Action.Self], settings: Settings):
 		_views = Views.new(actions, settings)
 		_settings = settings
 		_setup_popup()
-	
+
 	func _setup_popup():
 		var popup := get_popup()
 		about_to_popup.connect(func():
-			for callback in _on_about_to_popup:
-				callback.call()
+			refill_popup()
 		)
 		popup.hide_on_checkable_item_selection = false
 		popup.id_pressed.connect(func(id):
@@ -101,14 +94,18 @@ class Menu extends MenuButton:
 				get_popup().get_item_index(id)
 			).get('on_pressed', utils.empty_func).call()
 		)
+
+	func refill_popup():
+		var popup := get_popup()
+		popup.clear()
 		for view in _views.all():
 			view.add_to_popup(popup.item_count, popup)
 		popup.add_separator(tr("Visible"))
 		for view in _views.all():
 			view.add_to_show_section(popup.item_count, popup)
 		popup.add_separator(tr("Appearance"))
-		_settings.add_to_popup(popup.item_count, popup, _on_about_to_popup)
-	
+		_settings.add_to_popup(popup.item_count, popup)
+
 	func add_controls_to_node(control: Control):
 		for view in _views.all():
 			view.add_to_node(control)

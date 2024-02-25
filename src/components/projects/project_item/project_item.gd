@@ -56,8 +56,14 @@ func init(item: Projects.Item):
 	action_views.add_controls_to_node(_actions_h_box)
 	_actions_h_box.add_child(action_views)
 	right_clicked.connect(func():
-		action_views.show_popup()
-		action_views.get_popup().position = DisplayServer.mouse_get_position()
+		action_views.refill_popup()
+		var popup = action_views.get_popup()
+		var rect = Rect2(Vector2(DisplayServer.mouse_get_position()), Vector2.ZERO)
+		popup.size = rect.size
+		if is_layout_rtl():
+			rect.position.x += rect.size.y - popup.y
+		popup.position = rect.position
+		popup.popup()
 	)
 	selected_changed.connect(func(is_selected):
 		_actions_h_box.visible = _is_hovering or is_selected
