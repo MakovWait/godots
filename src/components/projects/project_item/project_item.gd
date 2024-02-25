@@ -19,8 +19,16 @@ signal tag_clicked(tag)
 @onready var _tag_container: HBoxContainer = %TagContainer
 @onready var _project_features: Label = %ProjectFeatures
 @onready var _info_body = %InfoBody
+@onready var _info_v_box = %InfoVBox
+@onready var _title_hbox = $InfoVBox/Title
+@onready var _actions_h_box = $InfoVBox/Title/ActionsHBox
 
-var _get_actions_callback: Callable
+static var settings := ProjectItemActions.Settings.new(
+	'project-item-inline-actions',
+	[]
+)
+
+var _actions: Action.List
 var _tags = []
 var _sort_data = {
 	'ref': self
@@ -30,6 +38,8 @@ var _sort_data = {
 func _ready() -> void:
 	super._ready()
 	_info_body.add_theme_constant_override("separation", int(-12 * Config.EDSCALE))
+	_info_v_box.add_theme_constant_override("separation", int(-15 * Config.EDSCALE))
+	_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
 	_project_features.add_theme_font_override("font", get_theme_font("title", "EditorFonts"))
 	_project_features.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
@@ -39,6 +49,29 @@ func _ready() -> void:
 
 
 func init(item: Projects.Item):
+	_fill_actions(item)
+	var action_views = ProjectItemActions.Menu.new(_actions.all(), settings)
+	action_views.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
+	#action_views.mouse_filter = Control.MOUSE_FILTER_PASS
+	action_views.add_controls_to_node(_actions_h_box)
+	_actions_h_box.add_child(action_views)
+	right_clicked.connect(func():
+		action_views.show_popup()
+		action_views.get_popup().position = DisplayServer.mouse_get_position()
+	)
+	selected_changed.connect(func(is_selected):
+		_actions_h_box.visible = _is_hovering or is_selected
+	)
+	_actions_h_box.visible = false
+	hover_changed.connect(func(is_hovered):
+		_actions_h_box.visible = is_hovered or _is_selected
+	)
+	var sync_settings = func():
+		_tag_container.visible = settings.is_show_tags()
+		_project_features.visible = settings.is_show_features()
+	sync_settings.call()
+	settings.changed.connect(sync_settings)
+
 	item.loaded.connect(func():
 		_fill_data(item)
 	)
@@ -51,97 +84,6 @@ func init(item: Projects.Item):
 	)
 
 	_fill_data(item)
-	
-	_get_actions_callback = func():
-		if not item.is_loaded:
-			return []
-
-		var duplicate_btn = buttons.simple(
-			tr("Duplicate"), 
-			get_theme_icon("Duplicate", "EditorIcons"),
-			func(): duplicate_requested.emit()
-		)
-		duplicate_btn.disabled = item.is_missing
-
-		var edit_btn = buttons.simple(
-			tr("Edit"), 
-			get_theme_icon("Edit", "EditorIcons"),
-			_on_edit_with_editor.bind(item)
-		)
-		edit_btn.set_script(RunButton)
-		edit_btn.init(item)
-
-		var run_btn = buttons.simple(
-			tr("Run"), 
-			get_theme_icon("Play", "EditorIcons"),
-			_on_run_with_editor.bind(item, func(item): item.run(), "run", "Run", false)
-		)
-		run_btn.set_script(RunButton)
-		run_btn.init(item)
-
-		var rename_btn = buttons.simple(
-			tr("Rename"), 
-			get_theme_icon("Rename", "EditorIcons"),
-			_on_rename.bind(item)
-		)
-		rename_btn.disabled = item.is_missing
-
-		var bind_editor_btn = buttons.simple(
-			tr("Bind Editor"), 
-			get_theme_icon("GodotMonochrome", "EditorIcons"),
-			_on_rebind_editor.bind(item)
-		)
-		bind_editor_btn.disabled = item.is_missing
-		
-		var manage_tags_btn = buttons.simple(
-			tr("Manage Tags"), 
-			get_theme_icon("Script", "EditorIcons"),
-			func(): manage_tags_requested.emit()
-		)
-		manage_tags_btn.disabled = item.is_missing
-		
-		var remove_btn = buttons.simple(
-			tr("Remove"), 
-			get_theme_icon("Remove", "EditorIcons"),
-			_on_remove
-		)
-		
-		var view_command_btn = buttons.simple(
-			tr("View Command"), 
-			get_theme_icon("Window", "EditorIcons"),
-			func(): 
-				var command_viewer = Context.use(self, CommandViewer) as CommandViewer
-				if command_viewer:
-					var base_process = item.as_process([])
-					var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
-					cmd_src.edited.connect(func(): edited.emit())
-					var commands = CommandViewer.CommandsDuo.new(
-						CommandViewer.CommandsGeneric.new(
-							base_process,
-							cmd_src,
-							true
-						),
-						CommandViewer.CommandsGeneric.new(
-							base_process,
-							Config.CustomCommandsSourceConfig.new(
-								Config.GLOBAL_CUSTOM_COMMANDS_PROJECTS
-							),
-							false
-						)
-					)
-					command_viewer.raise(
-						commands, true
-					)
-		)
-		view_command_btn.set_script(RunButton)
-		view_command_btn.init(item)
-		
-#		var actions = []
-#		if not item.is_missing:
-#			actions.append(edit_btn)
-#			actions.append(bind_editor_btn)
-#		actions.append(remove_btn)
-		return [edit_btn, run_btn, duplicate_btn, rename_btn, bind_editor_btn, manage_tags_btn, view_command_btn, remove_btn]
 	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
@@ -161,7 +103,76 @@ func init(item: Projects.Item):
 	)
 
 
-func _fill_data(item):
+func _fill_actions(item: Projects.Item):
+	var edit = Action.from_dict({
+		"key": "edit",
+		"icon": Action.IconTheme.new(self, "Edit", "EditorIcons"),
+		"act": _on_edit_with_editor.bind(item),
+		"label": tr("Edit"),
+	})
+	
+	var run = Action.from_dict({
+		"key": "run",
+		"icon": Action.IconTheme.new(self, "Play", "EditorIcons"),
+		"act": _on_run_with_editor.bind(item, func(item): item.run(), "run", "Run", false),
+		"label": tr("Run"),
+	})
+
+	var duplicate = Action.from_dict({
+		"key": "duplicate",
+		"icon": Action.IconTheme.new(self, "Duplicate", "EditorIcons"),
+		"act": func(): duplicate_requested.emit(),
+		"label": tr("Duplicate"),
+	})
+
+	var rename = Action.from_dict({
+		"key": "rename",
+		"icon": Action.IconTheme.new(self, "Rename", "EditorIcons"),
+		"act": _on_rename.bind(item),
+		"label": tr("Rename"),
+	})
+
+	var bind_editor = Action.from_dict({
+		"key": "bind-editor",
+		"icon": Action.IconTheme.new(self, "GodotMonochrome", "EditorIcons"),
+		"act": _on_rebind_editor.bind(item),
+		"label": tr("Bind Editor"),
+	})
+
+	var manage_tags = Action.from_dict({
+		"key": "manage-tags",
+		"icon": Action.IconTheme.new(self, "Script", "EditorIcons"),
+		"act": func(): manage_tags_requested.emit(),
+		"label": tr("Manage Tags"),
+	})
+	
+	var view_command = Action.from_dict({
+		"key": "view-command",
+		"icon": Action.IconTheme.new(self, "Window", "EditorIcons"),
+		"act": _view_command.bind(item),
+		"label": tr("View Command"),
+	})
+	
+	var remove = Action.from_dict({
+		"key": "remove",
+		"icon": Action.IconTheme.new(self, "Remove", "EditorIcons"),
+		"act": _on_remove,
+		"label": tr("Remove"),
+	})
+
+	_actions = Action.List.new([
+		edit,
+		run,
+		duplicate,
+		rename,
+		bind_editor,
+		manage_tags,
+		view_command,
+		remove
+	])
+
+
+func _fill_data(item: Projects.Item):
 	if item.is_missing:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
@@ -181,6 +192,46 @@ func _fill_data(item):
 	_sort_data.path = item.path
 	_sort_data.last_modified = item.last_modified
 	_sort_data.tag_sort_string = "".join(item.tags)
+	
+	for action in _actions.sub_list([
+		'duplicate',
+		'bind-editor',
+		'manage-tags',
+		'rename'
+	]).all():
+		action.disable(item.is_missing)
+	
+	for action in _actions.sub_list([
+		'view-command',
+		'edit',
+		'run',
+	]).all():
+		action.disable(item.is_missing or item.has_invalid_editor)
+
+
+func _view_command(item):
+	var command_viewer = Context.use(self, CommandViewer) as CommandViewer
+	if command_viewer:
+		var base_process = item.as_process([])
+		var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
+		cmd_src.edited.connect(func(): edited.emit())
+		var commands = CommandViewer.CommandsDuo.new(
+			CommandViewer.CommandsGeneric.new(
+				base_process,
+				cmd_src,
+				true
+			),
+			CommandViewer.CommandsGeneric.new(
+				base_process,
+				Config.CustomCommandsSourceConfig.new(
+					Config.GLOBAL_CUSTOM_COMMANDS_PROJECTS
+				),
+				false
+			)
+		)
+		command_viewer.raise(
+			commands, true
+		)
 
 
 func _set_features(features):
@@ -326,10 +377,7 @@ func _on_remove():
 
 
 func get_actions():
-	if _get_actions_callback:
-		return _get_actions_callback.call()
-	else:
-		return []
+	return []
 
 
 func apply_filter(filter):

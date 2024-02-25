@@ -2,34 +2,45 @@ class_name HBoxListItem
 extends HBoxContainer
 
 signal clicked
+signal right_clicked
 signal double_clicked
+signal hover_changed(is_hovering: bool)
+signal selected_changed(is_selected: bool)
 
 
-var _is_hovering = false
-var _is_selected = false
-
-
-func _ready() -> void:
-	mouse_entered.connect(func(): 
-		_is_hovering = true
+var _is_hovering = false:
+	set(value):
+		if value == _is_hovering:
+			return
+		_is_hovering = value
+		hover_changed.emit(_is_hovering)
 		queue_redraw()
-	)
-	mouse_exited.connect(func(): 
-		_is_hovering = false
-		queue_redraw()
-	)
+var _is_selected = false:
+	set(value):
+		if value == _is_selected:
+			return
+		_is_selected = value
+		selected_changed.emit(_is_selected)
+
+
+func _ready():
+	pass
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		_is_hovering = get_global_rect().has_point(event.position) and visible
+
 	var mb = event as InputEventMouseButton
 	if mb and get_global_rect().has_point(event.position):
-		if not _is_hovering:
-			return
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if mb.double_click and visible:
 				double_clicked.emit()
 			elif mb.is_pressed() and visible: 
 				clicked.emit()
+		if mb.button_index == MOUSE_BUTTON_RIGHT:
+			if mb.is_pressed() and visible: 
+				right_clicked.emit()
 
 
 func _draw():

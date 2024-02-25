@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cnrduy54kvvf8"]
+[gd_scene load_steps=10 format=3 uid="uid://cnrduy54kvvf8"]
 
 [ext_resource type="Script" path="res://src/components/projects/project_item/project_item.gd" id="1_aivn8"]
 [ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="2_4lhxn"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="5_bf7vh"]
 [ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="6_8vyss"]
 [ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="6_k6uq1"]
+[ext_resource type="Script" path="res://src/components/misc/custom_minimum_size.gd" id="9_i1n7v"]
 
 [node name="ProjectItem" type="HBoxContainer"]
 anchors_preset = 15
@@ -31,12 +32,11 @@ layout_mode = 2
 script = ExtResource("3_tvtl4")
 
 [node name="InfoVBox" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="Control" type="Control" parent="InfoVBox"]
-custom_minimum_size = Vector2(2.08165e-12, 1)
-layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = -15
 
 [node name="Title" type="HBoxContainer" parent="InfoVBox"]
 layout_mode = 2
@@ -54,53 +54,88 @@ script = ExtResource("4_m00kj")
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
-[node name="ProjectFeatures" type="Label" parent="InfoVBox/Title"]
-unique_name_in_owner = true
-layout_mode = 2
-horizontal_alignment = 2
-
-[node name="TagContainer" type="HBoxContainer" parent="InfoVBox/Title"]
-unique_name_in_owner = true
-layout_mode = 2
-script = ExtResource("6_k6uq1")
-
-[node name="InfoBody" type="VBoxContainer" parent="InfoVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="Editor" type="HBoxContainer" parent="InfoVBox/InfoBody"]
+[node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/Title"]
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 
-[node name="EditorButton" type="Button" parent="InfoVBox/InfoBody/Editor"]
+[node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+vertical_scroll_mode = 0
+
+[node name="InfoBody" type="VBoxContainer" parent="InfoVBox/ScrollContainer"]
 unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+alignment = 1
+
+[node name="Editor" type="HBoxContainer" parent="InfoVBox/ScrollContainer/InfoBody"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EditorButton" type="Button" parent="InfoVBox/ScrollContainer/InfoBody/Editor"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 flat = true
 
-[node name="EditorPathLabel" type="Label" parent="InfoVBox/InfoBody/Editor"]
+[node name="EditorPathLabel" type="Label" parent="InfoVBox/ScrollContainer/InfoBody/Editor"]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 text = "/home/kovkel/editor/path"
+vertical_alignment = 1
 script = ExtResource("5_bf7vh")
 
-[node name="Path" type="HBoxContainer" parent="InfoVBox/InfoBody"]
+[node name="Path" type="HBoxContainer" parent="InfoVBox/ScrollContainer/InfoBody"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="ExploreButton" type="Button" parent="InfoVBox/InfoBody/Path"]
+[node name="ExploreButton" type="Button" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 flat = true
 script = ExtResource("6_8vyss")
 
-[node name="PathLabel" type="Label" parent="InfoVBox/InfoBody/Path"]
+[node name="PathLabel" type="Label" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
+mouse_filter = 1
 text = "/home/kovkel/editor/path"
 script = ExtResource("5_bf7vh")
 
-[node name="ProjectWarning" type="TextureRect" parent="InfoVBox/InfoBody/Path"]
+[node name="CustomMinimumSize" type="Node" parent="InfoVBox/ScrollContainer/InfoBody/Path/PathLabel"]
+script = ExtResource("9_i1n7v")
+custom_minimum_size = Vector2(128, 0)
+
+[node name="ProjectFeatures" type="Label" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProjectWarning" type="TextureRect" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
 unique_name_in_owner = true
 layout_mode = 2
 stretch_mode = 3
+
+[node name="TagContainer" type="HBoxContainer" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("6_k6uq1")
+
+[node name="Control" type="Control" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="InfoVBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CustomMinimumSize" type="Node" parent="InfoVBox/Control2"]
+script = ExtResource("9_i1n7v")
+custom_minimum_size = Vector2(0, 15)

@@ -71,6 +71,7 @@ func _ready():
 	)
 	
 	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
+	_refresh_button.self_modulate = Color(1, 1, 1, 0.6)
 	_remote_editors_tree.post_ready(_refresh_button)
 	var cached_mirror_id = _active_mirror_cache.ret(MIRROR_DEFAULT)
 	_remote_editors_tree.set_data_source(_tree_mirrors[cached_mirror_id])

@@ -39,15 +39,15 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Direct Link"
 
-[node name="RefreshButton" type="Button" parent="VBoxContainer/TopActions"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Refresh"
-
 [node name="TreeMirrorButton" type="OptionButton" parent="VBoxContainer/TopActions"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
+
+[node name="RefreshButton" type="Button" parent="VBoxContainer/TopActions"]
+unique_name_in_owner = true
+layout_mode = 2
+flat = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
