@@ -79,9 +79,10 @@ func init(projects: Projects.List):
 		TabActions.Settings.new(
 			Cache.section_of(self), 
 			[
-				"new-project",
-				"import-project",
-				"scan-projects"
+				'new-project',
+				'import-project',
+				'clone-project',
+				'scan-projects'
 			]
 		)
 	)
