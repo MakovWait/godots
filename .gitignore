@@ -23,8 +23,8 @@ addons/expand-region
 addons/find-everywhere
 addons/previous-tab
 addons/script-tabs
-addons/gdUnit
 addons/gdUnit4
+addons/gdUnit
 
 # Mac files
 .DS_Store
