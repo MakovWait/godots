@@ -24,6 +24,7 @@ addons/find-everywhere
 addons/previous-tab
 addons/script-tabs
 addons/gdUnit
+addons/gdUnit4
 
 # Mac files
 .DS_Store
