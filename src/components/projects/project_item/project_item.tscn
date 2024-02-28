@@ -36,7 +36,9 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-theme_override_constants/separation = -15
+
+[node name="Control" type="Control" parent="InfoVBox"]
+layout_mode = 2
 
 [node name="Title" type="HBoxContainer" parent="InfoVBox"]
 layout_mode = 2
@@ -55,7 +57,7 @@ custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
 [node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/Title"]
-modulate = Color(1, 1, 1, 0.498039)
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox"]
@@ -131,11 +133,3 @@ script = ExtResource("6_k6uq1")
 
 [node name="Control" type="Control" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
 layout_mode = 2
-
-[node name="Control2" type="Control" parent="InfoVBox"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="CustomMinimumSize" type="Node" parent="InfoVBox/Control2"]
-script = ExtResource("9_i1n7v")
-custom_minimum_size = Vector2(0, 15)

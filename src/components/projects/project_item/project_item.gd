@@ -21,7 +21,7 @@ signal tag_clicked(tag)
 @onready var _info_body = %InfoBody
 @onready var _info_v_box = %InfoVBox
 @onready var _title_hbox = $InfoVBox/Title
-@onready var _actions_h_box = $InfoVBox/Title/ActionsHBox
+@onready var _actions_h_box = %ActionsHBox
 
 static var settings := ProjectItemActions.Settings.new(
 	'project-item-inline-actions',
@@ -34,14 +34,13 @@ var _sort_data = {
 	'ref': self
 }
 
-
 func _ready() -> void:
 	super._ready()
 	_info_body.add_theme_constant_override("separation", int(-12 * Config.EDSCALE))
-	#_info_v_box.add_theme_constant_override("separation", int(-15 * Config.EDSCALE))
-	_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
 	_project_features.add_theme_font_override("font", get_theme_font("title", "EditorFonts"))
-	_project_features.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))
+	_project_features.add_theme_color_override(
+		"font_color", get_theme_color("warning_color", "Editor")
+	)
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
 	_project_warning.tooltip_text = tr("Editor is missing.")
@@ -66,13 +65,24 @@ func init(item: Projects.Item):
 		popup.popup()
 	)
 	selected_changed.connect(func(is_selected):
+		if settings.is_show_always(): return
 		_actions_h_box.visible = _is_hovering or is_selected
 	)
-	_actions_h_box.visible = false
+	_actions_h_box.visible = settings.is_show_always()
 	hover_changed.connect(func(is_hovered):
+		if settings.is_show_always(): return
 		_actions_h_box.visible = is_hovered or _is_selected
 	)
 	var sync_settings = func():
+		if settings.is_show_always():
+			_actions_h_box.visible = true
+		else:
+			_actions_h_box.visible = _is_hovering or _is_selected
+		_actions_h_box.remove_theme_constant_override("separation")
+		_actions_h_box.modulate = Color.WHITE
+		if settings.is_flat() and not settings.is_show_text():
+			_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
+			_actions_h_box.modulate = Color(1, 1, 1, 0.498)
 		_tag_container.visible = settings.is_show_tags()
 		_project_features.visible = settings.is_show_features()
 	sync_settings.call()

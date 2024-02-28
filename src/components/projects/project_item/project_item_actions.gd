@@ -7,45 +7,49 @@ class Settings:
 	var _visible_keys: ConfigFileValue
 	var _show_tags: ConfigFileValue
 	var _show_features: ConfigFileValue
+	var _is_flat: ConfigFileValue
+	var _show_text: ConfigFileValue
+	var _show_always: ConfigFileValue
 	var _default_visible_keys: Array[String]
 	
 	func _init(cache_section: String, default_visible_keys: Array[String]):
 		_visible_keys = Cache.smart_value(cache_section, 'visible-keys', true)
 		_show_tags = Cache.smart_value(cache_section, 'show-tags', true) 
 		_show_features = Cache.smart_value(cache_section, 'show-features', true) 
+		_is_flat = Cache.smart_value(cache_section, 'is-flat', true)
+		_show_text = Cache.smart_value(cache_section, 'show-text', true)
+		_show_always = Cache.smart_value(cache_section, 'show-always', true)
 		_default_visible_keys = default_visible_keys
 	
 	func add_to_popup(idx: int, popup: PopupMenu):
-		popup.add_check_item(tr("Show Tags"))
-		popup.set_item_metadata(idx, {
-			'on_pressed': func():
-				popup.toggle_item_checked(idx)
-				set_show_tags(popup.is_item_checked(idx))
-		})
-		popup.set_item_checked(idx, is_show_tags())
+		_add_setting_item(popup, idx, tr("Show Tags"), set_show_tags, is_show_tags)
+		_add_setting_item(popup, idx + 1, tr("Show Features"), set_show_features, is_show_features)
+		_add_setting_item(popup, idx + 2, tr("Flat"), set_flat, is_flat)
+		_add_setting_item(popup, idx + 3, tr("Show Text"), set_show_text, is_show_text)
+		_add_setting_item(popup, idx + 4, tr("Always Show Controls"), set_show_always, is_show_always)
 
-		idx = idx + 1
-		popup.add_check_item(tr("Show Features"))
+	func _add_setting_item(popup, idx, name, set_callback, get_callback):
+		popup.add_check_item(name)
 		popup.set_item_metadata(idx, {
 			'on_pressed': func():
 				popup.toggle_item_checked(idx)
-				set_show_features(popup.is_item_checked(idx))
+				set_callback.call(popup.is_item_checked(idx))
 		})
-		popup.set_item_checked(idx, is_show_features())
+		popup.set_item_checked(idx, get_callback.call())
 
 	func is_flat() -> bool:
-		return true
+		return _is_flat.ret(false)
 	
-	#func set_flat(value: bool):
-		#_is_flat.put(value)
-		#changed.emit()
+	func set_flat(value: bool):
+		_is_flat.put(value)
+		changed.emit()
 	
 	func is_show_text() -> bool:
-		return false
+		return _show_text.ret(false)
 
-	#func set_show_text(value: bool):
-		#_show_text.put(value)
-		#changed.emit()
+	func set_show_text(value: bool):
+		_show_text.put(value)
+		changed.emit()
 
 	func is_show_features() -> bool:
 		return _show_features.ret(true)
@@ -59,6 +63,13 @@ class Settings:
 
 	func set_show_tags(value: bool):
 		_show_tags.put(value)
+		changed.emit()
+
+	func is_show_always():
+		return _show_always.ret(false)
+	
+	func set_show_always(value: bool):
+		_show_always.put(value)
 		changed.emit()
 
 	func is_key_visible(key: String) -> bool:
