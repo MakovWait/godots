@@ -57,22 +57,27 @@ script = ExtResource("4_m00kj")
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox/TitleContainer"]
-custom_minimum_size = Vector2(300, 2.08165e-12)
+[node name="ActionsContainer" type="HBoxContainer" parent="InfoVBox/TitleContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+
+[node name="CustomMinimumSize" type="Node" parent="InfoVBox/TitleContainer/ActionsContainer"]
+script = ExtResource("9_i1n7v")
+custom_minimum_size = Vector2(300, 2.08165e-12)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox/TitleContainer/ActionsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
 
-[node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/TitleContainer/ScrollContainer"]
+[node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/TitleContainer/ActionsContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
+size_flags_vertical = 3
 alignment = 2
-
-[node name="CustomMinimumSize" type="Node" parent="InfoVBox/TitleContainer/ScrollContainer"]
-script = ExtResource("9_i1n7v")
-custom_minimum_size = Vector2(300, 2.08165e-12)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox"]
 layout_mode = 2

@@ -22,6 +22,7 @@ signal tag_clicked(tag)
 @onready var _info_v_box = %InfoVBox
 @onready var _actions_h_box = %ActionsHBox
 @onready var _title_container: HBoxContainer = %TitleContainer
+@onready var _actions_container: HBoxContainer = %ActionsContainer
 
 static var settings := ProjectItemActions.Settings.new(
 	'project-item-inline-actions',
@@ -53,7 +54,7 @@ func init(item: Projects.Item):
 	action_views.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
 	#action_views.mouse_filter = Control.MOUSE_FILTER_PASS
 	action_views.add_controls_to_node(_actions_h_box)
-	_title_container.add_child(action_views)
+	_actions_container.add_child(action_views)
 
 	var set_actions_visible = func(v):
 		_actions_h_box.visible = v
@@ -83,10 +84,12 @@ func init(item: Projects.Item):
 		else:
 			set_actions_visible.call(_is_hovering or _is_selected)
 		_actions_h_box.remove_theme_constant_override("separation")
+		_actions_container.remove_theme_constant_override("separation")
 		_actions_h_box.modulate = Color.WHITE
 		action_views.modulate = Color.WHITE
 		if settings.is_flat() and not settings.is_show_text():
-			#_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
+			_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
+			_actions_container.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
 			_actions_h_box.modulate = Color(1, 1, 1, 0.498)
 			action_views.modulate = Color(1, 1, 1, 0.498)
 		_tag_container.visible = settings.is_show_tags()
