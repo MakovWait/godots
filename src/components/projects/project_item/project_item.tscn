@@ -40,11 +40,12 @@ mouse_filter = 2
 [node name="Control" type="Control" parent="InfoVBox"]
 layout_mode = 2
 
-[node name="Title" type="HBoxContainer" parent="InfoVBox"]
+[node name="TitleContainer" type="HBoxContainer" parent="InfoVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="TitleLabel" type="Label" parent="InfoVBox/Title"]
+[node name="TitleLabel" type="Label" parent="InfoVBox/TitleContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -52,18 +53,31 @@ text = "test"
 text_overrun_behavior = 3
 script = ExtResource("4_m00kj")
 
-[node name="Control" type="Control" parent="InfoVBox/Title"]
+[node name="Control" type="Control" parent="InfoVBox/TitleContainer"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
-[node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/Title"]
+[node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox/TitleContainer"]
+custom_minimum_size = Vector2(300, 2.08165e-12)
+layout_mode = 2
+size_flags_stretch_ratio = 2.0
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
+
+[node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/TitleContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 10
+alignment = 2
+
+[node name="CustomMinimumSize" type="Node" parent="InfoVBox/TitleContainer/ScrollContainer"]
+script = ExtResource("9_i1n7v")
+custom_minimum_size = Vector2(300, 2.08165e-12)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_filter = 2
+horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
 [node name="InfoBody" type="VBoxContainer" parent="InfoVBox/ScrollContainer"]
@@ -132,4 +146,7 @@ layout_mode = 2
 script = ExtResource("6_k6uq1")
 
 [node name="Control" type="Control" parent="InfoVBox/ScrollContainer/InfoBody/Path"]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="InfoVBox"]
 layout_mode = 2

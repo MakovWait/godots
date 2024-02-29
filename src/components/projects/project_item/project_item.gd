@@ -20,8 +20,8 @@ signal tag_clicked(tag)
 @onready var _project_features: Label = %ProjectFeatures
 @onready var _info_body = %InfoBody
 @onready var _info_v_box = %InfoVBox
-@onready var _title_hbox = $InfoVBox/Title
 @onready var _actions_h_box = %ActionsHBox
+@onready var _title_container: HBoxContainer = %TitleContainer
 
 static var settings := ProjectItemActions.Settings.new(
 	'project-item-inline-actions',
@@ -53,7 +53,11 @@ func init(item: Projects.Item):
 	action_views.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
 	#action_views.mouse_filter = Control.MOUSE_FILTER_PASS
 	action_views.add_controls_to_node(_actions_h_box)
-	_actions_h_box.add_child(action_views)
+	_title_container.add_child(action_views)
+
+	var set_actions_visible = func(v):
+		_actions_h_box.visible = v
+		action_views.visible = v
 	right_clicked.connect(func():
 		action_views.refill_popup()
 		var popup = action_views.get_popup()
@@ -66,23 +70,25 @@ func init(item: Projects.Item):
 	)
 	selected_changed.connect(func(is_selected):
 		if settings.is_show_always(): return
-		_actions_h_box.visible = _is_hovering or is_selected
+		set_actions_visible.call(_is_hovering or is_selected)
 	)
-	_actions_h_box.visible = settings.is_show_always()
+	set_actions_visible.call(settings.is_show_always())
 	hover_changed.connect(func(is_hovered):
 		if settings.is_show_always(): return
-		_actions_h_box.visible = is_hovered or _is_selected
+		set_actions_visible.call(is_hovered or _is_selected)
 	)
 	var sync_settings = func():
 		if settings.is_show_always():
-			_actions_h_box.visible = true
+			set_actions_visible.call(true)
 		else:
-			_actions_h_box.visible = _is_hovering or _is_selected
+			set_actions_visible.call(_is_hovering or _is_selected)
 		_actions_h_box.remove_theme_constant_override("separation")
 		_actions_h_box.modulate = Color.WHITE
+		action_views.modulate = Color.WHITE
 		if settings.is_flat() and not settings.is_show_text():
-			_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
+			#_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
 			_actions_h_box.modulate = Color(1, 1, 1, 0.498)
+			action_views.modulate = Color(1, 1, 1, 0.498)
 		_tag_container.visible = settings.is_show_tags()
 		_project_features.visible = settings.is_show_features()
 	sync_settings.call()
