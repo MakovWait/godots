@@ -5,24 +5,21 @@ extends HBoxContainer
 @onready var _right_spacer = $RightSpacer
 @onready var _gui_base = get_parent()
 
-var _can_move = true
+var _can_move = false
 var _moving = false
 var _click_pos = Vector2.ZERO
 
 
 func _ready():
-	if not DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE) or Config.USE_SYSTEM_TITLE_BAR.ret():
-		queue_free()
-		return
-	
-	_setup_title_label()
-	
-	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_EXTEND_TO_TITLE, true)
-	var window = get_window()
-	if window:
-		window.titlebar_changed.connect(_resize)
-	_resize.call_deferred()
-	
+	if DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE) and not Config.USE_SYSTEM_TITLE_BAR.ret():
+		_setup_title_label()
+		
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_EXTEND_TO_TITLE, true)
+		var window = get_window()
+		if window:
+			window.titlebar_changed.connect(_resize)
+		_resize.call_deferred()
+		_can_move = true
 
 
 # obsolete
