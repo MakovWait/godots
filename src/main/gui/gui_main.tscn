@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://btxxnjmhy4bqw" path="res://src/components/command_viewer/command_viewer.tscn" id="13_mk5sf"]
 [ext_resource type="PackedScene" uid="uid://b3aprmu6od0wa" path="res://src/components/settings/settings_window.tscn" id="14_3j6hr"]
 
-[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_asset_lib_projects", "_godots_releases", "_auto_updates")]
+[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_asset_lib_projects", "_godots_releases", "_auto_updates", "_title_tabs", "_updates")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,6 +31,8 @@ _asset_lib_projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContai
 _godots_releases = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Updates")
 _auto_updates = NodePath("AutoUpdates")
 _asset_download = ExtResource("2_gfvot")
+_title_tabs = NodePath("GuiBase/MainVBox/TitleBar/ButtonsContainer")
+_updates = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Updates")
 
 [node name="AutoUpdates" type="Node" parent="." node_paths=PackedStringArray("_notification_button")]
 script = ExtResource("3_xje7q")
@@ -57,22 +59,26 @@ grow_vertical = 2
 [node name="TitleBar" parent="GuiBase/MainVBox" instance=ExtResource("4_gf6dh")]
 layout_mode = 2
 
-[node name="Content" type="Control" parent="GuiBase/MainVBox"]
+[node name="SettingsButton" type="Button" parent="GuiBase/MainVBox/TitleBar"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "settings"
+flat = true
+icon_alignment = 1
+
+[node name="Content" type="MarginContainer" parent="GuiBase/MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GuiBase/MainVBox/Content"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 
 [node name="TabContainer" type="TabContainer" parent="GuiBase/MainVBox/Content/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+tabs_visible = false
 
 [node name="Local Projects" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("5_dexs5")]
 layout_mode = 2
@@ -136,25 +142,6 @@ layout_mode = 2
 text = "1.0.dev"
 uri = "https://github.com/MakovWait/godots"
 
-[node name="SettingsHBoxContainer" type="HBoxContainer" parent="GuiBase/MainVBox/Content"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -69.0
-offset_bottom = 31.0
-grow_horizontal = 0
-alignment = 2
-
-[node name="SettingsButton" type="Button" parent="GuiBase/MainVBox/Content/SettingsHBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-focus_mode = 0
-text = "settings"
-flat = true
-icon_alignment = 1
-vertical_icon_alignment = 0
-
 [node name="ManageTags" parent="." instance=ExtResource("12_6d5cn")]
 visible = false
 
@@ -163,3 +150,5 @@ unique_name_in_owner = true
 
 [node name="Settings" parent="." instance=ExtResource("14_3j6hr")]
 visible = false
+
+[editable path="GuiBase/MainVBox/TitleBar"]

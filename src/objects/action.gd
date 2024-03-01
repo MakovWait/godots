@@ -100,6 +100,7 @@ class ButtonControl extends Button:
 	
 	func _init(action: Action.Self):
 		_action = action
+		tooltip_text = action.label
 		text = _action.label
 		pressed.connect(_action.act)
 		action.disabled.connect(func(v): disabled = v)

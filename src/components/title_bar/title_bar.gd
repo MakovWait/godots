@@ -22,6 +22,7 @@ func _ready():
 	if window:
 		window.titlebar_changed.connect(_resize)
 	_resize.call_deferred()
+	
 
 
 # obsolete
@@ -30,15 +31,17 @@ func add_button(btn):
 
 
 func _setup_title_label():
-	var label : Label = $Label
+	var label := %TitleLabel as Label
 	label.add_theme_font_override("font", get_theme_font("bold", "EditorFonts"))
 	label.add_theme_font_size_override("font_size", get_theme_font_size("bold_size", "EditorFonts"))
 	
-	label.set_text_overrun_behavior(TextServer.OVERRUN_TRIM_ELLIPSIS)
-	label.set_text_overrun_behavior(TextServer.OVERRUN_TRIM_ELLIPSIS)
+	#label.set_text_overrun_behavior(TextServer.OVERRUN_TRIM_ELLIPSIS)
+	#label.set_text_overrun_behavior(TextServer.OVERRUN_TRIM_ELLIPSIS)
 	label.set_vertical_alignment(VERTICAL_ALIGNMENT_CENTER)
-	label.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+	label.set_h_size_flags(Control.SIZE_SHRINK_BEGIN)
 	label.set_mouse_filter(Control.MOUSE_FILTER_PASS)
+	
+	label.hide()
 
 
 func _gui_input(event):

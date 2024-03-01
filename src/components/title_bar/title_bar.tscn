@@ -14,17 +14,18 @@ script = ExtResource("1_5s4e6")
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Label" type="Label" parent="."]
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Godots"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="."]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="RightSpacer" type="Control" parent="."]
 layout_mode = 2
+mouse_filter = 1

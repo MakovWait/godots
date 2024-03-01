@@ -9,6 +9,9 @@ const theme_source = preload("res://theme/theme.gd")
 @export var _godots_releases: Control
 @export var _auto_updates: Node
 @export var _asset_download: PackedScene
+@export var _title_tabs: BoxContainer
+@export var _updates: Control
+
 
 @onready var _gui_base: Panel = get_node("%GuiBase")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
@@ -54,6 +57,12 @@ func _ready():
 			_local_editors.import(utils.guess_editor_name(file), file)
 	)
 	
+	_title_tabs.add_child(TitleTabButton.new(null, tr("Projects"), _tab_container, _projects))
+	_title_tabs.add_child(TitleTabButton.new("AssetLib", tr("AssetLib"), _tab_container, _asset_lib_projects))
+	_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Editors"), _tab_container, _local_editors))
+	#_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Remote Editors"), _tab_container, _remote_editors))
+	#_title_tabs.add_child(TitleTabButton.new(null, tr("Updates"), _tab_container, _updates))
+
 	_gui_base.set(
 		"theme_override_styles/panel",
 		get_theme_stylebox("Background", "EditorStyles")
@@ -96,10 +105,13 @@ func _ready():
 	%NewsButton.tooltip_text = tr("Click to see the post.")
 	
 	_settings_button.flat = true
+	#_settings_button.text = tr("Settings")
 	_settings_button.text = ""
-	_settings_button.tooltip_text = tr("Settings.")
+	_settings_button.tooltip_text = tr("Settings")
+	_settings_button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_settings_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
 	_settings_button.icon = get_theme_icon("Tools", "EditorIcons")
-	_settings_button.self_modulate = Color(1, 1, 1, 0.6)
+	#_settings_button.self_modulate = Color(1, 1, 1, 0.6)
 	_settings_button.pressed.connect(func():
 		$Settings.raise_settings()
 	)
@@ -267,3 +279,34 @@ func _setup_godots_releases():
 		GodotsDownloads.Default.new(%DownloadsContainer, _asset_download),
 		godots_install
 	)
+
+
+class TitleTabButton extends Button:
+	var _icon_name
+	
+	func _init(icon, text, tab_container: TabContainer, tab_control) -> void:
+		_icon_name = icon
+		self.text = text
+		self.flat = true
+		self.pressed.connect(func():
+			tab_container.current_tab = tab_container.get_tab_idx_from_control(tab_control)
+		)
+		tab_container.tab_changed.connect(func(idx):
+			set_pressed_no_signal(tab_container.get_tab_idx_from_control(tab_control) == idx)
+		)
+		toggle_mode = true
+		focus_mode = Control.FOCUS_NONE
+		
+		self.ready.connect(func():
+			set_pressed_no_signal(
+				tab_container.get_tab_idx_from_control(tab_control) == tab_container.current_tab
+			)
+			add_theme_font_override("font", get_theme_font("main_button_font", "EditorFonts"))
+			add_theme_font_size_override("font_size", get_theme_font_size("main_button_font_size", "EditorFonts"))
+		)
+	
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_THEME_CHANGED:
+			if _icon_name:
+				self.icon = get_theme_icon(_icon_name, "EditorIcons")
+			#theme_type_variation = "MainScreenButton"
