@@ -5,51 +5,98 @@ signal manage_tags_requested(item_tags, all_tags, on_confirm)
 
 @onready var _editors_list: VBoxContainer = %EditorsList
 @onready var _sidebar: VBoxContainer = %ActionsSidebar
-@onready var _download_button: Button = %DownloadButton
-@onready var _orphan_editors_button: Button = %OrphanEditorsButton
 @onready var _orphan_editors_explorer: ConfirmationDialog = %OrphanEditorExplorer
-@onready var _import_button: Button = %ImportButton
-@onready var _remove_missing_button = %RemoveMissingButton
-@onready var _scan_button = %ScanButton
 @onready var _scan_dialog = %ScanDialog
-@onready var _refresh_button = %RefreshButton
 
 
 var _local_editors = LocalEditors.List
+var _remove_missing_action: Action.Self
 
 
 func _ready() -> void:
-	_download_button.icon = get_theme_icon("AssetLib", "EditorIcons")
-	_orphan_editors_button.icon = get_theme_icon("Debug", "EditorIcons")
-	_import_button.icon = get_theme_icon("Load", "EditorIcons")
-	
-	_import_button.pressed.connect(func(): import())
-	_download_button.pressed.connect(func(): editor_download_pressed.emit())
-	
 	%EditorImport.imported.connect(func(editor_name, editor_path):
 		add(editor_name, editor_path)
 	)
-	
-	_remove_missing_button.confirmed.connect(_remove_missing)
-	
-	_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
-	Config.saved.connect(func():
-		_orphan_editors_button.visible = Config.SHOW_ORPHAN_EDITOR.ret()
-	)
-	
-	_refresh_button.icon = get_theme_icon("Reload", "EditorIcons")
-	_refresh_button.pressed.connect(_refresh)
-	
-	_scan_button.icon = get_theme_icon("Search", "EditorIcons")
-	_scan_button.pressed.connect(func():
-		_scan_dialog.current_dir = ProjectSettings.globalize_path(
-			Config.VERSIONS_PATH.ret()
-		)
-		_scan_dialog.popup_centered_ratio(0.5)
-	)
+
 	_scan_dialog.dir_to_scan_selected.connect(func(dir_to_scan: String):
 		_scan_editors(dir_to_scan)
 	)
+	
+	var remove_missing_popup = RemoveMissingDialog.new(_remove_missing)
+	add_child(remove_missing_popup)
+	
+	var actions := Action.List.new([
+		Action.from_dict({
+			"key": "import",
+			"icon": Action.IconTheme.new(self, "Load", "EditorIcons"),
+			"act": import,
+			"label": tr("Import"),
+		}),
+		#Action.from_dict({
+			#"key": "download",
+			#"icon": Action.IconTheme.new(self, "AssetLib", "EditorIcons"),
+			#"act": func(): editor_download_pressed.emit(),
+			#"label": tr("Download"),
+		#}),
+		Action.from_dict({
+			"key": "orphan",
+			"icon": Action.IconTheme.new(self, "Debug", "EditorIcons"),
+			"act": func():
+				_orphan_editors_explorer.before_popup()
+				_orphan_editors_explorer.popup_centered_ratio(0.4)
+				pass,\
+			"label": tr("Orphan Editors Explorer"),
+			"tooltip": tr("Check if there are some leaked Godot binaries on the filesystem that can be safely removed. For advanced users.")
+		}),
+		Action.from_dict({
+			"key": "scan",
+			"icon": Action.IconTheme.new(self, "Search", "EditorIcons"),
+			"act": func():
+				_scan_dialog.current_dir = ProjectSettings.globalize_path(
+					Config.VERSIONS_PATH.ret()
+				)
+				_scan_dialog.popup_centered_ratio(0.5)
+				pass,\
+			"label": tr("Scan"),
+		}),
+		Action.from_dict({
+			"key": "refresh",
+			"icon": Action.IconTheme.new(self, "Reload", "EditorIcons"),
+			"act": _refresh,\
+			"label": tr("Refresh List"),
+		}),
+		Action.from_dict({
+			"label": tr("Remove Missing"),
+			"key": "remove-missing",
+			"icon": Action.IconTheme.new(self, "Clear", "EditorIcons"),
+			"act": func(): remove_missing_popup.popup_centered()
+		}),
+	])
+	
+	_remove_missing_action = actions.by_key("remove-missing")
+
+	var editor_actions = TabActions.Menu.new(
+		actions.sub_list([
+			'import',
+			'download',
+			'scan',
+		]).all(), 
+		TabActions.Settings.new(
+			Cache.section_of(self), 
+			[
+				'import',
+				'download',
+				'scan',
+			]
+		)
+	)
+	editor_actions.add_controls_to_node(%EditorsList/HBoxContainer/TabActions)
+	editor_actions.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
+	
+	%EditorsList/HBoxContainer.add_child(_remove_missing_action.to_btn().make_flat(true).show_text(false))
+	%EditorsList/HBoxContainer.add_child(actions.by_key('orphan').to_btn().make_flat(true).show_text(false))
+	%EditorsList/HBoxContainer.add_child(actions.by_key('refresh').to_btn().make_flat(true).show_text(false))
+	%EditorsList/HBoxContainer.add_child(editor_actions)
 
 
 func init(editors: LocalEditors.List):
@@ -58,13 +105,6 @@ func init(editors: LocalEditors.List):
 	_editors_list.sort_items()
 	
 	_orphan_editors_explorer.init(editors, Config.VERSIONS_PATH.ret())
-	_orphan_editors_button.tooltip_text = tr(
-		"Check if there are some leaked Godot binaries on the filesystem that can be safely removed. For advanced users."
-	)
-	_orphan_editors_button.pressed.connect(func():
-		_orphan_editors_explorer.before_popup()
-		_orphan_editors_explorer.popup_centered_ratio(0.4)
-	)
 	_update_remove_missing_disabled()
 
 
@@ -146,9 +186,9 @@ func _scan_editors(dir_to_scan: String):
 
 
 func _update_remove_missing_disabled():
-	_remove_missing_button.disabled = len(
-		_local_editors.all().filter(func(x): return not x.is_valid)
-	) == 0
+	_remove_missing_action.disable(
+		len(_local_editors.all().filter(func(x): return not x.is_valid)) == 0
+	)
 
 
 func _on_editors_list_item_selected(item) -> void:

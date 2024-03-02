@@ -1,12 +1,13 @@
 class_name Action
 
 
-static func from_dict(dict) -> Self:
+static func from_dict(dict: Dictionary) -> Self:
 	return Self.new(
 		dict["key"],
 		dict["label"],
 		dict["icon"],
 		dict["act"],
+		dict.get("tooltip", "")
 	)
 
 
@@ -44,7 +45,11 @@ class Self:
 	var label: String:
 		get: return _label
 		set(_v): utils.prop_is_readonly()
-	
+
+	var tooltip: String:
+		get: return _tooltip
+		set(_v): utils.prop_is_readonly()
+
 	var icon: Icon:
 		get: return _icon
 		set(_v): utils.prop_is_readonly()
@@ -52,14 +57,16 @@ class Self:
 	var _key: String
 	var _label: String
 	var _icon: Icon
+	var _tooltip: String
 	var _act: Callable
 	var _is_disabled: bool = false
 	
-	func _init(key: String, label: String, icon: Icon, act: Callable):
+	func _init(key: String, label: String, icon: Icon, act: Callable, tooltip: String):
 		_key = key
 		_label = label
 		_icon = icon
 		_act = act
+		_tooltip = tooltip
 	
 	func act():
 		assert(not _is_disabled, "Unable to run the disabled action")
@@ -100,7 +107,10 @@ class ButtonControl extends Button:
 	
 	func _init(action: Action.Self):
 		_action = action
-		tooltip_text = action.label
+		if action.tooltip.is_empty():
+			tooltip_text = action.label
+		else:
+			tooltip_text = action.tooltip
 		text = _action.label
 		pressed.connect(_action.act)
 		action.disabled.connect(func(v): disabled = v)
