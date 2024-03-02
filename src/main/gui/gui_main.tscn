@@ -141,7 +141,6 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 text = "1.0.dev"
-uri = "https://github.com/MakovWait/godots"
 
 [node name="ManageTags" parent="." instance=ExtResource("12_6d5cn")]
 visible = false

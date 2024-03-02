@@ -99,7 +99,10 @@ func _ready():
 	_version_button.text = Config.VERSION.substr(1)
 	_version_button.self_modulate = Color(1, 1, 1, 0.6)
 	_version_button.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
-	_version_button.tooltip_text = tr("Click to star it on GitHub")
+	_version_button.pressed.connect(func():
+		_tab_container.current_tab = _tab_container.get_tab_idx_from_control(_updates)
+	)
+	_version_button.tooltip_text = tr("Click to see other versions.")
 	
 	%NewsButton.self_modulate = Color(1, 1, 1, 0.6)
 	%NewsButton.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
