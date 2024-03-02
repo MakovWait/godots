@@ -71,7 +71,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 horizontal_scroll_mode = 3
-vertical_scroll_mode = 3
+vertical_scroll_mode = 0
 
 [node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/TitleContainer/ActionsContainer/ScrollContainer"]
 unique_name_in_owner = true
