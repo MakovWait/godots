@@ -11,16 +11,17 @@ const theme_source = preload("res://theme/theme.gd")
 @export var _asset_download: PackedScene
 @export var _title_tabs: BoxContainer
 @export var _updates: Control
+@export var _tab_container: TabContainer
 
 
 @onready var _gui_base: Panel = get_node("%GuiBase")
 @onready var _main_v_box: VBoxContainer = get_node("%MainVBox")
-@onready var _tab_container: TabContainer = %TabContainer
 @onready var _version_button: LinkButton = %VersionButton
 @onready var _settings_button = %SettingsButton
 
 
 var _on_exit_tree_callbacks: Array[Callable] = []
+var _local_remote_switch_context: LocalRemoteEditorsSwitchContext
 
 
 func _ready():
@@ -57,9 +58,9 @@ func _ready():
 			_local_editors.import(utils.guess_editor_name(file), file)
 	)
 	
-	_title_tabs.add_child(TitleTabButton.new(null, tr("Projects"), _tab_container, _projects))
-	_title_tabs.add_child(TitleTabButton.new("AssetLib", tr("Asset Library"), _tab_container, _asset_lib_projects))
-	_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Editors"), _tab_container, _local_editors))
+	_title_tabs.add_child(TitleTabButton.new(null, tr("Projects"), _tab_container, [_projects]))
+	_title_tabs.add_child(TitleTabButton.new("AssetLib", tr("Asset Library"), _tab_container, [_asset_lib_projects]))
+	_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Editors"), _tab_container, [_local_editors, _remote_editors]))
 	#_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Remote Editors"), _tab_container, _remote_editors))
 	#_title_tabs.add_child(TitleTabButton.new(null, tr("Updates"), _tab_container, _updates))
 
@@ -105,8 +106,8 @@ func _ready():
 	%NewsButton.tooltip_text = tr("Click to see the post.")
 	
 	_settings_button.flat = true
-	_settings_button.text = tr("Settings")
-	#_settings_button.text = ""
+	#_settings_button.text = tr("Settings")
+	_settings_button.text = ""
 	_settings_button.tooltip_text = tr("Settings")
 	_settings_button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_settings_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -183,6 +184,13 @@ func _enter_tree():
 		if DisplayServer.get_screen_from_rect(rect) != -1:
 			window.size = rect.size
 			window.position = rect.position
+	
+	_local_remote_switch_context = LocalRemoteEditorsSwitchContext.new(
+		_local_editors,
+		_remote_editors,
+		_tab_container
+	)
+	Context.add(self, _local_remote_switch_context)
 
 
 func _exit_tree():
@@ -190,6 +198,7 @@ func _exit_tree():
 		callback.call()
 	var window = get_window()
 	Config.LAST_WINDOW_RECT.put(Rect2i(window.position, window.size))
+	Context.erase(self, _local_remote_switch_context)
 
 
 func _popup_manage_tags(item_tags, all_tags, on_confirm):
@@ -284,23 +293,31 @@ func _setup_godots_releases():
 class TitleTabButton extends Button:
 	var _icon_name
 	
-	func _init(icon, text, tab_container: TabContainer, tab_control) -> void:
+	func _init(icon, text, tab_container: TabContainer, tab_controls: Array) -> void:
 		_icon_name = icon
 		self.text = text
 		self.flat = true
 		self.pressed.connect(func():
-			tab_container.current_tab = tab_container.get_tab_idx_from_control(tab_control)
+			var idx = tab_controls.find(tab_container.get_current_tab_control())
+			idx = wrap(idx + 1, 0, len(tab_controls))
+			tab_container.current_tab = tab_container.get_tab_idx_from_control(tab_controls[idx])
 			set_pressed_no_signal(true)
 		)
 		tab_container.tab_changed.connect(func(idx):
-			set_pressed_no_signal(tab_container.get_tab_idx_from_control(tab_control) == idx)
+			set_pressed_no_signal(
+				tab_controls.any(func(tab_control): 
+					return tab_container.get_tab_idx_from_control(tab_control) == idx\
+				)
+			)
 		)
 		toggle_mode = true
 		focus_mode = Control.FOCUS_NONE
 		
 		self.ready.connect(func():
 			set_pressed_no_signal(
-				tab_container.get_tab_idx_from_control(tab_control) == tab_container.current_tab
+				tab_controls.any(func(tab_control): 
+					return tab_container.get_tab_idx_from_control(tab_control) == tab_container.current_tab\
+				)
 			)
 			add_theme_font_override("font", get_theme_font("main_button_font", "EditorFonts"))
 			add_theme_font_size_override("font_size", get_theme_font_size("main_button_font_size", "EditorFonts"))

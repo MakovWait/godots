@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://btxxnjmhy4bqw" path="res://src/components/command_viewer/command_viewer.tscn" id="13_mk5sf"]
 [ext_resource type="PackedScene" uid="uid://b3aprmu6od0wa" path="res://src/components/settings/settings_window.tscn" id="14_3j6hr"]
 
-[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_asset_lib_projects", "_godots_releases", "_auto_updates", "_title_tabs", "_updates")]
+[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_asset_lib_projects", "_godots_releases", "_auto_updates", "_title_tabs", "_updates", "_tab_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,6 +33,7 @@ _auto_updates = NodePath("AutoUpdates")
 _asset_download = ExtResource("2_gfvot")
 _title_tabs = NodePath("GuiBase/MainVBox/TitleBar/ButtonsContainer")
 _updates = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Updates")
+_tab_container = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer")
 
 [node name="AutoUpdates" type="Node" parent="." node_paths=PackedStringArray("_notification_button")]
 script = ExtResource("3_xje7q")

@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://rs8h34xg5l7q"]
+
+[ext_resource type="Script" path="res://src/components/editors/local_remote_editors_switch.gd" id="1_4v828"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="2_4auwr"]
+
+[node name="LocalRemoteProjectsSwitch" type="HBoxContainer"]
+size_flags_horizontal = 3
+alignment = 1
+script = ExtResource("1_4v828")
+
+[node name="Local" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+text = "Local"
+flat = true
+alignment = 0
+script = ExtResource("2_4auwr")
+_theme_icon_name = "FileList"
+
+[node name="Remote" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+text = "Remote"
+flat = true
+alignment = 0
+script = ExtResource("2_4auwr")
+_theme_icon_name = "Filesystem"
