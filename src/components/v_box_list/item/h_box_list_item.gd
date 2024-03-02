@@ -28,17 +28,17 @@ func _ready():
 
 
 func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree(): return
-	
 	if event is InputEventMouseMotion:
 		_is_hovering = get_global_rect().has_point(event.position)
 
+
+func _gui_input(event: InputEvent) -> void:
 	var mb = event as InputEventMouseButton
-	if mb and get_global_rect().has_point(event.position):
+	if mb:
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if mb.double_click:
 				double_clicked.emit()
-			elif mb.is_pressed(): 
+			elif mb.is_pressed():
 				clicked.emit()
 		if mb.button_index == MOUSE_BUTTON_RIGHT:
 			if mb.is_pressed(): 
