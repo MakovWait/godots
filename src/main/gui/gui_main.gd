@@ -290,6 +290,7 @@ class TitleTabButton extends Button:
 		self.flat = true
 		self.pressed.connect(func():
 			tab_container.current_tab = tab_container.get_tab_idx_from_control(tab_control)
+			set_pressed_no_signal(true)
 		)
 		tab_container.tab_changed.connect(func(idx):
 			set_pressed_no_signal(tab_container.get_tab_idx_from_control(tab_control) == idx)
