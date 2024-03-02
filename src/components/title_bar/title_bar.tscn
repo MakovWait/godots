@@ -26,6 +26,7 @@ mouse_filter = 1
 
 [node name="TitleLabel" type="Label" parent="MainContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 mouse_filter = 1
 text = "Godots"

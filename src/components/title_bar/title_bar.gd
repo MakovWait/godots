@@ -14,8 +14,8 @@ var _click_pos = Vector2.ZERO
 
 
 func _ready():
-	_setup_title_label()
 	if DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE) and not Config.USE_SYSTEM_TITLE_BAR.ret():
+		#_setup_title_label()
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_EXTEND_TO_TITLE, true)
 		var window = get_window()
 		if window:
@@ -47,8 +47,7 @@ func _setup_title_label():
 	label.set_vertical_alignment(VERTICAL_ALIGNMENT_CENTER)
 	label.set_h_size_flags(Control.SIZE_SHRINK_BEGIN)
 	label.set_mouse_filter(Control.MOUSE_FILTER_PASS)
-	
-	label.hide()
+	label.show()
 
 
 func _gui_input(event):
@@ -104,5 +103,7 @@ func _resize():
 	if _right_spacer: 
 		var w = margin.x if self.is_layout_rtl() else margin.y
 		_right_spacer.custom_minimum_size = Vector2(w, 0)
-	_right_spacer.custom_minimum_size = _left_spacer.custom_minimum_size
-	self.custom_minimum_size = Vector2(0, margin.z - self.global_position.y)
+	self.custom_minimum_size = Vector2(
+		0, 
+		max(margin.z - self.global_position.y, self.custom_minimum_size.y)
+	)
