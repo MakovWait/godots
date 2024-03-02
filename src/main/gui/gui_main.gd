@@ -58,7 +58,7 @@ func _ready():
 	)
 	
 	_title_tabs.add_child(TitleTabButton.new(null, tr("Projects"), _tab_container, _projects))
-	_title_tabs.add_child(TitleTabButton.new("AssetLib", tr("AssetLib"), _tab_container, _asset_lib_projects))
+	_title_tabs.add_child(TitleTabButton.new("AssetLib", tr("Asset Library"), _tab_container, _asset_lib_projects))
 	_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Editors"), _tab_container, _local_editors))
 	#_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Remote Editors"), _tab_container, _remote_editors))
 	#_title_tabs.add_child(TitleTabButton.new(null, tr("Updates"), _tab_container, _updates))
@@ -105,8 +105,8 @@ func _ready():
 	%NewsButton.tooltip_text = tr("Click to see the post.")
 	
 	_settings_button.flat = true
-	#_settings_button.text = tr("Settings")
-	_settings_button.text = ""
+	_settings_button.text = tr("Settings")
+	#_settings_button.text = ""
 	_settings_button.tooltip_text = tr("Settings")
 	_settings_button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_settings_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER

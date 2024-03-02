@@ -1,9 +1,12 @@
-extends HBoxContainer
+extends Control
 
 
-@onready var _left_spacer = $LeftSpacer
-@onready var _right_spacer = $RightSpacer
+@onready var _left_spacer = %LeftSpacer
+@onready var _right_spacer = %RightSpacer
 @onready var _gui_base = get_parent()
+
+@onready var _main_container = %MainContainer
+@onready var _buttons_container = %ButtonsContainer
 
 var _can_move = false
 var _moving = false
@@ -11,9 +14,8 @@ var _click_pos = Vector2.ZERO
 
 
 func _ready():
+	_setup_title_label()
 	if DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE) and not Config.USE_SYSTEM_TITLE_BAR.ret():
-		_setup_title_label()
-		
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_EXTEND_TO_TITLE, true)
 		var window = get_window()
 		if window:
@@ -21,10 +23,18 @@ func _ready():
 		_resize.call_deferred()
 		_can_move = true
 
-
-# obsolete
-func add_button(btn):
-	$ButtonsContainer.add_child(btn)
+	_main_container.resized.connect(func():
+		custom_minimum_size = Vector2(
+			custom_minimum_size.x,
+			max(_main_container.size.y, custom_minimum_size.y)
+		)
+	)
+	_buttons_container.resized.connect(func():
+		custom_minimum_size = Vector2(
+			custom_minimum_size.x,
+			max(_buttons_container.size.y, custom_minimum_size.y)
+		)
+	)
 
 
 func _setup_title_label():

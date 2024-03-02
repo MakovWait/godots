@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" path="res://src/components/title_bar/title_bar.gd" id="1_5s4e6"]
 
-[node name="TitleBar" type="HBoxContainer"]
+[node name="TitleBar" type="Control"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -10,22 +11,43 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5s4e6")
 
-[node name="LeftSpacer" type="Control" parent="."]
+[node name="MainContainer" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+
+[node name="LeftSpacer" type="Control" parent="MainContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
 
-[node name="TitleLabel" type="Label" parent="."]
+[node name="TitleLabel" type="Label" parent="MainContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 1
 text = "Godots"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="."]
+[node name="MainSpacer" type="Control" parent="MainContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-alignment = 1
+mouse_filter = 1
 
-[node name="RightSpacer" type="Control" parent="."]
+[node name="RightSpacer" type="Control" parent="MainContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment = 1
