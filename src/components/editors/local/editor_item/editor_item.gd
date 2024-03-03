@@ -16,7 +16,7 @@ signal tag_clicked(tag)
 @onready var _tag_container: HBoxContainer = %TagContainer
 @onready var _editor_features = %EditorFeatures
 
-var _get_actions_callback: Callable
+var _actions: Action.List
 var _tags = []
 var _sort_data = {
 	'ref': self
@@ -32,6 +32,9 @@ func _ready():
 
 
 func init(item: LocalEditors.Item):
+	_fill_actions(item)
+	_update_actions_availability(item)
+	
 	if not item.is_valid:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
@@ -59,77 +62,6 @@ func init(item: LocalEditors.Item):
 	_sort_data.path = item.path
 	_sort_data.tag_sort_string = "".join(item.tags)
 	
-	_get_actions_callback = func():
-		var run_btn = buttons.simple(
-			tr("Run"), 
-			get_theme_icon("Play", "EditorIcons"),
-			_on_run_editor.bind(item)
-		)
-		run_btn.disabled = not item.is_valid
-		
-		var rename_btn = buttons.simple(
-			tr("Rename"), 
-			get_theme_icon("Rename", "EditorIcons"),
-			func(): _on_rename(item)
-		)
-		rename_btn.disabled = not item.is_valid
-		
-		var manage_tags_btn = buttons.simple(
-			tr("Manage Tags"), 
-			get_theme_icon("Script", "EditorIcons"),
-			func(): manage_tags_requested.emit()
-		)
-		manage_tags_btn.disabled = not item.is_valid
-		
-		var add_extra_arguments_btn = buttons.simple(
-			tr("Add Extra Args"), 
-			get_theme_icon("ConfirmationDialog", "EditorIcons"),
-			func(): _on_add_extra_arguments(item)
-		)
-		add_extra_arguments_btn.disabled = not item.is_valid
-		
-		var view_command_btn = buttons.simple(
-			tr("View Command"), 
-			get_theme_icon("Window", "EditorIcons"),
-			func():
-				var command_viewer = Context.use(self, CommandViewer) as CommandViewer
-				if command_viewer:
-					var base_process = item.as_process([])
-					var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
-					cmd_src.edited.connect(func(): edited.emit())
-					var commands = CommandViewer.CommandsDuo.new(
-						CommandViewer.CommandsGeneric.new(
-							base_process,
-							cmd_src,
-							true
-						),
-						CommandViewer.CommandsGeneric.new(
-							base_process,
-							Config.CustomCommandsSourceConfig.new(
-								Config.GLOBAL_CUSTOM_COMMANDS_EDITORS
-							),
-							false
-						)
-					)
-					command_viewer.raise(
-						commands, true
-					)
-		)
-		view_command_btn.disabled = not item.is_valid
-
-		return [
-			run_btn,
-			rename_btn,
-			manage_tags_btn,
-			add_extra_arguments_btn,
-			view_command_btn,
-			buttons.simple(
-				tr("Remove"), 
-				get_theme_icon("Remove", "EditorIcons"),
-				func(): _on_remove(item)
-			),
-		]
-	
 	_explore_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
 	)
@@ -142,6 +74,95 @@ func init(item: LocalEditors.Item):
 		if item.is_valid:
 			_on_run_editor(item)
 	)
+
+
+func _fill_actions(item: LocalEditors.Item):
+	var run = Action.from_dict({
+		"key": "run",
+		"icon": Action.IconTheme.new(self, "Play", "EditorIcons"),
+		"act": _on_run_editor.bind(item),
+		"label": tr("Run"),
+	})
+	
+	var rename = Action.from_dict({
+		"key": "rename",
+		"icon": Action.IconTheme.new(self, "Rename", "EditorIcons"),
+		"act": _on_rename.bind(item),
+		"label": tr("Rename"),
+	})
+
+	var manage_tags = Action.from_dict({
+		"key": "manage-tags",
+		"icon": Action.IconTheme.new(self, "Script", "EditorIcons"),
+		"act": func(): manage_tags_requested.emit(),
+		"label": tr("Manage Tags"),
+	})
+
+	var add_extra_arguments = Action.from_dict({
+		"key": "add-extra-args",
+		"icon": Action.IconTheme.new(self, "ConfirmationDialog", "EditorIcons"),
+		"act": _on_add_extra_arguments.bind(item),
+		"label": tr("Add Extra Args"),
+	})
+
+	var view_command = Action.from_dict({
+		"key": "view-command",
+		"icon": Action.IconTheme.new(self, "Window", "EditorIcons"),
+		"act": _view_command.bind(item),
+		"label": tr("View Command"),
+	})
+	
+	var remove = Action.from_dict({
+		"key": "remove",
+		"icon": Action.IconTheme.new(self, "Remove", "EditorIcons"),
+		"act": _on_remove.bind(item),
+		"label": tr("Remove"),
+	})
+
+	_actions = Action.List.new([
+		run,
+		rename,
+		manage_tags,
+		add_extra_arguments,
+		view_command,
+		remove
+	])
+
+
+func _update_actions_availability(item: LocalEditors.Item):
+	for action in _actions.sub_list([
+		'run',
+		'manage-tags',
+		'rename',
+		'add-extra-args',
+		'view-command'
+	]).all():
+		action.disable(not item.is_valid)
+
+
+func _view_command(item):
+	var command_viewer = Context.use(self, CommandViewer) as CommandViewer
+	if command_viewer:
+		var base_process = item.as_process([])
+		var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
+		cmd_src.edited.connect(func(): edited.emit())
+		var commands = CommandViewer.CommandsDuo.new(
+			CommandViewer.CommandsGeneric.new(
+				base_process,
+				cmd_src,
+				true
+			),
+			CommandViewer.CommandsGeneric.new(
+				base_process,
+				Config.CustomCommandsSourceConfig.new(
+					Config.GLOBAL_CUSTOM_COMMANDS_EDITORS
+				),
+				false
+			)
+		)
+		command_viewer.raise(
+			commands, true
+		)
 
 
 func _on_run_editor(item):
@@ -207,10 +228,7 @@ func _on_remove(item):
 
 
 func get_actions():
-	if _get_actions_callback:
-		return _get_actions_callback.call()
-	else:
-		return []
+	return []
 
 
 func apply_filter(filter):
