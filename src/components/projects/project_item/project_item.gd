@@ -50,9 +50,42 @@ func _ready() -> void:
 
 func init(item: Projects.Item):
 	_fill_actions(item)
+	_setup_actions_view()
+
+	item.loaded.connect(func():
+		_fill_data(item)
+	)
+	
+	_editor_button.pressed.connect(_on_rebind_editor.bind(item))
+	_editor_button.disabled = item.is_missing
+	
+	item.internals_changed.connect(func():
+		_fill_data(item)
+	)
+
+	_fill_data(item)
+	
+	_explore_button.pressed.connect(func():
+		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
+	)
+	_favorite_button.toggled.connect(func(is_favorite):
+		item.favorite = is_favorite
+		edited.emit()
+	)
+	double_clicked.connect(func():
+		if item.is_missing:
+			return
+		
+		if item.has_invalid_editor:
+			_on_rebind_editor(item)
+		else:
+			_on_edit_with_editor(item)
+	)
+
+
+func _setup_actions_view():
 	var action_views = ProjectItemActions.Menu.new(_actions.all(), settings)
 	action_views.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
-	#action_views.mouse_filter = Control.MOUSE_FILTER_PASS
 	action_views.add_controls_to_node(_actions_h_box)
 	_actions_container.add_child(action_views)
 
@@ -96,36 +129,6 @@ func init(item: Projects.Item):
 		_project_features.visible = settings.is_show_features()
 	sync_settings.call()
 	settings.changed.connect(sync_settings)
-
-	item.loaded.connect(func():
-		_fill_data(item)
-	)
-	
-	_editor_button.pressed.connect(_on_rebind_editor.bind(item))
-	_editor_button.disabled = item.is_missing
-	
-	item.internals_changed.connect(func():
-		_fill_data(item)
-	)
-
-	_fill_data(item)
-	
-	_explore_button.pressed.connect(func():
-		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
-	)
-	_favorite_button.toggled.connect(func(is_favorite):
-		item.favorite = is_favorite
-		edited.emit()
-	)
-	double_clicked.connect(func():
-		if item.is_missing:
-			return
-		
-		if item.has_invalid_editor:
-			_on_rebind_editor(item)
-		else:
-			_on_edit_with_editor(item)
-	)
 
 
 func _fill_actions(item: Projects.Item):
