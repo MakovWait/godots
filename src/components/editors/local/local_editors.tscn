@@ -29,6 +29,9 @@ size_flags_vertical = 3
 [node name="SortOptionButton" parent="VBoxContainer/EditorsList/HBoxContainer/HBoxContainer" index="1"]
 size_flags_horizontal = 3
 
+[node name="VBoxContainer" parent="VBoxContainer/EditorsList/HBoxContainer2" index="1"]
+visible = false
+
 [node name="ActionsSidebar" parent="VBoxContainer/EditorsList/HBoxContainer2/VBoxContainer/SidebarContainer" index="0" instance=ExtResource("3_kugpf")]
 unique_name_in_owner = true
 layout_mode = 2

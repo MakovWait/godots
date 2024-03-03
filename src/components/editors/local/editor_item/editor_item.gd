@@ -15,6 +15,13 @@ signal tag_clicked(tag)
 @onready var _favorite_button: TextureButton = %FavoriteButton
 @onready var _tag_container: HBoxContainer = %TagContainer
 @onready var _editor_features = %EditorFeatures
+@onready var _actions_h_box = %ActionsHBox
+@onready var _actions_container: HBoxContainer = %ActionsContainer
+
+static var settings := EditorItemActions.Settings.new(
+	'editor-item-inline-actions',
+	[]
+)
 
 var _actions: Action.List
 var _tags = []
@@ -34,6 +41,7 @@ func _ready():
 func init(item: LocalEditors.Item):
 	_fill_actions(item)
 	_update_actions_availability(item)
+	_setup_actions_view()
 	
 	if not item.is_valid:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
@@ -74,6 +82,54 @@ func init(item: LocalEditors.Item):
 		if item.is_valid:
 			_on_run_editor(item)
 	)
+
+
+func _setup_actions_view():
+	var action_views = EditorItemActions.Menu.new(_actions.all(), settings)
+	action_views.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
+	action_views.add_controls_to_node(_actions_h_box)
+	_actions_container.add_child(action_views)
+
+	var set_actions_visible = func(v):
+		_actions_h_box.visible = v
+		action_views.visible = v
+	right_clicked.connect(func():
+		action_views.refill_popup()
+		var popup = action_views.get_popup()
+		var rect = Rect2(Vector2(DisplayServer.mouse_get_position()), Vector2.ZERO)
+		popup.size = rect.size
+		if is_layout_rtl():
+			rect.position.x += rect.size.y - popup.y
+		popup.position = rect.position
+		popup.popup()
+	)
+	selected_changed.connect(func(is_selected):
+		if settings.is_show_always(): return
+		set_actions_visible.call(_is_hovering or is_selected)
+	)
+	set_actions_visible.call(settings.is_show_always())
+	hover_changed.connect(func(is_hovered):
+		if settings.is_show_always(): return
+		set_actions_visible.call(is_hovered or _is_selected)
+	)
+	var sync_settings = func():
+		if settings.is_show_always():
+			set_actions_visible.call(true)
+		else:
+			set_actions_visible.call(_is_hovering or _is_selected)
+		_actions_h_box.remove_theme_constant_override("separation")
+		_actions_container.remove_theme_constant_override("separation")
+		_actions_h_box.modulate = Color.WHITE
+		action_views.modulate = Color.WHITE
+		if settings.is_flat() and not settings.is_show_text():
+			_actions_h_box.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
+			_actions_container.add_theme_constant_override("separation", int(-4 * Config.EDSCALE))
+			_actions_h_box.modulate = Color(1, 1, 1, 0.498)
+			action_views.modulate = Color(1, 1, 1, 0.498)
+		_tag_container.visible = settings.is_show_tags()
+		_editor_features.visible = settings.is_show_features()
+	sync_settings.call()
+	settings.changed.connect(sync_settings)
 
 
 func _fill_actions(item: LocalEditors.Item):
@@ -182,6 +238,7 @@ func _on_rename(item):
 		edited.emit()
 	)
 
+
 func _on_add_extra_arguments(item):
 	var dialog = _add_extra_arguments_scene.instantiate()
 	add_child(dialog)
@@ -191,6 +248,7 @@ func _on_add_extra_arguments(item):
 		item.extra_arguments = new_extra_arguments
 		edited.emit()
 	)
+
 
 func _on_remove(item):
 	var confirmation_dialog = ConfirmationDialogAutoFree.new()
@@ -228,7 +286,8 @@ func _on_remove(item):
 
 
 func get_actions():
-	return _actions.all().map(func(x): return x.to_btn())
+	#return _actions.all().map(func(x): return x.to_btn())
+	return []
 
 
 func apply_filter(filter):

@@ -46,7 +46,10 @@ func add(item_data):
 	_items_container.add_child(item_control)
 	item_control.init(item_data)
 	item_control.clicked.connect(
-		_on_item_clicked.bind(item_control)
+		_select_item.bind(item_control)
+	)
+	item_control.right_clicked.connect(
+		_select_item.bind(item_control)
 	)
 	if item_control.has_signal("tag_clicked"):
 		item_control.tag_clicked.connect(
@@ -82,7 +85,7 @@ func _post_add(item_data, item_control):
 	pass
 
 
-func _on_item_clicked(item):
+func _select_item(item):
 	for child in _items_container.get_children():
 		if child.has_method("deselect"):
 			child.deselect()
