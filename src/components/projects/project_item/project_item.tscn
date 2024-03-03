@@ -64,14 +64,15 @@ size_flags_horizontal = 3
 
 [node name="CustomMinimumSize" type="Node" parent="InfoVBox/TitleContainer/ActionsContainer"]
 script = ExtResource("9_i1n7v")
-custom_minimum_size = Vector2(300, 2.08165e-12)
+custom_minimum_size = Vector2(300, 0)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox/TitleContainer/ActionsContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
+follow_focus = true
 horizontal_scroll_mode = 3
-vertical_scroll_mode = 0
+vertical_scroll_mode = 3
 
 [node name="ActionsHBox" type="HBoxContainer" parent="InfoVBox/TitleContainer/ActionsContainer/ScrollContainer"]
 unique_name_in_owner = true
