@@ -18,9 +18,11 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="TabActions" parent="GodotsReleasesList/HBoxContainer" index="0"]
+visible = false
+
 [node name="RefreshButton" type="Button" parent="GodotsReleasesList/HBoxContainer" index="2"]
 unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.6)
 layout_mode = 2
 flat = true
 script = ExtResource("4_q1uy2")
