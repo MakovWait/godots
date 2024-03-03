@@ -228,7 +228,7 @@ func _on_remove(item):
 
 
 func get_actions():
-	return []
+	return _actions.all().map(func(x): return x.to_btn())
 
 
 func apply_filter(filter):

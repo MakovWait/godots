@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dvlmutw7v33j0"]
+[gd_scene load_steps=12 format=3 uid="uid://dvlmutw7v33j0"]
 
 [ext_resource type="Script" path="res://src/components/editors/local/editor_item/editor_item.gd" id="1_gsbp6"]
 [ext_resource type="PackedScene" uid="uid://b2tm4lxm80sj0" path="res://src/components/editors/local/editor_item/rename_editor_dialog.tscn" id="2_6et78"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="7_0bi54"]
 [ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="8_3j1qu"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="8_d5wg1"]
+[ext_resource type="Script" path="res://src/components/misc/custom_minimum_size.gd" id="10_vahym"]
 
 [node name="EditorItem" type="HBoxContainer"]
 anchors_preset = 15
@@ -59,28 +60,46 @@ script = ExtResource("6_qnxw1")
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
 
-[node name="EditorFeatures" type="Label" parent="InfoVBox/Title"]
-unique_name_in_owner = true
+[node name="ScrollContainer" type="ScrollContainer" parent="InfoVBox"]
 layout_mode = 2
-horizontal_alignment = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
 
-[node name="TagContainer" type="HBoxContainer" parent="InfoVBox/Title"]
-unique_name_in_owner = true
+[node name="Path" type="HBoxContainer" parent="InfoVBox/ScrollContainer"]
 layout_mode = 2
-script = ExtResource("7_0bi54")
+size_flags_horizontal = 3
 
-[node name="Path" type="HBoxContainer" parent="InfoVBox"]
+[node name="ExploreButton" type="Button" parent="InfoVBox/ScrollContainer/Path"]
+unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.498039)
-layout_mode = 2
-
-[node name="ExploreButton" type="Button" parent="InfoVBox/Path"]
-unique_name_in_owner = true
 layout_mode = 2
 flat = true
 script = ExtResource("8_3j1qu")
 
-[node name="PathLabel" type="Label" parent="InfoVBox/Path"]
+[node name="PathLabel" type="Label" parent="InfoVBox/ScrollContainer/Path"]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.498039)
 layout_mode = 2
 text = "/home/kovkel/editor/path"
 script = ExtResource("8_d5wg1")
+
+[node name="CustomMinimumSize" type="Node" parent="InfoVBox/ScrollContainer/Path/PathLabel"]
+script = ExtResource("10_vahym")
+custom_minimum_size = Vector2(128, 0)
+
+[node name="EditorFeatures" type="Label" parent="InfoVBox/ScrollContainer/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="TagContainer" type="HBoxContainer" parent="InfoVBox/ScrollContainer/Path"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("7_0bi54")
+
+[node name="Control" type="Control" parent="InfoVBox/ScrollContainer/Path"]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="InfoVBox"]
+layout_mode = 2
