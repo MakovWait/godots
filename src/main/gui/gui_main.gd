@@ -58,7 +58,7 @@ func _ready():
 			_local_editors.import(utils.guess_editor_name(file), file)
 	)
 	
-	_title_tabs.add_child(TitleTabButton.new(null, tr("Projects"), _tab_container, [_projects]))
+	_title_tabs.add_child(TitleTabButton.new("ProjectList", tr("Projects"), _tab_container, [_projects]))
 	_title_tabs.add_child(TitleTabButton.new("AssetLib", tr("Asset Library"), _tab_container, [_asset_lib_projects]))
 	_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Editors"), _tab_container, [_local_editors, _remote_editors]))
 	#_title_tabs.add_child(TitleTabButton.new("GodotMonochrome", tr("Remote Editors"), _tab_container, _remote_editors))
