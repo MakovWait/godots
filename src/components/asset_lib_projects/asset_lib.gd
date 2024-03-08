@@ -60,7 +60,7 @@ static func params_to_search(params: Params):
 		scalar.call("max_results"),
 		scalar.call("page"),
 		scalar.call("sort"),
-		scalar.call("reverse"),
+		_UrlSearchParamReverse.new()
 	]
 	
 	var result = "?"
@@ -96,6 +96,14 @@ class _UrlSearchParamArray extends _UrlSearchParamBase:
 			return prev
 		value = "+".join(value)
 		return prev + "&{name}={value}".format({"name": _name, "value": value})
+
+
+class _UrlSearchParamReverse:
+	func join(prev: String, params: Params) -> String:
+		if params.reverse:
+			return prev + "&reverse"
+		else:
+			return prev
 
 
 class _UrlSearchParamCategory extends _UrlSearchParamScalar:
