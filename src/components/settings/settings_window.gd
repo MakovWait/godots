@@ -567,6 +567,22 @@ func SettingScale(a1, a2, a3, a4):
 	)
 
 
+class ThemePresetOptionButton extends SettingOptionButton:
+	func add_control(target):
+		super.add_control(target)
+		Comp.new(Button).on_init([
+			CompInit.TEXT(tr("Custom Theme Guide")),
+			CompInit.TREE_ENTERED(
+				CompInit.SET_THEME_ICON("ExternalLink", "EditorIcons")
+			),
+			CompInit.PRESSED(func(_c):
+				OS.shell_open(
+					"https://github.com/MakovWait/godots/blob/main/.github/assets/THEMING.md"
+				)\
+			)
+		]).add_to(target)
+
+
 func SettingThemePreset(a1, a2, a3, a4):
 	var preset_names = [
 		"Default",
@@ -586,6 +602,6 @@ func SettingThemePreset(a1, a2, a3, a4):
 			'name': preset_names[i],
 			'value': preset_names[i],
 		}
-	return SettingOptionButton.new(a1, a2, a3, a4,
+	return ThemePresetOptionButton.new(a1, a2, a3, a4,
 		options, tr("Custom")
 	)
