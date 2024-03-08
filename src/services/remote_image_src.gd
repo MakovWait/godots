@@ -31,9 +31,15 @@ class LoadFileBuffer extends I:
 		if file_path.is_empty():
 			return
 		
-		if not is_instance_valid(callback.get_object()):
+		if not callback.is_valid():
 			return
 		
+		# some weird additional check is required due to:
+		# 'Trying to call a lambda with an invalid instance.'
+		# https://github.com/godotengine/godot/blob/c7fb0645af400a1859154bcee9394e63bdabd198/modules/gdscript/gdscript_lambda_callable.cpp#L195
+		if callback.get_object().get_script() == null:
+			return
+
 		var file = FileAccess.open(file_path, FileAccess.READ)
 		if file == null:
 			callback.call(_fallback_texture)

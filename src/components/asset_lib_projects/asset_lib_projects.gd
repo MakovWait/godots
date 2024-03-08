@@ -27,7 +27,9 @@ var _top_pages: HBoxContainer
 var _bottom_pages: HBoxContainer
 var _versions_loaded = false
 var _config_loaded = false
-var _load_started = false
+var _initial_fetch = false
+var _fetching = false
+var _next_fetch_queued = false
 
 
 func init(
@@ -57,14 +59,14 @@ func init(
 
 	if is_visible_in_tree():
 		_async_fetch()
-		_load_started = true
+		_initial_fetch = true
 
 
 func _init():
 	visibility_changed.connect(func():
-		if is_visible_in_tree() and not _load_started:
+		if is_visible_in_tree() and not _initial_fetch:
 			_async_fetch()
-			_load_started = true
+			_initial_fetch = true
 	)
 
 
@@ -92,6 +94,13 @@ func _ready():
 
 
 func _async_fetch():
+	if _fetching:
+		_next_fetch_queued = true
+		return
+
+	_fetching = true
+	_next_fetch_queued = false
+
 	if not _versions_loaded:
 		var version_error = await __async_load_versions_list()
 		if version_error:
@@ -101,8 +110,12 @@ func _async_fetch():
 		var config_error = await __async_load_configuration()
 		if config_error:
 			return
-
-	__async_fetch_assets()
+	
+	await __async_fetch_assets()
+	
+	_fetching = false
+	if _next_fetch_queued:
+		_async_fetch()
 
 
 func __async_load_versions_list():
@@ -163,7 +176,7 @@ func __async_fetch_assets():
 	_retry_button_container.clear()
 	_error_container.hide()
 	_scroll_container.dim()
-	_params_sources_composed.disable()
+	#_params_sources_composed.disable()
 
 	var asset_lib = _get_asset_lib()
 	var params = _get_asset_lib_params()
@@ -175,7 +188,7 @@ func __async_fetch_assets():
 		_retry_button_container.create(func(): _async_fetch())
 	_setup_pages(items)
 	_assets_container.fill(items.result)
-	_params_sources_composed.enable()
+	#_params_sources_composed.enable()
 	_scroll_container.bright()
 	_update_fetch_assets_status_label(items, params, errors)
 
