@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://fpg0tt5sks6a"]
+[gd_scene load_steps=3 format=3 uid="uid://dq7vn0cokqg0p"]
 
 [ext_resource type="Script" path="res://src/components/command_viewer/new_command_dialog.gd" id="1_on62d"]
 [ext_resource type="Script" path="res://src/components/misc/array_edit.gd" id="2_jjvyf"]

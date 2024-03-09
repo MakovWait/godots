@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/components/command_viewer/command_viewer.gd" id="1_y3wae"]
 [ext_resource type="PackedScene" uid="uid://bybb4iix45wcj" path="res://src/components/command_viewer/command_text_view.tscn" id="2_f5lq3"]
-[ext_resource type="PackedScene" uid="uid://fpg0tt5sks6a" path="res://src/components/command_viewer/new_command_dialog.tscn" id="3_57s3s"]
+[ext_resource type="PackedScene" uid="uid://dq7vn0cokqg0p" path="res://src/components/command_viewer/new_command_dialog.tscn" id="3_57s3s"]
 
 [node name="CommandViewer" type="AcceptDialog"]
 position = Vector2i(0, 36)
