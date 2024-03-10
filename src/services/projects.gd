@@ -100,7 +100,7 @@ class Item:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
 	
-	var editor:
+	var editor: LocalEditors.Item:
 		get: 
 			if has_invalid_editor:
 				return null
@@ -145,8 +145,8 @@ class Item:
 		get: return _external_project_info.has_version_hint
 
 	var custom_commands:
-		get: return _get_custom_commands()
-		set(value): _section.set_value("custom_commands", value)
+		get: return _get_custom_commands("custom_commands-v2")
+		set(value): _section.set_value("custom_commands-v2", value)
 
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
@@ -186,9 +186,9 @@ class Item:
 	
 	func emit_internals_changed():
 		internals_changed.emit()
-
+	
 	func as_process(args: PackedStringArray) -> OSProcessSchema:
-		assert(!has_invalid_editor)
+		assert(not has_invalid_editor)
 		var editor = _local_editors.retrieve(editor_path)
 		var result_args = [
 			"--path",
@@ -197,20 +197,37 @@ class Item:
 		result_args.append_array(args)
 		return editor.as_process(result_args)
 	
+	func fmt_string(str: String) -> String:
+		if not has_invalid_editor:
+			var editor = _local_editors.retrieve(editor_path)
+			str = editor.fmt_string(str)
+		str = str.replace(
+			'{{PROJECT_DIR}}', ProjectSettings.globalize_path(self.path).get_base_dir()
+		)
+		return str
+	
+	func as_fmt_process(process_path: String, args: PackedStringArray) -> OSProcessSchema:
+		var result_path := process_path
+		var result_args: PackedStringArray
+		var raw_args := []
+		if not has_invalid_editor:
+			result_path = self.fmt_string(process_path)
+			if process_path == '{{EDITOR_PATH}}':
+				raw_args.append_array(editor.extra_arguments)
+		raw_args.append_array(args)
+		for arg in raw_args:
+			arg = self.fmt_string(arg)
+			result_args.append(arg)
+		return OSProcessSchema.new(result_path, result_args)
+	
 	func edit():
-		as_process(_get_edit_args()).create_process()
+		var command = _find_custom_command_by_name("Edit", custom_commands)
+		as_fmt_process(command.path, command.args).create_process()
 		_ProjectsCache.set_last_opened_project(path)
 	
 	func run():
-		as_process(_get_run_args()).create_process()
-	
-	func _get_run_args():
 		var command = _find_custom_command_by_name("Run", custom_commands)
-		return command.args
-	
-	func _get_edit_args():
-		var command = _find_custom_command_by_name("Edit", custom_commands)
-		return command.args
+		as_fmt_process(command.path, command.args).create_process()
 	
 	func _find_custom_command_by_name(name: String, src=[]):
 		for command in src:
@@ -218,12 +235,13 @@ class Item:
 				return command
 		return null
 	
-	func _get_custom_commands():
-		var commands = _section.get_value("custom_commands", [])
+	func _get_custom_commands(key):
+		var commands = _section.get_value(key, [])
 		if not _find_custom_command_by_name("Edit", commands):
 			commands.append({
 				'name': 'Edit',
-				'args': ['-e'],
+				'path': '{{EDITOR_PATH}}',
+				'args': ['--path', '{{PROJECT_DIR}}' ,'-e'],
 				'allowed_actions': [
 					CommandViewer.Actions.EXECUTE, 
 					CommandViewer.Actions.EDIT, 
@@ -233,7 +251,8 @@ class Item:
 		if not _find_custom_command_by_name("Run", commands):
 			commands.append({
 				'name': 'Run',
-				'args': ['-g'],
+				'path': '{{EDITOR_PATH}}',
+				'args': ['--path', '{{PROJECT_DIR}}' ,'-g'],
 				'allowed_actions': [
 					CommandViewer.Actions.EXECUTE, 
 					CommandViewer.Actions.EDIT, 

@@ -25,10 +25,10 @@ func _ready() -> void:
 	
 	_create_new_command_btn = add_button(tr("New Command"))
 	_create_new_command_btn.pressed.connect(func():
-		_popup_new_command_dialog("", [], false, func(cmd_name, cmd_args, is_local):
+		_popup_new_command_dialog("", "", [], false, func(cmd_name, cmd_path, cmd_args, is_local):
 			if _commands:
 				var command = _commands.add(
-					cmd_name, cmd_args, is_local, 
+					cmd_name, cmd_path, cmd_args, is_local, 
 					NEW_COMMAND_ACTIONS.duplicate()
 				)
 				_refresh()
@@ -103,11 +103,11 @@ func _add_view(command: Command, commands: Commands):
 	if command.is_action_allowed(Actions.EDIT):
 		command_view.edit_btn.disabled = false
 		command_view.edit_btn.pressed.connect(func():
-			_popup_new_command_dialog(command.name(), command.args(), command.is_local(),
-			func(cmd_name, cmd_args, is_local):
+			_popup_new_command_dialog(command.name(), command.path(), command.args(), command.is_local(),
+			func(cmd_name, cmd_path, cmd_args, is_local):
 				if _commands:
 					_commands.add(
-						cmd_name, cmd_args, is_local, 
+						cmd_name, cmd_path, cmd_args, is_local, 
 						NEW_COMMAND_ACTIONS.duplicate()
 					)
 					_refresh()
@@ -124,11 +124,11 @@ func _set_text_to_command_view(command, command_view):
 	)
 
 
-func _popup_new_command_dialog(cmd_name, cmd_args, is_local, created_callback: Callable):
+func _popup_new_command_dialog(cmd_name, cmd_path, cmd_args, is_local, created_callback: Callable):
 	var new_dialog = _new_command_dialog_scene.instantiate() as CommandViewerNewCommandDialog
 	new_dialog.created.connect(created_callback)
 	add_child(new_dialog)
-	new_dialog.init(cmd_name, cmd_args, is_local)
+	new_dialog.init(cmd_name, cmd_path, cmd_args, is_local)
 	new_dialog.popup_centered()
 
 
@@ -141,22 +141,25 @@ class Actions:
 
 class Command:
 	var _name: String
+	var _path: String
 	var _args: PackedStringArray
 	var _is_local: bool
-	var _base_process: OSProcessSchema
+	var _process_src: OSProcessSchema.Source
 	var _allowed_actions: PackedStringArray
 	
 	func _init(
 		name: String,
+		path: String,
 		args: PackedStringArray, 
 		is_local: bool, 
-		base_process: OSProcessSchema, 
+		process_src: OSProcessSchema.Source, 
 		allowed_actions: PackedStringArray
 	):
 		_name = name
+		_path = path
 		_args = args
 		_is_local = is_local
-		_base_process = base_process
+		_process_src = process_src
 		_allowed_actions = allowed_actions
 	
 	func is_local() -> bool:
@@ -168,29 +171,32 @@ class Command:
 	func args() -> PackedStringArray:
 		return _args
 	
+	func path() -> String:
+		return _path
+	
 	func name() -> String:
 		return _name
 	
 	func execute(output:=[]) -> int:
-		return _base_process.with_args(_args).execute(
+		return _process_src.get_os_process_schema(_path, _args).execute(
 			output, true, true
 		)
 	
 	func create_process():
-		_base_process.with_args(_args).create_process()
+		_process_src.get_os_process_schema(_path, _args).create_process(true)
 	
 	func remove_from(commands: Commands):
 		commands.remove(_name, _is_local)
 	
 	func _to_string():
-		return str(_base_process.with_args(_args))
+		return str(_process_src.get_os_process_schema(_path, _args))
 
 
 class Commands:
 	func all() -> Array[Command]:
 		return []
 	
-	func add(name: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
 		assert(true, "Not implemented")
 		return null
 	
@@ -211,15 +217,15 @@ class CustomCommandsSource:
 
 
 class CommandsInMemory extends CommandsWrap:
-	func _init(base_process: OSProcessSchema):
+	func _init(base_process_src: OSProcessSchema.Source):
 		super._init(CommandsDuo.new(
 			CommandsGeneric.new(
-				base_process,
+				base_process_src,
 				CustomCommandsSourceArray.new(),
 				true,
 			),
 			CommandsGeneric.new(
-				base_process,
+				base_process_src,
 				CustomCommandsSourceArray.new(),
 				false,
 			)
@@ -269,11 +275,11 @@ class CommandsDuo extends Commands:
 		result.append_array(_local.all())
 		return result
 	
-	func add(name: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
 		if is_local:
-			return _local.add(name, args, is_local, allowed_actions)
+			return _local.add(name, path, args, is_local, allowed_actions)
 		else:
-			return _global.add(name, args, is_local, allowed_actions)
+			return _global.add(name, path, args, is_local, allowed_actions)
 	
 	func remove(name: String, is_local: bool) -> void:
 		if is_local:
@@ -291,8 +297,8 @@ class CommandsWrap extends Commands:
 	func all() -> Array[Command]:
 		return _origin.all()
 	
-	func add(name: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
-		return _origin.add(name, args, is_local, allowed_actions)
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
+		return _origin.add(name, path, args, is_local, allowed_actions)
 	
 	func remove(name: String, is_local: bool) -> void:
 		_origin.remove(name, is_local)
@@ -314,11 +320,11 @@ class CommandsWithBasic extends CommandsWrap:
 
 class CommandsGeneric extends Commands:
 	var _custom_commands_source: CustomCommandsSource
-	var _base_process: OSProcessSchema
+	var _base_process_src: OSProcessSchema.Source
 	var _is_local: bool
 	
-	func _init(base_process: OSProcessSchema, custom_commands_source: CustomCommandsSource, is_local: bool):
-		_base_process = base_process
+	func _init(base_process_src: OSProcessSchema.Source, custom_commands_source: CustomCommandsSource, is_local: bool):
+		_base_process_src = base_process_src
 		_custom_commands_source = custom_commands_source
 		_is_local = is_local
 	
@@ -327,13 +333,14 @@ class CommandsGeneric extends Commands:
 		var commands = _custom_commands_source.custom_commands
 		result.append_array(commands.map(func(x): return _to_command(
 			x.name,
+			x.path,
 			x.args,
 			x.allowed_actions,
 			_is_local
 		)))
 		return result
 	
-	func add(name: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
 		if is_local == _is_local:
 			var commands = _custom_commands_source.custom_commands
 			if _has_by_name(name):
@@ -343,6 +350,7 @@ class CommandsGeneric extends Commands:
 					else:
 						return {
 							"name": name,
+							"path": path,
 							"args": args,
 							"allowed_actions": allowed_actions
 						}
@@ -350,11 +358,12 @@ class CommandsGeneric extends Commands:
 			else:
 				commands.append({
 					"name": name,
+					"path": path,
 					"args": args,
 					"allowed_actions": allowed_actions
 				})
 			_custom_commands_source.custom_commands = commands
-			return _to_command(name, args, allowed_actions, is_local)
+			return _to_command(name, path, args, allowed_actions, is_local)
 		else:
 			assert(true, "Not implemented")
 			return null
@@ -372,5 +381,5 @@ class CommandsGeneric extends Commands:
 			_custom_commands_source.custom_commands.filter(func(x): return x.name == name)
 		) > 0
 	
-	func _to_command(name: String, args: PackedStringArray, allowed_actions: PackedStringArray, is_local: bool) -> Command:
-		return Command.new(name, args, is_local, _base_process, allowed_actions)
+	func _to_command(name: String, path: String, args: PackedStringArray, allowed_actions: PackedStringArray, is_local: bool) -> Command:
+		return Command.new(name, path, args, is_local, _base_process_src, allowed_actions)

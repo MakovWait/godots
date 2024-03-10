@@ -112,7 +112,7 @@ class Item extends Object:
 			_section.set_value("name", value)
 			name_changed.emit(value)
 	
-	var extra_arguments:
+	var extra_arguments: PackedStringArray:
 		get: return _section.get_typed_value(
 			"extra_arguments", 
 			func(x): return x is PackedStringArray, 
@@ -143,8 +143,8 @@ class Item extends Object:
 		set(value): _section.set_value("version_hint", value)
 
 	var custom_commands:
-		get: return _get_custom_commands()
-		set(value): _section.set_value("custom_commands", value)
+		get: return _get_custom_commands("custom_commands-v2")
+		set(value): _section.set_value("custom_commands-v2", value)
 
 	var _section: ConfigFileSection
 	
@@ -155,23 +155,32 @@ class Item extends Object:
 		if NOTIFICATION_PREDELETE == what:
 			utils.disconnect_all(self)
 
+	func fmt_string(str: String) -> String:
+		var bin_path = _bin_path()
+		str = str.replace("{{EDITOR_PATH}}", bin_path)
+		str = str.replace("{{EDITOR_DIR}}", bin_path.get_base_dir())
+		return str
+
 	func as_process(args: PackedStringArray) -> OSProcessSchema:
-		var process_path
-		if OS.has_feature("windows") or OS.has_feature("linux"):
-			process_path = ProjectSettings.globalize_path(path)
-		elif OS.has_feature("macos"):
-			process_path = ProjectSettings.globalize_path(path + mac_os_editor_path_postfix)
+		var process_path = _bin_path()
 		var final_args = []
 		final_args.append_array(extra_arguments)
 		final_args.append_array(args)
 		return OSProcessSchema.new(process_path, final_args)
 
-	func as_project_manager_process() -> OSProcessSchema:
-		return as_process(_get_project_manager_args())
-	
-	func _get_project_manager_args():
+	func as_fmt_process(process_path: String, args: PackedStringArray) -> OSProcessSchema:
+		var result_path = self.fmt_string(process_path)
+		var result_args: PackedStringArray
+		var raw_args = extra_arguments.duplicate()
+		raw_args.append_array(args)
+		for arg in raw_args:
+			arg  = self.fmt_string(arg)
+			result_args.append(arg)
+		return OSProcessSchema.new(result_path, result_args)
+
+	func run():
 		var command = _find_custom_command_by_name("Run", custom_commands)
-		return command.args
+		as_fmt_process(command.path, command.args).create_process()
 	
 	func emit_tags_edited():
 		tags_edited.emit()
@@ -223,6 +232,14 @@ class Item extends Object:
 		else:
 			return ""
 	
+	func _bin_path() -> String:
+		var process_path
+		if OS.has_feature("windows") or OS.has_feature("linux"):
+			process_path = ProjectSettings.globalize_path(path)
+		elif OS.has_feature("macos"):
+			process_path = ProjectSettings.globalize_path(path + mac_os_editor_path_postfix)
+		return process_path
+	
 	func _sanitize_name(name: String):
 		return name.replace(" ", "")
 	
@@ -232,11 +249,12 @@ class Item extends Object:
 				return command
 		return null
 
-	func _get_custom_commands():
-		var commands = _section.get_value("custom_commands", [])
+	func _get_custom_commands(key):
+		var commands = _section.get_value(key, [])
 		if not _find_custom_command_by_name("Run", commands):
 			commands.append({
 				'name': 'Run',
+				'path': '{{EDITOR_PATH}}',
 				'args': ['-p'],
 				'allowed_actions': [
 					CommandViewer.Actions.EXECUTE, 

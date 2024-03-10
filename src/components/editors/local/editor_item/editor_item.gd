@@ -199,17 +199,17 @@ func _update_actions_availability(item: LocalEditors.Item):
 func _view_command(item):
 	var command_viewer = Context.use(self, CommandViewer) as CommandViewer
 	if command_viewer:
-		var base_process = item.as_process([])
+		var base_process_src = OSProcessSchema.FmtSource.new(item)
 		var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
 		cmd_src.edited.connect(func(): edited.emit())
 		var commands = CommandViewer.CommandsDuo.new(
 			CommandViewer.CommandsGeneric.new(
-				base_process,
+				base_process_src,
 				cmd_src,
 				true
 			),
 			CommandViewer.CommandsGeneric.new(
-				base_process,
+				base_process_src,
 				Config.CustomCommandsSourceConfig.new(
 					Config.GLOBAL_CUSTOM_COMMANDS_EDITORS
 				),
@@ -222,7 +222,7 @@ func _view_command(item):
 
 
 func _on_run_editor(item):
-	item.as_project_manager_process().create_process()
+	item.run()
 	AutoClose.close_if_should()
 
 

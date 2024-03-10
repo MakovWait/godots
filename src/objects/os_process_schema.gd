@@ -35,3 +35,18 @@ func _to_string():
 	var args = [_path]
 	args.append_array(_args)
 	return " ".join(args.filter(func(x): return not x.is_empty()).map(func(x): return '"%s"' % x))
+
+
+class Source:
+	func get_os_process_schema(path: String, args: PackedStringArray) -> OSProcessSchema:
+		return OSProcessSchema.new(path, args)
+
+
+class FmtSource extends Source:
+	var _src
+	
+	func _init(src):
+		_src = src
+	
+	func get_os_process_schema(path: String, args: PackedStringArray) -> OSProcessSchema:
+		return _src.as_fmt_process(path, args)

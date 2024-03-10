@@ -200,7 +200,7 @@ var RANDOM_PROJECT_SUFFIXES = ConfigFileValue.new(
 
 var GLOBAL_CUSTOM_COMMANDS_PROJECTS = ConfigFileValue.new(
 	_cfg_auto_save, 
-	"global-custom-commands", 
+	"global-custom-commands-v2", 
 	"projects",
 	[]
 ): 
@@ -209,7 +209,7 @@ var GLOBAL_CUSTOM_COMMANDS_PROJECTS = ConfigFileValue.new(
 
 var GLOBAL_CUSTOM_COMMANDS_EDITORS = ConfigFileValue.new(
 	_cfg_auto_save, 
-	"global-custom-commands", 
+	"global-custom-commands-v2", 
 	"editors",
 	[]
 ): 
