@@ -25,10 +25,11 @@ func _ready() -> void:
 	
 	_create_new_command_btn = add_button(tr("New Command"))
 	_create_new_command_btn.pressed.connect(func():
-		_popup_new_command_dialog("", "", [], false, func(cmd_name, cmd_path, cmd_args, is_local):
+		_popup_new_command_dialog("", "", [], "Terminal", false, 
+		func(cmd_name, cmd_path, cmd_args, cmd_icon, is_local):
 			if _commands:
 				var command = _commands.add(
-					cmd_name, cmd_path, cmd_args, is_local, 
+					cmd_name, cmd_path, cmd_args, is_local, cmd_icon,
 					NEW_COMMAND_ACTIONS.duplicate()
 				)
 				_refresh()
@@ -103,11 +104,11 @@ func _add_view(command: Command, commands: Commands):
 	if command.is_action_allowed(Actions.EDIT):
 		command_view.edit_btn.disabled = false
 		command_view.edit_btn.pressed.connect(func():
-			_popup_new_command_dialog(command.name(), command.path(), command.args(), command.is_local(),
-			func(cmd_name, cmd_path, cmd_args, is_local):
+			_popup_new_command_dialog(command.name(), command.path(), command.args(), command.icon(), command.is_local(),
+			func(cmd_name, cmd_path, cmd_args, cmd_icon, is_local):
 				if _commands:
 					_commands.add(
-						cmd_name, cmd_path, cmd_args, is_local, 
+						cmd_name, cmd_path, cmd_args, is_local, cmd_icon,
 						NEW_COMMAND_ACTIONS.duplicate()
 					)
 					_refresh()
@@ -120,15 +121,16 @@ func _set_text_to_command_view(command, command_view):
 	command_view.set_text(
 		"%s (%s):" % [command.name(), local_badge], 
 		"", 
-		str(command)
+		str(command),
+		command.icon()
 	)
 
 
-func _popup_new_command_dialog(cmd_name, cmd_path, cmd_args, is_local, created_callback: Callable):
+func _popup_new_command_dialog(cmd_name, cmd_path, cmd_args, cmd_icon, is_local, created_callback: Callable):
 	var new_dialog = _new_command_dialog_scene.instantiate() as CommandViewerNewCommandDialog
 	new_dialog.created.connect(created_callback)
 	add_child(new_dialog)
-	new_dialog.init(cmd_name, cmd_path, cmd_args, is_local)
+	new_dialog.init(cmd_name, cmd_path, cmd_args, cmd_icon, is_local)
 	new_dialog.popup_centered()
 
 
@@ -144,23 +146,29 @@ class Command:
 	var _path: String
 	var _args: PackedStringArray
 	var _is_local: bool
+	var _icon: String
 	var _process_src: OSProcessSchema.Source
 	var _allowed_actions: PackedStringArray
 	
 	func _init(
 		name: String,
 		path: String,
-		args: PackedStringArray, 
+		args: PackedStringArray,
+		icon: String,
 		is_local: bool, 
 		process_src: OSProcessSchema.Source, 
 		allowed_actions: PackedStringArray
 	):
+		_icon = icon
 		_name = name
 		_path = path
 		_args = args
 		_is_local = is_local
 		_process_src = process_src
 		_allowed_actions = allowed_actions
+	
+	func icon() -> String:
+		return _icon
 	
 	func is_local() -> bool:
 		return _is_local
@@ -196,7 +204,7 @@ class Commands:
 	func all() -> Array[Command]:
 		return []
 	
-	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
 		assert(true, "Not implemented")
 		return null
 	
@@ -275,11 +283,11 @@ class CommandsDuo extends Commands:
 		result.append_array(_local.all())
 		return result
 	
-	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
 		if is_local:
-			return _local.add(name, path, args, is_local, allowed_actions)
+			return _local.add(name, path, args, is_local, icon, allowed_actions)
 		else:
-			return _global.add(name, path, args, is_local, allowed_actions)
+			return _global.add(name, path, args, is_local, icon, allowed_actions)
 	
 	func remove(name: String, is_local: bool) -> void:
 		if is_local:
@@ -297,8 +305,8 @@ class CommandsWrap extends Commands:
 	func all() -> Array[Command]:
 		return _origin.all()
 	
-	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
-		return _origin.add(name, path, args, is_local, allowed_actions)
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
+		return _origin.add(name, path, args, is_local, icon, allowed_actions)
 	
 	func remove(name: String, is_local: bool) -> void:
 		_origin.remove(name, is_local)
@@ -336,11 +344,12 @@ class CommandsGeneric extends Commands:
 			x.path,
 			x.args,
 			x.allowed_actions,
+			x.get('icon', 'Terminal'),
 			_is_local
 		)))
 		return result
 	
-	func add(name: String, path: String, args: PackedStringArray, is_local: bool, allowed_actions: PackedStringArray) -> Command:
+	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
 		if is_local == _is_local:
 			var commands = _custom_commands_source.custom_commands
 			if _has_by_name(name):
@@ -352,6 +361,7 @@ class CommandsGeneric extends Commands:
 							"name": name,
 							"path": path,
 							"args": args,
+							"icon": icon,
 							"allowed_actions": allowed_actions
 						}
 				)
@@ -360,10 +370,11 @@ class CommandsGeneric extends Commands:
 					"name": name,
 					"path": path,
 					"args": args,
+					"icon": icon,
 					"allowed_actions": allowed_actions
 				})
 			_custom_commands_source.custom_commands = commands
-			return _to_command(name, path, args, allowed_actions, is_local)
+			return _to_command(name, path, args, allowed_actions, icon, is_local)
 		else:
 			assert(true, "Not implemented")
 			return null
@@ -381,5 +392,5 @@ class CommandsGeneric extends Commands:
 			_custom_commands_source.custom_commands.filter(func(x): return x.name == name)
 		) > 0
 	
-	func _to_command(name: String, path: String, args: PackedStringArray, allowed_actions: PackedStringArray, is_local: bool) -> Command:
-		return Command.new(name, path, args, is_local, _base_process_src, allowed_actions)
+	func _to_command(name: String, path: String, args: PackedStringArray, allowed_actions: PackedStringArray, icon: String, is_local: bool) -> Command:
+		return Command.new(name, path, args, icon, is_local, _base_process_src, allowed_actions)

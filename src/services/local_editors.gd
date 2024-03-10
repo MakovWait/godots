@@ -254,6 +254,7 @@ class Item extends Object:
 		if not _find_custom_command_by_name("Run", commands):
 			commands.append({
 				'name': 'Run',
+				'icon': 'Play',
 				'path': '{{EDITOR_PATH}}',
 				'args': ['-p'],
 				'allowed_actions': [

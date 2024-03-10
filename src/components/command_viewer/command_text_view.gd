@@ -4,6 +4,7 @@ extends VBoxContainer
 @onready var _copy_to_clipboard: Button = %CopyToClipboard
 @onready var _rich_text_label: RichTextLabel = %RichTextLabel
 @onready var _title: Label = %Title
+@onready var _icon_rect = %IconRect
 
 var _text = ""
 
@@ -36,7 +37,7 @@ func _ready() -> void:
 	)
 
 
-func set_text(title, tooltip, text):
+func set_text(title, tooltip, text, icon):
 	_title.tooltip_text = tooltip
 	_title.text = title
 	_text = text
@@ -44,3 +45,4 @@ func set_text(title, tooltip, text):
 	_rich_text_label.clear()
 	_rich_text_label.push_color(get_theme_color("string_color", "CodeEdit"))
 	_rich_text_label.append_text(text)
+	_icon_rect.texture = get_theme_icon(icon, "EditorIcons")

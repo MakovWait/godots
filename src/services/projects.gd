@@ -240,6 +240,7 @@ class Item:
 		if not _find_custom_command_by_name("Edit", commands):
 			commands.append({
 				'name': 'Edit',
+				'icon': 'Edit',
 				'path': '{{EDITOR_PATH}}',
 				'args': ['--path', '{{PROJECT_DIR}}' ,'-e'],
 				'allowed_actions': [
@@ -251,6 +252,7 @@ class Item:
 		if not _find_custom_command_by_name("Run", commands):
 			commands.append({
 				'name': 'Run',
+				'icon': 'Play',
 				'path': '{{EDITOR_PATH}}',
 				'args': ['--path', '{{PROJECT_DIR}}' ,'-g'],
 				'allowed_actions': [
