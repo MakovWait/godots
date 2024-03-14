@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://dvlmutw7v33j0"]
+[gd_scene load_steps=13 format=3 uid="uid://dvlmutw7v33j0"]
 
 [ext_resource type="Script" path="res://src/components/editors/local/editor_item/editor_item.gd" id="1_gsbp6"]
 [ext_resource type="PackedScene" uid="uid://b2tm4lxm80sj0" path="res://src/components/editors/local/editor_item/rename_editor_dialog.tscn" id="2_6et78"]
 [ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_8fw8m"]
 [ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="3_8hshq"]
 [ext_resource type="PackedScene" path="res://src/components/editors/local/editor_item/add_extra_arguments_editor_dialog.tscn" id="3_dx4xf"]
+[ext_resource type="PackedScene" uid="uid://d2nl4stib3sjd" path="res://src/components/editors/local/editor_item/show_owners_dialog.tscn" id="3_k6g00"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="5_48fct"]
 [ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="6_qnxw1"]
 [ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="7_0bi54"]
@@ -21,6 +22,7 @@ grow_vertical = 2
 size_flags_vertical = 3
 script = ExtResource("1_gsbp6")
 _rename_dialog_scene = ExtResource("2_6et78")
+_view_owners_dialog_scene = ExtResource("3_k6g00")
 _add_extra_arguments_scene = ExtResource("3_dx4xf")
 
 [node name="Favorite" type="VBoxContainer" parent="."]

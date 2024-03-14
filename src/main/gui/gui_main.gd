@@ -22,6 +22,8 @@ const theme_source = preload("res://theme/theme.gd")
 
 var _on_exit_tree_callbacks: Array[Callable] = []
 var _local_remote_switch_context: LocalRemoteEditorsSwitchContext
+var _local_editors_service: LocalEditors.List
+var _projects_service: Projects.List
 
 
 func _ready():
@@ -120,22 +122,11 @@ func _ready():
 		$Settings.raise_settings()
 	)
 	
-	var local_editors = LocalEditors.List.new(
-		Config.EDITORS_CONFIG_PATH
-	)
-	var projects_service = Projects.List.new(
-		Config.PROJECTS_CONFIG_PATH,
-		local_editors,
-		preload("res://assets/default_project_icon.svg")
-	)
-	_on_exit_tree_callbacks.append(func(): local_editors.cleanup())
-	_on_exit_tree_callbacks.append(func(): projects_service.cleanup())
-	
-	local_editors.load()
-	projects_service.load()
+	_local_editors_service.load()
+	_projects_service.load()
 
-	_projects.init(projects_service)
-	_local_editors.init(local_editors)
+	_projects.init(_projects_service)
+	_local_editors.init(_local_editors_service)
 	_remote_editors.init(%DownloadsContainer)
 
 	_projects.manage_tags_requested.connect(_popup_manage_tags)
@@ -193,7 +184,28 @@ func _enter_tree():
 		_remote_editors,
 		_tab_container
 	)
+	
+	_local_editors_service = LocalEditors.List.new(
+		Config.EDITORS_CONFIG_PATH
+	)
+	_projects_service = Projects.List.new(
+		Config.PROJECTS_CONFIG_PATH,
+		_local_editors_service,
+		preload("res://assets/default_project_icon.svg")
+	)
+	
 	Context.add(self, _local_remote_switch_context)
+	Context.add(self, _local_editors_service)
+	Context.add(self, _projects_service)
+	
+	_on_exit_tree_callbacks.append(func():
+		_local_editors_service.cleanup()
+		_projects_service.cleanup()
+		
+		Context.erase(self, _local_editors_service)
+		Context.erase(self, _projects_service)
+		Context.erase(self, _local_remote_switch_context)
+	)
 
 
 func _exit_tree():
@@ -201,7 +213,6 @@ func _exit_tree():
 		callback.call()
 	var window = get_window()
 	Config.LAST_WINDOW_RECT.put(Rect2i(window.position, window.size))
-	Context.erase(self, _local_remote_switch_context)
 
 
 func _popup_manage_tags(item_tags, all_tags, on_confirm):

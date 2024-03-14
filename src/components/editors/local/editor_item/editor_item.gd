@@ -7,6 +7,7 @@ signal tag_clicked(tag)
 
 
 @export var _rename_dialog_scene: PackedScene
+@export var _view_owners_dialog_scene: PackedScene
 @export var _add_extra_arguments_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
@@ -17,6 +18,7 @@ signal tag_clicked(tag)
 @onready var _editor_features = %EditorFeatures
 @onready var _actions_h_box = %ActionsHBox
 @onready var _actions_container: HBoxContainer = %ActionsContainer
+
 
 static var settings := EditorItemActions.Settings.new(
 	'editor-item-inline-actions',
@@ -167,7 +169,14 @@ func _fill_actions(item: LocalEditors.Item):
 		"act": _view_command.bind(item),
 		"label": tr("View Command"),
 	})
-	
+
+	var view_owners = Action.from_dict({
+		"key": "view-owners",
+		"icon": Action.IconTheme.new(self, "FileList", "EditorIcons"),
+		"act": _view_owners.bind(item),
+		"label": tr("View References"),
+	})
+
 	var remove = Action.from_dict({
 		"key": "remove",
 		"icon": Action.IconTheme.new(self, "Remove", "EditorIcons"),
@@ -181,6 +190,7 @@ func _fill_actions(item: LocalEditors.Item):
 		manage_tags,
 		add_extra_arguments,
 		view_command,
+		view_owners,
 		remove
 	])
 
@@ -191,9 +201,16 @@ func _update_actions_availability(item: LocalEditors.Item):
 		'manage-tags',
 		'rename',
 		'add-extra-args',
-		'view-command'
+		'view-command',
+		'view-owners'
 	]).all():
 		action.disable(not item.is_valid)
+
+
+func _view_owners(item: LocalEditors.Item):
+	var scene = _view_owners_dialog_scene.instantiate()
+	add_child(scene)
+	scene.raise(item)
 
 
 func _view_command(item):

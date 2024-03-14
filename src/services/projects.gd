@@ -45,6 +45,13 @@ class List extends RefCounted:
 	func get_editors_to_bind():
 		return _local_editors.as_option_button_items()
 	
+	func get_owners_of(editor: LocalEditors.Item) -> Array[Item]:
+		var result: Array[Item]
+		for project in all():
+			if project.editor_is(editor):
+				result.append(project)
+		return result
+	
 	func get_all_tags():
 		var set = Set.new()
 		for project in _projects.values():
@@ -173,6 +180,11 @@ class Item:
 	
 	func load(with_icon=true):
 		_external_project_info.load(with_icon)
+	
+	func editor_is(editor: LocalEditors.Item) -> bool:
+		if has_invalid_editor:
+			return false
+		return self.editor == editor
 	
 	func _get_editor_name():
 		if has_invalid_editor:
