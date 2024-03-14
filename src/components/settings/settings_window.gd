@@ -29,6 +29,11 @@ func _prepare_settings():
 			Config.USE_SYSTEM_TITLE_BAR,
 			SettingCheckbox
 		))), func(): return DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE)),
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/config/use_native_file_dialog",
+			Config.USE_NATIVE_FILE_DIALOG,
+			SettingCheckbox
+		))),
 		SettingChangeObserved(SettingCfg(
 			"application/config/remember_window_rect",
 			Config.REMEMBER_WINDOW_SIZE,

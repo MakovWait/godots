@@ -135,6 +135,15 @@ var USE_SYSTEM_TITLE_BAR = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var USE_NATIVE_FILE_DIALOG = ConfigFileValue.new(
+	_cfg_auto_save,
+	"app",
+	"use_native_file_dialog",
+	false
+):
+	set(_v): _readonly()
+
+
 var LAST_WINDOW_RECT = ConfigFileValue.new(
 	_cfg_auto_save, 
 	"app", 
