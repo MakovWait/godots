@@ -27,6 +27,7 @@ AutoClose="*res://src/auto_close.gd"
 Cache="*res://src/cache.gd"
 HttpClient="*res://src/http_client.gd"
 Context="*res://addons/use-context/context_node.gd"
+AutoNativeFileDialog="*res://src/auto_native_file_dialog.gd"
 
 [display]
 
