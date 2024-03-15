@@ -3,6 +3,7 @@ extends HBoxContainer
 @onready var _godots_releases_list = %GodotsReleasesList as VBoxList
 @onready var _sidebar = %ActionsSidebar
 @onready var _refresh_button = %RefreshButton
+@onready var _star_git_hub = %StarGitHub
 
 var _releases: GodotsReleases.I
 var _godots_downloads: GodotsDownloads.I
@@ -28,6 +29,11 @@ func _ready():
 	_godots_releases_list.set_search_box_text("tag:newest")
 	_refresh_button.pressed.connect(func():
 		_async_refetch_data()
+	)
+	
+	_star_git_hub.icon = get_theme_icon("Favorites", "EditorIcons")
+	_star_git_hub.pressed.connect(func():
+		OS.shell_open("https://github.com/MakovWait/godots")
 	)
 
 
