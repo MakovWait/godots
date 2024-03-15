@@ -31,6 +31,14 @@ class List:
 				items.append(item)
 		return List.new(items)
 	
+	func without(keys: PackedStringArray):
+		var items: Array[Self]
+		for item in _items:
+			if keys.has(item.key):
+				continue
+			items.append(item)
+		return List.new(items)
+	
 	func all() -> Array[Self]:
 		return _items
 

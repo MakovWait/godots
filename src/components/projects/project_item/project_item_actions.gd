@@ -89,10 +89,12 @@ class Menu extends MenuButton:
 	var _views: Views
 	var _settings: Settings
 	var _settings_popup: PopupMenu
+	var _commands: CustomCommandsPopupItems.Self
 	
-	func _init(actions: Array[Action.Self], settings: Settings):
+	func _init(actions: Array[Action.Self], settings: Settings, commands: CustomCommandsPopupItems.Self):
 		_views = Views.new(actions, settings)
 		_settings = settings
+		_commands = commands
 		_setup_popup()
 
 	func _setup_popup():
@@ -123,11 +125,13 @@ class Menu extends MenuButton:
 		_settings_popup.clear()
 		for view in _views.all():
 			view.add_to_popup(popup.item_count, popup)
-		
+
 		popup.add_separator()
-		popup.add_submenu_item("Config", "Settings")
+		popup.add_submenu_item(tr("Config"), "Settings")
 		popup.set_item_icon(popup.item_count - 1, popup.get_theme_icon("Tools", "EditorIcons"))
-		
+
+		_commands.fill(popup)
+
 		_settings_popup.add_separator(tr("Visibility"))
 		for view in _views.all():
 			view.add_to_show_section(_settings_popup.item_count, _settings_popup)

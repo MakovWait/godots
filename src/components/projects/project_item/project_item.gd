@@ -50,7 +50,7 @@ func _ready() -> void:
 
 func init(item: Projects.Item):
 	_fill_actions(item)
-	_setup_actions_view()
+	_setup_actions_view(item)
 
 	item.loaded.connect(func():
 		_fill_data(item)
@@ -83,8 +83,15 @@ func init(item: Projects.Item):
 	)
 
 
-func _setup_actions_view():
-	var action_views = ProjectItemActions.Menu.new(_actions.all(), settings)
+func _setup_actions_view(item: Projects.Item):
+	var action_views = ProjectItemActions.Menu.new(
+		_actions.without(['view-command']).all(), 
+		settings, 
+		CustomCommandsPopupItems.Self.new(
+			_actions.by_key('view-command'),
+			_get_commands(item)
+		)
+	)
 	action_views.icon = get_theme_icon("GuiTabMenuHl", "EditorIcons")
 	action_views.add_controls_to_node(_actions_h_box)
 	_actions_container.add_child(action_views)
@@ -176,9 +183,9 @@ func _fill_actions(item: Projects.Item):
 	
 	var view_command = Action.from_dict({
 		"key": "view-command",
-		"icon": Action.IconTheme.new(self, "Window", "EditorIcons"),
+		"icon": Action.IconTheme.new(self, "Edit", "EditorIcons"),
 		"act": _view_command.bind(item),
-		"label": tr("View Command"),
+		"label": tr("Edit Commands"),
 	})
 	
 	var remove = Action.from_dict({
@@ -240,26 +247,30 @@ func _fill_data(item: Projects.Item):
 func _view_command(item: Projects.Item):
 	var command_viewer = Context.use(self, CommandViewer) as CommandViewer
 	if command_viewer:
-		var base_process_src = OSProcessSchema.FmtSource.new(item)
-		var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
-		cmd_src.edited.connect(func(): edited.emit())
-		var commands = CommandViewer.CommandsDuo.new(
-			CommandViewer.CommandsGeneric.new(
-				base_process_src,
-				cmd_src,
-				true
-			),
-			CommandViewer.CommandsGeneric.new(
-				base_process_src,
-				Config.CustomCommandsSourceConfig.new(
-					Config.GLOBAL_CUSTOM_COMMANDS_PROJECTS
-				),
-				false
-			)
-		)
 		command_viewer.raise(
-			commands, true
+			_get_commands(item), true
 		)
+
+
+func _get_commands(item: Projects.Item) -> CommandViewer.Commands:
+	var base_process_src = OSProcessSchema.FmtSource.new(item)
+	var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
+	cmd_src.edited.connect(func(): edited.emit())
+	var commands = CommandViewer.CommandsDuo.new(
+		CommandViewer.CommandsGeneric.new(
+			base_process_src,
+			cmd_src,
+			true
+		),
+		CommandViewer.CommandsGeneric.new(
+			base_process_src,
+			Config.CustomCommandsSourceConfig.new(
+				Config.GLOBAL_CUSTOM_COMMANDS_PROJECTS
+			),
+			false
+		)
+	)
+	return commands
 
 
 func _set_features(features):
