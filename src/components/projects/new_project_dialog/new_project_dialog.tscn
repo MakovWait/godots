@@ -4,16 +4,20 @@
 [ext_resource type="Script" path="res://src/components/projects/new_project_dialog/new_project_dialog.gd" id="2_f5jc0"]
 
 [node name="InstallProjectDialog" instance=ExtResource("1_1a1ca")]
+size = Vector2i(321, 275)
 script = ExtResource("2_f5jc0")
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer" index="4"]
+[node name="VBoxContainer" parent="." index="3"]
+offset_right = 313.0
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer" index="4"]
 layout_mode = 2
 
-[node name="SvgLabel" type="Label" parent="VBoxContainer/HBoxContainer3" index="0"]
+[node name="SvgLabel" type="Label" parent="VBoxContainer/HBoxContainer4" index="0"]
 layout_mode = 2
 text = "Create icon.svg:"
 
-[node name="SvgCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer3" index="1"]
+[node name="SvgCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer4" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 
