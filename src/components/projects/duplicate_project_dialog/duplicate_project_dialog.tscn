@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bq5ej1hdxllic"]
+
+[ext_resource type="PackedScene" uid="uid://d10kvn2s6suxh" path="res://src/components/projects/install_project_dialog/install_project_dialog.tscn" id="1_dehsi"]
+[ext_resource type="Script" path="res://src/components/projects/duplicate_project_dialog/duplicate_project_dialog.gd" id="2_ni4mr"]
+
+[node name="DuplicateProjectDialog" instance=ExtResource("1_dehsi")]
+script = ExtResource("2_ni4mr")
+
+[node name="RenameContainer" type="HBoxContainer" parent="VBoxContainer" index="5"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/RenameContainer" index="0"]
+layout_mode = 2
+text = "Rename project"
+
+[node name="RenameCheckBox" type="CheckBox" parent="VBoxContainer/RenameContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2

@@ -60,18 +60,6 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Browse"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-text = "Rename project"
-
-[node name="RenameCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer3"]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="MessageLabel" type="Label" parent="VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2

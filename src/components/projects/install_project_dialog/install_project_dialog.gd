@@ -10,8 +10,6 @@ extends ConfirmationDialog
 @onready var _create_folder_failed_dialog = $CreateFolderFailedDialog
 @onready var _file_dialog = $FileDialog
 @onready var _randomize_name_button = %RandomizeNameButton
-@onready var _rename_container: HBoxContainer = $VBoxContainer/HBoxContainer3
-@onready var _rename_check_box: CheckBox = %RenameCheckBox
 
 var _create_folder_failed_label: Label
 

@@ -94,7 +94,7 @@ func init(projects: Projects.List):
 	$ProjectsList/HBoxContainer.add_child(actions.by_key('refresh').to_btn().make_flat(true).show_text(false))
 	$ProjectsList/HBoxContainer.add_child(project_actions)
 
-	_import_project_dialog.imported.connect(func(project_path, editor_path, edit):
+	_import_project_dialog.imported.connect(func(project_path, editor_path, edit, callback):
 		var project: Projects.Item
 		if projects.has(project_path):
 			project = projects.retrieve(project_path)
@@ -105,11 +105,15 @@ func init(projects: Projects.List):
 			project.load()
 			_projects_list.add(project)
 		_projects.save()
-		_projects_list.sort_items()
 		
 		if edit:
 			project.edit()
 			AutoClose.close_if_should()
+		
+		if callback:
+			callback.call(project, projects)
+		
+		_projects_list.sort_items()
 	)
 	
 	_clone_project_dialog.cloned.connect(func(path: String):
@@ -123,6 +127,10 @@ func init(projects: Projects.List):
 	
 	_scan_dialog.dir_to_scan_selected.connect(func(dir_to_scan: String):
 		_scan_projects(dir_to_scan)
+	)
+	
+	_duplicate_project_dialog.duplicated.connect(func(project_path, callback):
+		import(project_path, callback)
 	)
 	
 	_projects_list.refresh(_projects.all())
@@ -147,10 +155,10 @@ func _refresh():
 	_load_projects()
 
 
-func import(project_path=""):
+func import(project_path="", callback=null):
 	if _import_project_dialog.visible:
 		return
-	_import_project_dialog.init(project_path, _projects.get_editors_to_bind())
+	_import_project_dialog.init(project_path, _projects.get_editors_to_bind(), callback)
 	_import_project_dialog.popup_centered()
 
 
@@ -246,47 +254,4 @@ func _on_projects_list_item_duplicate_requested(project: Projects.Item) -> void:
 	if _duplicate_project_dialog.visible:
 		return
 	
-	_duplicate_project_dialog.title = "Duplicate Project: %s" % project.name
-	_duplicate_project_dialog._rename_container.visible = true
-	_duplicate_project_dialog._rename_check_box.button_pressed = Cache.smart_value(self, "rename_duple", true).ret(false)
-	_duplicate_project_dialog.get_ok_button().text = tr("Duplicate")
-	
-	_duplicate_project_dialog.raise(project.name)
-	
-	_duplicate_project_dialog.dialog_hide_on_ok = false
-	_duplicate_project_dialog.about_to_install.connect(func(final_project_name, project_dir):
-		var err = 0
-		if OS.has_feature("macos") or OS.has_feature("linux"):
-			err = OS.execute("cp", ["-r", project.path.get_base_dir().path_join("."), project_dir])
-		elif OS.has_feature("windows"):
-			err = OS.execute(
-				"powershell.exe", 
-				[
-					"-command",
-					"\"Copy-Item -Path '%s' -Destination '%s' -Recurse\"" % [ 
-						ProjectSettings.globalize_path(project.path.get_base_dir().path_join("*")), 
-						ProjectSettings.globalize_path(project_dir)
-					]
-				]
-			)
-		if err != 0:
-			_duplicate_project_dialog.error(tr("Error. Code: %s" % err))
-			return
-
-		var project_configs = utils.find_project_godot_files(project_dir)
-		if len(project_configs) == 0:
-			_duplicate_project_dialog.error(tr("No project.godot found."))
-			return
-		
-		var project_file_path = project_configs[0]
-		if _duplicate_project_dialog._rename_check_box.button_pressed:
-			var initial_settings = ConfigFile.new()
-			initial_settings.load(project_file_path._path)
-			initial_settings.set_value("application", "config/name", final_project_name)
-			initial_settings.save(project_file_path._path)
-		Cache.smart_value(self, "rename_duple", true).put(_duplicate_project_dialog._rename_check_box.button_pressed)
-		_duplicate_project_dialog.hide()
-		import(project_file_path.path)
-		pass,
-		CONNECT_ONE_SHOT
-	)
+	_duplicate_project_dialog.raise(project.name, project)

@@ -1,7 +1,7 @@
 extends ConfirmationDialog
 
 
-signal imported(project_path, editor_path, and_edit)
+signal imported(project_path, editor_path, and_edit, callback)
 
 
 @onready var _browse_project_path_button: Button = %BrowseProjectPathButton
@@ -12,6 +12,7 @@ signal imported(project_path, editor_path, and_edit)
 @onready var _version_hint_container = %VersionHintContainer
 
 var _editor_options = []
+var _callback = null
 
 
 func _ready() -> void:
@@ -41,12 +42,18 @@ func _ready() -> void:
 		_sort_options()
 	)
 	
+	visibility_changed.connect(func():
+		if not visible:
+			_callback = null
+	)
+	
 	custom_action.connect(func(action):
 		if action == "just_import":
 			imported.emit(
 				_project_path_edit.text, 
 				_editors_option_button.get_item_metadata(_editors_option_button.selected),
-				false
+				false,
+				_callback
 			)
 			hide()
 	)
@@ -54,7 +61,8 @@ func _ready() -> void:
 	add_button(tr("Import"), false, "just_import")
 
 
-func init(project_path, editor_options):
+func init(project_path, editor_options, callback=null):
+	_callback = callback
 	_editor_options = editor_options
 	_set_editor_options(editor_options)
 	_project_path_edit.clear()
@@ -75,7 +83,8 @@ func _on_confirmed() -> void:
 	imported.emit(
 		_project_path_edit.text, 
 		_editors_option_button.get_item_metadata(_editors_option_button.selected),
-		true
+		true,
+		_callback
 	)
 
 
