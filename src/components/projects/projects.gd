@@ -247,6 +247,8 @@ func _on_projects_list_item_duplicate_requested(project: Projects.Item) -> void:
 		return
 	
 	_duplicate_project_dialog.title = "Duplicate Project: %s" % project.name
+	_duplicate_project_dialog._rename_container.visible = true
+	_duplicate_project_dialog._rename_check_box.button_pressed = Cache.smart_value(self, "rename_duple", true).ret(false)
 	_duplicate_project_dialog.get_ok_button().text = tr("Duplicate")
 	
 	_duplicate_project_dialog.raise(project.name)
@@ -277,6 +279,12 @@ func _on_projects_list_item_duplicate_requested(project: Projects.Item) -> void:
 			return
 		
 		var project_file_path = project_configs[0]
+		if _duplicate_project_dialog._rename_check_box.button_pressed:
+			var initial_settings = ConfigFile.new()
+			initial_settings.load(project_file_path._path)
+			initial_settings.set_value("application", "config/name", final_project_name)
+			initial_settings.save(project_file_path._path)
+		Cache.smart_value(self, "rename_duple", true).put(_duplicate_project_dialog._rename_check_box.button_pressed)
 		_duplicate_project_dialog.hide()
 		import(project_file_path.path)
 		pass,
