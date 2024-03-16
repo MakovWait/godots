@@ -100,3 +100,23 @@ To see all the available commands type
   godots -gh
   godots --ghelp
 ```
+
+# Custom Command
+By default, there are two commands for project (Run, Edit) and one for editor (Run).
+
+Commands are able to be activated via RMB click on item:
+
+![image](https://github.com/MakovWait/godots/assets/39778897/3bd508b4-b21e-403e-b49c-fe745693907a)
+
+Also there is an option 'Edit Commands' (within named section 'Commands') that enables you to create custom commands or edit default ones (Run, Edit).
+For instance, command to open the project in terminal:
+
+![image](https://github.com/MakovWait/godots/assets/39778897/e1c47d67-9351-4fdd-a507-dcddab00b77c)
+
+The command uses `{{PROJECT_DIR}}` variable, the full list of them:
+
+| Variable        | Description                               | Scope              |
+| --------------- | ----------------------------------------- | ------------------ |
+| {{PROJECT_DIR}} | the project directory                     | `project`          |
+| {{EDITOR_DIR}}  | the editor directory                      | `editor` `project` |
+| {{EDITOR_PATH}} | the bind editor \| editor itself bin path | `editor` `project` |
