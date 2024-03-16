@@ -10,16 +10,25 @@ script = ExtResource("2_f5jc0")
 [node name="VBoxContainer" parent="." index="3"]
 offset_right = 313.0
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer" index="4"]
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" index="5"]
 layout_mode = 2
 
-[node name="SvgLabel" type="Label" parent="VBoxContainer/HBoxContainer4" index="0"]
+[node name="GodotVersionSwitch" type="HBoxContainer" parent="VBoxContainer" index="6"]
 layout_mode = 2
-text = "Create icon.svg:"
 
-[node name="SvgCheckBox" type="CheckBox" parent="VBoxContainer/HBoxContainer4" index="1"]
+[node name="Label" type="Label" parent="VBoxContainer/GodotVersionSwitch" index="0"]
+visible = false
+layout_mode = 2
+text = "Godot Version:"
+
+[node name="HandlerOptionButton" type="OptionButton" parent="VBoxContainer/GodotVersionSwitch" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CustomFormTabs" type="TabContainer" parent="VBoxContainer" index="7"]
+layout_mode = 2
+tabs_visible = false
 
 [node name="FileDialog" parent="." index="5"]
 size = Vector2i(762, 159)

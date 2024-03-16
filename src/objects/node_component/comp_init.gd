@@ -17,8 +17,16 @@ static func SET_EDITABLE(v):
 	return func(c): c.editable = bool(v)
 
 
+static func SET_META(n, v):
+	return func(c): c.set_meta(n, v)
+
+
 static func SET_THEME_ICON(name, theme_type):
 	return func(c): c.icon = c.get_theme_icon(name, theme_type)
+
+
+static func SET_BUTTON_GROUP(btn_group: ButtonGroup):
+	return func(c): c.button_group = btn_group
 
 
 static func THEME_CHANGED(callback):
