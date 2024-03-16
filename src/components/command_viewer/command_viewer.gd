@@ -23,6 +23,12 @@ func _ready() -> void:
 			_commands = null
 	)
 	
+	var help = add_button(tr("Help"))
+	help.pressed.connect(func():
+		OS.shell_open("https://github.com/MakovWait/godots/blob/main/.github/assets/FEATURES.md#edit-commands")
+	)
+	help.icon = get_theme_icon("ExternalLink", "EditorIcons")
+	
 	_create_new_command_btn = add_button(tr("New Command"))
 	_create_new_command_btn.pressed.connect(func():
 		_popup_new_command_dialog("", "", [], "Terminal", false, 
