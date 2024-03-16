@@ -32,12 +32,12 @@ func _ready() -> void:
 			"act": import,
 			"label": tr("Import"),
 		}),
-		#Action.from_dict({
-			#"key": "download",
-			#"icon": Action.IconTheme.new(self, "AssetLib", "EditorIcons"),
-			#"act": func(): editor_download_pressed.emit(),
-			#"label": tr("Download"),
-		#}),
+		Action.from_dict({
+			"key": "download",
+			"icon": Action.IconTheme.new(self, "AssetLib", "EditorIcons"),
+			"act": func(): editor_download_pressed.emit(),
+			"label": tr("Download"),
+		}),
 		Action.from_dict({
 			"key": "orphan",
 			"icon": Action.IconTheme.new(self, "Debug", "EditorIcons"),
