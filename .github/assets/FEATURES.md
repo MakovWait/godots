@@ -108,6 +108,8 @@ Commands are able to be activated via RMB click on item:
 
 ![image](https://github.com/MakovWait/godots/assets/39778897/3bd508b4-b21e-403e-b49c-fe745693907a)
 
+### Edit Commands
+
 Also there is an option 'Edit Commands' (within named section 'Commands') that enables you to create custom commands or edit default ones (Run, Edit).
 For instance, command to open the project in terminal:
 
