@@ -22,7 +22,7 @@ signal tag_clicked(tag)
 
 static var settings := EditorItemActions.Settings.new(
 	'editor-item-inline-actions',
-	[]
+	['run', 'remove']
 )
 
 var _actions: Action.List

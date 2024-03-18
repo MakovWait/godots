@@ -26,7 +26,7 @@ signal tag_clicked(tag)
 
 static var settings := ProjectItemActions.Settings.new(
 	'project-item-inline-actions',
-	[]
+	['run', 'edit', 'remove']
 )
 
 var _actions: Action.List

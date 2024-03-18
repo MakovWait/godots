@@ -45,7 +45,7 @@ class Settings:
 		changed.emit()
 	
 	func is_show_text() -> bool:
-		return _show_text.ret(false)
+		return _show_text.ret(true)
 
 	func set_show_text(value: bool):
 		_show_text.put(value)
