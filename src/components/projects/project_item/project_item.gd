@@ -7,6 +7,7 @@ signal duplicate_requested
 signal tag_clicked(tag)
 
 @export var _rename_dialog_scene: PackedScene
+@export var _add_extra_arguments_scene: PackedScene
 
 @onready var _path_label: Label = %PathLabel
 @onready var _title_label: Label = %TitleLabel
@@ -181,6 +182,13 @@ func _fill_actions(item: Projects.Item):
 		"label": tr("Manage Tags"),
 	})
 	
+	var add_extra_arguments = Action.from_dict({
+		"key": "add-extra-args",
+		"icon": Action.IconTheme.new(self, "ConfirmationDialog", "EditorIcons"),
+		"act": _on_add_extra_arguments.bind(item),
+		"label": tr("Add Extra Args"),
+	})
+	
 	var view_command = Action.from_dict({
 		"key": "view-command",
 		"icon": Action.IconTheme.new(self, "Edit", "EditorIcons"),
@@ -203,6 +211,7 @@ func _fill_actions(item: Projects.Item):
 		bind_editor,
 		manage_tags,
 		view_command,
+		add_extra_arguments,
 		remove
 	])
 
@@ -354,6 +363,15 @@ func _on_rename(item):
 		edited.emit()
 	)
 
+func _on_add_extra_arguments(item):
+	var dialog = _add_extra_arguments_scene.instantiate()
+	add_child(dialog)
+	dialog.popup_centered()
+	dialog.init(item.extra_arguments)
+	dialog.editor_add_extra_arguments.connect(func(new_extra_arguments):
+		item.extra_arguments = new_extra_arguments
+		edited.emit()
+	)
 
 func _on_edit_with_editor(item):
 	_on_run_with_editor(item, func(item): item.edit(), "edit", "Edit", true)

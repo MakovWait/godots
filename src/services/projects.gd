@@ -154,7 +154,17 @@ class Item:
 	var custom_commands:
 		get: return _get_custom_commands("custom_commands-v2")
 		set(value): _section.set_value("custom_commands-v2", value)
-
+	
+	var extra_arguments: PackedStringArray:
+		get: return _section.get_typed_value(
+			"extra_arguments", 
+			func(x): return x is PackedStringArray, 
+			[]
+		)
+		set(value): 
+			_section.set_value("extra_arguments", value)
+	
+	
 	var _external_project_info: ExternalProjectInfo
 	var _section: ConfigFileSection
 	var _local_editors: LocalEditors.List
