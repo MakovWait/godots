@@ -195,6 +195,13 @@ func _fill_actions(item: Projects.Item):
 		"label": tr("Remove"),
 	})
 
+	var show_in_file_manager = Action.from_dict({
+		"key": "show-in-file-manager",
+		"icon": Action.IconTheme.new(self, "Filesystem", "EditorIcons"),
+		"act": _on_show_in_file_manager.bind(item),
+		"label": tr("Show in File Manager"),
+	})
+
 	_actions = Action.List.new([
 		edit,
 		run,
@@ -203,7 +210,8 @@ func _fill_actions(item: Projects.Item):
 		bind_editor,
 		manage_tags,
 		view_command,
-		remove
+		remove,
+		show_in_file_manager
 	])
 
 
@@ -354,6 +362,9 @@ func _on_rename(item):
 		edited.emit()
 	)
 
+func _on_show_in_file_manager(item):
+	if item.is_valid:
+		OS.shell_show_in_file_manager(item.path, true)
 
 func _on_edit_with_editor(item):
 	_on_run_with_editor(item, func(item): item.edit(), "edit", "Edit", true)

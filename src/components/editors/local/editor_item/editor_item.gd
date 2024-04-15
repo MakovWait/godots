@@ -191,6 +191,13 @@ func _fill_actions(item: LocalEditors.Item):
 		"label": tr("Remove"),
 	})
 
+	var show_in_file_manager = Action.from_dict({
+		"key": "show-in-file-manager",
+		"icon": Action.IconTheme.new(self, "Filesystem", "EditorIcons"),
+		"act": _on_show_in_file_manager.bind(item),
+		"label": tr("Show in File Manager"),
+	})
+
 	_actions = Action.List.new([
 		run,
 		rename,
@@ -198,7 +205,8 @@ func _fill_actions(item: LocalEditors.Item):
 		add_extra_arguments,
 		view_command,
 		view_owners,
-		remove
+		remove,
+		show_in_file_manager
 	])
 
 
@@ -312,6 +320,10 @@ func _on_remove(item):
 	add_child(confirmation_dialog)
 	confirmation_dialog.popup_centered()
 
+func _on_show_in_file_manager(item):
+	var path: String = item.path
+	if DirAccess.dir_exists_absolute(path) or FileAccess.file_exists(path):
+		OS.shell_show_in_file_manager(path, true)
 
 func get_actions():
 	#return _actions.all().map(func(x): return x.to_btn())
