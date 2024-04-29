@@ -3,7 +3,9 @@
 
 Welcome to a world where style meets functionality, where pixels pop and creativity soars! Presenting **Godots**, your ultimate go-to hub for managing your Godot versions and projects in the most stylish and efficient way possible. 🎮✨
 
-![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot2.png)
+<p align="center">
+<img width="812" alt="Screenshot 2024-03-18 at 12 59 23 PM" src="https://github.com/MakovWait/godots/assets/39778897/607ce24b-2c39-4ede-8810-f7c528a496d2">
+</p>
 
 ## Unleash the Power on MacOS! 💥
 For all the macOS aficionados out there, unleashing the power of Godots is just a command away. Ready to run the app? Just add it to your quarantine with a swift and stylish command:
