@@ -1,4 +1,4 @@
-# Building Custom Templates
+# Building Custom Export Templates
 
 ## Summary
 
@@ -21,6 +21,8 @@ scons profile=path/to/{platform}-custom.py platform={platform} target=template_r
 ```
 
 The generated templates will be in the `bin` directory and can be copied over to the `release_templates` directory in the Godots project. The process can be repeated for `template_debug`.
+
+**NOTE:** MacOS has [additonal steps to follow](https://docs.godotengine.org/en/stable/contributing/development/compiling/compiling_for_macos.html#building-export-templates) to attain the proper files and architecture support.
 
 ## Usage
 
