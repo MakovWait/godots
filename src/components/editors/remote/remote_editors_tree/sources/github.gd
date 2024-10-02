@@ -115,6 +115,9 @@ class GithubItemBase extends RemoteEditorsTreeDataSource.Item:
 	func async_expand(tree: RemoteTree):
 		return
 	
+	func handle_item_activated():
+		pass
+	
 	func handle_button_clicked(col, id, mouse):
 		pass
 	
@@ -163,6 +166,9 @@ class GithubAssetItem extends GithubItemBase:
 	
 	func _to_filter_target() -> GithubFilterTarget:
 		return GithubFilterTarget.new(_asset.name, false, true, _asset.is_zip)
+
+	func handle_item_activated():
+		_assets.download(_asset.browser_download_url, _asset.file_name)
 
 	func handle_button_clicked(col, id, mouse):
 		_assets.download(_asset.browser_download_url, _asset.file_name)

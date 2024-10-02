@@ -193,7 +193,7 @@ func _setup_tree():
 
 	_tree.item_activated.connect(func():
 		var delegate = _delegate_of(_tree.get_selected())
-		delegate.handle_button_clicked(null, null, null)
+		delegate.handle_item_activated()
 	)
 
 	_tree.button_clicked.connect(func(item, col, id, mouse):

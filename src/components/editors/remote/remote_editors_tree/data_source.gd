@@ -81,6 +81,9 @@ class Item:
 	func async_expand(tree: RemoteTree):
 		return
 	
+	func handle_item_activated():
+		pass
+	
 	func handle_button_clicked(col, id, mouse):
 		pass
 	

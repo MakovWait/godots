@@ -96,7 +96,13 @@ class RemoteTreeItemTuxFamily extends RemoteEditorsTreeDataSource.Item:
 			if child.has_meta("delegate"):
 				result.append(child.get_meta("delegate"))
 		return result
-	
+
+	func handle_item_activated():
+		if not _item.has_meta("file_name"): return
+		var file_name = _item.get_meta("file_name")
+		var url = _restore_url(_item)
+		_assets.download(url, file_name)
+
 	func handle_button_clicked(col, id, mouse):
 		if not _item.has_meta("file_name"): return
 		var file_name = _item.get_meta("file_name")
