@@ -3,7 +3,7 @@ class_name AssetLib
 # https://github.com/godotengine/godot-asset-library/blob/master/API.md
 class Params:
 	# any|addon|project
-	var type: String = "project":
+	var type: String = "any":
 		set(value): 
 			assert(value in ["any", "addon", "project"])
 			type = value
