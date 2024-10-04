@@ -4,7 +4,149 @@ on:
     tags:
       - "v*"
 
+env:
+  GODOT_VERSION: 4.2.2
+
 jobs:
+  macos_templates:
+    runs-on: macos-latest
+    name: Build MacOS Templates
+    steps:
+      - uses: actions/checkout@v3.3.0
+        with:
+          repository: godotengine/godot
+          ref: tags/${{ env.GODOT_VERSION }}-stable
+          submodules: "recursive"
+      
+      - name: Get MacOS SCons Flags
+        run: curl https://raw.githubusercontent.com/MakovWait/godots/refs/heads/main/export_templates/macos-custom.py -o custom.py
+
+      - name: Setup Python and SCons
+        uses: ./.github/actions/godot-deps
+
+      - name: Compilation (release, x86_64)
+        uses: ./.github/actions/godot-build
+        with:
+          sconsflags: arch=x86_64 debug_symbols=no
+          platform: macos
+          target: template_release
+
+      - name: Compilation (debug, x86_64)
+        uses: ./.github/actions/godot-build
+        with:
+          sconsflags: arch=x86_64
+          platform: macos
+          target: template_debug
+
+      - name: Compilation (release, arm64)
+        uses: ./.github/actions/godot-build
+        with:
+          sconsflags: arch=arm64 debug_symbols=no
+          platform: macos
+          target: template_release
+
+      - name: Compilation (debug, arm64)
+        uses: ./.github/actions/godot-build
+        with:
+          sconsflags: arch=arm64
+          platform: macos
+          target: template_debug
+
+      - name: Prepare Artifact
+        run: |
+          lipo -create ./bin/godot.macos.template_release.x86_64 ./bin/godot.macos.template_release.arm64 -output ./bin/godot.macos.template_release.universal
+          rm ./bin/godot.macos.template_release.x86_64 ./bin/godot.macos.template_release.arm64
+          lipo -create ./bin/godot.macos.template_debug.x86_64 ./bin/godot.macos.template_debug.arm64 -output ./bin/godot.macos.template_debug.universal
+          rm ./bin/godot.macos.template_debug.x86_64 ./bin/godot.macos.template_debug.arm64
+          strip bin/godot.*
+          chmod +x bin/godot.*
+          cp -r misc/dist/macos_template.app .
+          mkdir -p macos_template.app/Contents/MacOS
+          cp bin/godot.macos.*.universal macos_template.app/Contents/MacOS/.
+          zip -q -9 -r macos.zip macos_template.app
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos_export_template
+          path: macos.zip
+          # Default is 90 days.
+          retention-days: 60
+
+  linux_templates:
+    runs-on: ubuntu-latest
+    name: Build Linux Templates
+    steps:
+      - uses: actions/checkout@v3.3.0
+        with:
+          repository: godotengine/godot
+          ref: tags/${{ env.GODOT_VERSION }}-stable
+          submodules: "recursive"
+      
+      - name: Get Linux SCons Flags
+        run: curl https://raw.githubusercontent.com/MakovWait/godots/refs/heads/main/export_templates/linuxbsd-custom.py -o custom.py
+    
+      - name: Setup Python and SCons
+        uses: ./.github/actions/godot-deps
+    
+      - name: Compilation (release)
+        uses: ./.github/actions/godot-build
+        with:
+          sconsflags: debug_symbols=no
+          platform: linuxbsd
+          target: template_release
+    
+      - name: Compilation (debug)
+        uses: ./.github/actions/godot-build
+        with:
+          platform: linuxbsd
+          target: template_debug
+    
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux_export_templates
+          path: bin/godot.linuxbsd.*.x86_64
+          # Default is 90 days.
+          retention-days: 60
+
+  windows_templates:
+    runs-on: windows-latest
+    name: Build Windows Templates
+    steps:
+      - uses: actions/checkout@v3.3.0
+        with:
+          repository: godotengine/godot
+          ref: tags/${{ env.GODOT_VERSION }}-stable
+          submodules: "recursive"
+      
+      - name: Get Windows SCons Flags
+        run: curl https://raw.githubusercontent.com/MakovWait/godots/refs/heads/main/export_templates/windows-custom.py -o custom.py
+    
+      - name: Setup Python and SCons
+        uses: ./.github/actions/godot-deps
+    
+      - name: Compilation (release)
+        uses: ./.github/actions/godot-build
+        with:
+          sconsflags: debug_symbols=no
+          platform: windows
+          target: template_release
+    
+      - name: Compilation (debug)
+        uses: ./.github/actions/godot-build
+        with:
+          platform: windows
+          target: template_debug
+    
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows_export_templates
+          path: bin/godot.windows.*.x86_64.exe
+          # Default is 90 days.
+          retention-days: 60
+
   # job id, can be anything
   export_game:
     # Always use ubuntu-latest for this action
@@ -27,14 +169,29 @@ jobs:
           sudo apt install wine64
           echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: macos_export_template
+          path: export_templates
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux_export_templates
+          path: export_templates
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows_export_templates
+          path: export_templates
+
       - name: export game
         id: export
         # Use latest version (see releases for all versions)
         uses: firebelley/godot-export@v5.2.1
         with:
           # Defining all the required inputs
-          godot_executable_download_url: https://github.com/godotengine/godot-builds/releases/download/4.2.2-rc2/Godot_v4.2.2-rc2_linux.x86_64.zip
-          godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/4.2.2-rc2/Godot_v4.2.2-rc2_export_templates.tpz
+          godot_executable_download_url: https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
           relative_project_path: .
           archive_output: true
           wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
