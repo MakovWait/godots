@@ -17,6 +17,7 @@ mono_crash.*.json
 .plugged/
 
 trash/
+builds/
 
 addons/gd-plug-ui
 addons/expand-region
