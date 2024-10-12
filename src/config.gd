@@ -225,6 +225,24 @@ var GLOBAL_CUSTOM_COMMANDS_EDITORS = ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var HTTP_PROXY_HOST = ConfigFileValue.new(
+	_cfg_auto_save,
+	"app",
+	"http_proxy_host",
+	""
+):
+	set(_v): _readonly()
+
+
+var HTTP_PROXY_PORT = ConfigFileValue.new(
+	_cfg_auto_save,
+	"app",
+	"http_proxy_port",
+	8080
+):
+	set(_v): _readonly()
+
+
 func _enter_tree() -> void:	
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))
