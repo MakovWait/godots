@@ -227,7 +227,7 @@ var GLOBAL_CUSTOM_COMMANDS_EDITORS = ConfigFileValue.new(
 
 var HTTP_PROXY_HOST = ConfigFileValue.new(
 	_cfg_auto_save,
-	"app",
+	"network",
 	"http_proxy_host",
 	""
 ):
@@ -236,7 +236,7 @@ var HTTP_PROXY_HOST = ConfigFileValue.new(
 
 var HTTP_PROXY_PORT = ConfigFileValue.new(
 	_cfg_auto_save,
-	"app",
+	"network",
 	"http_proxy_port",
 	8080
 ):
