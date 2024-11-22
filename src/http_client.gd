@@ -3,6 +3,16 @@ extends Node
 
 func async_http_get(url, headers=[], download_file=null):
 	var http_request = HTTPRequest.new()
+	var proxy_host = Config.HTTP_PROXY_HOST.ret().strip_edges()
+	if not proxy_host.is_empty():
+		http_request.set_http_proxy(
+			proxy_host,
+			Config.HTTP_PROXY_PORT.ret()
+			)
+		http_request.set_https_proxy(
+			proxy_host,
+			Config.HTTP_PROXY_PORT.ret()
+			)
 	add_child(http_request)
 	var response = await async_http_get_using(http_request, url, headers, download_file)
 	http_request.queue_free()

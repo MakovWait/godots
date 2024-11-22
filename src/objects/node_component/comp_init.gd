@@ -63,6 +63,10 @@ static func TEXT(t):
 	return func(c): c.text = c.tr(str(t))
 
 
+static func VALUE(v):
+	return func(c): c.value = v
+
+
 static func CUSTOM(callback):
 	return callback
 
