@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
+<component type="desktop-application">
   <id>io.github.MakovWait.Godots</id>
+  <launchable type="desktop-id">io.github.MakovWait.Godots.desktop</launchable>
   <name>Godots</name>
+  <developer_name>Maxim Kovkel</developer_name>
   <summary>Godot game engine version manager</summary>
   <description>
     <p>Godots is the ultimate hub for managing your Godot versions and projects.</p>
@@ -12,12 +14,13 @@
   <url type="homepage">https://github.com/MakovWait/godots/</url>
   <screenshots>
     <screenshot type="default">
-      <image type="source">https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot2.png?raw=true</image>
+      <image type="source">https://raw.githubusercontent.com/MakovWait/godots/main/.github/assets/screenshot2.png</image>
       <caption>Editors</caption>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="v1.3.stable" date="2024-03-18"/>
     <release version="v1.2.2.stable" date="2023-11-16"/>
     <release version="v1.2.stable" date="2023-11-02"/>
     <release version="v1.1.stable" date="2023-09-26"/>

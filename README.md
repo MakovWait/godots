@@ -3,7 +3,9 @@
 
 Welcome to a world where style meets functionality, where pixels pop and creativity soars! Presenting **Godots**, your ultimate go-to hub for managing your Godot versions and projects in the most stylish and efficient way possible. 🎮✨
 
-![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot2.png)
+<p align="center">
+<img width="812" alt="Screenshot 2024-03-18 at 12 59 23 PM" src="https://github.com/MakovWait/godots/assets/39778897/607ce24b-2c39-4ede-8810-f7c528a496d2">
+</p>
 
 ## Unleash the Power on MacOS! 💥
 For all the macOS aficionados out there, unleashing the power of Godots is just a command away. Ready to run the app? Just add it to your quarantine with a swift and stylish command:
@@ -21,7 +23,7 @@ Fear not Linux users, unleashing the power of Godots on any distribution is just
 <a href='https://flathub.org/apps/details/io.github.MakovWait.Godots'><img width="250" alt='Download on Flathub' src='https://raw.githubusercontent.com/flxzt/rnote/main/misc/assets/flathub-badge.svg'/></a>
 </div><br>
 
-Don't have Flatpak? Just download the [latest release](https://github.com/MakovWait/godots/releases/tag/v1.2.2.stable)!
+Don't have Flatpak? Just download the [latest release](https://github.com/MakovWait/godots/releases)!
 
 ## Features That Redefine Cool 😎
 - **HIDPI Magic**: Feast your eyes on Godots like never before! With pixel-perfect support for Retina displays, zero blur, and stunning visuals, it's a visual extravaganza.
