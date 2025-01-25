@@ -50,7 +50,6 @@ static func ADD_THEME_STYLEBOX_OVERRIDE_FROM_THEME(name, theme_stylebox_name, th
 static func ADD_THEME_STYLEBOX_OVERRIDE(name, stylebox):
 	return func(c: Control): c.add_theme_stylebox_override(name, stylebox)
 
-
 static func SIZE_FLAGS_HORIZONTAL(v):
 	return func(c): c.size_flags_horizontal = v
 

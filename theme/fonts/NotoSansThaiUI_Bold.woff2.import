@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/NotoSansThaiUI_Bold.woff2-b690a7b4b7cb0776e50
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48
