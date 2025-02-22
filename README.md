@@ -30,7 +30,7 @@ Don't have Flatpak? Just download the [latest release](https://github.com/MakovW
 
 - **Sleek & Native**: Dive into the elegance of the native Godot theme, seamlessly integrated into Godots. Get ready to be awed by the fluid aesthetics that keep you engaged.
 
-- **Remote Editors Unleashed**: Experience the ultimate convenience of the Remote Editors feature. Seamlessly download Godot versions from the legendary [tuxfamily.org](https://downloads.tuxfamily.org/godotengine/) and take control of your creative arsenal.
+- **Remote Editors Unleashed**: Experience the ultimate convenience of the Remote Editors feature. Seamlessly download Godot versions from the official [GitHub Releases](https://github.com/godotengine/godot/releases) and take control of your creative arsenal.
 
 - **Project Mastery**: Manage projects with unparalleled finesse. Godots empowers you to embrace almost every feature available in the original Godot Project Manager App. Plus, there's a special twist—bind a downloaded editor to your project, unlocking the potential to run and edit it within a bound scope.
 

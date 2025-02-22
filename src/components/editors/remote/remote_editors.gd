@@ -3,7 +3,6 @@ extends Control
 signal installed(name, abs_path)
 
 const MIRROR_GITHUB_ID = 0
-const MIRROR_TUX_FAMILY_ID = 1
 const MIRROR_DEFAULT = MIRROR_GITHUB_ID
 
 const uuid = preload("res://addons/uuid.gd")
@@ -16,16 +15,12 @@ const uuid = preload("res://addons/uuid.gd")
 @onready var _direct_link_button: Button = %DirectLinkButton
 @onready var _refresh_button: Button = %RefreshButton
 @onready var _remote_editors_tree = %RemoteEditorsTree
-@onready var _tree_mirror_button: = %TreeMirrorButton as OptionButton
 
 var _editor_downloads
-var _tree_mirrors = {}
+var _mirror
 var _active_mirror_cache = Cache.smart_value(
 	self, "active_mirror", true
 ).map_return_value(func(v):
-	if not v in _tree_mirrors:
-		return MIRROR_DEFAULT
-	else:
 		return v
 )
 
@@ -35,24 +30,12 @@ func init(editor_downloads):
 
 
 func _ready():
-	_tree_mirrors[MIRROR_GITHUB_ID] = RemoteEditorsTreeDataSourceGithub.Self.new(
+	_mirror = RemoteEditorsTreeDataSourceGithub.Self.new(
 		RemoteEditorsTreeDataSource.RemoteAssetsCallable.new(download_zip)
 	)
-	_tree_mirrors[MIRROR_TUX_FAMILY_ID] = RemoteEditorsTreeDataSourceTuxFamily.Self.new(
-		RemoteEditorsTreeDataSource.RemoteAssetsCallable.new(download_zip)
-	)
-	
-	_tree_mirror_button.add_item("GitHub", MIRROR_GITHUB_ID)
-	_tree_mirror_button.add_item("TuxFamily", MIRROR_TUX_FAMILY_ID)
-	_tree_mirror_button.selected = _tree_mirror_button.get_item_index(
-		_active_mirror_cache.ret(MIRROR_DEFAULT)
-	)
-	_tree_mirror_button.item_selected.connect(func(item_idx):
-		var item_id = _tree_mirror_button.get_item_id(item_idx)
-		if item_id in _tree_mirrors:
-			_remote_editors_tree.set_data_source(_tree_mirrors[item_id])
-			_active_mirror_cache.put(item_id)
-	)
+
+	_remote_editors_tree.set_data_source(_mirror)
+	_active_mirror_cache.put(MIRROR_DEFAULT)
 	
 	_open_downloads_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(Config.DOWNLOADS_PATH.ret()))
@@ -74,8 +57,7 @@ func _ready():
 	_refresh_button.tooltip_text = tr("Refresh")
 	#_refresh_button.self_modulate = Color(1, 1, 1, 0.6)
 	_remote_editors_tree.post_ready(_refresh_button)
-	var cached_mirror_id = _active_mirror_cache.ret(MIRROR_DEFAULT)
-	_remote_editors_tree.set_data_source(_tree_mirrors[cached_mirror_id])
+	_remote_editors_tree.set_data_source(_mirror)
 
 
 func download_zip(url, file_name):
@@ -114,8 +96,8 @@ func install_zip(zip_abs_path, root_unzip_folder_name, possible_editor_name, on_
 		var editor_install = _editor_install_scene.instantiate()
 		add_child(editor_install)
 		editor_install.init(possible_editor_name, zip_content_dir)
-		editor_install.installed.connect(func(name, exec_path):
-			installed.emit(name, ProjectSettings.globalize_path(exec_path))
+		editor_install.installed.connect(func(p_name, exec_path):
+			installed.emit(p_name, ProjectSettings.globalize_path(exec_path))
 			if on_install:
 				on_install.call()
 		)
