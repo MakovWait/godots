@@ -1,5 +1,7 @@
+class_name SettingsWindow
 extends AcceptDialog
 
+signal _setting_changed(setting: Setting, new_value: Variant)
 signal _settings_changed
 
 var _prev_rect
@@ -56,7 +58,7 @@ func _prepare_settings():
 			SettingThemePreset,
 		))),
 
-		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+		SettingCustomPresetTrigger(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/base_color",
 			ConfigFileValue.new(
 				Config._cfg, 
@@ -65,9 +67,9 @@ func _prepare_settings():
 			).bake_default(Color(0.21, 0.24, 0.29)),
 			SettingColorPicker,
 			tr("Base color for the theme. Affects the background and primary UI elements.")
-		))),
-
-		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+		)))),
+		
+		SettingCustomPresetTrigger(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/accent_color",
 			ConfigFileValue.new(
 				Config._cfg, 
@@ -76,9 +78,9 @@ func _prepare_settings():
 			).bake_default(Color(0.44, 0.73, 0.98)),
 			SettingColorPicker,
 			tr("Accent color for the theme. Used for highlights and interactive elements.")
-		))),
+		)))),
 
-		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+		SettingCustomPresetTrigger(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/contrast",
 			ConfigFileValue.new(
 				Config._cfg, 
@@ -87,7 +89,7 @@ func _prepare_settings():
 			).bake_default(0.3),
 			SettingSlider,
 			tr("Contrast ratio for the theme. Affects the brightness of the UI.")
-		))),
+		)))),
 
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/advanced/downloads_path",
@@ -211,6 +213,7 @@ func _setup_settings():
 	var settings = _prepare_settings().filter(func(x): return x != null)
 	
 	for setting in settings:
+		setting.bind_settings_window(self)
 		setting.validate()
 		setting.add_control(SettingControlTarget.new(%InspectorVBox, setting.category.raw))
 	
@@ -264,7 +267,11 @@ func SettingCfg(category, cfg_value, prop_factory, tooltip=""):
 
 
 func SettingChangeObserved(origin: Setting):
-	return origin.on_value_changed(func(_a): _settings_changed.emit())
+	return origin.on_value_changed(
+		func(new_value): 
+			_setting_changed.emit(origin, new_value)
+			_settings_changed.emit()
+	)
 
 
 func SettingFiltered(origin: Setting, filter):
@@ -276,6 +283,10 @@ func SettingFiltered(origin: Setting, filter):
 
 func SettingRestartRequired(origin: Setting):
 	return origin.on_value_changed(func(_a): %RestartContainer.show())
+
+
+func SettingCustomPresetTrigger(origin: Setting):
+	return origin.with_meta("__custom_preset_trigger__", "")
 
 
 class Category:
@@ -323,6 +334,7 @@ class Setting extends RefCounted:
 	var _value
 	var _tooltip
 	var _default_value
+	var _settings_window: SettingsWindow
 	
 	func _init(name: String, value, tooltip, default_value):
 		self.category = Category.new(name)
@@ -349,12 +361,21 @@ class Setting extends RefCounted:
 	
 	func validate():
 		category.validate()
+		assert(_settings_window != null)
 	
 	func reset():
 		set_value_and_notify(_default_value)
 	
 	func value_is_not_default():
 		return _value != _default_value
+	
+	func bind_settings_window(settings_window: SettingsWindow) -> Setting:
+		_settings_window = settings_window
+		return self
+	
+	func with_meta(name: StringName, value: Variant) -> Setting:
+		self.set_meta(name, value)
+		return self
 
 
 class SettingText extends Setting:
@@ -616,7 +637,10 @@ func SettingScale(a1, a2, a3, a4):
 
 class ThemePresetOptionButton extends SettingOptionButton:
 	func add_control(target):
-		super.add_control(target)
+		_settings_window._setting_changed.connect(func(setting: Setting, new_val: Variant) -> void:
+			if setting.has_meta("__custom_preset_trigger__"):
+				self.set_value_and_notify("Custom")
+		)
 		Comp.new(Button).on_init([
 			CompInit.TEXT(tr("Custom Theme Guide")),
 			CompInit.TREE_ENTERED(
@@ -628,6 +652,7 @@ class ThemePresetOptionButton extends SettingOptionButton:
 				)\
 			)
 		]).add_to(target)
+		super.add_control(target)
 
 
 func SettingThemePreset(a1, a2, a3, a4):

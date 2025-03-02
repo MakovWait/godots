@@ -31,8 +31,8 @@ AutoNativeFileDialog="*res://src/auto_native_file_dialog.gd"
 
 [display]
 
-window/subwindows/embed_subwindows=false
 window/energy_saving/keep_screen_on=false
+window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 
