@@ -72,6 +72,7 @@ func start(url, target_abs_dir, file_name, title_name=null):
 	assert(target_abs_dir.ends_with("/"))
 	
 	_requesting = true
+	url = url.strip_edges()
 	_host = url
 	_retry_callback = func(): start(url, target_abs_dir, file_name, title_name)
 	
