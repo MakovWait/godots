@@ -147,6 +147,7 @@ func _load_projects_array(array):
 		await get_tree().process_frame
 	_projects_list.sort_items()
 	_update_remove_missing_disabled()
+	_projects_list._load_search_box_text()
 
 
 func _refresh():

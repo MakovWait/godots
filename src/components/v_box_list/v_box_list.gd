@@ -30,6 +30,7 @@ func _update_theme():
 
 func set_search_box_text(text):
 	_search_box.text = text
+	Cache.smart_value(self, "project_list_search", true).put(_search_box.text)
 	_update_filters()
 
 
@@ -94,6 +95,7 @@ func _select_item(item):
 
 
 func _on_search_box_text_changed(_new_text: String) -> void:
+	Cache.smart_value(self, "project_list_search", true).put(_search_box.text)
 	_update_filters()
 
 
