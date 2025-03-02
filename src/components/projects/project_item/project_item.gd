@@ -64,10 +64,8 @@ func init(item: Projects.Item):
 	)
 
 	_fill_data(item)
-	
-	_explore_button.pressed.connect(func():
-		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
-	)
+
+	_explore_button.pressed.connect(_show_in_file_manager.bind(item))
 	_favorite_button.toggled.connect(func(is_favorite):
 		item.favorite = is_favorite
 		edited.emit()
@@ -195,6 +193,13 @@ func _fill_actions(item: Projects.Item):
 		"label": tr("Remove"),
 	})
 
+	var show_in_file_manager = Action.from_dict({
+		"key": "show-in-file-manager",
+		"icon": Action.IconTheme.new(self, "Filesystem", "EditorIcons"),
+		"act": _show_in_file_manager.bind(item),
+		"label": tr("Show in File Manager"),
+	})
+
 	_actions = Action.List.new([
 		edit,
 		run,
@@ -203,6 +208,7 @@ func _fill_actions(item: Projects.Item):
 		bind_editor,
 		manage_tags,
 		view_command,
+		show_in_file_manager,
 		remove
 	])
 
@@ -395,7 +401,10 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	)
 	add_child(confirmation_dialog)
 	confirmation_dialog.popup_centered()
-	
+
+
+func _show_in_file_manager(item: Projects.Item) -> void:
+	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
 
 func _run_with_editor(item: Projects.Item, editor_flag, auto_close):
 	editor_flag.call(item)
@@ -440,4 +449,3 @@ class RunButton extends Button:
 		)
 		if item.has_invalid_editor:
 			tooltip_text = tr("Bind editor first.")
-

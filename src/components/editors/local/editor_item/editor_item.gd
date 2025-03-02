@@ -72,9 +72,7 @@ func init(item: LocalEditors.Item):
 	_sort_data.path = item.path
 	_sort_data.tag_sort_string = "".join(item.tags)
 	
-	_explore_button.pressed.connect(func():
-		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
-	)
+	_explore_button.pressed.connect(_show_in_file_manager.bind(item))
 	_favorite_button.toggled.connect(func(is_favorite):
 		_sort_data.favorite = is_favorite
 		item.favorite = is_favorite
@@ -191,6 +189,13 @@ func _fill_actions(item: LocalEditors.Item):
 		"label": tr("Remove"),
 	})
 
+	var show_in_file_manager = Action.from_dict({
+		"key": "show-in-file-manager",
+		"icon": Action.IconTheme.new(self, "Filesystem", "EditorIcons"),
+		"act": _show_in_file_manager.bind(item),
+		"label": tr("Show in File Manager"),
+	})
+
 	_actions = Action.List.new([
 		run,
 		rename,
@@ -198,6 +203,7 @@ func _fill_actions(item: LocalEditors.Item):
 		add_extra_arguments,
 		view_command,
 		view_owners,
+		show_in_file_manager,
 		remove
 	])
 
@@ -311,6 +317,10 @@ func _on_remove(item):
 	)
 	add_child(confirmation_dialog)
 	confirmation_dialog.popup_centered()
+
+
+func _show_in_file_manager(item: LocalEditors.Item) -> void:
+	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
 
 
 func get_actions():
