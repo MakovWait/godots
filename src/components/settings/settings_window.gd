@@ -13,27 +13,32 @@ func _prepare_settings():
 			SettingCheckbox,
 			tr("Close on launch.")
 		)),
+
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/config/scale",
 			Config.SAVED_EDSCALE.bake_default(-1),
 			SettingScale,
 		))),
+
 		SettingChangeObserved(SettingCfg(
 			"application/config/default_projects_path",
 			Config.DEFAULT_PROJECTS_PATH,
 			SettingFilePath,
 			tr("Default folder to scan/import projects from.")
 		)),
+
 		SettingFiltered(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/config/use_system_titlebar",
 			Config.USE_SYSTEM_TITLE_BAR,
 			SettingCheckbox
 		))), func(): return DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE)),
+		
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/config/use_native_file_dialog",
 			Config.USE_NATIVE_FILE_DIALOG,
 			SettingCheckbox
 		))),
+		
 		SettingChangeObserved(SettingCfg(
 			"application/config/remember_window_rect",
 			Config.REMEMBER_WINDOW_SIZE,
@@ -50,31 +55,68 @@ func _prepare_settings():
 			).bake_default("Default"),
 			SettingThemePreset,
 		))),
-		
+
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/theme/base_color",
+			ConfigFileValue.new(
+				Config._cfg, 
+				"theme",
+				"interface/theme/base_color"
+			).bake_default(Color(0.21, 0.24, 0.29)),
+			SettingColorPicker,
+			tr("Base color for the theme. Affects the background and primary UI elements.")
+		))),
+
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/theme/accent_color",
+			ConfigFileValue.new(
+				Config._cfg, 
+				"theme",
+				"interface/theme/accent_color"
+			).bake_default(Color(0.44, 0.73, 0.98)),
+			SettingColorPicker,
+			tr("Accent color for the theme. Used for highlights and interactive elements.")
+		))),
+
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/theme/contrast",
+			ConfigFileValue.new(
+				Config._cfg, 
+				"theme",
+				"interface/theme/contrast"
+			).bake_default(0.3),
+			SettingSlider,
+			tr("Contrast ratio for the theme. Affects the brightness of the UI.")
+		))),
+
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/advanced/downloads_path",
 			Config.DOWNLOADS_PATH,
 			SettingFilePath,
 			tr("Temp dir for downloaded zips.")
 		))),
+
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/advanced/versions_path",
 			Config.VERSIONS_PATH,
 			SettingFilePath,
 			tr("Dir for downloaded editors.")
 		))),
+
 		SettingChangeObserved(SettingCfg(
 			"application/advanced/show_orphan_editor_explorer",
 			Config.SHOW_ORPHAN_EDITOR,
 			SettingCheckbox,
 			tr("Check if there are some leaked Godot binaries on the filesystem that can be safely removed. For advanced users.")
 		)),
+
 		SettingChangeObserved(SettingCfg(
 			"application/advanced/allow_install_to_not_empty_dir",
 			Config.ALLOW_INSTALL_TO_NOT_EMPTY_DIR,
 			SettingCheckbox,
 			tr("By default the project installing is forbidden if the target dir is not empty. To allow it, check the checkbox.")
 		)),
+
 		SettingChangeObserved(SettingCfg(
 			"application/advanced/check_only_stable_updates",
 			Config.ONLY_STABLE_UPDATES,
@@ -610,3 +652,83 @@ func SettingThemePreset(a1, a2, a3, a4):
 	return ThemePresetOptionButton.new(a1, a2, a3, a4,
 		options, tr("Custom")
 	)
+
+
+class SettingColorPicker extends Setting:
+	func add_control(target):
+		var color_button = CompRefs.Simple.new()
+		var control = Comp.new(HBoxContainer, [
+			CompSettingNameContainer.new(self),
+			CompSettingPanelContainer.new(_tooltip, [
+				Comp.new(ColorPickerButton).ref(color_button).on_init([
+					CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL(),
+					CompInit.CUSTOM(func(this: ColorPickerButton):
+						self.on_value_changed(func(new_value):
+							this.color = new_value
+						)
+						this.color = self._value
+						this.color_changed.connect(func(new_color):
+							self.set_value_and_notify(new_color)
+						)
+						this.custom_minimum_size.x = 60
+
+						var picker = this.get_picker()
+						picker.deferred_mode = true
+						picker.can_add_swatches = true
+						picker.presets_visible = true
+						pass\
+					)
+				])
+			])
+		])
+		control.add_to(target)
+
+class SettingSlider extends Setting:
+	func add_control(target):
+		var slider = CompRefs.Simple.new()
+		var control = Comp.new(HBoxContainer, [
+			CompSettingNameContainer.new(self),
+			CompSettingPanelContainer.new(_tooltip, [
+				Comp.new(HBoxContainer, [
+					Comp.new(LineEdit).on_init([
+						CompInit.CUSTOM(func(this: LineEdit):
+							this.select_all_on_focus = true
+							this.custom_minimum_size.x = 50
+							this.text = "%.1f" % self._value
+							this.text_submitted.connect(func(new_text: String):
+								if new_text.is_valid_float():
+									var new_value = clampf(float(new_text), -1.0, 1.0)
+									self.set_value_and_notify(new_value)
+									this.release_focus()
+								else:
+									this.text = "%.1f" % self._value
+							)
+							self.on_value_changed(func(new_value):
+								this.text = "%.1f" % new_value
+							)
+							pass\
+						)
+					]),
+					Comp.new(HSlider).ref(slider).on_init([
+						CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL(),
+						CompInit.CUSTOM(func(this: HSlider):
+							this.step = 0.1
+							this.min_value = -1
+							this.max_value = 1
+							
+							self.on_value_changed(func(new_value):
+								this.value = new_value
+							)
+							
+							this.value = self._value
+							
+							this.value_changed.connect(func(new_value):
+								self.set_value_and_notify(new_value)
+							)
+							pass\
+						)
+					]),
+				])
+			])
+		])
+		control.add_to(target)
