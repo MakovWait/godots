@@ -125,6 +125,18 @@ func _prepare_settings():
 			SettingCheckbox,
 			tr("Will check only stable Godots releases.")
 		)),
+		SettingChangeObserved(SettingCfg(
+			"network/http_proxy/host",
+			Config.HTTP_PROXY_HOST,
+			SettingText,
+			tr("Host")
+		)),
+		SettingChangeObserved(SettingCfg(
+			"network/http_proxy/port",
+			Config.HTTP_PROXY_PORT,
+			SettingPort,
+			tr("Port")
+		)),
 	]
 
 
@@ -394,7 +406,10 @@ class SettingText extends Setting:
 					CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL(),
 					CompInit.CUSTOM(func(this: LineEdit):
 						self.on_value_changed(func(new_value):
-							this.text = new_value
+							# don't update text if the user is interacting
+							# this prevents the caret from going to postition 0
+							if not this.has_focus():
+								this.text = new_value
 						)
 						this.text_changed.connect(func(new_text):
 							_value = new_text
@@ -402,6 +417,40 @@ class SettingText extends Setting:
 						)
 						pass\
 					)
+				])
+			])
+		])
+		control.add_to(target)
+
+
+class SettingPort extends Setting:
+	func add_control(target):
+		var timer = CompRefs.Simple.new()
+		var control = Comp.new(HBoxContainer, [
+			Comp.new(Timer).ref(timer).on_init(
+				func(this: Timer): this.timeout.connect(self.notify_changed)
+			),
+			CompSettingNameContainer.new(self),
+			CompSettingPanelContainer.new(_tooltip, [
+				Comp.new(SpinBox).on_init([
+					CompInit.TOOLTIP_TEXT(_tooltip),
+					CompInit.ADD_THEME_STYLEBOX_OVERRIDE("focus", StyleBoxEmpty.new()),
+					CompInit.SIZE_FLAGS_HORIZONTAL_EXPAND_FILL(),
+					CompInit.CUSTOM(func(this: SpinBox):
+						# set valid port range
+						this.min_value = 0
+						this.max_value = 65535
+						self.on_value_changed(func(new_value):
+							this.value = new_value
+						)
+						this.value_changed.connect(func(new_text):
+							_value = new_text
+							(timer.value as Timer).start(1)
+						)
+						pass\
+					),
+					# set value after so it fits within range
+					CompInit.VALUE(self._value)
 				])
 			])
 		])
