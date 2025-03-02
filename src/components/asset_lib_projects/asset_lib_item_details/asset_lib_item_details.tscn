@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://ghboyar5pdi7"]
 
-[ext_resource type="Script" path="res://src/components/asset_lib_projects/asset_lib_item_details/asset_lib_item_details.gd" id="1_76thn"]
+[ext_resource type="Script" uid="uid://bt0b8n3fy0rex" path="res://src/components/asset_lib_projects/asset_lib_item_details/asset_lib_item_details.gd" id="1_76thn"]
 [ext_resource type="PackedScene" uid="uid://db2ha8gx6ak03" path="res://src/components/asset_lib_projects/asset_list_item/asset_list_item.tscn" id="1_fkn0f"]
-[ext_resource type="Script" path="res://src/components/asset_lib_projects/asset_lib_item_details/description_label.gd" id="3_qam18"]
+[ext_resource type="Script" uid="uid://73n1dsprcmtk" path="res://src/components/asset_lib_projects/asset_lib_item_details/description_label.gd" id="3_qam18"]
 
 [node name="AssetLibItemDetails" type="ConfirmationDialog"]
 position = Vector2i(0, 36)

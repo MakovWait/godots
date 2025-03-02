@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://jq7lowjivf6a"]
 
-[ext_resource type="Script" path="res://src/components/editors/remote/remote_editors_tree/remote_editors_tree.gd" id="1_exg7g"]
+[ext_resource type="Script" uid="uid://crhfh1010o24e" path="res://src/components/editors/remote/remote_editors_tree/remote_editors_tree.gd" id="1_exg7g"]
 
 [node name="RemoteEditorsTree" type="VBoxContainer"]
 anchors_preset = 15

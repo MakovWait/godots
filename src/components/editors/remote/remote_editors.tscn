@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dxnoecc3ruw3t"]
 
-[ext_resource type="Script" path="res://src/components/editors/remote/remote_editors.gd" id="1_80m0a"]
+[ext_resource type="Script" uid="uid://coy3xke1pdqrp" path="res://src/components/editors/remote/remote_editors.gd" id="1_80m0a"]
 [ext_resource type="PackedScene" uid="uid://cb6u1mub27xo" path="res://src/components/asset_download/asset_download.tscn" id="2_obpx8"]
 [ext_resource type="PackedScene" uid="uid://ca7g1asyno8ik" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.tscn" id="3_wvg3b"]
 [ext_resource type="PackedScene" uid="uid://dhvesrdvhm6lv" path="res://src/components/editors/remote/remote_editor_direct_link/remote_editor_direct_link.tscn" id="4_nu1uq"]

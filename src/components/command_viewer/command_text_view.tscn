@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bybb4iix45wcj"]
 
-[ext_resource type="Script" path="res://src/components/command_viewer/command_text_view.gd" id="1_51jy7"]
-[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="2_ol025"]
+[ext_resource type="Script" uid="uid://b563imc614q88" path="res://src/components/command_viewer/command_text_view.gd" id="1_51jy7"]
+[ext_resource type="Script" uid="uid://t1bc02eqd4s4" path="res://src/components/misc/themed_button.gd" id="2_ol025"]
 
 [node name="CommandTextView" type="VBoxContainer"]
 offset_left = 8.0

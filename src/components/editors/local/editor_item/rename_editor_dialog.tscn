@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b2tm4lxm80sj0"]
 
-[ext_resource type="Script" path="res://src/components/editors/local/editor_item/rename_editor_dialog.gd" id="1_pj6gv"]
+[ext_resource type="Script" uid="uid://dicmyggjqgwhh" path="res://src/components/editors/local/editor_item/rename_editor_dialog.gd" id="1_pj6gv"]
 
 [node name="RenameEditorDialog" type="ConfirmationDialog"]
 position = Vector2i(0, 36)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cgtn4575ktf6s"]
 
 [ext_resource type="PackedScene" uid="uid://d10kvn2s6suxh" path="res://src/components/projects/install_project_dialog/install_project_dialog.tscn" id="1_muj6h"]
-[ext_resource type="Script" path="res://src/components/projects/clone_project_dialog/clone_project_dialog.gd" id="2_35chb"]
+[ext_resource type="Script" uid="uid://csivy81kvgyy6" path="res://src/components/projects/clone_project_dialog/clone_project_dialog.gd" id="2_35chb"]
 
 [node name="CloneProjectDialog" instance=ExtResource("1_muj6h")]
 title = "Clone Project"

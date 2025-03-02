@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://rs8h34xg5l7q"]
 
-[ext_resource type="Script" path="res://src/components/editors/local_remote_editors_switch.gd" id="1_4v828"]
-[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="2_4auwr"]
+[ext_resource type="Script" uid="uid://cvaj4y2hm7v8y" path="res://src/components/editors/local_remote_editors_switch.gd" id="1_4v828"]
+[ext_resource type="Script" uid="uid://t1bc02eqd4s4" path="res://src/components/misc/themed_button.gd" id="2_4auwr"]
 
 [node name="LocalRemoteProjectsSwitch" type="HBoxContainer"]
 size_flags_horizontal = 3

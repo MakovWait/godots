@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://pa8k1h8e2ib"]
 
-[ext_resource type="Script" path="res://src/components/godots_releases/godots_releases.gd" id="1_bk20r"]
+[ext_resource type="Script" uid="uid://c6foy0no7k5b7" path="res://src/components/godots_releases/godots_releases.gd" id="1_bk20r"]
 [ext_resource type="PackedScene" uid="uid://blg65v3a661e5" path="res://src/components/godots_releases/list/godots_releases_list.tscn" id="1_ft2bg"]
-[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="4_q1uy2"]
+[ext_resource type="Script" uid="uid://t1bc02eqd4s4" path="res://src/components/misc/themed_button.gd" id="4_q1uy2"]
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="4_udfy0"]
 
 [node name="GodotsReleases" type="HBoxContainer"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://csgrsfoydw3m4"]
 
-[ext_resource type="Script" path="res://src/components/title_bar/title_bar.gd" id="1_5s4e6"]
+[ext_resource type="Script" uid="uid://64nd6b6tekm7" path="res://src/components/title_bar/title_bar.gd" id="1_5s4e6"]
 
 [node name="TitleBar" type="Control"]
 layout_mode = 3

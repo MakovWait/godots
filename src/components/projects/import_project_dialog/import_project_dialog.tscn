@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bcn7ypx0qusqp"]
 
-[ext_resource type="Script" path="res://src/components/projects/import_project_dialog/import_project_dialog.gd" id="1_dyj76"]
+[ext_resource type="Script" uid="uid://daqdfjktn6x2w" path="res://src/components/projects/import_project_dialog/import_project_dialog.gd" id="1_dyj76"]
 
 [node name="ImportProjectDialog" type="ConfirmationDialog"]
 title = "Import Project"

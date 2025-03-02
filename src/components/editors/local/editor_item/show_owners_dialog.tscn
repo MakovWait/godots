@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d2nl4stib3sjd"]
 
-[ext_resource type="Script" path="res://src/components/editors/local/editor_item/show_owners_dialog.gd" id="1_g3253"]
+[ext_resource type="Script" uid="uid://owiu72mto8lo" path="res://src/components/editors/local/editor_item/show_owners_dialog.gd" id="1_g3253"]
 
 [node name="ShowOwnersDialog" type="AcceptDialog"]
 script = ExtResource("1_g3253")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dgm66rd6ay24"]
 
-[ext_resource type="Script" path="res://src/components/editors/local/editor_item/add_extra_arguments_editor_dialog.gd" id="1_vorqo"]
-[ext_resource type="Script" path="res://src/components/misc/array_edit.gd" id="2_ndru7"]
+[ext_resource type="Script" uid="uid://bq46f2ucocsue" path="res://src/components/editors/local/editor_item/add_extra_arguments_editor_dialog.gd" id="1_vorqo"]
+[ext_resource type="Script" uid="uid://g31n5r3mofh3" path="res://src/components/misc/array_edit.gd" id="2_ndru7"]
 
 [node name="add_extra_arguments_editor_dialog" type="ConfirmationDialog"]
 position = Vector2i(0, 36)

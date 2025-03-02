@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ca7g1asyno8ik"]
 
-[ext_resource type="Script" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.gd" id="1_vo8ft"]
+[ext_resource type="Script" uid="uid://twgpxc0jahl8" path="res://src/components/editors/remote/remote_editor_install/remote_editor_install.gd" id="1_vo8ft"]
 
 [node name="EditorInstall" type="ConfirmationDialog"]
 title = "Install Editor"

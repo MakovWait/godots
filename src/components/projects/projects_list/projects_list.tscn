@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ibwyb5nfpxpn"]
 
 [ext_resource type="PackedScene" uid="uid://bjudiph2xbmbu" path="res://src/components/v_box_list/v_box_list.tscn" id="1_85pab"]
-[ext_resource type="Script" path="res://src/components/projects/projects_list/projects_list.gd" id="2_luch3"]
+[ext_resource type="Script" uid="uid://dyqesthabburv" path="res://src/components/projects/projects_list/projects_list.gd" id="2_luch3"]
 [ext_resource type="PackedScene" uid="uid://cnrduy54kvvf8" path="res://src/components/projects/project_item/project_item.tscn" id="3_rbu5f"]
 
 [node name="ProjectsList" instance=ExtResource("1_85pab")]

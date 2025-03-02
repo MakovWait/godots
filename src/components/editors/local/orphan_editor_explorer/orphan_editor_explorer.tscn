@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bgs8c8ed7oww1"]
 
-[ext_resource type="Script" path="res://src/components/editors/local/orphan_editor_explorer/orphan_editor_explorer.gd" id="1_li7fp"]
+[ext_resource type="Script" uid="uid://crkhiskhtfky1" path="res://src/components/editors/local/orphan_editor_explorer/orphan_editor_explorer.gd" id="1_li7fp"]
 
 [node name="OprhanEditorExplorer" type="ConfirmationDialog"]
 title = "Orphan Editor Explorer"

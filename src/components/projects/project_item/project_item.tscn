@@ -1,14 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://cnrduy54kvvf8"]
 
-[ext_resource type="Script" path="res://src/components/projects/project_item/project_item.gd" id="1_aivn8"]
-[ext_resource type="Script" path="res://src/components/misc/favorite_button.gd" id="2_4lhxn"]
+[ext_resource type="Script" uid="uid://cwty5md5cdecc" path="res://src/components/projects/project_item/project_item.gd" id="1_aivn8"]
+[ext_resource type="Script" uid="uid://cohoevm32kfy" path="res://src/components/misc/favorite_button.gd" id="2_4lhxn"]
 [ext_resource type="PackedScene" uid="uid://b2tm4lxm80sj0" path="res://src/components/editors/local/editor_item/rename_editor_dialog.tscn" id="2_ybiwe"]
-[ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_tvtl4"]
-[ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="4_m00kj"]
-[ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="5_bf7vh"]
-[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="6_8vyss"]
-[ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="6_k6uq1"]
-[ext_resource type="Script" path="res://src/components/misc/custom_minimum_size.gd" id="9_i1n7v"]
+[ext_resource type="Script" uid="uid://bovwkd7qejtto" path="res://src/components/misc/list_item_icon.gd" id="3_tvtl4"]
+[ext_resource type="Script" uid="uid://kre8bx3enixn" path="res://src/components/misc/list_item_title_label.gd" id="4_m00kj"]
+[ext_resource type="Script" uid="uid://bfylexg1c3dlf" path="res://src/components/misc/list_item_path_label.gd" id="5_bf7vh"]
+[ext_resource type="Script" uid="uid://t1bc02eqd4s4" path="res://src/components/misc/themed_button.gd" id="6_8vyss"]
+[ext_resource type="Script" uid="uid://cq0ugsh475bgb" path="res://src/components/misc/item_tag_container.gd" id="6_k6uq1"]
+[ext_resource type="Script" uid="uid://bip0qtfdtw6rw" path="res://src/components/misc/custom_minimum_size.gd" id="9_i1n7v"]
 
 [node name="ProjectItem" type="HBoxContainer"]
 anchors_preset = 15

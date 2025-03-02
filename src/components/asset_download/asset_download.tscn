@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://cb6u1mub27xo"]
 
-[ext_resource type="Script" path="res://src/components/asset_download/asset_download.gd" id="1_k7oda"]
+[ext_resource type="Script" uid="uid://c0i8yg232fxrf" path="res://src/components/asset_download/asset_download.gd" id="1_k7oda"]
 [ext_resource type="Texture2D" uid="uid://bqnuds1nn277g" path="res://assets/Godot128x128.svg" id="2_kpoqj"]
-[ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_dhqxd"]
+[ext_resource type="Script" uid="uid://bovwkd7qejtto" path="res://src/components/misc/list_item_icon.gd" id="3_dhqxd"]
 
 [node name="EditorDownload" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 125)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dhvesrdvhm6lv"]
 
-[ext_resource type="Script" path="res://src/components/editors/remote/remote_editor_direct_link/remote_editor_direct_link.gd" id="1_nwbsu"]
+[ext_resource type="Script" uid="uid://xksdiv3vlx17" path="res://src/components/editors/remote/remote_editor_direct_link/remote_editor_direct_link.gd" id="1_nwbsu"]
 
 [node name="RemoteEditorDirectLink" type="ConfirmationDialog"]
 title = "Enter Link"

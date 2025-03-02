@@ -1,12 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://bpi7ggvfe5uhq"]
 
-[ext_resource type="Script" path="res://src/components/editors/local/local_editors.gd" id="1_uc0j8"]
+[ext_resource type="Script" uid="uid://d2ipnf5f4u4dx" path="res://src/components/editors/local/local_editors.gd" id="1_uc0j8"]
 [ext_resource type="PackedScene" uid="uid://datb5j88oompr" path="res://src/components/editors/local/editors_list/editors_list.tscn" id="2_a50s0"]
 [ext_resource type="PackedScene" uid="uid://cetwb5xs7wck5" path="res://src/components/editors/local/editor_import/editor_import.tscn" id="2_t30qe"]
 [ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="3_kugpf"]
 [ext_resource type="PackedScene" uid="uid://bgs8c8ed7oww1" path="res://src/components/editors/local/orphan_editor_explorer/orphan_editor_explorer.tscn" id="4_nupsx"]
 [ext_resource type="PackedScene" uid="uid://rs8h34xg5l7q" path="res://src/components/editors/local_remote_editors_switch.tscn" id="5_k6vvp"]
-[ext_resource type="Script" path="res://src/components/misc/scan_file_dialog.gd" id="7_ejkq8"]
+[ext_resource type="Script" uid="uid://c7t87f8ge7wlu" path="res://src/components/misc/scan_file_dialog.gd" id="7_ejkq8"]
 
 [node name="Editors" type="HBoxContainer"]
 anchors_preset = 15

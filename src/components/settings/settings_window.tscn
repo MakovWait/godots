@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b3aprmu6od0wa"]
 
-[ext_resource type="Script" path="res://src/components/settings/settings_window.gd" id="1_u1xvk"]
+[ext_resource type="Script" uid="uid://bmctf4vbsqmki" path="res://src/components/settings/settings_window.gd" id="1_u1xvk"]
 
 [node name="SettingsWindow" type="AcceptDialog"]
 position = Vector2i(0, 36)

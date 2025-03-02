@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dq7vn0cokqg0p"]
 
-[ext_resource type="Script" path="res://src/components/command_viewer/new_command_dialog.gd" id="1_on62d"]
-[ext_resource type="Script" path="res://src/components/misc/array_edit.gd" id="2_jjvyf"]
+[ext_resource type="Script" uid="uid://bdi4088olx6bk" path="res://src/components/command_viewer/new_command_dialog.gd" id="1_on62d"]
+[ext_resource type="Script" uid="uid://g31n5r3mofh3" path="res://src/components/misc/array_edit.gd" id="2_jjvyf"]
 
 [node name="NewCommandDialog" type="ConfirmationDialog"]
 size = Vector2i(200, 236)

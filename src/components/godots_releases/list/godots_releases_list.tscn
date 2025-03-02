@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://blg65v3a661e5"]
 
 [ext_resource type="PackedScene" uid="uid://bjudiph2xbmbu" path="res://src/components/v_box_list/v_box_list.tscn" id="1_jbm0f"]
-[ext_resource type="Script" path="res://src/components/godots_releases/list/godots_releases_list.gd" id="2_sso4i"]
+[ext_resource type="Script" uid="uid://dl218h2fy4pls" path="res://src/components/godots_releases/list/godots_releases_list.gd" id="2_sso4i"]
 [ext_resource type="PackedScene" uid="uid://vbsd3276dgjy" path="res://src/components/godots_releases/list/godots_release_item.tscn" id="3_oonyu"]
 
 [node name="GodotsReleasesList" instance=ExtResource("1_jbm0f")]

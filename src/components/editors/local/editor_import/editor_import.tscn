@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cetwb5xs7wck5"]
 
-[ext_resource type="Script" path="res://src/components/editors/local/editor_import/editor_import.gd" id="1_xe8i2"]
+[ext_resource type="Script" uid="uid://dsmk435txsdi4" path="res://src/components/editors/local/editor_import/editor_import.gd" id="1_xe8i2"]
 
 [node name="EditorImport" type="ConfirmationDialog"]
 title = "Import Editor"

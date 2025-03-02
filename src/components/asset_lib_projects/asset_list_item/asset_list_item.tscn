@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://db2ha8gx6ak03"]
 
-[ext_resource type="Script" path="res://src/components/asset_lib_projects/asset_list_item/asset_list_item.gd" id="1_3kyjd"]
-[ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="2_7wgmj"]
+[ext_resource type="Script" uid="uid://8dw0croyh188" path="res://src/components/asset_lib_projects/asset_list_item/asset_list_item.gd" id="1_3kyjd"]
+[ext_resource type="Script" uid="uid://bovwkd7qejtto" path="res://src/components/misc/list_item_icon.gd" id="2_7wgmj"]
 
 [node name="AssetListItem" type="HBoxContainer"]
 anchors_preset = 15

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://buwhvihmtjeff"]
 
-[ext_resource type="Script" path="res://src/components/tags/manage_tags.gd" id="1_teu6l"]
+[ext_resource type="Script" uid="uid://bnjl2aumswtvs" path="res://src/components/tags/manage_tags.gd" id="1_teu6l"]
 [ext_resource type="PackedScene" uid="uid://c8micaell2aed" path="res://src/components/tags/tag/tag.tscn" id="2_lc67g"]
 
 [node name="ManageTags" type="ConfirmationDialog"]

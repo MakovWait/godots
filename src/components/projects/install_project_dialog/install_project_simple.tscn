@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://gfg5navd0jvp"]
 
 [ext_resource type="PackedScene" uid="uid://d10kvn2s6suxh" path="res://src/components/projects/install_project_dialog/install_project_dialog.tscn" id="1_oewfo"]
-[ext_resource type="Script" path="res://src/components/projects/install_project_dialog/install_project_simple.gd" id="2_jksld"]
+[ext_resource type="Script" uid="uid://8kh0gesqlera" path="res://src/components/projects/install_project_dialog/install_project_simple.gd" id="2_jksld"]
 
 [node name="InstallProjectDialog" instance=ExtResource("1_oewfo")]
 script = ExtResource("2_jksld")

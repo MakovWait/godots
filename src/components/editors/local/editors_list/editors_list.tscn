@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://datb5j88oompr"]
 
 [ext_resource type="PackedScene" uid="uid://bjudiph2xbmbu" path="res://src/components/v_box_list/v_box_list.tscn" id="1_qedne"]
-[ext_resource type="Script" path="res://src/components/editors/local/editors_list/editors_list.gd" id="2_jn5o2"]
+[ext_resource type="Script" uid="uid://lh4jgxu5iuij" path="res://src/components/editors/local/editors_list/editors_list.gd" id="2_jn5o2"]
 [ext_resource type="PackedScene" uid="uid://dvlmutw7v33j0" path="res://src/components/editors/local/editor_item/editor_item.tscn" id="3_y4w55"]
 
 [node name="EditorsList" instance=ExtResource("1_qedne")]
