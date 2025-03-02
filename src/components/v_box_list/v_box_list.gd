@@ -3,12 +3,16 @@ extends VBoxContainer
 
 signal item_selected(item)
 
-
 @export var _item_scene: PackedScene
+
+@export_group("Cache")
+@export var _search_cache_is_enabled: bool
+@export var _cached_search_key: String
 
 @onready var _items_container: VBoxContainer = %ItemsContainer
 @onready var _sort_option_button: OptionButton = %SortOptionButton
 @onready var _search_box = %SearchBox
+@onready var _cached_search_value := Cache.smart_value(self, _cached_search_key, true)
 
 
 func _ready():
@@ -18,6 +22,7 @@ func _ready():
 	_sort_option_button.item_selected.connect(func(_arg):
 		sort_items()
 	)
+	restore_last_search_value_from_cache()
 
 
 func _update_theme():
@@ -30,7 +35,7 @@ func _update_theme():
 
 func set_search_box_text(text):
 	_search_box.text = text
-	Cache.smart_value(self, "project_list_search", true).put(_search_box.text)
+	_cache_search_value(_search_box.text)
 	_update_filters()
 
 
@@ -95,7 +100,11 @@ func _select_item(item):
 
 
 func _on_search_box_text_changed(_new_text: String) -> void:
-	Cache.smart_value(self, "project_list_search", true).put(_search_box.text)
+	_cache_search_value(_search_box.text)
+	_update_filters()
+
+
+func update_filters() -> void:
 	_update_filters()
 
 
@@ -129,3 +138,17 @@ func _update_filters():
 
 func _has_tag(tags_source, tag):
 	return Array(tags_source.tags).find(tag) > -1
+
+
+func search_cache_is_enabled() -> bool:
+	return _search_cache_is_enabled and not _cached_search_key.is_empty()
+
+
+func restore_last_search_value_from_cache() -> void:
+	if search_cache_is_enabled():
+		set_search_box_text(_cached_search_value.ret(""))
+
+
+func _cache_search_value(value: String) -> void:
+	if search_cache_is_enabled():
+		_cached_search_value.put(value)

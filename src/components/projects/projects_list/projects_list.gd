@@ -43,7 +43,3 @@ func _fill_sort_options(btn: OptionButton):
 	var last_checked_sort = Cache.smart_value(self, "last_checked_sort", true)
 	btn.select(last_checked_sort.ret(1))
 	btn.item_selected.connect(func(idx): last_checked_sort.put(idx))
-
-
-func _load_search_box_text() -> void:
-	set_search_box_text(Cache.smart_value(self, "project_list_search", true).ret(""))
