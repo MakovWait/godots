@@ -15,12 +15,16 @@ const uuid = preload("res://addons/uuid.gd")
 @onready var _direct_link_button: Button = %DirectLinkButton
 @onready var _refresh_button: Button = %RefreshButton
 @onready var _remote_editors_tree = %RemoteEditorsTree
+@onready var _tree_mirror_button: = %TreeMirrorButton as OptionButton
 
 var _editor_downloads
-var _mirror
+var _tree_mirrors = {}
 var _active_mirror_cache = Cache.smart_value(
 	self, "active_mirror", true
 ).map_return_value(func(v):
+	if not v in _tree_mirrors:
+		return MIRROR_DEFAULT
+	else:
 		return v
 )
 
@@ -30,12 +34,20 @@ func init(editor_downloads):
 
 
 func _ready():
-	_mirror = RemoteEditorsTreeDataSourceGithub.Self.new(
+	_tree_mirrors[MIRROR_GITHUB_ID] = RemoteEditorsTreeDataSourceGithub.Self.new(
 		RemoteEditorsTreeDataSource.RemoteAssetsCallable.new(download_zip)
 	)
-
-	_remote_editors_tree.set_data_source(_mirror)
-	_active_mirror_cache.put(MIRROR_DEFAULT)
+	
+	_tree_mirror_button.add_item("GitHub", MIRROR_GITHUB_ID)
+	_tree_mirror_button.selected = _tree_mirror_button.get_item_index(
+		_active_mirror_cache.ret(MIRROR_DEFAULT)
+	)
+	_tree_mirror_button.item_selected.connect(func(item_idx):
+		var item_id = _tree_mirror_button.get_item_id(item_idx)
+		if item_id in _tree_mirrors:
+			_remote_editors_tree.set_data_source(_tree_mirrors[item_id])
+			_active_mirror_cache.put(item_id)
+	)
 	
 	_open_downloads_button.pressed.connect(func():
 		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(Config.DOWNLOADS_PATH.ret()))
@@ -57,7 +69,8 @@ func _ready():
 	_refresh_button.tooltip_text = tr("Refresh")
 	#_refresh_button.self_modulate = Color(1, 1, 1, 0.6)
 	_remote_editors_tree.post_ready(_refresh_button)
-	_remote_editors_tree.set_data_source(_mirror)
+	var cached_mirror_id = _active_mirror_cache.ret(MIRROR_DEFAULT)
+	_remote_editors_tree.set_data_source(_tree_mirrors[cached_mirror_id])
 
 
 func download_zip(url, file_name):
