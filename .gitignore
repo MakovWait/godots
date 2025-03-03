@@ -28,3 +28,5 @@ addons/gdUnit
 
 # Mac files
 .DS_Store
+
+/override.cfg
