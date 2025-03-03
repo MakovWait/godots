@@ -5,7 +5,7 @@ var verb: String
 var description: String
 var options: Array[CliOption] = []
 
-func _init(namesp: String, verb: String, description: String, options: Array[CliOption]):
+func _init(namesp: String, verb: String, description: String, options: Array[CliOption]) -> void:
 	self.namesp = namesp
 	self.verb = verb
 	self.description = description
@@ -23,7 +23,7 @@ func to_help_string(padding: int) -> String:
 	return "\n".join(result)
 
 static func ljust(input: String, width: int) -> String:
-	var output = input
+	var output := input
 	while output.length() < width:
 		output += " "
 	return output

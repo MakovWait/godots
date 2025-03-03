@@ -5,7 +5,7 @@ var _path: String
 var _args: PackedStringArray
 
 
-func _init(path: String, args: PackedStringArray):
+func _init(path: String, args: PackedStringArray) -> void:
 	_path = path
 	_args = args
 
@@ -19,7 +19,7 @@ func create_process(open_console:=false) -> int:
 
 
 func with_args(args: PackedStringArray) -> OSProcessSchema:
-	var new_args = _args.duplicate()
+	var new_args := _args.duplicate()
 	new_args.append_array(args)
 	return OSProcessSchema.new(_path, new_args)
 
@@ -31,10 +31,10 @@ func to_dict() -> Dictionary:
 	}
 
 
-func _to_string():
-	var args = [_path]
+func _to_string() -> String:
+	var args := [_path]
 	args.append_array(_args)
-	return " ".join(args.filter(func(x): return not x.is_empty()).map(func(x): return '"%s"' % x))
+	return " ".join(args.filter(func(x: String) -> bool: return not x.is_empty()).map(func(x: String) -> String: return '"%s"' % x))
 
 
 class Source:
@@ -43,10 +43,11 @@ class Source:
 
 
 class FmtSource extends Source:
-	var _src
+	var _src: Object
 	
-	func _init(src):
+	func _init(src: Object) -> void:
+		assert(src.has_method("as_fmt_process"))
 		_src = src
 	
 	func get_os_process_schema(path: String, args: PackedStringArray) -> OSProcessSchema:
-		return _src.as_fmt_process(path, args)
+		return _src.call("as_fmt_process", path, args)

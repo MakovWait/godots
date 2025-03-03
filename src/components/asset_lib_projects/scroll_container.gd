@@ -2,9 +2,9 @@ class_name AssetLibScrollContainer
 extends ScrollContainer
 
 
-func dim():
+func dim() -> void:
 	modulate = Color(1, 1, 1, 0.5)
 
 
-func bright():
+func bright() -> void:
 	modulate = Color(1, 1, 1, 1)

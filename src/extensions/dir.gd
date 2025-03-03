@@ -1,15 +1,15 @@
 class_name edir
 
 # https://www.davidepesce.com/?p=1365
-static func remove_recursive(path):
-	var directory = DirAccess.open(path)
+static func remove_recursive(path: String) -> void:
+	var directory := DirAccess.open(path)
 	# Open directory
-	var error = DirAccess.get_open_error()
+	var error := DirAccess.get_open_error()
 	if error == OK:
 		directory.include_hidden = true
 		# List directory content
 		directory.list_dir_begin()
-		var file_name = directory.get_next()
+		var file_name := directory.get_next()
 		while file_name != "":
 			if directory.current_is_dir():
 				remove_recursive(path + "/" + file_name)
@@ -23,40 +23,40 @@ static func remove_recursive(path):
 		Output.push("Error removing " + path)
 
 
-static func path_is_valid(abs_path):
+static func path_is_valid(abs_path: String) -> bool:
 	return DirAccess.dir_exists_absolute(abs_path) or FileAccess.file_exists(abs_path)
 
 
 static func list_recursive(
-	path, 
-	include_hidden=false, 
-	result_filter=null,
-	dir_filter=null,
+	path: String, 
+	include_hidden := false, 
+	result_filter: Variant = null,
+	dir_filter: Variant = null,
 ) -> Array[DirListResult]:
 	if not result_filter:
-		result_filter = func(x): return true
+		result_filter = func(x: String) -> bool: return true
 	if not dir_filter:
-		dir_filter = func(x): return true
-	var dirs_to_visit = [path]
-	var result = [] as Array[DirListResult]
+		dir_filter = func(x: String) -> bool: return true
+	var dirs_to_visit: Array[String] = [path]
+	var result: Array[DirListResult]
 	while len(dirs_to_visit) > 0:
-		var dir_to_visit = dirs_to_visit.pop_front()
-		var directory = DirAccess.open(dir_to_visit)
-		var error = DirAccess.get_open_error()
+		var dir_to_visit := dirs_to_visit.pop_front() as String
+		var directory := DirAccess.open(dir_to_visit)
+		var error := DirAccess.get_open_error()
 		if error != OK:
 			continue
 		directory.include_hidden = include_hidden
 		directory.include_navigational = false
 		directory.list_dir_begin()
-		var file_name = directory.get_next()
+		var file_name := directory.get_next()
 		while file_name != "":
-			var file_path = dir_to_visit.simplify_path() + "/" + file_name
-			var item = DirListResult.new(
+			var file_path := dir_to_visit.simplify_path() + "/" + file_name
+			var item := DirListResult.new(
 				file_path, directory.current_is_dir()
 			)
-			if result_filter.call(item):
+			if (result_filter as Callable).call(item):
 				result.push_back(item)
-			if directory.current_is_dir() and dir_filter.call(file_path):
+			if directory.current_is_dir() and (dir_filter as Callable).call(file_path):
 				dirs_to_visit.push_back(file_path)
 			file_name = directory.get_next()
 	return result
@@ -81,9 +81,9 @@ class DirListResult:
 	var file: String:
 		get: return _path.get_file()
 	
-	func _init(path, is_dir):
+	func _init(path: String, is_dir: bool) -> void:
 		_path = path
 		_is_dir = is_dir
 	
-	func _to_string():
+	func _to_string() -> String:
 		return _path

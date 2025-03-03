@@ -15,11 +15,11 @@ class Self extends RemoteEditorsTreeDataSource.I:
 		}
 	}
 	
-	func _init(assets):
+	func _init(assets: RemoteEditorsTreeDataSource.RemoteAssets) -> void:
 		_assets = assets
 	
-	func setup(tree: Tree):
-		var root = tree.create_item()
+	func setup(tree: Tree) -> void:
+		var root := tree.create_item()
 		root.set_meta(
 			"delegate", 
 			GithubRootItem.new(
@@ -32,11 +32,11 @@ class Self extends RemoteEditorsTreeDataSource.I:
 			)
 		)
 	
-	func cleanup(tree: Tree):
+	func cleanup(tree: Tree) -> void:
 		tree.clear()
 	
-	func get_platform_suffixes():
-		var current_platform
+	func get_platform_suffixes() -> Array:
+		var current_platform: Dictionary
 		if OS.has_feature("windows"):
 			current_platform = platforms["Windows"]
 		elif OS.has_feature("macos"):
@@ -70,7 +70,7 @@ class GodotRelease:
 	var _version: String
 	var _assets_src: GithubAssetSource
 	
-	func _init(version, name, assets_src: GithubAssetSource):
+	func _init(version: String, name: String, assets_src: GithubAssetSource) -> void:
 		self.name = name
 		_assets_src = assets_src
 		_version = version
@@ -94,10 +94,10 @@ class GodotAsset:
 	var browser_download_url: String:
 		get: return _json.get("browser_download_url", "")
 	
-	var is_zip:
+	var is_zip: bool:
 		get: return name.get_extension() == "zip"
 	
-	func _init(json):
+	func _init(json: Dictionary) -> void:
 		_json = json
 
 
@@ -105,33 +105,33 @@ class GithubItemBase extends RemoteEditorsTreeDataSource.Item:
 	var _item: TreeItem
 	var _assets: RemoteEditorsTreeDataSource.RemoteAssets
 	
-	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets):
+	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets) -> void:
 		_item = item
 		_assets = assets
 	
 	func is_loaded() -> bool:
 		return _item.has_meta("loaded")
 	
-	func async_expand(tree: RemoteTree):
+	func async_expand(tree: RemoteTree) -> void:
 		return
 	
-	func handle_item_activated():
+	func handle_item_activated() -> void:
 		pass
 	
-	func handle_button_clicked(col, id, mouse):
+	func handle_button_clicked(col: int, id: int, mouse: int) -> void:
 		pass
 	
-	func update_visibility(filters):
-		var filter_target = _to_filter_target() 
+	func update_visibility(filters: Array) -> void:
+		var filter_target := _to_filter_target() 
 		if filter_target == null:
 			return
 		_item.visible = _should_be_visible(filter_target, filters)
 	
-	func _should_be_visible(target: GithubFilterTarget, filters):
+	func _should_be_visible(target: GithubFilterTarget, filters: Array) -> bool:
 		if target.is_file() and not target.is_zip():
 			return false
 
-		for filter in filters:
+		for filter: RemoteEditorsTreeControl.RowFilter in filters:
 			if filter.test(target):
 				return false
 		
@@ -140,8 +140,8 @@ class GithubItemBase extends RemoteEditorsTreeDataSource.Item:
 	func _to_filter_target() -> GithubFilterTarget:
 		return null
 	
-	func _asset_to_item(asset: GodotAsset, tree: RemoteEditorsTreeDataSource.RemoteTree):
-		var tree_item = tree.create_item(_item)
+	func _asset_to_item(asset: GodotAsset, tree: RemoteEditorsTreeDataSource.RemoteTree) -> void:
+		var tree_item := tree.create_item(_item)
 		tree_item.set_meta("delegate", GithubAssetItem.new(tree_item, _assets, asset))
 		tree_item.set_text(0, asset.name)
 		tree_item.set_icon(0, tree.theme_source.get_theme_icon("Godot", "EditorIcons"))
@@ -160,30 +160,30 @@ class GithubItemBase extends RemoteEditorsTreeDataSource.Item:
 class GithubAssetItem extends GithubItemBase:
 	var _asset: GodotAsset
 	
-	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, asset: GodotAsset):
+	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, asset: GodotAsset) -> void:
 		super._init(item, assets)
 		_asset = asset
 	
 	func _to_filter_target() -> GithubFilterTarget:
 		return GithubFilterTarget.new(_asset.name, false, true, _asset.is_zip)
 
-	func handle_item_activated():
+	func handle_item_activated() -> void:
 		_assets.download(_asset.browser_download_url, _asset.file_name)
 
-	func handle_button_clicked(col, id, mouse):
+	func handle_button_clicked(col: int, id: int, mouse: int) -> void:
 		_assets.download(_asset.browser_download_url, _asset.file_name)
 
 
 class GithubReleaseItem extends GithubItemBase:
 	var _release: GodotRelease
 	
-	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, release: GodotRelease):
+	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, release: GodotRelease) -> void:
 		super._init(item, assets)
 		_release = release
 	
-	func async_expand(tree: RemoteEditorsTreeDataSource.RemoteTree):
+	func async_expand(tree: RemoteEditorsTreeDataSource.RemoteTree) -> void:
 		_item.set_meta("loaded", true)
-		var assets = await _release.async_load_assets()
+		var assets := await _release.async_load_assets()
 		for asset in assets:
 			_asset_to_item(asset, tree)
 		tree.free_loading_placeholder(_item)
@@ -195,21 +195,21 @@ class GithubReleaseItem extends GithubItemBase:
 class GithubVersionItem extends GithubItemBase:
 	var _version: GithubVersion
 	
-	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, version: GithubVersion):
+	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, version: GithubVersion) -> void:
 		super._init(item, assets)
 		_version = version
 	
-	func async_expand(tree: RemoteEditorsTreeDataSource.RemoteTree):
+	func async_expand(tree: RemoteEditorsTreeDataSource.RemoteTree) -> void:
 		_item.set_meta("loaded", true)
 		
 		var releases: Array[GodotRelease] = []
-		var flavor = _version.get_flavor_release()
+		var flavor := _version.get_flavor_release()
 		if not flavor.is_stable():
 			releases.append(flavor)
 		releases.append_array(_version.get_recent_releases())
 		
 		for release in releases:
-			var tree_item = tree.create_item(_item)
+			var tree_item := tree.create_item(_item)
 			tree_item.visible = false
 			tree_item.set_text(0, release.name)
 			tree.set_as_folder(tree_item)
@@ -220,7 +220,7 @@ class GithubVersionItem extends GithubItemBase:
 			tree_item.collapsed = true
 		
 		if flavor.is_stable():
-			var assets = await flavor.async_load_assets()
+			var assets := await flavor.async_load_assets()
 			for asset in assets:
 				_asset_to_item(asset, tree)
 
@@ -233,15 +233,15 @@ class GithubVersionItem extends GithubItemBase:
 class GithubRootItem extends GithubItemBase:
 	var _versions_source: GithubVersionSource
 	
-	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, versions_source: GithubVersionSource):
+	func _init(item: TreeItem, assets: RemoteEditorsTreeDataSource.RemoteAssets, versions_source: GithubVersionSource) -> void:
 		super._init(item, assets)
 		_versions_source = versions_source
 	
-	func async_expand(tree: RemoteEditorsTreeDataSource.RemoteTree):
+	func async_expand(tree: RemoteEditorsTreeDataSource.RemoteTree) -> void:
 		_item.set_meta("loaded", true)
-		var versions = await _versions_source.async_load()
+		var versions := await _versions_source.async_load()
 		for version in versions:
-			var tree_item = tree.create_item(_item)
+			var tree_item := tree.create_item(_item)
 			tree.set_as_folder(tree_item)
 			tree_item.set_text(0, version.name)
 			tree_item.set_meta("delegate", GithubVersionItem.new(tree_item, _assets, version))
@@ -250,12 +250,12 @@ class GithubRootItem extends GithubItemBase:
 
 
 class GithubFilterTarget extends RemoteEditorsTreeDataSource.FilterTarget:
-	var _name
-	var _is_possible_version_folder
-	var _is_file
-	var _is_zip
+	var _name: String
+	var _is_possible_version_folder: bool
+	var _is_file: bool
+	var _is_zip: bool
 
-	func _init(name, is_possible_version_folder, is_file, is_zip):
+	func _init(name: String, is_possible_version_folder: bool, is_file: bool, is_zip: bool) -> void:
 		_name = name
 		_is_possible_version_folder = is_possible_version_folder
 		_is_file = is_file
@@ -270,9 +270,9 @@ class GithubFilterTarget extends RemoteEditorsTreeDataSource.FilterTarget:
 	func is_zip() -> bool:
 		return _is_zip
 
-	func is_for_different_platform(platform_suffixes) -> bool:
-		var cached_name = get_name()
-		return not platform_suffixes.any(func(suffix): return cached_name.ends_with(suffix))
+	func is_for_different_platform(platform_suffixes: Array) -> bool:
+		var cached_name := get_name()
+		return not platform_suffixes.any(func(suffix: String) -> bool: return cached_name.ends_with(suffix))
 
 	func get_name() -> String:
 		return _name
@@ -292,16 +292,16 @@ class GithubAssetSourceDefault extends GithubAssetSource:
 	const url = "https://api.github.com/repos/godotengine/godot-builds/releases/tags/%s"
 	
 	func async_load(version: String, release: String) -> Array[GodotAsset]:
-		var tag = "%s-%s" % [version, release]
-		var response = await HttpClient.async_http_get(
+		var tag := "%s-%s" % [version, release]
+		var response := await HttpClient.async_http_get(
 			url % tag,
 			["Accept: application/vnd.github.v3+json"]
 		)
-		var json = JSON.parse_string(
-			response[3].get_string_from_utf8()
+		var json: Dictionary = JSON.parse_string(
+			(response[3] as PackedByteArray).get_string_from_utf8()
 		)
 		var result: Array[GodotAsset] = []
-		for asset_json in json.get('assets', []):
+		for asset_json: Dictionary in json.get('assets', []):
 			result.append(GodotAsset.new(asset_json))
 		return result
 
@@ -309,13 +309,13 @@ class GithubAssetSourceDefault extends GithubAssetSource:
 class GithubAssetSourceFileJson extends GithubAssetSource:
 	var _file_path: String
 	
-	func _init(file_path: String):
+	func _init(file_path: String) -> void:
 		_file_path = file_path
 	
 	func async_load(version: String, release: String) -> Array[GodotAsset]:
-		var json = JSON.parse_string(FileAccess.open(_file_path, FileAccess.READ).get_as_text())
+		var json: Dictionary = JSON.parse_string(FileAccess.open(_file_path, FileAccess.READ).get_as_text())
 		var result: Array[GodotAsset] = []
-		for asset_json in json.get('assets', []):
+		for asset_json: Dictionary in json.get('assets', []):
 			result.append(GodotAsset.new(asset_json))
 		return result
 
@@ -324,19 +324,19 @@ class GithubVersionSourceFileJson extends GithubVersionSource:
 	var _file_path: String
 	var _assets_src: GithubAssetSource
 	
-	func _init(file_path: String, assets_src: GithubAssetSource):
+	func _init(file_path: String, assets_src: GithubAssetSource) -> void:
 		_file_path = file_path
 		_assets_src = assets_src
 	
 	func async_load() -> Array[GithubVersion]:
-		var json = JSON.parse_string(FileAccess.open(_file_path, FileAccess.READ).get_as_text())
+		var json: Array = JSON.parse_string(FileAccess.open(_file_path, FileAccess.READ).get_as_text())
 		var result: Array[GithubVersion] = []
-		for el in json:
-			var version = GithubVersion.new()
+		for el: Dictionary in json:
+			var version := GithubVersion.new()
 			version._assets_src = _assets_src
 			version.name = el.name
 			version.flavor = el.flavor
-			for release in el.get('releases', []):
+			for release: Dictionary in el.get('releases', []):
 				version.releases.append(release.name)
 			result.append(version)
 		return result
@@ -350,22 +350,22 @@ class YmlSource:
 class YmlSourceFile extends YmlSource:
 	var _file_path: String
 	
-	func _init(file_path: String):
+	func _init(file_path: String) -> void:
 		_file_path = file_path
 	
 	func async_load(errors: Array[String]=[]) -> String:
-		var text = FileAccess.open(_file_path, FileAccess.READ).get_as_text() 
+		var text := FileAccess.open(_file_path, FileAccess.READ).get_as_text() 
 		return text
 
 
 class YmlSourceGithub extends YmlSource:
 	const url = "https://raw.githubusercontent.com/godotengine/godot-website/master/_data/versions.yml"
 	func async_load(errors: Array[String]=[]) -> String:
-		var response = HttpClient.Response.new(await HttpClient.async_http_get(url))
-		var info = response.to_response_info(url)
+		var response := HttpClient.Response.new(await HttpClient.async_http_get(url))
+		var info := response.to_response_info(url)
 		if info.error_text:
 			errors.append(info.error_text)
-		var text = response.get_string_from_utf8()
+		var text := response.get_string_from_utf8()
 		return text
 
 
@@ -377,25 +377,25 @@ class GithubVersionSourceParseYml extends GithubVersionSource:
 	var _name_regex := RegEx.create_from_string('(?m)\\sname:\\s"(?<name>[^"]+)"$')
 	var _flavor_regex := RegEx.create_from_string('(?m)\\sflavor:\\s"(?<flavor>[^"]+)"$')
 	
-	func _init(src: YmlSource, assets_src: GithubAssetSource):
+	func _init(src: YmlSource, assets_src: GithubAssetSource) -> void:
 		_src = src
 		_assets_src = assets_src
 	
 	func async_load() -> Array[GithubVersion]:
-		var yml = await _src.async_load()
+		var yml := await _src.async_load()
 		var result: Array[GithubVersion] = []
-		var versions = _version_regex.search_all(yml)
+		var versions := _version_regex.search_all(yml)
 		for version_result in versions:
-			var version_string = version_result.get_string()
-			var name_results = _name_regex.search_all(version_string)
-			var flavor_result = _flavor_regex.search(version_string)
+			var version_string := version_result.get_string()
+			var name_results := _name_regex.search_all(version_string)
+			var flavor_result := _flavor_regex.search(version_string)
 			if len(name_results) == 0 or flavor_result == null:
 				continue
-			var version = GithubVersion.new()
+			var version := GithubVersion.new()
 			version._assets_src = _assets_src
 			version.name = name_results[0].get_string("name")
 			version.flavor = flavor_result.get_string("flavor")
-			for release_name in name_results.slice(1):
+			for release_name: RegExMatch in name_results.slice(1):
 				version.releases.append(release_name.get_string("name"))
 			result.append(version)
 		return result

@@ -1,3 +1,4 @@
+class_name TagControl
 extends HBoxContainer
 
 const UINT32_MAX = 0xFFFFFFFF
@@ -12,12 +13,12 @@ var text := ""
 func _ready() -> void:
 	add_theme_constant_override("separation", 0)
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_button.pressed.connect(func(): pressed.emit())
+	_button.pressed.connect(func() -> void: pressed.emit())
 
 
-func init(text: String, display_close: bool = false):
+func init(text: String, display_close: bool = false) -> void:
 	self.text = text
-	var tag_color = Color.from_ok_hsl(
+	var tag_color := Color.from_ok_hsl(
 		float(text.hash() * 10001 % UINT32_MAX) / float(UINT32_MAX), 
 		0.8,
 		0.5,

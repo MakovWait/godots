@@ -4,9 +4,9 @@ extends VBoxContainer
 @onready var _copy_to_clipboard: Button = %CopyToClipboard
 @onready var _rich_text_label: RichTextLabel = %RichTextLabel
 @onready var _title: Label = %Title
-@onready var _icon_rect = %IconRect
+@onready var _icon_rect := %IconRect as TextureRect
 
-var _text = ""
+var _text := ""
 
 
 var remove_btn: Button:
@@ -31,13 +31,13 @@ var edit_btn: Button:
 
 func _ready() -> void:
 	_rich_text_label.custom_minimum_size = Vector2i(0, 100) * Config.EDSCALE
-	_copy_to_clipboard.pressed.connect(func():
+	_copy_to_clipboard.pressed.connect(func() -> void:
 		if _text and not _text.is_empty():
 			DisplayServer.clipboard_set(_text)
 	)
 
 
-func set_text(title, tooltip, text, icon):
+func set_text(title: String, tooltip: String, text: String, icon: String) -> void:
 	_title.tooltip_text = tooltip
 	_title.text = title
 	_text = text

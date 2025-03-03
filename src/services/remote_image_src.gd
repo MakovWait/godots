@@ -2,18 +2,18 @@ class_name RemoteImageSrc
 
 
 class I:
-	func async_load_img(url: String, callback: Callable):
+	func async_load_img(url: String, callback: Callable) -> void:
 		pass
 
 
 class AlwaysBroken extends I:
 	var _theme_src: Control
 	
-	func _init(theme_src: Control):
+	func _init(theme_src: Control) -> void:
 		_theme_src = theme_src
 	
-	func async_load_img(url: String, callback: Callable):
-		var texture = _theme_src.get_theme_icon("FileBrokenBigThumb", "EditorIcons")
+	func async_load_img(url: String, callback: Callable) -> void:
+		var texture := _theme_src.get_theme_icon("FileBrokenBigThumb", "EditorIcons")
 		callback.call(texture)
 
 
@@ -21,12 +21,12 @@ class LoadFileBuffer extends I:
 	var _file_src: FileByUrlSrc
 	var _fallback_texture: Texture2D
 	
-	func _init(file_src: FileByUrlSrc, fallback_texture: Texture2D):
+	func _init(file_src: FileByUrlSrc, fallback_texture: Texture2D) -> void:
 		_fallback_texture = fallback_texture
 		_file_src = file_src
 	
-	func async_load_img(url: String, callback: Callable):
-		var file_path = await _file_src.async_load(url)
+	func async_load_img(url: String, callback: Callable) -> void:
+		var file_path := await _file_src.async_load(url)
 		
 		if file_path.is_empty():
 			return
@@ -40,27 +40,27 @@ class LoadFileBuffer extends I:
 		if callback.get_object().get_script() == null:
 			return
 
-		var file = FileAccess.open(file_path, FileAccess.READ)
+		var file := FileAccess.open(file_path, FileAccess.READ)
 		if file == null:
 			callback.call(_fallback_texture)
 			return
 		
-		var file_buffer = file.get_buffer(file.get_length())
-		var img = Image.new()
-		var load_err = _load_img_from_buffer(img, file_buffer)
+		var file_buffer := file.get_buffer(file.get_length())
+		var img := Image.new()
+		var load_err := _load_img_from_buffer(img, file_buffer)
 		if load_err:
 			callback.call(_fallback_texture)
 		else:
-			var tex = ImageTexture.create_from_image(img)
+			var tex := ImageTexture.create_from_image(img)
 			callback.call(tex)
 	
 	func _load_img_from_buffer(img: Image, buffer: PackedByteArray) -> int:
-		var png_signature = PackedByteArray([137, 80, 78, 71, 13, 10, 26, 10])
-		var jpg_signature = PackedByteArray([255, 216, 255])
-		var webp_signature = PackedByteArray([82, 73, 70, 70])
-		var bmp_signature = PackedByteArray([66, 77])
+		var png_signature := PackedByteArray([137, 80, 78, 71, 13, 10, 26, 10])
+		var jpg_signature := PackedByteArray([255, 216, 255])
+		var webp_signature := PackedByteArray([82, 73, 70, 70])
+		var bmp_signature := PackedByteArray([66, 77])
 		
-		var load_err = ERR_PARAMETER_RANGE_ERROR
+		var load_err := ERR_PARAMETER_RANGE_ERROR
 		if png_signature == buffer.slice(0, 8):
 			load_err = img.load_png_from_buffer(buffer)
 		elif jpg_signature == buffer.slice(0, 3):
@@ -80,8 +80,8 @@ class FileByUrlSrc:
 
 class FileByUrlSrcAsIs extends FileByUrlSrc:
 	func async_load(url: String) -> String:
-		var file_path = Config.CACHE_DIR_PATH.ret().path_join(url.md5_text())
-		var response = HttpClient.Response.new(
+		var file_path := (Config.CACHE_DIR_PATH.ret() as String).path_join(url.md5_text())
+		var response := HttpClient.Response.new(
 			await HttpClient.async_http_get(url, [], file_path)
 		)
 		if response.code != 200:
@@ -91,15 +91,15 @@ class FileByUrlSrcAsIs extends FileByUrlSrc:
 
 class FileByUrlCachedEtag extends FileByUrlSrc:
 	func async_load(url: String) -> String:
-		var file_path_base = Config.CACHE_DIR_PATH.ret().path_join("assetimage_" + url.md5_text())
-		var etag_path = file_path_base + ".etag"
-		var data_path = file_path_base + ".data"
-		var headers = []
+		var file_path_base := (Config.CACHE_DIR_PATH.ret() as String).path_join("assetimage_" + url.md5_text())
+		var etag_path := file_path_base + ".etag"
+		var data_path := file_path_base + ".data"
+		var headers := []
 		if FileAccess.file_exists(etag_path) and FileAccess.file_exists(data_path):
-			var etag = FileAccess.open(etag_path, FileAccess.READ)
+			var etag := FileAccess.open(etag_path, FileAccess.READ)
 			if etag:
 				headers.push_back("If-None-Match: " + etag.get_line())
-		var response = HttpClient.Response.new(
+		var response := HttpClient.Response.new(
 			await HttpClient.async_http_get(url, headers, data_path)
 		)
 		if response.result == HTTPRequest.RESULT_SUCCESS and response.result < HTTPClient.RESPONSE_BAD_REQUEST:
@@ -107,8 +107,8 @@ class FileByUrlCachedEtag extends FileByUrlSrc:
 				for header in response.headers:
 					header = header as String
 					if header.findn("ETag:") == 0:
-						var new_etag = header.substr(header.find(":") + 1, header.length()).strip_edges()
-						var file = FileAccess.open(etag_path, FileAccess.WRITE)
+						var new_etag := header.substr(header.find(":") + 1, header.length()).strip_edges()
+						var file := FileAccess.open(etag_path, FileAccess.WRITE)
 						if file:
 							file.store_line(new_etag)
 						break

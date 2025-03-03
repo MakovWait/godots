@@ -3,46 +3,46 @@ class_name Projects
 class List extends RefCounted:
 	const dict = preload("res://src/extensions/dict.gd")
 	
-	var _cfg = ConfigFile.new()
-	var _projects = {}
-	var _cfg_path
-	var _default_icon
-	var _local_editors
+	var _cfg := ConfigFile.new()
+	var _projects: Dictionary[String, Item] = {}
+	var _cfg_path: String
+	var _default_icon: Texture2D
+	var _local_editors: LocalEditors.List
 	
-	func _init(cfg_path, local_editors, default_icon) -> void:
+	func _init(cfg_path: String, local_editors: LocalEditors.List, default_icon: Texture2D) -> void:
 		_cfg_path = cfg_path
 		_local_editors = local_editors
 		_default_icon = default_icon
 	
-	func add(project_path, editor_path) -> Item:
-		var project = Item.new(
-			ConfigFileSection.new(project_path, _cfg),
+	func add(project_path: String, editor_path: String) -> Item:
+		var project := Item.new(
+			ConfigFileSection.new(project_path, IConfigFileLike.of_config(_cfg)),
 			ExternalProjectInfo.new(project_path, _default_icon),
 			_local_editors
 		)
 		project.favorite = false
-		if editor_path:
+		if !editor_path.is_empty():
 			project.editor_path = editor_path
 		_projects[project_path] = project
 		return project
 	
 	func all() -> Array[Item]:
 		var result: Array[Item] = []
-		for x in _projects.values():
+		for x: Item in _projects.values():
 			result.append(x)
 		return result
 	
-	func retrieve(project_path) -> Item:
+	func retrieve(project_path: String) -> Item:
 		return _projects[project_path]
 	
-	func has(project_path) -> bool:
+	func has(project_path: String) -> bool:
 		return _projects.has(project_path)
 	
-	func erase(project_path) -> void:
+	func erase(project_path: String) -> void:
 		_projects.erase(project_path)
 		_cfg.erase_section(project_path)
 	
-	func get_editors_to_bind():
+	func get_editors_to_bind() -> Array[Dictionary]:
 		return _local_editors.as_option_button_items()
 	
 	func get_owners_of(editor: LocalEditors.Item) -> Array[Item]:
@@ -52,33 +52,34 @@ class List extends RefCounted:
 				result.append(project)
 		return result
 	
-	func get_all_tags():
-		var set = Set.new()
-		for project in _projects.values():
-			for tag in project.tags:
+	# TODO type
+	func get_all_tags() -> Array:
+		var set := Set.new()
+		for project: Item in _projects.values():
+			for tag: String in project.tags:
 				set.append(tag.to_lower())
 		return set.values()
 	
 	func load() -> Error:
 		cleanup()
-		var err = _cfg.load(_cfg_path)
+		var err := _cfg.load(_cfg_path)
 		if err: return err
 		for section in _cfg.get_sections():
 			_projects[section] = Item.new(
-				ConfigFileSection.new(section, _cfg),
+				ConfigFileSection.new(section, IConfigFileLike.of_config(_cfg)),
 				ExternalProjectInfo.new(section, _default_icon),
 				_local_editors
 			)
 		return Error.OK
 	
-	func cleanup():
+	func cleanup() -> void:
 		dict.clear_and_free(_projects)
 	
 	func save() -> Error:
 		return _cfg.save(_cfg_path)
 	
 	func get_last_opened() -> Projects.Item:
-		var last_opened = _ProjectsCache.get_last_opened_project()
+		var last_opened := _ProjectsCache.get_last_opened_project()
 		return retrieve(last_opened) if has(last_opened) else null
 
 
@@ -86,24 +87,24 @@ class Item:
 	signal internals_changed
 	signal loaded
 	
-	var show_edit_warning:
+	var show_edit_warning: bool:
 		get: return _section.get_value("show_edit_warning", true)
 		set(value): _section.set_value("show_edit_warning", value)
 	
-	var path:
+	var path: String:
 		get: return _section.name
 	
-	var name:
+	var name: String:
 		get: return _external_project_info.name
 		set(value): _external_project_info.name = value
 	
-	var editor_name:
+	var editor_name: String:
 		get: return _get_editor_name()
 	
-	var icon:
+	var icon: Texture2D:
 		get: return _external_project_info.icon
 
-	var favorite:
+	var favorite: bool:
 		get: return _section.get_value("favorite", false)
 		set(value): _section.set_value("favorite", value)
 	
@@ -113,45 +114,47 @@ class Item:
 				return null
 			return _local_editors.retrieve(editor_path)
 	
-	var editor_path:
+	var editor_path: String:
 		get: return _section.get_value("editor_path", "")
 		set(value): 
 			show_edit_warning = true
 			_section.set_value("editor_path", value)
 	
-	var has_invalid_editor:
+	var has_invalid_editor: bool:
 		get: return not _local_editors.editor_is_valid(editor_path)
 	
-	var is_valid:
+	var is_valid: bool:
 		get: return edir.path_is_valid(path)
 	
-	var editors_to_bind:
+	# TODO type
+	var editors_to_bind: Array:
 		get: return _get_editors_to_bind()
 	
-	var is_missing:
+	var is_missing: bool:
 		get: return _external_project_info.is_missing
 	
-	var is_loaded:
+	var is_loaded: bool:
 		get: return _external_project_info.is_loaded
 	
-	var tags:
+	var tags: Array:
 		set(value): _external_project_info.tags = value
 		get: return _external_project_info.tags
 	
-	var last_modified:
+	var last_modified: int:
 		get: return _external_project_info.last_modified
 	
-	var features:
+	# TODO type
+	var features: Array:
 		get: return _external_project_info.features
 	
-	var version_hint:
+	var version_hint: String:
 		get: return _external_project_info.version_hint
 		set(value): _external_project_info.version_hint = value
 
 	var has_version_hint: bool:
 		get: return _external_project_info.has_version_hint
 
-	var custom_commands:
+	var custom_commands: Array:
 		get: return _get_custom_commands("custom_commands-v2")
 		set(value): _section.set_value("custom_commands-v2", value)
 
@@ -171,14 +174,14 @@ class Item:
 			_check_editor_changes
 		)
 		self._local_editors.editor_name_changed.connect(_check_editor_changes)
-		project_info.loaded.connect(func(): loaded.emit())
+		project_info.loaded.connect(func() -> void: loaded.emit())
 	
-	func before_delete_as_ref_counted():
+	func before_delete_as_ref_counted() -> void:
 		utils.disconnect_all(self)
 		if _external_project_info:
 			_external_project_info.before_delete_as_ref_counted()
 	
-	func load(with_icon=true):
+	func load(with_icon:=true) -> void:
 		_external_project_info.load(with_icon)
 	
 	func editor_is(editor: LocalEditors.Item) -> bool:
@@ -186,23 +189,23 @@ class Item:
 			return false
 		return self.editor == editor
 	
-	func _get_editor_name():
+	func _get_editor_name() -> String:
 		if has_invalid_editor:
 			return '<null>'
 		else:
 			return _local_editors.retrieve(editor_path).name
 
-	func _check_editor_changes(editor_path):
+	func _check_editor_changes(editor_path: String) -> void:
 		if editor_path == self.editor_path:
 			emit_internals_changed()
 	
-	func emit_internals_changed():
+	func emit_internals_changed() -> void:
 		internals_changed.emit()
 	
 	func as_process(args: PackedStringArray) -> OSProcessSchema:
 		assert(not has_invalid_editor)
-		var editor = _local_editors.retrieve(editor_path)
-		var result_args = [
+		var editor := _local_editors.retrieve(editor_path)
+		var result_args := [
 			"--path",
 			ProjectSettings.globalize_path(path).get_base_dir(),
 		]
@@ -211,7 +214,7 @@ class Item:
 	
 	func fmt_string(str: String) -> String:
 		if not has_invalid_editor:
-			var editor = _local_editors.retrieve(editor_path)
+			var editor := _local_editors.retrieve(editor_path)
 			str = editor.fmt_string(str)
 		str = str.replace(
 			'{{PROJECT_DIR}}', ProjectSettings.globalize_path(self.path).get_base_dir()
@@ -227,28 +230,30 @@ class Item:
 			if process_path == '{{EDITOR_PATH}}':
 				raw_args.append_array(editor.extra_arguments)
 		raw_args.append_array(args)
-		for arg in raw_args:
+		for arg: String in raw_args:
 			arg = self.fmt_string(arg)
 			result_args.append(arg)
 		return OSProcessSchema.new(result_path, result_args)
 	
-	func edit():
-		var command = _find_custom_command_by_name("Edit", custom_commands)
-		as_fmt_process(command.path, command.args).create_process()
+	func edit() -> void:
+		var command: Dictionary = _find_custom_command_by_name("Edit", custom_commands)
+		as_fmt_process(command.path as String, command.args as PackedStringArray).create_process()
 		_ProjectsCache.set_last_opened_project(path)
 	
-	func run():
-		var command = _find_custom_command_by_name("Run", custom_commands)
-		as_fmt_process(command.path, command.args).create_process()
+	func run() -> void:
+		var command: Dictionary = _find_custom_command_by_name("Run", custom_commands)
+		as_fmt_process(command.path as String, command.args as PackedStringArray).create_process()
 	
-	func _find_custom_command_by_name(name: String, src=[]):
-		for command in src:
+	# TODO type
+	func _find_custom_command_by_name(name: String, src:=[]) -> Variant:
+		for command: Dictionary in src:
 			if command.name == name:
 				return command
 		return null
 	
-	func _get_custom_commands(key):
-		var commands = _section.get_value(key, [])
+	# TODO type
+	func _get_custom_commands(key: String) -> Array:
+		var commands: Array = _section.get_value(key, [])
 		if not _find_custom_command_by_name("Edit", commands):
 			commands.append({
 				'name': 'Edit',
@@ -275,8 +280,9 @@ class Item:
 			})
 		return commands
 	
-	func _get_editors_to_bind():
-		var options = _local_editors.as_option_button_items()
+	#TODO type
+	func _get_editors_to_bind() -> Array:
+		var options := _local_editors.as_option_button_items()
 		_external_project_info.sort_editor_options(options)
 		return options
 
@@ -287,14 +293,14 @@ class _ProjectsCache:
 		Cache.save()
 
 	static func get_last_opened_project() -> String:
-		var result = Cache.get_value("projects", "last_opened_project")
+		var result := Cache.get_value("projects", "last_opened_project") as String
 		return result if result else ""
 
 
 class ExternalProjectInfo extends RefCounted:
 	signal loaded
 	
-	var icon:
+	var icon: Texture2D:
 		get: return _icon
 
 	var name: String:
@@ -303,8 +309,8 @@ class ExternalProjectInfo extends RefCounted:
 			if value.strip_edges().is_empty() or is_missing:
 				return
 			_name = value
-			var cfg = ConfigFile.new()
-			var err = cfg.load(_project_path)
+			var cfg := ConfigFile.new()
+			var err := cfg.load(_project_path)
 			if not err:
 				cfg.set_value(
 					"application", 
@@ -322,8 +328,8 @@ class ExternalProjectInfo extends RefCounted:
 			if is_missing:
 				return
 			_version_hint = value
-			var cfg = ConfigFile.new()
-			var err = cfg.load(_project_path)
+			var cfg := ConfigFile.new()
+			var err := cfg.load(_project_path)
 			if not err:
 				cfg.set_value(
 					"godots", 
@@ -332,25 +338,26 @@ class ExternalProjectInfo extends RefCounted:
 				)
 				cfg.save(_project_path)
 
-	var last_modified:
+	var last_modified: int:
 		get: return _last_modified
 	
-	var is_loaded:
+	var is_loaded: bool:
 		get: return _is_loaded
 	
-	var is_missing:
+	var is_missing: bool:
 		get: return _is_missing
 	
-	var tags:
+	# TODO type
+	var tags: Array:
 		set(value):
 			_tags = value
 			if is_missing:
 				return
-			var cfg = ConfigFile.new()
-			var err = cfg.load(_project_path)
+			var cfg := ConfigFile.new()
+			var err := cfg.load(_project_path)
 			if not err:
-				var set = Set.new()
-				for tag in _tags:
+				var set := Set.new()
+				for tag: String in _tags:
 					set.append(tag.to_lower())
 				cfg.set_value(
 					"application", 
@@ -360,33 +367,35 @@ class ExternalProjectInfo extends RefCounted:
 				cfg.save(_project_path)
 		get: return Set.of(_tags).values()
 	
-	var features:
+	# TODO type
+	var features: Array:
 		get: return _features
 	
-	var _is_loaded = false
-	var _project_path
-	var _default_icon
-	var _icon
-	var _name = "Loading..."
-	var _last_modified
-	var _is_missing = false
-	var _tags = []
-	var _features = []
-	var _config_version = -1
-	var _has_mono_section = false
-	var _version_hint = null
+	var _is_loaded := false
+	var _project_path: String
+	var _default_icon: Texture2D
+	var _icon: Texture2D
+	var _name := "Loading..."
+	var _last_modified: int
+	var _is_missing := false
+	var _tags := []
+	var _features := []
+	var _config_version := -1
+	var _has_mono_section := false
+	## Optional[String], TODO type
+	var _version_hint: Variant = null
 	
-	func _init(project_path, default_icon=null):
+	func _init(project_path: String, default_icon: Texture2D = null) -> void:
 		_project_path = project_path
 		_default_icon = default_icon
 		_icon = default_icon
 	
-	func before_delete_as_ref_counted():
+	func before_delete_as_ref_counted() -> void:
 		utils.disconnect_all(self)
 	
-	func load(with_icon=true):
-		var cfg = ConfigFile.new()
-		var err = cfg.load(_project_path)
+	func load(with_icon:=true) -> void:
+		var cfg := ConfigFile.new()
+		var err := cfg.load(_project_path)
 		
 		_name = cfg.get_value("application", "config/name", "Missing Project")
 		_tags = cfg.get_value("application", "config/tags", [])
@@ -406,15 +415,15 @@ class ExternalProjectInfo extends RefCounted:
 		_is_loaded = true
 		loaded.emit()
 	
-	func _load_icon(cfg):
-		var result = _default_icon
+	func _load_icon(cfg: ConfigFile) -> Texture2D:
+		var result := _default_icon
 		var icon_path: String = cfg.get_value("application", "config/icon", "")
 		if not icon_path: return result
 		icon_path = icon_path.replace("res://", self._project_path.get_base_dir() + "/")
 		
 		if FileAccess.file_exists(icon_path):
-			var icon_image = Image.new()
-			var err = icon_image.load(icon_path)
+			var icon_image := Image.new()
+			var err := icon_image.load(icon_path)
 			if not err:
 				icon_image.resize(
 					_default_icon.get_width(), _default_icon.get_height(), Image.INTERPOLATE_LANCZOS
@@ -422,46 +431,47 @@ class ExternalProjectInfo extends RefCounted:
 				result = ImageTexture.create_from_image(icon_image)
 		return result
 	
-	func sort_editor_options(options):
-		var has_cs_feature = "C#" in features
-		var is_mono = has_cs_feature or _has_mono_section
+	# TODO type
+	func sort_editor_options(options: Array) -> void:
+		var has_cs_feature := "C#" in features
+		var is_mono := has_cs_feature or _has_mono_section
 		
-		var check_stable = func(label):
+		var check_stable := func(label: String) -> bool:
 			return label.contains("stable")
 		
-		var check_mono = func(label):
+		var check_mono := func(label: String) -> bool:
 			return label.contains("mono")
 		
-		var check_version = func(label: String):
+		var check_version := func(label: String) -> bool:
 			if _version_hint != null:
-				if VersionHint.same_version(_version_hint, label):
+				if VersionHint.same_version(_version_hint as String, label):
 					return true
 			if _config_version == 3:
 				return label.contains("3.0")
 			elif _config_version == 4:
 				return not label.contains("3.0") and not label.contains("4.")
 			elif _config_version > 4:
-				var is_version = func(feature): 
+				var is_version := func(feature: String) -> bool: 
 					return feature.contains(".") and feature.substr(0, 3).is_valid_float()
-				var version_tags = Array(features).filter(is_version)
+				var version_tags := Array(features).filter(is_version)
 				if len(version_tags) > 0:
-					return label.contains(version_tags[0])
+					return label.contains(version_tags[0] as String)
 				else:
 					return label.contains("4.")
 			else:
 				return false
 		
-		var check_version_hint_similarity = func(version_hint: String):
-			var score = VersionHint.similarity(_version_hint, version_hint)
+		var check_version_hint_similarity := func(version_hint: String) -> int:
+			var score := VersionHint.similarity(_version_hint as String, version_hint)
 			return score
 
-		options.sort_custom(func(item_a, item_b):
-			var a = item_a.version_hint.to_lower()
-			var b = item_b.version_hint.to_lower()
+		options.sort_custom(func(item_a: Dictionary, item_b: Dictionary) -> bool:
+			var a := (item_a.version_hint as String).to_lower()
+			var b := (item_b.version_hint as String).to_lower()
 			
 			if _version_hint != null:
-				var sim_a = check_version_hint_similarity.call(a)
-				var sim_b = check_version_hint_similarity.call(b)
+				var sim_a: int = check_version_hint_similarity.call(a)
+				var sim_b: int = check_version_hint_similarity.call(b)
 				if sim_a != sim_b:
 					return sim_a > sim_b
 				return VersionHint.version_or_nothing(a) > VersionHint.version_or_nothing(b)

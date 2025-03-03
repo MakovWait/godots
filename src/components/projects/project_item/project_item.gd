@@ -1,10 +1,11 @@
+class_name ProjectListItemControl
 extends HBoxListItem
 
 signal edited
 signal removed
 signal manage_tags_requested
 signal duplicate_requested
-signal tag_clicked(tag)
+signal tag_clicked(tag: String)
 
 @export var _rename_dialog_scene: PackedScene
 
@@ -16,11 +17,11 @@ signal tag_clicked(tag)
 @onready var _editor_path_label: Label = %EditorPathLabel
 @onready var _editor_button: Button = %EditorButton
 @onready var _project_warning: TextureRect = %ProjectWarning
-@onready var _tag_container: HBoxContainer = %TagContainer
+@onready var _tag_container: ItemTagContainer = %TagContainer
 @onready var _project_features: Label = %ProjectFeatures
-@onready var _info_body = %InfoBody
-@onready var _info_v_box = %InfoVBox
-@onready var _actions_h_box = %ActionsHBox
+@onready var _info_body: VBoxContainer = %InfoBody
+@onready var _info_v_box: VBoxContainer = %InfoVBox
+@onready var _actions_h_box: HBoxContainer = %ActionsHBox
 @onready var _title_container: HBoxContainer = %TitleContainer
 @onready var _actions_container: HBoxContainer = %ActionsContainer
 
@@ -30,8 +31,8 @@ static var settings := ProjectItemActions.Settings.new(
 )
 
 var _actions: Action.List
-var _tags = []
-var _sort_data = {
+var _tags := []
+var _sort_data := {
 	'ref': self
 }
 
@@ -45,32 +46,32 @@ func _ready() -> void:
 	_editor_button.icon = get_theme_icon("GodotMonochrome", "EditorIcons")
 	_project_warning.texture = get_theme_icon("NodeWarning", "EditorIcons")
 	_project_warning.tooltip_text = tr("Editor is missing.")
-	_tag_container.tag_clicked.connect(func(tag): tag_clicked.emit(tag))
+	_tag_container.tag_clicked.connect(func(tag: String) -> void: tag_clicked.emit(tag))
 
 
-func init(item: Projects.Item):
+func init(item: Projects.Item) -> void:
 	_fill_actions(item)
 	_setup_actions_view(item)
 
-	item.loaded.connect(func():
+	item.loaded.connect(func() -> void:
 		_fill_data(item)
 	)
 	
 	_editor_button.pressed.connect(_on_rebind_editor.bind(item))
 	_editor_button.disabled = item.is_missing
 	
-	item.internals_changed.connect(func():
+	item.internals_changed.connect(func() -> void:
 		_fill_data(item)
 	)
 
 	_fill_data(item)
 
 	_explore_button.pressed.connect(_show_in_file_manager.bind(item))
-	_favorite_button.toggled.connect(func(is_favorite):
+	_favorite_button.toggled.connect(func(is_favorite: bool) -> void:
 		item.favorite = is_favorite
 		edited.emit()
 	)
-	double_clicked.connect(func():
+	double_clicked.connect(func() -> void:
 		if item.is_missing:
 			return
 		
@@ -81,8 +82,8 @@ func init(item: Projects.Item):
 	)
 
 
-func _setup_actions_view(item: Projects.Item):
-	var action_views = ProjectItemActions.Menu.new(
+func _setup_actions_view(item: Projects.Item) -> void:
+	var action_views := ProjectItemActions.Menu.new(
 		_actions.without(['view-command']).all(), 
 		settings, 
 		CustomCommandsPopupItems.Self.new(
@@ -94,29 +95,30 @@ func _setup_actions_view(item: Projects.Item):
 	action_views.add_controls_to_node(_actions_h_box)
 	_actions_container.add_child(action_views)
 
-	var set_actions_visible = func(v):
+	var set_actions_visible := func(v: bool) -> void:
 		_actions_h_box.visible = v
 		action_views.visible = v
-	right_clicked.connect(func():
+	right_clicked.connect(func() -> void:
 		action_views.refill_popup()
-		var popup = action_views.get_popup()
-		var rect = Rect2(Vector2(DisplayServer.mouse_get_position()), Vector2.ZERO)
+		var popup := action_views.get_popup()
+		var rect := Rect2(Vector2(DisplayServer.mouse_get_position()), Vector2.ZERO)
 		popup.size = rect.size
 		if is_layout_rtl():
-			rect.position.x += rect.size.y - popup.y
+			# TODO it was popup.y ????
+			rect.position.x += rect.size.y - popup.size.y
 		popup.position = rect.position
 		popup.popup()
 	)
-	selected_changed.connect(func(is_selected):
+	selected_changed.connect(func(is_selected: bool) -> void:
 		if settings.is_show_always(): return
 		set_actions_visible.call(_is_hovering or is_selected)
 	)
 	set_actions_visible.call(settings.is_show_always())
-	hover_changed.connect(func(is_hovered):
+	hover_changed.connect(func(is_hovered: bool) -> void:
 		if settings.is_show_always(): return
 		set_actions_visible.call(is_hovered or _is_selected)
 	)
-	var sync_settings = func():
+	var sync_settings := func() -> void:
 		if settings.is_show_always():
 			set_actions_visible.call(true)
 		else:
@@ -136,64 +138,64 @@ func _setup_actions_view(item: Projects.Item):
 	settings.changed.connect(sync_settings)
 
 
-func _fill_actions(item: Projects.Item):
-	var edit = Action.from_dict({
+func _fill_actions(item: Projects.Item) -> void:
+	var edit := Action.from_dict({
 		"key": "edit",
 		"icon": Action.IconTheme.new(self, "Edit", "EditorIcons"),
 		"act": _on_edit_with_editor.bind(item),
 		"label": tr("Edit"),
 	})
 	
-	var run = Action.from_dict({
+	var run := Action.from_dict({
 		"key": "run",
 		"icon": Action.IconTheme.new(self, "Play", "EditorIcons"),
-		"act": _on_run_with_editor.bind(item, func(item): item.run(), "run", "Run", false),
+		"act": _on_run_with_editor.bind(item, func(item: Projects.Item) -> void: item.run(), "run", "Run", false),
 		"label": tr("Run"),
 	})
 
-	var duplicate = Action.from_dict({
+	var duplicate := Action.from_dict({
 		"key": "duplicate",
 		"icon": Action.IconTheme.new(self, "Duplicate", "EditorIcons"),
-		"act": func(): duplicate_requested.emit(),
+		"act": func() -> void: duplicate_requested.emit(),
 		"label": tr("Duplicate"),
 	})
 
-	var rename = Action.from_dict({
+	var rename := Action.from_dict({
 		"key": "rename",
 		"icon": Action.IconTheme.new(self, "Rename", "EditorIcons"),
 		"act": _on_rename.bind(item),
 		"label": tr("Rename"),
 	})
 
-	var bind_editor = Action.from_dict({
+	var bind_editor := Action.from_dict({
 		"key": "bind-editor",
 		"icon": Action.IconTheme.new(self, "GodotMonochrome", "EditorIcons"),
 		"act": _on_rebind_editor.bind(item),
 		"label": tr("Bind Editor"),
 	})
 
-	var manage_tags = Action.from_dict({
+	var manage_tags := Action.from_dict({
 		"key": "manage-tags",
 		"icon": Action.IconTheme.new(self, "Script", "EditorIcons"),
-		"act": func(): manage_tags_requested.emit(),
+		"act": func() -> void: manage_tags_requested.emit(),
 		"label": tr("Manage Tags"),
 	})
 	
-	var view_command = Action.from_dict({
+	var view_command := Action.from_dict({
 		"key": "view-command",
 		"icon": Action.IconTheme.new(self, "Edit", "EditorIcons"),
 		"act": _view_command.bind(item),
 		"label": tr("Edit Commands"),
 	})
 	
-	var remove = Action.from_dict({
+	var remove := Action.from_dict({
 		"key": "remove",
 		"icon": Action.IconTheme.new(self, "Remove", "EditorIcons"),
 		"act": _on_remove,
 		"label": tr("Remove"),
 	})
 
-	var show_in_file_manager = Action.from_dict({
+	var show_in_file_manager := Action.from_dict({
 		"key": "show-in-file-manager",
 		"icon": Action.IconTheme.new(self, "Filesystem", "EditorIcons"),
 		"act": _show_in_file_manager.bind(item),
@@ -213,7 +215,7 @@ func _fill_actions(item: Projects.Item):
 	])
 
 
-func _fill_data(item: Projects.Item):
+func _fill_data(item: Projects.Item) -> void:
 	if item.is_missing:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
@@ -250,8 +252,8 @@ func _fill_data(item: Projects.Item):
 		action.disable(item.is_missing or item.has_invalid_editor)
 
 
-func _view_command(item: Projects.Item):
-	var command_viewer = Context.use(self, CommandViewer) as CommandViewer
+func _view_command(item: Projects.Item) -> void:
+	var command_viewer := Context.use(self, CommandViewer) as CommandViewer
 	if command_viewer:
 		command_viewer.raise(
 			_get_commands(item), true
@@ -259,10 +261,10 @@ func _view_command(item: Projects.Item):
 
 
 func _get_commands(item: Projects.Item) -> CommandViewer.Commands:
-	var base_process_src = OSProcessSchema.FmtSource.new(item)
-	var cmd_src = CommandViewer.CustomCommandsSourceDynamic.new(item)
-	cmd_src.edited.connect(func(): edited.emit())
-	var commands = CommandViewer.CommandsDuo.new(
+	var base_process_src := OSProcessSchema.FmtSource.new(item)
+	var cmd_src := CommandViewer.CustomCommandsSourceDynamic.new(item)
+	cmd_src.edited.connect(func() -> void: edited.emit())
+	var commands := CommandViewer.CommandsDuo.new(
 		CommandViewer.CommandsGeneric.new(
 			base_process_src,
 			cmd_src,
@@ -279,10 +281,10 @@ func _get_commands(item: Projects.Item) -> CommandViewer.Commands:
 	return commands
 
 
-func _set_features(features):
-	var features_to_print = Array(features).filter(func(x): return _is_version(x) or x == "C#")
+func _set_features(features: Array) -> void:
+	var features_to_print := features.filter(func(x: String) -> bool: return _is_version(x) or x == "C#")
 	if len(features_to_print) > 0:
-		var str = ", ".join(features_to_print)
+		var str := ", ".join(features_to_print)
 		_project_features.text = str
 #		_project_features.custom_minimum_size = Vector2(25 * 15, 10) * Config.EDSCALE
 		if settings.is_show_features():
@@ -291,36 +293,36 @@ func _set_features(features):
 		_project_features.hide()
 
 
-func _is_version(feature: String):
+func _is_version(feature: String) -> bool:
 	return feature.contains(".") and feature.substr(0, 3).is_valid_float()
 
 
-func _on_rebind_editor(item):
-	var bind_dialog = ConfirmationDialogAutoFree.new()
+func _on_rebind_editor(item: Projects.Item) -> void:
+	var bind_dialog := ConfirmationDialogAutoFree.new()
 	
-	var vbox = VBoxContainer.new()
+	var vbox := VBoxContainer.new()
 	bind_dialog.add_child(vbox)
 	
-	var hbox = HBoxContainer.new()
+	var hbox := HBoxContainer.new()
 	vbox.add_child(hbox)
 	
-	var title = Label.new()
+	var title := Label.new()
 	hbox.add_child(title)
 	
-	var options = OptionButton.new()
+	var options := OptionButton.new()
 	hbox.add_child(options)
 	
 	if item.has_version_hint:
-		var hbox2 = HBoxContainer.new()
+		var hbox2 := HBoxContainer.new()
 		hbox2.modulate = Color(0.5, 0.5, 0.5, 0.5)
 		hbox2.alignment = BoxContainer.ALIGNMENT_CENTER
 		vbox.add_child(hbox2)
 		
-		var version_hint_title = Label.new()
+		var version_hint_title := Label.new()
 		version_hint_title.text = tr("version hint:")
 		hbox2.add_child(version_hint_title)
 		
-		var version_hint_value = Label.new()
+		var version_hint_value := Label.new()
 		version_hint_value.text = item.version_hint
 		hbox2.add_child(version_hint_value)
 	
@@ -328,19 +330,19 @@ func _on_rebind_editor(item):
 	
 	title.text = "%s: " % tr("Editor")
 	
-	options.item_selected.connect(func(idx):
+	options.item_selected.connect(func(idx: int) -> void:
 		bind_dialog.get_ok_button().disabled = false
 	)
-	var option_items = item.editors_to_bind
+	var option_items := item.editors_to_bind
 	bind_dialog.get_ok_button().disabled = len(option_items) == 0
 	for i in len(option_items):
-		var opt = option_items[i]
-		options.add_item(opt.label, i)
+		var opt: Dictionary = option_items[i]
+		options.add_item(opt.label as String, i)
 		options.set_item_metadata(i, opt.path)
 	
-	bind_dialog.confirmed.connect(func():
+	bind_dialog.confirmed.connect(func() -> void:
 		if options.selected < 0: return
-		var new_editor_path = options.get_item_metadata(options.selected)
+		var new_editor_path := options.get_item_metadata(options.selected) as String
 		item.editor_path = new_editor_path
 		edited.emit()
 	)
@@ -349,42 +351,42 @@ func _on_rebind_editor(item):
 	bind_dialog.popup_centered()
 
 
-func _on_rename(item):
-	var dialog = _rename_dialog_scene.instantiate()
+func _on_rename(item: Projects.Item) -> void:
+	var dialog: RenameEditorDialog = _rename_dialog_scene.instantiate()
 	add_child(dialog)
 	dialog.popup_centered()
 	dialog.init(item.name, item.version_hint)
-	dialog.editor_renamed.connect(func(new_name, version_hint):
+	dialog.editor_renamed.connect(func(new_name: String, version_hint: String) -> void:
 		item.name = new_name
 		item.version_hint = version_hint
 		edited.emit()
 	)
 
 
-func _on_edit_with_editor(item):
-	_on_run_with_editor(item, func(item): item.edit(), "edit", "Edit", true)
+func _on_edit_with_editor(item: Projects.Item) -> void:
+	_on_run_with_editor(item, func(item: Projects.Item) -> void: item.edit(), "edit", "Edit", true)
 
 
-func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_close):
+func _on_run_with_editor(item: Projects.Item, editor_flag: Callable, action_name: String, ok_button_text: String, auto_close: bool) -> void:
 	if not item.show_edit_warning:
 		_run_with_editor(item, editor_flag, auto_close)
 		return
 	
-	var confirmation_dialog = ConfirmationDialogAutoFree.new()
+	var confirmation_dialog := ConfirmationDialogAutoFree.new()
 	confirmation_dialog.ok_button_text = ok_button_text
 	confirmation_dialog.get_label().hide()
 	
-	var label = Label.new()
+	var label := Label.new()
 	label.text = tr("Are you sure to %s the project with the given editor?") % action_name
 	
-	var editor_name = Label.new()
+	var editor_name := Label.new()
 	editor_name.text = item.editor_name
 	editor_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	
-	var checkbox = CheckBox.new()
+	var checkbox := CheckBox.new()
 	checkbox.text = tr("do not show again for this project")
 	
-	var vb = VBoxContainer.new()
+	var vb := VBoxContainer.new()
 	vb.add_child(label)
 	vb.add_child(editor_name)
 	vb.add_child(checkbox)
@@ -392,8 +394,8 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 	
 	confirmation_dialog.add_child(vb)
 	
-	confirmation_dialog.confirmed.connect(func():
-		var before = item.show_edit_warning
+	confirmation_dialog.confirmed.connect(func() -> void:
+		var before := item.show_edit_warning
 		item.show_edit_warning = not checkbox.button_pressed
 		if item.show_edit_warning != before:
 			edited.emit()
@@ -406,18 +408,19 @@ func _on_run_with_editor(item, editor_flag, action_name, ok_button_text, auto_cl
 func _show_in_file_manager(item: Projects.Item) -> void:
 	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
 
-func _run_with_editor(item: Projects.Item, editor_flag, auto_close):
+
+func _run_with_editor(item: Projects.Item, editor_flag: Callable, auto_close: bool) -> void:
 	editor_flag.call(item)
 
 	if auto_close:
 		AutoClose.close_if_should()
 
 
-func _on_remove():
-	var confirmation_dialog = ConfirmationDialogAutoFree.new()
+func _on_remove() -> void:
+	var confirmation_dialog := ConfirmationDialogAutoFree.new()
 	confirmation_dialog.ok_button_text = tr("Remove")
 	confirmation_dialog.dialog_text = tr("Are you sure to remove the project from the list?")
-	confirmation_dialog.confirmed.connect(func():
+	confirmation_dialog.confirmed.connect(func() -> void:
 		queue_free()
 		removed.emit()
 	)
@@ -425,11 +428,11 @@ func _on_remove():
 	confirmation_dialog.popup_centered()
 
 
-func get_actions():
+func get_actions() -> Array:
 	return []
 
 
-func apply_filter(filter):
+func apply_filter(filter: Callable) -> void:
 	return filter.call({
 		'name': _title_label.text,
 		'path': _path_label.text,
@@ -437,14 +440,14 @@ func apply_filter(filter):
 	})
 
 
-func get_sort_data():
+func get_sort_data() -> Dictionary:
 	return _sort_data
 
 
 class RunButton extends Button:
-	func init(item):
+	func init(item: Projects.Item) -> void:
 		disabled = item.has_invalid_editor or item.is_missing
-		item.internals_changed.connect(func():
+		item.internals_changed.connect(func() -> void:
 			disabled = item.has_invalid_editor or item.is_missing
 		)
 		if item.has_invalid_editor:

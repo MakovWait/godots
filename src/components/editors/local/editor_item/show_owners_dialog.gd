@@ -1,3 +1,4 @@
+class_name ShowOwnersDialog
 extends AcceptDialog
 
 
@@ -11,11 +12,11 @@ enum Buttons {
 }
 
 
-func raise(editor: LocalEditors.Item):
+func raise(editor: LocalEditors.Item) -> void:
 	var projects: Projects.List = Context.use(self, Projects.List)
-	var owners = projects.get_owners_of(editor)
+	var owners := projects.get_owners_of(editor)
 	for owner in owners:
-		var item = _tree.create_item()
+		var item := _tree.create_item()
 		var icon_image: Image = owner.icon.get_image().duplicate()
 		icon_image.resize(
 			16 * Config.EDSCALE,
@@ -50,14 +51,14 @@ func raise(editor: LocalEditors.Item):
 	popup_centered()
 
 
-func _ready():
+func _ready() -> void:
 	min_size = Vector2(350, 350) * Config.EDSCALE
-	visibility_changed.connect(func():
+	visibility_changed.connect(func() -> void:
 		if not visible:
 			queue_free()
 	)
 	
-	_tree.button_clicked.connect(func(item: TreeItem, column: int, id: int, mouse_button_index: int):
+	_tree.button_clicked.connect(func(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 		var project: Projects.Item = item.get_metadata(0)
 		if id == Buttons.EDIT:
 			project.edit()

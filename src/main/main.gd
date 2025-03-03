@@ -2,18 +2,18 @@ extends Node
 
 @export_file() var gui_scene_path: String
 
-func _ready():
-	var args = OS.get_cmdline_args()
-	var user_args = OS.get_cmdline_user_args()
+func _ready() -> void:
+	var args := OS.get_cmdline_args()
+	var user_args := OS.get_cmdline_user_args()
 
 	if _is_cli_mode(args):
 		Output.push("Run cli mode")
-		var adjusted_args = args.slice(1) if OS.has_feature("editor") else args
+		var adjusted_args := args.slice(1) if OS.has_feature("editor") else args
 		CliMain.main(adjusted_args, user_args)
 		_exit()
 	else:
 		Output.push("Run window mode")
-		add_child.call_deferred(load(gui_scene_path).instantiate())
+		add_child.call_deferred((load(gui_scene_path) as PackedScene).instantiate())
 	pass
 
 func _is_cli_mode(args: PackedStringArray) -> bool:
@@ -23,5 +23,5 @@ func _is_cli_mode(args: PackedStringArray) -> bool:
 		return true
 	return false
 
-func _exit():
+func _exit() -> void:
 	get_tree().quit()

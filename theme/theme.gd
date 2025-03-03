@@ -1,60 +1,60 @@
 # https://github.com/godotengine/godot/blob/master/editor/editor_themes.cpp
 # https://github.com/godotengine/godot/blob/master/editor/editor_fonts.cpp
 
-static var EDSCALE = 1
+static var EDSCALE := 1.
 
 
-static func is_dark_theme():
-	var auto_color = 0
-	var light_color = 2
-	var base_color = EDITOR_GET("interface/theme/base_color", Color(0.212, 0.239, 0.29)) as Color
-	var icon_font_color_settings = EDITOR_GET("interface/theme/icon_and_font_color", 0)
+static func is_dark_theme() -> bool:
+	var auto_color := 0
+	var light_color := 2
+	var base_color := EDITOR_GET("interface/theme/base_color", Color(0.212, 0.239, 0.29)) as Color
+	var icon_font_color_settings := EDITOR_GET("interface/theme/icon_and_font_color", 0) as int
 	return (icon_font_color_settings == auto_color and base_color.get_luminance() < 0.5) or icon_font_color_settings == light_color
 
 
-static func set_scale(value):
+static func set_scale(value: float) -> void:
 	EDSCALE = value
 
 
-static func load_external_font(path, fallback=null):
+static func load_external_font(path: String, fallback: Variant=null) -> FontFile:
 	if path.is_empty() or not FileAccess.file_exists(path):
 		return null
-	var font = FontFile.new()
+	var font := FontFile.new()
 	font.data = FileAccess.get_file_as_bytes(path)
 	if fallback:
 		font.fallbacks.push_back(fallback)
 	return font
 
 
-static func editor_register_fonts(theme: Theme):
-	var ts = TextServerManager.get_primary_interface()
+static func editor_register_fonts(theme: Theme) -> void:
+	var ts := TextServerManager.get_primary_interface()
 	
-	var default_font_size = int(EDITOR_GET("interface/editor/main_font_size", 14)) * EDSCALE
-	var default_font = load("res://theme/fonts/NotoSans_Regular.woff2")
-	var default_font_bold = load("res://theme/fonts/NotoSans_Bold.woff2")
+	var default_font_size := int(EDITOR_GET("interface/editor/main_font_size", 14) as int) * EDSCALE
+	var default_font := load("res://theme/fonts/NotoSans_Regular.woff2")
+	var default_font_bold := load("res://theme/fonts/NotoSans_Bold.woff2")
 	
-	var custom_font = load_external_font(
-		EDITOR_GET("interface/editor/main_font", ""),
+	var custom_font := load_external_font(
+		EDITOR_GET("interface/editor/main_font", "") as String,
 		default_font
 	)
-	var custom_font_bold = load_external_font(
-		EDITOR_GET("interface/editor/main_font_bold", ""),
+	var custom_font_bold := load_external_font(
+		EDITOR_GET("interface/editor/main_font_bold", "") as String,
 		default_font_bold
 	)
 
-	var default_fc = custom_font if custom_font != null else default_font
-	var bold_fc = custom_font_bold if custom_font_bold != null else default_font_bold
+	var default_fc: Font = custom_font if custom_font != null else default_font
+	var bold_fc: Font = custom_font_bold if custom_font_bold != null else default_font_bold
 	
-	var mono_fc = FontVariation.new()
+	var mono_fc := FontVariation.new()
 	mono_fc.base_font = default_fc
 	mono_fc.spacing_top = -EDSCALE
 	mono_fc.spacing_bottom = -EDSCALE
 	
-	var italic_fc = FontVariation.new()
+	var italic_fc := FontVariation.new()
 	italic_fc.base_font = default_fc
 	italic_fc.variation_transform = Transform2D(Vector2(1.0, 0.2), Vector2(0.0, 1.0), Vector2(0.0, 0.0))
 	
-	var embolden_strength = 0.6
+	var embolden_strength := 0.6
 	
 	theme.default_font = default_fc
 	theme.default_font_size = default_font_size
@@ -88,15 +88,15 @@ static func editor_register_fonts(theme: Theme):
 	theme.set_font_size("font_size", "HeaderLarge", default_font_size + 3 * EDSCALE);
 	
 	# Documentation fonts
-	theme.set_font_size("doc_size", "EditorFonts", int(EDITOR_GET("text_editor/help/help_font_size", 16)) * EDSCALE);
+	theme.set_font_size("doc_size", "EditorFonts", int(EDITOR_GET("text_editor/help/help_font_size", 16) as int) * EDSCALE);
 	theme.set_font("doc", "EditorFonts", default_fc);
 	theme.set_font("doc_bold", "EditorFonts", bold_fc);
 	theme.set_font("doc_italic", "EditorFonts", italic_fc);
-	theme.set_font_size("doc_title_size", "EditorFonts", int(EDITOR_GET("text_editor/help/help_title_font_size", 23)) * EDSCALE);
+	theme.set_font_size("doc_title_size", "EditorFonts", int(EDITOR_GET("text_editor/help/help_title_font_size", 23) as int) * EDSCALE);
 	theme.set_font("doc_title", "EditorFonts", bold_fc);
-	theme.set_font_size("doc_source_size", "EditorFonts", int(EDITOR_GET("text_editor/help/help_source_font_size", 15)) * EDSCALE);
+	theme.set_font_size("doc_source_size", "EditorFonts", int(EDITOR_GET("text_editor/help/help_source_font_size", 15) as int) * EDSCALE);
 	theme.set_font("doc_source", "EditorFonts", mono_fc);
-	theme.set_font_size("doc_keyboard_size", "EditorFonts", (int(EDITOR_GET("text_editor/help/help_source_font_size", 15)) - 1) * EDSCALE);
+	theme.set_font_size("doc_keyboard_size", "EditorFonts", (int(EDITOR_GET("text_editor/help/help_source_font_size", 15) as int) - 1) * EDSCALE);
 	theme.set_font("doc_keyboard", "EditorFonts", mono_fc);
 
 	# Ruler font
@@ -125,50 +125,50 @@ static func editor_register_fonts(theme: Theme):
 #	theme.set_font("status_source", "EditorFonts", mono_other_fc);
 
 
-static func EDITOR_GET(arg, default):
+static func EDITOR_GET(arg: String, default: Variant) -> Variant:
 	return Config.editor_settings_proxy_get(arg, default)
 
 
-static func itos(arg):
+static func itos(arg: Variant) -> String:
 	return str(arg)
 
 
-static func editor_register_and_generate_icons(p_theme, p_dark_theme, p_icon_saturation, p_thumb_size, p_only_thumbs = false):
-	var icons_cfg = ConfigFile.new()
+static func editor_register_and_generate_icons(p_theme: Theme, p_dark_theme: bool, p_icon_saturation: Variant, p_thumb_size: Variant, p_only_thumbs := false) -> void:
+	var icons_cfg := ConfigFile.new()
 	if p_dark_theme:
 		icons_cfg.load("res://theme/icons.cfg")
 	else:
 		icons_cfg.load("res://theme/icons-light.cfg")
 	for icon_path in icons_cfg.get_sections():
-		add_icon(p_theme, icon_path, icons_cfg.get_value(icon_path, "name"), EDSCALE)
+		add_icon(p_theme, icon_path, icons_cfg.get_value(icon_path, "name") as String, EDSCALE)
 
 
-static func add_icon(theme, path, icon_name, edscale):
+static func add_icon(theme: Theme, path: String, icon_name: String, edscale: float) -> void:
 	var texture: Texture2D = load(path)
-	var image = texture.get_image()
+	var image := texture.get_image()
 	if not is_equal_approx(edscale, 2):
-		var new_size = image.get_size() * (edscale / 2.0)
+		var new_size := image.get_size() * (edscale / 2.0)
 		image.resize(new_size.x, new_size.y)
-	var icon = ImageTexture.create_from_image(image)
+	var icon := ImageTexture.create_from_image(image)
 	theme.set_icon(icon_name, "EditorIcons", icon)
 
 
-static func set_texture_margin_individual(style, p_left, p_top, p_right, p_bottom):
+static func set_texture_margin_individual(style: Variant, p_left: Variant, p_top: Variant, p_right: Variant, p_bottom: Variant) -> void:
 	style.texture_margin_left = p_left
 	style.texture_margin_top = p_top
 	style.texture_margin_right = p_right
 	style.texture_margin_bottom = p_bottom
 
 
-static func set_content_margin_individual(style, p_left, p_top, p_right, p_bottom):
+static func set_content_margin_individual(style: Variant, p_left: Variant, p_top: Variant, p_right: Variant, p_bottom: Variant) -> void:
 	style.content_margin_left = p_left
 	style.content_margin_top = p_top
 	style.content_margin_right = p_right
 	style.content_margin_bottom = p_bottom
 
 
-static func make_stylebox(p_texture, p_left, p_top, p_right, p_bottom, p_margin_left = -1, p_margin_top = -1, p_margin_right = -1, p_margin_bottom = -1, p_draw_center = true):
-	var style = StyleBoxTexture.new()
+static func make_stylebox(p_texture: Texture2D, p_left: Variant, p_top: Variant, p_right: Variant, p_bottom: Variant, p_margin_left := -1, p_margin_top := -1, p_margin_right := -1, p_margin_bottom := -1, p_draw_center := true) -> StyleBoxTexture:
+	var style := StyleBoxTexture.new()
 	style.set_texture(p_texture)
 	set_texture_margin_individual(style, p_left * EDSCALE, p_top * EDSCALE, p_right * EDSCALE, p_bottom * EDSCALE)
 	set_content_margin_individual(style, (p_left + p_margin_left) * EDSCALE, (p_top + p_margin_top) * EDSCALE, (p_right + p_margin_right) * EDSCALE, (p_bottom + p_margin_bottom) * EDSCALE)
@@ -176,8 +176,8 @@ static func make_stylebox(p_texture, p_left, p_top, p_right, p_bottom, p_margin_
 	return style
 
 
-static func make_line_stylebox(p_color, p_thickness = 1, p_grow_begin = 1, p_grow_end = 1, p_vertical = false):
-	var style = StyleBoxLine.new()
+static func make_line_stylebox(p_color: Color, p_thickness := 1, p_grow_begin := 1, p_grow_end := 1, p_vertical := false) -> StyleBoxLine:
+	var style := StyleBoxLine.new()
 	style.set_color(p_color)
 	style.set_grow_begin(p_grow_begin)
 	style.set_grow_end(p_grow_end)
@@ -186,11 +186,11 @@ static func make_line_stylebox(p_color, p_thickness = 1, p_grow_begin = 1, p_gro
 	return style
 
 
-static func make_flat_stylebox(p_color, p_margin_left = -1, p_margin_top = -1, p_margin_right = -1, p_margin_bottom = -1, p_corner_width = 0):
-	var style = StyleBoxFlat.new()
+static func make_flat_stylebox(p_color: Color, p_margin_left := -1, p_margin_top := -1, p_margin_right := -1, p_margin_bottom := -1, p_corner_width := 0) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
 	style.set_bg_color(p_color)
 	# Adjust level of detail based on the corners' effective sizes.
-	style.set_corner_detail(ceil(0.8 * p_corner_width * EDSCALE))
+	style.set_corner_detail(ceilf(0.8 * p_corner_width * EDSCALE))
 	style.set_corner_radius_all(p_corner_width * EDSCALE)
 	set_content_margin_individual(style, p_margin_left * EDSCALE, p_margin_top * EDSCALE, p_margin_right * EDSCALE, p_margin_bottom * EDSCALE)
 	# Work around issue about antialiased edges being blurrier (GH-35279).
@@ -198,39 +198,39 @@ static func make_flat_stylebox(p_color, p_margin_left = -1, p_margin_top = -1, p
 	return style
 
 
-static func make_empty_stylebox(p_margin_left = -1, p_margin_top = -1, p_margin_right = -1, p_margin_bottom = -1):
-	var style = StyleBoxEmpty.new()
+static func make_empty_stylebox(p_margin_left := -1, p_margin_top := -1, p_margin_right := -1, p_margin_bottom := -1) -> StyleBoxEmpty:
+	var style := StyleBoxEmpty.new()
 	set_content_margin_individual(style, p_margin_left * EDSCALE, p_margin_top * EDSCALE, p_margin_right * EDSCALE, p_margin_bottom * EDSCALE)
 	return style
 
 
-static func create_editor_theme(p_theme):
-	var theme = Theme.new()
+static func create_editor_theme(p_theme: Variant) -> Theme:
+	var theme := Theme.new()
 
 	# Controls may rely on the scale for their internal drawing logic.
 	theme.set_default_base_scale(EDSCALE)
 
 	# Theme settings
-	var accent_color = EDITOR_GET("interface/theme/accent_color", Color(0.439, 0.729, 0.98))
-	var base_color = EDITOR_GET("interface/theme/base_color", Color(0.212, 0.239, 0.29))
-	var contrast = EDITOR_GET("interface/theme/contrast", 0.3)
-	var increase_scrollbar_touch_area = EDITOR_GET("interface/touchscreen/increase_scrollbar_touch_area", false)
-	var gizmo_handle_scale = EDITOR_GET("interface/touchscreen/scale_gizmo_handles", 1)
-	var draw_extra_borders = EDITOR_GET("interface/theme/draw_extra_borders", false)
-	var icon_saturation = EDITOR_GET("interface/theme/icon_saturation", 1)
-	var relationship_line_opacity = EDITOR_GET("interface/theme/relationship_line_opacity", 0.1)
+	var accent_color := EDITOR_GET("interface/theme/accent_color", Color(0.439, 0.729, 0.98)) as Color
+	var base_color := EDITOR_GET("interface/theme/base_color", Color(0.212, 0.239, 0.29)) as Color
+	var contrast := EDITOR_GET("interface/theme/contrast", 0.3) as float
+	var increase_scrollbar_touch_area := EDITOR_GET("interface/touchscreen/increase_scrollbar_touch_area", false) as bool
+	var gizmo_handle_scale := EDITOR_GET("interface/touchscreen/scale_gizmo_handles", 1) as float
+	var draw_extra_borders := EDITOR_GET("interface/theme/draw_extra_borders", false) as bool
+	var icon_saturation := EDITOR_GET("interface/theme/icon_saturation", 1) as float
+	var relationship_line_opacity := EDITOR_GET("interface/theme/relationship_line_opacity", 0.1) as float
 
-	var preset = EDITOR_GET("interface/theme/preset", "Default")
+	var preset := EDITOR_GET("interface/theme/preset", "Default") as String
 
-	var border_size = EDITOR_GET("interface/theme/border_size", 0)
-	var corner_radius = EDITOR_GET("interface/theme/corner_radius", 3)
+	var border_size := EDITOR_GET("interface/theme/border_size", 0) as float
+	var corner_radius := EDITOR_GET("interface/theme/corner_radius", 3) as float
 
-	var preset_accent_color
-	var preset_base_color
-	var preset_contrast = 0
-	var preset_draw_extra_borders = false
+	var preset_accent_color: Color
+	var preset_base_color: Color
+	var preset_contrast := 0
+	var preset_draw_extra_borders := false
 
-	var default_contrast = 0.3
+	var default_contrast := 0.3
 
 	# Please use alphabetical order if you're adding a new theme here
 	# (after "Custom")
@@ -300,7 +300,7 @@ static func create_editor_theme(p_theme):
 	
 # Colors
 #	var dark_theme = EditorSettings::get_singleton().is_dark_theme()
-	var dark_theme = is_dark_theme()
+	var dark_theme := is_dark_theme()
 
 #ifdef MODULE_SVG_ENABLED
 #	if dark_theme:
@@ -312,51 +312,51 @@ static func create_editor_theme(p_theme):
 
 	# Ensure base colors are in the 0..1 luminance range to avoid 8-bit integer overflow or text rendering issues.
 	# Some places in the editor use 8-bit integer colors.
-	var dark_color_1 = base_color.lerp(Color(0, 0, 0, 1), contrast).clamp()
-	var dark_color_2 = base_color.lerp(Color(0, 0, 0, 1), contrast * 1.5).clamp()
-	var dark_color_3 = base_color.lerp(Color(0, 0, 0, 1), contrast * 2).clamp()
+	var dark_color_1 := base_color.lerp(Color(0, 0, 0, 1), contrast).clamp()
+	var dark_color_2 := base_color.lerp(Color(0, 0, 0, 1), contrast * 1.5).clamp()
+	var dark_color_3 := base_color.lerp(Color(0, 0, 0, 1), contrast * 2).clamp()
 
 	# Only used when the Draw Extra Borders editor setting is enabled.
-	var extra_border_color_1 = Color(0.5, 0.5, 0.5)
+	var extra_border_color_1 := Color(0.5, 0.5, 0.5)
 #	var extra_border_color_2 = dark_theme ? Color(0.3, 0.3, 0.3) : Color(0.7, 0.7, 0.7)
-	var extra_border_color_2 = Color(0.3, 0.3, 0.3) if dark_theme else Color(0.7, 0.7, 0.7)
+	var extra_border_color_2 := Color(0.3, 0.3, 0.3) if dark_theme else Color(0.7, 0.7, 0.7)
 
-	var background_color = dark_color_2
+	var background_color := dark_color_2
 
 	# White (dark theme) or black (light theme), will be used to generate the rest of the colors
 #	var mono_color = dark_theme ? Color(1, 1, 1) : Color(0, 0, 0)
-	var mono_color = Color(1, 1, 1) if dark_theme else Color(0, 0, 0)
+	var mono_color := Color(1, 1, 1) if dark_theme else Color(0, 0, 0)
 
-	var contrast_color_1 = base_color.lerp(mono_color, max(contrast, default_contrast))
-	var contrast_color_2 = base_color.lerp(mono_color, max(contrast * 1.5, default_contrast * 1.5))
+	var contrast_color_1: Color = base_color.lerp(mono_color, max(contrast, default_contrast) as float)
+	var contrast_color_2: Color = base_color.lerp(mono_color, max(contrast * 1.5, default_contrast * 1.5) as float)
 
-	var font_color = mono_color.lerp(base_color, 0.25)
-	var font_hover_color = mono_color.lerp(base_color, 0.125)
-	var font_focus_color = mono_color.lerp(base_color, 0.125)
-	var font_hover_pressed_color = font_hover_color.lerp(accent_color, 0.74)
-	var font_disabled_color = Color(mono_color.r, mono_color.g, mono_color.b, 0.35)
-	var font_readonly_color = Color(mono_color.r, mono_color.g, mono_color.b, 0.65)
-	var font_placeholder_color = Color(mono_color.r, mono_color.g, mono_color.b, 0.6)
-	var font_outline_color = Color(0, 0, 0, 0)
-	var selection_color = accent_color * Color(1, 1, 1, 0.4)
-	var disabled_color = mono_color.inverted().lerp(base_color, 0.7)
-	var disabled_bg_color = mono_color.inverted().lerp(base_color, 0.9)
+	var font_color := mono_color.lerp(base_color, 0.25)
+	var font_hover_color := mono_color.lerp(base_color, 0.125)
+	var font_focus_color := mono_color.lerp(base_color, 0.125)
+	var font_hover_pressed_color := font_hover_color.lerp(accent_color, 0.74)
+	var font_disabled_color := Color(mono_color.r, mono_color.g, mono_color.b, 0.35)
+	var font_readonly_color := Color(mono_color.r, mono_color.g, mono_color.b, 0.65)
+	var font_placeholder_color := Color(mono_color.r, mono_color.g, mono_color.b, 0.6)
+	var font_outline_color := Color(0, 0, 0, 0)
+	var selection_color := accent_color * Color(1, 1, 1, 0.4)
+	var disabled_color := mono_color.inverted().lerp(base_color, 0.7)
+	var disabled_bg_color := mono_color.inverted().lerp(base_color, 0.9)
 
-	var icon_normal_color = Color(1, 1, 1)
+	var icon_normal_color := Color(1, 1, 1)
 #	var icon_hover_color = icon_normal_color * (dark_theme ? 1.15 : 1.45)
-	var icon_hover_color = icon_normal_color * (1.15 if dark_theme else 1.45)
+	var icon_hover_color := icon_normal_color * (1.15 if dark_theme else 1.45)
 	icon_hover_color.a = 1.0
-	var icon_focus_color = icon_hover_color
-	var icon_disabled_color = Color(icon_normal_color, 0.4)
+	var icon_focus_color := icon_hover_color
+	var icon_disabled_color := Color(icon_normal_color, 0.4)
 	# Make the pressed icon color overbright because icons are not completely white on a dark theme.
 	# On a light theme, icons are dark, so we need to modulate them with an even brighter color.
-	var icon_pressed_color = accent_color * (1.15 if dark_theme else 3.5)
+	var icon_pressed_color := accent_color * (1.15 if dark_theme else 3.5)
 	icon_pressed_color.a = 1.0
 
-	var separator_color = Color(mono_color.r, mono_color.g, mono_color.b, 0.1)
-	var highlight_color = Color(accent_color.r, accent_color.g, accent_color.b, 0.275)
+	var separator_color := Color(mono_color.r, mono_color.g, mono_color.b, 0.1)
+	var highlight_color := Color(accent_color.r, accent_color.g, accent_color.b, 0.275)
 #	var disabled_highlight_color = highlight_color.lerp(dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.5)
-	var disabled_highlight_color = highlight_color.lerp(Color(0,0,0) if dark_theme else Color(1, 1, 1), 0.5)
+	var disabled_highlight_color := highlight_color.lerp(Color(0,0,0) if dark_theme else Color(1, 1, 1), 0.5)
 
 	# Can't save single float in theme, so using Color.
 	theme.set_color("icon_saturation", "Editor", Color(icon_saturation, icon_saturation, icon_saturation))
@@ -377,8 +377,8 @@ static func create_editor_theme(p_theme):
 	theme.set_color("axis_z_color", "Editor", Color(0.16, 0.55, 0.96))
 	theme.set_color("axis_w_color", "Editor", Color(0.55, 0.55, 0.55))
 
-	var prop_color_saturation = accent_color.s * 0.75
-	var prop_color_value = accent_color.v
+	var prop_color_saturation := accent_color.s * 0.75
+	var prop_color_value := accent_color.v
 
 	theme.set_color("property_color_x", "Editor", Color().from_hsv(0.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
 	theme.set_color("property_color_y", "Editor", Color().from_hsv(1.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
@@ -392,14 +392,14 @@ static func create_editor_theme(p_theme):
 
 	theme.set_color("mono_color", "Editor", mono_color)
 
-	var success_color = Color(0.45, 0.95, 0.5)
-	var warning_color = Color(1, 0.87, 0.4)
-	var error_color = Color(1, 0.47, 0.42)
-	var property_color = font_color.lerp(Color(0.5, 0.5, 0.5), 0.5)
+	var success_color := Color(0.45, 0.95, 0.5)
+	var warning_color := Color(1, 0.87, 0.4)
+	var error_color := Color(1, 0.47, 0.42)
+	var property_color := font_color.lerp(Color(0.5, 0.5, 0.5), 0.5)
 #	var readonly_color = property_color.lerp(dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.25)
-	var readonly_color = property_color.lerp(Color(0, 0, 0) if dark_theme else Color(1, 1, 1), 0.25)
+	var readonly_color := property_color.lerp(Color(0, 0, 0) if dark_theme else Color(1, 1, 1), 0.25)
 #	var readonly_warning_color = error_color.lerp(dark_theme ? Color(0, 0, 0) : Color(1, 1, 1), 0.25)
-	var readonly_warning_color = error_color.lerp(Color(0, 0, 0) if dark_theme else Color(1, 1, 1), 0.25)
+	var readonly_warning_color := error_color.lerp(Color(0, 0, 0) if dark_theme else Color(1, 1, 1), 0.25)
 
 	if !dark_theme:
 		# Darken some colors to be readable on a light background.
@@ -418,7 +418,7 @@ static func create_editor_theme(p_theme):
 	else:
 		theme.set_color("highend_color", "Editor", Color(1.0, 0.0, 0.0))
 
-	var thumb_size = EDITOR_GET("filesystem/file_dialog/thumbnail_size", 64)
+	var thumb_size := EDITOR_GET("filesystem/file_dialog/thumbnail_size", 64) as int
 	theme.set_constant("scale", "Editor", EDSCALE)
 	theme.set_constant("thumb_size", "Editor", thumb_size)
 	theme.set_constant("class_icon_size", "Editor", 16 * EDSCALE)
@@ -431,8 +431,8 @@ static func create_editor_theme(p_theme):
 	# Register editor icons.
 	# If the settings are comparable to the old theme, then just copy them over.
 	# Otherwise, regenerate them. Also check if we need to regenerate "thumb" icons.
-	var keep_old_icons = false
-	var regenerate_thumb_icons = true
+	var keep_old_icons := false
+	var regenerate_thumb_icons := true
 	#TODO attention
 #	if (p_theme != nullptr) {
 #		# We check editor scale, theme dark/light mode, icon saturation, and accent color.
@@ -473,47 +473,47 @@ static func create_editor_theme(p_theme):
 	editor_register_fonts(theme)
 
 	# Ensure borders are visible when using an editor scale below 100%.
-	var border_width = clamp(border_size, 0, 2) * max(1, EDSCALE)
-	var corner_width = clamp(corner_radius, 0, 6)
-	var default_margin_size = 4
-	var margin_size_extra = default_margin_size + clamp(border_size, 0, 2)
+	var border_width := clamp(border_size, 0, 2) * max(1, EDSCALE) as float
+	var corner_width := clamp(corner_radius, 0, 6) as float
+	var default_margin_size := 4
+	var margin_size_extra := default_margin_size + clamp(border_size, 0, 2) as float
 
 	# Styleboxes
 	# This is the most commonly used stylebox, variations should be made as duplicate of this
-	var style_default = make_flat_stylebox(base_color, default_margin_size, default_margin_size, default_margin_size, default_margin_size, corner_width)
+	var style_default := make_flat_stylebox(base_color, default_margin_size, default_margin_size, default_margin_size, default_margin_size, corner_width)
 	style_default.set_border_width_all(border_width)
 	style_default.set_border_color(base_color)
 
 	# Button and widgets
-	var extra_spacing = EDITOR_GET("interface/theme/additional_spacing", 0)
+	var extra_spacing := EDITOR_GET("interface/theme/additional_spacing", 0) as float
 
-	var widget_default_margin = Vector2(extra_spacing + 6, extra_spacing + default_margin_size + 1) * EDSCALE
+	var widget_default_margin := Vector2(extra_spacing + 6, extra_spacing + default_margin_size + 1) * EDSCALE
 
-	var style_widget = style_default.duplicate()
+	var style_widget: StyleBoxFlat = style_default.duplicate()
 	set_content_margin_individual(style_widget, widget_default_margin.x, widget_default_margin.y, widget_default_margin.x, widget_default_margin.y)
 	style_widget.set_bg_color(dark_color_1)
 	if draw_extra_borders:
-		style_widget.set_border_width_all(round(EDSCALE))
+		style_widget.set_border_width_all(round(EDSCALE) as int)
 		style_widget.set_border_color(extra_border_color_1)
 	else:
 		style_widget.set_border_color(dark_color_2)
 
-	var style_widget_disabled = style_widget.duplicate()
+	var style_widget_disabled: StyleBoxFlat = style_widget.duplicate()
 	if draw_extra_borders:
 		style_widget_disabled.set_border_color(extra_border_color_2)
 	else:
 		style_widget_disabled.set_border_color(disabled_color)
 	style_widget_disabled.set_bg_color(disabled_bg_color)
 
-	var style_widget_focus = style_widget.duplicate()
+	var style_widget_focus: StyleBoxFlat = style_widget.duplicate()
 	style_widget_focus.set_draw_center(false)
-	style_widget_focus.set_border_width_all(round(2 * max(1, EDSCALE)))
+	style_widget_focus.set_border_width_all(round(2 * max(1, EDSCALE)) as int)
 	style_widget_focus.set_border_color(accent_color)
 
-	var style_widget_pressed = style_widget.duplicate()
+	var style_widget_pressed: StyleBoxFlat = style_widget.duplicate()
 	style_widget_pressed.set_bg_color(dark_color_1.darkened(0.125))
 
-	var style_widget_hover = style_widget.duplicate()
+	var style_widget_hover: StyleBoxFlat = style_widget.duplicate()
 	style_widget_hover.set_bg_color(mono_color * Color(1, 1, 1, 0.11))
 	if draw_extra_borders:
 		style_widget_hover.set_border_color(extra_border_color_1)
@@ -521,11 +521,11 @@ static func create_editor_theme(p_theme):
 		style_widget_hover.set_border_color(mono_color * Color(1, 1, 1, 0.05))
 
 	# Style for windows, popups, etc..
-	var style_popup = style_default.duplicate()
-	var popup_margin_size = default_margin_size * EDSCALE * 3
+	var style_popup: StyleBoxFlat = style_default.duplicate()
+	var popup_margin_size := default_margin_size * EDSCALE * 3
 	style_popup.set_content_margin_all(popup_margin_size)
 	style_popup.set_border_color(contrast_color_1)
-	var shadow_color = Color(0, 0, 0, 0.3 if dark_theme else 0.1)
+	var shadow_color := Color(0, 0, 0, 0.3 if dark_theme else 0.1)
 	style_popup.set_shadow_color(shadow_color)
 	style_popup.set_shadow_size(4 * EDSCALE)
 	# Popups are separate windows by default in the editor. Windows currently don't support per-pixel transparency
@@ -533,28 +533,28 @@ static func create_editor_theme(p_theme):
 	style_popup.set_corner_radius_all(0)
 
 	# TODO attention
-	var style_popup_separator = StyleBoxLine.new()
+	var style_popup_separator := StyleBoxLine.new()
 	
 	style_popup_separator.set_color(separator_color)
-	style_popup_separator.set_grow_begin(popup_margin_size - max(round(EDSCALE), border_width))
-	style_popup_separator.set_grow_end(popup_margin_size - max(round(EDSCALE), border_width))
-	style_popup_separator.set_thickness(max(round(EDSCALE), border_width))
+	style_popup_separator.set_grow_begin(popup_margin_size - max(round(EDSCALE), border_width) as float)
+	style_popup_separator.set_grow_end(popup_margin_size - max(round(EDSCALE), border_width) as float)
+	style_popup_separator.set_thickness(max(round(EDSCALE), border_width) as float)
 
-	var style_popup_labeled_separator_left = StyleBoxLine.new()
-	style_popup_labeled_separator_left.set_grow_begin(popup_margin_size - max(round(EDSCALE), border_width))
+	var style_popup_labeled_separator_left := StyleBoxLine.new()
+	style_popup_labeled_separator_left.set_grow_begin(popup_margin_size - max(round(EDSCALE), border_width) as float)
 	style_popup_labeled_separator_left.set_color(separator_color)
-	style_popup_labeled_separator_left.set_thickness(max(round(EDSCALE), border_width))
+	style_popup_labeled_separator_left.set_thickness(max(round(EDSCALE), border_width) as float)
 
-	var style_popup_labeled_separator_right = StyleBoxLine.new()
-	style_popup_labeled_separator_right.set_grow_end(popup_margin_size - max(round(EDSCALE), border_width))
+	var style_popup_labeled_separator_right := StyleBoxLine.new()
+	style_popup_labeled_separator_right.set_grow_end(popup_margin_size - max(round(EDSCALE), border_width) as float)
 	style_popup_labeled_separator_right.set_color(separator_color)
-	style_popup_labeled_separator_right.set_thickness(max(round(EDSCALE), border_width))
+	style_popup_labeled_separator_right.set_thickness(max(round(EDSCALE), border_width) as float)
 
-	var style_empty = make_empty_stylebox(default_margin_size, default_margin_size, default_margin_size, default_margin_size)
+	var style_empty := make_empty_stylebox(default_margin_size, default_margin_size, default_margin_size, default_margin_size)
 
 	# TabBar
 
-	var style_tab_base = style_widget.duplicate()
+	var style_tab_base: StyleBoxFlat = style_widget.duplicate()
 
 	style_tab_base.set_border_width_all(0)
 	# Don't round the top corners to avoid creating a small blank space between the tabs and the main panel.
@@ -570,35 +570,35 @@ static func create_editor_theme(p_theme):
 	style_tab_base.set_content_margin(SIDE_BOTTOM, widget_default_margin.y)
 	style_tab_base.set_content_margin(SIDE_TOP, widget_default_margin.y)
 
-	var style_tab_selected = style_tab_base.duplicate()
+	var style_tab_selected: StyleBoxFlat = style_tab_base.duplicate()
 
 	style_tab_selected.set_bg_color(base_color)
 	# Add a highlight line at the top of the selected tab.
-	style_tab_selected.set_border_width(SIDE_TOP, round(2 * EDSCALE))
+	style_tab_selected.set_border_width(SIDE_TOP, round(2 * EDSCALE) as float)
 	# Make the highlight line prominent, but not too prominent as to not be distracting.
-	var tab_highlight = dark_color_2.lerp(accent_color, 0.75)
+	var tab_highlight := dark_color_2.lerp(accent_color, 0.75)
 	style_tab_selected.set_border_color(tab_highlight)
 	style_tab_selected.set_corner_radius_all(0)
 
-	var style_tab_hovered = style_tab_base.duplicate()
+	var style_tab_hovered: StyleBoxFlat = style_tab_base.duplicate()
 
 	style_tab_hovered.set_bg_color(dark_color_1.lerp(base_color, 0.4))
 	# Hovered tab has a subtle highlight between normal and selected states.
 	style_tab_hovered.set_corner_radius_all(0)
 
-	var style_tab_unselected = style_tab_base.duplicate()
+	var style_tab_unselected: StyleBoxFlat = style_tab_base.duplicate()
 	style_tab_unselected.set_expand_margin(SIDE_BOTTOM, 0)
 	style_tab_unselected.set_bg_color(dark_color_1)
 	# Add some spacing between unselected tabs to make them easier to distinguish from each other
 	style_tab_unselected.set_border_color(Color(0, 0, 0, 0))
 
-	var style_tab_disabled = style_tab_base.duplicate()
+	var style_tab_disabled: StyleBoxFlat = style_tab_base.duplicate()
 	style_tab_disabled.set_expand_margin(SIDE_BOTTOM, 0)
 	style_tab_disabled.set_bg_color(disabled_bg_color)
 	style_tab_disabled.set_border_color(disabled_bg_color)
 
 	# Editor background
-	var background_color_opaque = background_color
+	var background_color_opaque := background_color
 	background_color_opaque.a = 1.0
 	theme.set_color("background", "Editor", background_color_opaque)
 	theme.set_stylebox("Background", "EditorStyles", make_flat_stylebox(background_color_opaque, default_margin_size, default_margin_size, default_margin_size, default_margin_size))
@@ -606,19 +606,19 @@ static func create_editor_theme(p_theme):
 	# Focus
 	theme.set_stylebox("Focus", "EditorStyles", style_widget_focus)
 	# Use a less opaque color to be less distracting for the 2D and 3D editor viewports.
-	var style_widget_focus_viewport = style_widget_focus.duplicate()
+	var style_widget_focus_viewport: StyleBoxFlat = style_widget_focus.duplicate()
 	style_widget_focus_viewport.set_border_color(accent_color * Color(1, 1, 1, 0.5))
 	theme.set_stylebox("FocusViewport", "EditorStyles", style_widget_focus_viewport)
 
 	# Menu
-	var style_menu = style_widget.duplicate()
+	var style_menu: StyleBoxFlat = style_widget.duplicate()
 	style_menu.set_draw_center(false)
 	style_menu.set_border_width_all(0)
 	theme.set_stylebox("panel", "PanelContainer", style_menu)
 	theme.set_stylebox("MenuPanel", "EditorStyles", style_menu)
 
 	# CanvasItem Editor
-	var style_canvas_editor_info = make_flat_stylebox(Color(0.0, 0.0, 0.0, 0.2))
+	var style_canvas_editor_info: StyleBoxFlat = make_flat_stylebox(Color(0.0, 0.0, 0.0, 0.2))
 	style_canvas_editor_info.set_expand_margin_all(4 * EDSCALE)
 	theme.set_stylebox("CanvasItemInfoOverlay", "EditorStyles", style_canvas_editor_info)
 
@@ -626,14 +626,14 @@ static func create_editor_theme(p_theme):
 	# Use a custom stylebox to make contextual menu items stand out from the rest.
 	# This helps with editor usability as contextual menu items change when selecting nodes,
 	# even though it may not be immediately obvious at first.
-	var toolbar_stylebox = StyleBoxFlat.new()
+	var toolbar_stylebox := StyleBoxFlat.new()
 	toolbar_stylebox.set_bg_color(accent_color * Color(1, 1, 1, 0.1))
 	toolbar_stylebox.set_corner_radius(CORNER_TOP_LEFT, corner_radius * EDSCALE)
 	toolbar_stylebox.set_corner_radius(CORNER_TOP_RIGHT, corner_radius * EDSCALE)
 	toolbar_stylebox.set_anti_aliased(false)
 	# Add an underline to the StyleBox, but prevent its minimum vertical size from changing.
 	toolbar_stylebox.set_border_color(accent_color)
-	toolbar_stylebox.set_border_width(SIDE_BOTTOM, round(2 * EDSCALE))
+	toolbar_stylebox.set_border_width(SIDE_BOTTOM, roundi(2 * EDSCALE))
 	toolbar_stylebox.set_content_margin(SIDE_BOTTOM, 0)
 	theme.set_stylebox("ContextualToolbar", "EditorStyles", toolbar_stylebox)
 
@@ -644,17 +644,17 @@ static func create_editor_theme(p_theme):
 	theme.set_stylebox("ScriptEditor", "EditorStyles", make_empty_stylebox(0, 0, 0, 0))
 
 	# Launch Pad and Play buttons
-	var style_launch_pad = make_flat_stylebox(dark_color_1, 2 * EDSCALE, 0, 2 * EDSCALE, 0, corner_width)
+	var style_launch_pad: StyleBoxFlat = make_flat_stylebox(dark_color_1, 2 * EDSCALE, 0, 2 * EDSCALE, 0, corner_width)
 	style_launch_pad.set_corner_radius_all(corner_radius * EDSCALE)
 	theme.set_stylebox("LaunchPadNormal", "EditorStyles", style_launch_pad)
-	var style_launch_pad_movie = style_launch_pad.duplicate()
+	var style_launch_pad_movie: StyleBoxFlat = style_launch_pad.duplicate()
 	style_launch_pad_movie.set_bg_color(accent_color * Color(1, 1, 1, 0.1))
 	style_launch_pad_movie.set_border_color(accent_color)
-	style_launch_pad_movie.set_border_width_all(round(2 * EDSCALE))
+	style_launch_pad_movie.set_border_width_all(roundi(2 * EDSCALE))
 	theme.set_stylebox("LaunchPadMovieMode", "EditorStyles", style_launch_pad_movie)
 
 	theme.set_stylebox("MovieWriterButtonNormal", "EditorStyles", make_empty_stylebox(0, 0, 0, 0))
-	var style_write_movie_button = style_widget_pressed.duplicate()
+	var style_write_movie_button: StyleBoxFlat = style_widget_pressed.duplicate()
 	style_write_movie_button.set_bg_color(accent_color)
 	style_write_movie_button.set_corner_radius_all(corner_radius * EDSCALE)
 	style_write_movie_button.set_content_margin(SIDE_TOP, 0)
@@ -705,12 +705,12 @@ static func create_editor_theme(p_theme):
 	theme.set_constant("h_separation", "Button", 2 * EDSCALE)
 	theme.set_constant("outline_size", "Button", 0)
 
-	var ACTION_BUTTON_EXTRA_MARGIN = 32 * EDSCALE
+	var ACTION_BUTTON_EXTRA_MARGIN := 32 * EDSCALE
 
 	theme.set_type_variation("InspectorActionButton", "Button")
-	var color_inspector_action = dark_color_1.lerp(mono_color, 0.12)
+	var color_inspector_action := dark_color_1.lerp(mono_color, 0.12)
 	color_inspector_action.a = 0.5
-	var style_inspector_action = style_widget.duplicate()
+	var style_inspector_action: StyleBoxFlat = style_widget.duplicate()
 	style_inspector_action.set_bg_color(color_inspector_action)
 	style_inspector_action.set_content_margin(SIDE_RIGHT, ACTION_BUTTON_EXTRA_MARGIN)
 	theme.set_stylebox("normal", "InspectorActionButton", style_inspector_action)
@@ -733,7 +733,7 @@ static func create_editor_theme(p_theme):
 	theme.set_color("icon_normal_color", "EditorLogFilterButton", icon_disabled_color)
 	# When pressed, add a small bottom border to the buttons to better show their active state,
 	# similar to active tabs.
-	var editor_log_button_pressed = style_widget_pressed.duplicate()
+	var editor_log_button_pressed: StyleBoxFlat = style_widget_pressed.duplicate()
 	editor_log_button_pressed.set_border_width(SIDE_BOTTOM, 2 * EDSCALE)
 	editor_log_button_pressed.set_border_color(accent_color)
 	theme.set_stylebox("pressed", "EditorLogFilterButton", editor_log_button_pressed)
@@ -741,7 +741,7 @@ static func create_editor_theme(p_theme):
 	# ProjectTag
 	theme.set_type_variation("ProjectTag", "Button")
 
-	var tag = style_widget.duplicate()
+	var tag: StyleBoxFlat = style_widget.duplicate()
 #		tag.set_bg_color(dark_theme ? tag.get_bg_color().lightened(0.2) : tag.get_bg_color().darkened(0.2))
 	tag.set_bg_color(tag.get_bg_color().lightened(0.2) if dark_theme else tag.get_bg_color().darkened(0.2))
 	tag.set_corner_radius(CORNER_TOP_LEFT, 0)
@@ -789,11 +789,11 @@ static func create_editor_theme(p_theme):
 	theme.set_constant("outline_size", "MenuBar", 0)
 
 	# OptionButton
-	var style_option_button_focus = style_widget_focus.duplicate()
-	var style_option_button_normal = style_widget.duplicate()
-	var style_option_button_hover = style_widget_hover.duplicate()
-	var style_option_button_pressed = style_widget_pressed.duplicate()
-	var style_option_button_disabled = style_widget_disabled.duplicate()
+	var style_option_button_focus: StyleBoxFlat= style_widget_focus.duplicate()
+	var style_option_button_normal: StyleBoxFlat= style_widget.duplicate()
+	var style_option_button_hover: StyleBoxFlat= style_widget_hover.duplicate()
+	var style_option_button_pressed: StyleBoxFlat= style_widget_pressed.duplicate()
+	var style_option_button_disabled: StyleBoxFlat= style_widget_disabled.duplicate()
 
 	style_option_button_focus.set_content_margin(SIDE_RIGHT, 4 * EDSCALE)
 	style_option_button_normal.set_content_margin(SIDE_RIGHT, 4 * EDSCALE)
@@ -868,7 +868,7 @@ static func create_editor_theme(p_theme):
 	theme.set_constant("outline_size", "CheckButton", 0)
 
 	# Checkbox
-	var sb_checkbox = style_menu.duplicate()
+	var sb_checkbox: StyleBoxFlat= style_menu.duplicate()
 	sb_checkbox.set_content_margin_all(default_margin_size * EDSCALE)
 
 	theme.set_stylebox("normal", "CheckBox", sb_checkbox)
@@ -907,7 +907,7 @@ static func create_editor_theme(p_theme):
 	theme.set_stylebox("panel", "PopupDialog", style_popup)
 
 	# PopupMenu
-	var style_popup_menu = style_popup.duplicate()
+	var style_popup_menu: StyleBoxFlat= style_popup.duplicate()
 	# Use 1 pixel for the sides, since if 0 is used, the highlight of hovered items is drawn
 	# on top of the popup border. This causes a 'gap' in the panel border when an item is highlighted,
 	# and it looks weird. 1px solves this.
@@ -921,7 +921,7 @@ static func create_editor_theme(p_theme):
 
 	theme.set_stylebox("panel", "PopupMenu", style_popup_menu)
 
-	var style_menu_hover = style_widget_hover.duplicate()
+	var style_menu_hover: StyleBoxFlat = style_widget_hover.duplicate()
 	# Don't use rounded corners for hover highlights since the StyleBox touches the PopupMenu's edges.
 	style_menu_hover.set_corner_radius_all(0)
 	theme.set_stylebox("hover", "PopupMenu", style_menu_hover)
@@ -953,8 +953,8 @@ static func create_editor_theme(p_theme):
 	# Force the v_separation to be even so that the spacing on top and bottom is even.
 	# If the vsep is odd and cannot be split into 2 even groups (of pixels), then it will be lopsided.
 	# We add 2 to the vsep to give it some extra spacing which looks a bit more modern (see Windows, for example).
-	var vsep_base = int(extra_spacing + default_margin_size + 6)
-	var force_even_vsep = vsep_base + (vsep_base % 2)
+	var vsep_base := int(extra_spacing + default_margin_size + 6)
+	var force_even_vsep := vsep_base + (vsep_base % 2)
 	theme.set_constant("v_separation", "PopupMenu", force_even_vsep * EDSCALE)
 	theme.set_constant("outline_size", "PopupMenu", 0)
 	theme.set_constant("item_start_padding", "PopupMenu", default_margin_size * 1.5 * EDSCALE)
@@ -963,15 +963,15 @@ static func create_editor_theme(p_theme):
 	# Sub-inspectors
 #	for (int i = 0 i < 16 i++) {
 	for i in range(16):
-		var si_base_color = accent_color
+		var si_base_color := accent_color
 
-		var hue_rotate = (i * 2 % 16) / 16.0
+		var hue_rotate := (i * 2 % 16) / 16.0
 #		si_base_color.set_hsv(fmod(float(si_base_color.h + hue_rotate), float(1.0)), si_base_color.s, si_base_color.v)
 		si_base_color.h = fmod(float(si_base_color.h + hue_rotate), float(1.0))
-		si_base_color = accent_color.lerp(si_base_color, float(EDITOR_GET("docks/property_editor/subresource_hue_tint", 0.75)))
+		si_base_color = accent_color.lerp(si_base_color, float(EDITOR_GET("docks/property_editor/subresource_hue_tint", 0.75) as float))
 
 		# Sub-inspector background.
-		var sub_inspector_bg = style_default.duplicate()
+		var sub_inspector_bg: StyleBoxFlat = style_default.duplicate()
 		sub_inspector_bg.set_bg_color(dark_color_1.lerp(si_base_color, 0.08))
 		sub_inspector_bg.set_border_width_all(2 * EDSCALE)
 		sub_inspector_bg.set_border_color(si_base_color * Color(0.7, 0.7, 0.7, 0.8))
@@ -982,7 +982,7 @@ static func create_editor_theme(p_theme):
 		theme.set_stylebox("sub_inspector_bg" + itos(i), "Editor", sub_inspector_bg)
 
 		# EditorProperty background while it has a sub-inspector open.
-		var bg_color = make_flat_stylebox(si_base_color * Color(0.7, 0.7, 0.7, 0.8), 0, 0, 0, 0, corner_radius)
+		var bg_color: StyleBoxFlat = make_flat_stylebox(si_base_color * Color(0.7, 0.7, 0.7, 0.8), 0, 0, 0, 0, corner_radius)
 		bg_color.set_anti_aliased(false)
 		bg_color.set_corner_radius(CORNER_BOTTOM_LEFT, 0)
 		bg_color.set_corner_radius(CORNER_BOTTOM_RIGHT, 0)
@@ -996,17 +996,17 @@ static func create_editor_theme(p_theme):
 	theme.set_color("label_color", "EditorSpinSlider", font_color)
 	theme.set_color("read_only_label_color", "EditorSpinSlider", font_readonly_color)
 
-	var editor_spin_label_bg = style_default.duplicate()
+	var editor_spin_label_bg: StyleBoxFlat = style_default.duplicate()
 	editor_spin_label_bg.set_bg_color(dark_color_3)
 	editor_spin_label_bg.set_border_width_all(0)
 	theme.set_stylebox("label_bg", "EditorSpinSlider", editor_spin_label_bg)
 
 	# EditorProperty
-	var style_property_bg = style_default.duplicate()
+	var style_property_bg: StyleBoxFlat = style_default.duplicate()
 	style_property_bg.set_bg_color(highlight_color)
 	style_property_bg.set_border_width_all(0)
 
-	var style_property_child_bg = style_default.duplicate()
+	var style_property_child_bg: StyleBoxFlat = style_default.duplicate()
 	style_property_child_bg.set_bg_color(dark_color_2)
 	style_property_child_bg.set_border_width_all(0)
 
@@ -1020,30 +1020,30 @@ static func create_editor_theme(p_theme):
 	theme.set_color("readonly_color", "EditorProperty", readonly_color)
 	theme.set_color("readonly_warning_color", "EditorProperty", readonly_warning_color)
 
-	var style_property_group_note = style_default.duplicate()
-	var property_group_note_color = accent_color
+	var style_property_group_note: StyleBoxFlat = style_default.duplicate()
+	var property_group_note_color := accent_color
 	property_group_note_color.a = 0.1
 	style_property_group_note.set_bg_color(property_group_note_color)
 	theme.set_stylebox("bg_group_note", "EditorProperty", style_property_group_note)
 
 	# EditorInspectorSection
-	var inspector_section_color = font_color.lerp(Color(0.5, 0.5, 0.5), 0.35)
+	var inspector_section_color := font_color.lerp(Color(0.5, 0.5, 0.5), 0.35)
 	theme.set_color("font_color", "EditorInspectorSection", inspector_section_color)
 
-	var inspector_indent_color = accent_color
+	var inspector_indent_color := accent_color
 	inspector_indent_color.a = 0.2
-	var inspector_indent_style = make_flat_stylebox(inspector_indent_color, 2.0 * EDSCALE, 0, 2.0 * EDSCALE, 0)
+	var inspector_indent_style: StyleBoxFlat = make_flat_stylebox(inspector_indent_color, 2.0 * EDSCALE, 0, 2.0 * EDSCALE, 0)
 	theme.set_stylebox("indent_box", "EditorInspectorSection", inspector_indent_style)
 	theme.set_constant("indent_size", "EditorInspectorSection", 6.0 * EDSCALE)
 
 	theme.set_constant("inspector_margin", "Editor", 12 * EDSCALE)
 
 	# Tree & ItemList background
-	var style_tree_bg = style_default.duplicate()
+	var style_tree_bg: StyleBoxFlat = style_default.duplicate()
 	# Make Trees easier to distinguish from other controls by using a darker background color.
 	style_tree_bg.set_bg_color(dark_color_1.lerp(dark_color_2, 0.5))
 	if draw_extra_borders:
-		style_tree_bg.set_border_width_all(round(EDSCALE))
+		style_tree_bg.set_border_width_all(roundi(EDSCALE))
 		style_tree_bg.set_border_color(extra_border_color_2)
 	else:
 		style_tree_bg.set_border_color(dark_color_3)
@@ -1084,15 +1084,15 @@ static func create_editor_theme(p_theme):
 	theme.set_constant("scrollbar_h_separation", "Tree", 1 * EDSCALE)
 	theme.set_constant("scrollbar_v_separation", "Tree", 1 * EDSCALE)
 
-	var guide_color = mono_color * Color(1, 1, 1, 0.05)
-	var relationship_line_color = mono_color * Color(1, 1, 1, relationship_line_opacity)
+	var guide_color := mono_color * Color(1, 1, 1, 0.05)
+	var relationship_line_color := mono_color * Color(1, 1, 1, relationship_line_opacity)
 
 	theme.set_constant("draw_guides", "Tree", relationship_line_opacity < 0.01)
 	theme.set_color("guide_color", "Tree", guide_color)
 
-	var relationship_line_width = 1
-	var parent_line_color = mono_color * Color(1, 1, 1, clamp(relationship_line_opacity + 0.45, 0.0, 1.0))
-	var children_line_color = mono_color * Color(1, 1, 1, clamp(relationship_line_opacity + 0.25, 0.0, 1.0))
+	var relationship_line_width: float = 1
+	var parent_line_color := mono_color * Color(1, 1, 1, clampf(relationship_line_opacity + 0.45, 0.0, 1.0))
+	var children_line_color := mono_color * Color(1, 1, 1, clampf(relationship_line_opacity + 0.25, 0.0, 1.0))
 	theme.set_constant("draw_relationship_lines", "Tree", relationship_line_opacity >= 0.01)
 	theme.set_constant("relationship_line_width", "Tree", relationship_line_width)
 	theme.set_constant("parent_hl_line_width", "Tree", relationship_line_width * 2)
@@ -1102,30 +1102,30 @@ static func create_editor_theme(p_theme):
 	theme.set_color("parent_hl_line_color", "Tree", parent_line_color)
 	theme.set_color("children_hl_line_color", "Tree", children_line_color)
 
-	var style_tree_btn = style_default.duplicate()
+	var style_tree_btn: StyleBoxFlat = style_default.duplicate()
 	style_tree_btn.set_bg_color(highlight_color)
 	style_tree_btn.set_border_width_all(0)
 	theme.set_stylebox("button_pressed", "Tree", style_tree_btn)
 
-	var style_tree_hover = style_default.duplicate()
+	var style_tree_hover: StyleBoxFlat = style_default.duplicate()
 	style_tree_hover.set_bg_color(highlight_color * Color(1, 1, 1, 0.4))
 	style_tree_hover.set_border_width_all(0)
 	theme.set_stylebox("hover", "Tree", style_tree_hover)
 
-	var style_tree_focus = style_default.duplicate()
+	var style_tree_focus: StyleBoxFlat = style_default.duplicate()
 	style_tree_focus.set_bg_color(highlight_color)
 	style_tree_focus.set_border_width_all(0)
 	theme.set_stylebox("selected_focus", "Tree", style_tree_focus)
 
-	var style_tree_selected = style_tree_focus.duplicate()
+	var style_tree_selected: StyleBoxFlat = style_tree_focus.duplicate()
 	theme.set_stylebox("selected", "Tree", style_tree_selected)
 
-	var style_tree_cursor = style_default.duplicate()
+	var style_tree_cursor: StyleBoxFlat = style_default.duplicate()
 	style_tree_cursor.set_draw_center(false)
-	style_tree_cursor.set_border_width_all(max(1, border_width))
+	style_tree_cursor.set_border_width_all(maxf(1, border_width))
 	style_tree_cursor.set_border_color(contrast_color_1)
 
-	var style_tree_title = style_default.duplicate()
+	var style_tree_title: StyleBoxFlat = style_default.duplicate()
 	style_tree_title.set_bg_color(dark_color_3)
 	style_tree_title.set_border_width_all(0)
 	theme.set_stylebox("cursor", "Tree", style_tree_cursor)
@@ -1134,37 +1134,37 @@ static func create_editor_theme(p_theme):
 	theme.set_stylebox("title_button_hover", "Tree", style_tree_title)
 	theme.set_stylebox("title_button_pressed", "Tree", style_tree_title)
 
-	var prop_category_color = dark_color_1.lerp(mono_color, 0.12)
-	var prop_section_color = dark_color_1.lerp(mono_color, 0.09)
-	var prop_subsection_color = dark_color_1.lerp(mono_color, 0.06)
+	var prop_category_color := dark_color_1.lerp(mono_color, 0.12)
+	var prop_section_color := dark_color_1.lerp(mono_color, 0.09)
+	var prop_subsection_color := dark_color_1.lerp(mono_color, 0.06)
 	theme.set_color("prop_category", "Editor", prop_category_color)
 	theme.set_color("prop_section", "Editor", prop_section_color)
 	theme.set_color("prop_subsection", "Editor", prop_subsection_color)
 	theme.set_color("drop_position_color", "Tree", accent_color)
 
 	# EditorInspectorCategory
-	var category_bg = style_default.duplicate()
+	var category_bg: StyleBoxFlat = style_default.duplicate()
 	category_bg.set_bg_color(prop_category_color)
 	category_bg.set_border_color(prop_category_color)
 	theme.set_stylebox("bg", "EditorInspectorCategory", category_bg)
 
 	# ItemList
-	var style_itemlist_bg = style_default.duplicate()
+	var style_itemlist_bg: StyleBoxFlat = style_default.duplicate()
 	style_itemlist_bg.set_bg_color(dark_color_1)
 
 	if draw_extra_borders:
-		style_itemlist_bg.set_border_width_all(round(EDSCALE))
+		style_itemlist_bg.set_border_width_all(roundi(EDSCALE))
 		style_itemlist_bg.set_border_color(extra_border_color_2)
 	else:
 		style_itemlist_bg.set_border_width_all(border_width)
 		style_itemlist_bg.set_border_color(dark_color_3)
 
-	var style_itemlist_cursor = style_default.duplicate()
+	var style_itemlist_cursor: StyleBoxFlat = style_default.duplicate()
 	style_itemlist_cursor.set_draw_center(false)
 	style_itemlist_cursor.set_border_width_all(border_width)
 	style_itemlist_cursor.set_border_color(highlight_color)
 
-	var style_itemlist_hover = style_tree_selected.duplicate()
+	var style_itemlist_hover: StyleBoxFlat = style_tree_selected.duplicate()
 	style_itemlist_hover.set_bg_color(highlight_color * Color(1, 1, 1, 0.3))
 	style_itemlist_hover.set_border_width_all(0)
 
@@ -1187,7 +1187,7 @@ static func create_editor_theme(p_theme):
 	theme.set_constant("outline_size", "ItemList", 0)
 
 	# TabBar & TabContainer
-	var style_tabbar_background = make_flat_stylebox(dark_color_1, 0, 0, 0, 0, corner_radius * EDSCALE)
+	var style_tabbar_background: StyleBoxFlat = make_flat_stylebox(dark_color_1, 0, 0, 0, 0, corner_radius * EDSCALE)
 	style_tabbar_background.set_corner_radius(CORNER_BOTTOM_LEFT, 0)
 	style_tabbar_background.set_corner_radius(CORNER_BOTTOM_RIGHT, 0)
 	theme.set_stylebox("tabbar_background", "TabContainer", style_tabbar_background)
@@ -1231,7 +1231,7 @@ static func create_editor_theme(p_theme):
 	theme.set_constant("outline_size", "TabBar", 0)
 
 	# Content of each tab.
-	var style_content_panel = style_default.duplicate()
+	var style_content_panel: StyleBoxFlat = style_default.duplicate()
 	style_content_panel.set_border_color(dark_color_3)
 	style_content_panel.set_border_width_all(border_width)
 	style_content_panel.set_border_width(SIDE_TOP, 0)
@@ -1242,54 +1242,54 @@ static func create_editor_theme(p_theme):
 	theme.set_stylebox("panel", "TabContainer", style_content_panel)
 
 	# Bottom panel.
-	var style_bottom_panel = style_content_panel.duplicate()
+	var style_bottom_panel: StyleBoxFlat = style_content_panel.duplicate()
 	style_bottom_panel.set_corner_radius_all(corner_radius * EDSCALE)
 	theme.set_stylebox("BottomPanel", "EditorStyles", style_bottom_panel)
 
 	# TabContainerOdd can be used on tabs against the base color background (e.g. nested tabs).
 	theme.set_type_variation("TabContainerOdd", "TabContainer")
 
-	var style_tab_selected_odd = style_tab_selected.duplicate()
+	var style_tab_selected_odd: StyleBoxFlat = style_tab_selected.duplicate()
 	style_tab_selected_odd.set_bg_color(disabled_bg_color)
 	theme.set_stylebox("tab_selected", "TabContainerOdd", style_tab_selected_odd)
 
-	var style_content_panel_odd = style_content_panel.duplicate()
+	var style_content_panel_odd: StyleBoxFlat = style_content_panel.duplicate()
 	style_content_panel_odd.set_bg_color(disabled_bg_color)
 	theme.set_stylebox("panel", "TabContainerOdd", style_content_panel_odd)
 
 	# This stylebox is used in 3d and 2d viewports (no borders).
-	var style_content_panel_vp = style_content_panel.duplicate()
+	var style_content_panel_vp: StyleBoxFlat = style_content_panel.duplicate()
 	set_content_margin_individual(style_content_panel_vp, border_width * 2, default_margin_size * EDSCALE, border_width * 2, border_width * 2)
 	theme.set_stylebox("Content", "EditorStyles", style_content_panel_vp)
 
 	# This stylebox is used by preview tabs in the Theme Editor.
-	var style_theme_preview_tab = style_tab_selected_odd.duplicate()
+	var style_theme_preview_tab: StyleBoxFlat = style_tab_selected_odd.duplicate()
 	style_theme_preview_tab.set_expand_margin(SIDE_BOTTOM, 5 * EDSCALE)
 	theme.set_stylebox("ThemeEditorPreviewFG", "EditorStyles", style_theme_preview_tab)
-	var style_theme_preview_bg_tab = style_tab_unselected.duplicate()
+	var style_theme_preview_bg_tab: StyleBoxFlat = style_tab_unselected.duplicate()
 	style_theme_preview_bg_tab.set_expand_margin(SIDE_BOTTOM, 2 * EDSCALE)
 	theme.set_stylebox("ThemeEditorPreviewBG", "EditorStyles", style_theme_preview_bg_tab)
 
 	# Separators
-	theme.set_stylebox("separator", "HSeparator", make_line_stylebox(separator_color, max(round(EDSCALE), border_width)))
-	theme.set_stylebox("separator", "VSeparator", make_line_stylebox(separator_color, max(round(EDSCALE), border_width), 0, 0, true))
+	theme.set_stylebox("separator", "HSeparator", make_line_stylebox(separator_color, maxf(roundf(EDSCALE), border_width)))
+	theme.set_stylebox("separator", "VSeparator", make_line_stylebox(separator_color, maxf(roundf(EDSCALE), border_width), 0, 0, true))
 
 	# Debugger
 
-	var style_panel_debugger = style_content_panel.duplicate()
+	var style_panel_debugger: StyleBoxFlat = style_content_panel.duplicate()
 	style_panel_debugger.set_border_width(SIDE_BOTTOM, 0)
 	theme.set_stylebox("DebuggerPanel", "EditorStyles", style_panel_debugger)
 
-	var style_panel_invisible_top = style_content_panel.duplicate()
+	var style_panel_invisible_top: StyleBoxFlat = style_content_panel.duplicate()
 	# TODO attention Vector2.height -> Vector2.y
-	var stylebox_offset = theme.get_font(StringName("tab_selected"), StringName("TabContainer")).get_height(theme.get_font_size(StringName("tab_selected"), StringName("TabContainer"))) + theme.get_stylebox(StringName("tab_selected"), StringName("TabContainer")).get_minimum_size().y + theme.get_stylebox(StringName("panel"), StringName("TabContainer")).get_content_margin(SIDE_TOP)
+	var stylebox_offset := theme.get_font(StringName("tab_selected"), StringName("TabContainer")).get_height(theme.get_font_size(StringName("tab_selected"), StringName("TabContainer"))) + theme.get_stylebox(StringName("tab_selected"), StringName("TabContainer")).get_minimum_size().y + theme.get_stylebox(StringName("panel"), StringName("TabContainer")).get_content_margin(SIDE_TOP)
 	style_panel_invisible_top.set_expand_margin(SIDE_TOP, -stylebox_offset)
 	style_panel_invisible_top.set_content_margin(SIDE_TOP, 0)
 	theme.set_stylebox("BottomPanelDebuggerOverride", "EditorStyles", style_panel_invisible_top)
 
 	# LineEdit
 
-	var style_line_edit = style_widget.duplicate()
+	var style_line_edit: StyleBoxFlat = style_widget.duplicate()
 	# The original style_widget style has an extra 1 pixel offset that makes LineEdits not align with Buttons,
 	# so this compensates for that.
 	style_line_edit.set_content_margin(SIDE_TOP, style_line_edit.get_content_margin(SIDE_TOP) - 1 * EDSCALE)
@@ -1299,15 +1299,15 @@ static func create_editor_theme(p_theme):
 	style_line_edit.set_corner_radius(CORNER_BOTTOM_RIGHT, 0)
 
 	if draw_extra_borders:
-		style_line_edit.set_border_width_all(round(EDSCALE))
+		style_line_edit.set_border_width_all(roundf(EDSCALE))
 		style_line_edit.set_border_color(extra_border_color_1)
 	else:
 		# Add a bottom line to make LineEdits more visible, especially in sectioned inspectors
 		# such as the Project Settings.
-		style_line_edit.set_border_width(SIDE_BOTTOM, round(2 * EDSCALE))
+		style_line_edit.set_border_width(SIDE_BOTTOM, roundf(2 * EDSCALE))
 		style_line_edit.set_border_color(dark_color_2)
 
-	var style_line_edit_disabled = style_line_edit.duplicate()
+	var style_line_edit_disabled: StyleBoxFlat = style_line_edit.duplicate()
 	style_line_edit_disabled.set_border_color(disabled_color)
 	style_line_edit_disabled.set_bg_color(disabled_bg_color)
 
@@ -1387,13 +1387,13 @@ static func create_editor_theme(p_theme):
 	# Window
 
 	# Prevent corner artifacts between window title and body.
-	var style_window_title = style_default.duplicate()
+	var style_window_title: StyleBoxFlat = style_default.duplicate()
 	style_window_title.set_corner_radius(CORNER_TOP_LEFT, 0)
 	style_window_title.set_corner_radius(CORNER_TOP_RIGHT, 0)
 	# Prevent visible line between window title and body.
 	style_window_title.set_expand_margin(SIDE_BOTTOM, 2 * EDSCALE)
 
-	var style_window = style_popup.duplicate()
+	var style_window: StyleBoxFlat = style_popup.duplicate()
 	style_window.set_border_color(base_color)
 	style_window.set_border_width(SIDE_TOP, 24 * EDSCALE)
 	style_window.set_expand_margin(SIDE_TOP, 24 * EDSCALE)
@@ -1410,7 +1410,7 @@ static func create_editor_theme(p_theme):
 	theme.set_font_size("title_font_size", "Window", theme.get_font_size(StringName("title_size"), StringName("EditorFonts")))
 
 	# Complex window (currently only Editor Settings and Project Settings)
-	var style_complex_window = style_window.duplicate()
+	var style_complex_window: StyleBoxFlat = style_window.duplicate()
 	style_complex_window.set_bg_color(dark_color_2)
 	style_complex_window.set_border_color(dark_color_2)
 	theme.set_stylebox("panel", "EditorSettingsDialog", style_complex_window)
@@ -1422,7 +1422,7 @@ static func create_editor_theme(p_theme):
 	theme.set_constant("buttons_separation", "AcceptDialog", 8 * EDSCALE)
 
 	# HScrollBar
-	var empty_icon = ImageTexture.new()
+	var empty_icon := ImageTexture.new()
 
 	if increase_scrollbar_touch_area:
 		theme.set_stylebox("scroll", "HScrollBar", make_line_stylebox(separator_color, 50))
@@ -1490,7 +1490,7 @@ static func create_editor_theme(p_theme):
 	theme.set_stylebox("normal", "RichTextLabel", style_tree_bg)
 
 	# Editor help.
-	var style_editor_help = style_default.duplicate()
+	var style_editor_help: StyleBoxFlat = style_default.duplicate()
 	style_editor_help.set_bg_color(dark_color_2)
 	style_editor_help.set_border_color(dark_color_3)
 	theme.set_stylebox("background", "EditorHelp", style_editor_help)
@@ -1510,7 +1510,7 @@ static func create_editor_theme(p_theme):
 	theme.set_color("code_bg_color", "EditorHelp", dark_color_3)
 	theme.set_color("kbd_bg_color", "EditorHelp", dark_color_1)
 	theme.set_color("param_bg_color", "EditorHelp", dark_color_1)
-	theme.set_constant("line_separation", "EditorHelp", round(6 * EDSCALE))
+	theme.set_constant("line_separation", "EditorHelp", roundf(6 * EDSCALE))
 	theme.set_constant("table_h_separation", "EditorHelp", 16 * EDSCALE)
 	theme.set_constant("table_v_separation", "EditorHelp", 6 * EDSCALE)
 	theme.set_constant("text_highlight_h_padding", "EditorHelp", 1 * EDSCALE)
@@ -1546,7 +1546,7 @@ static func create_editor_theme(p_theme):
 	# TooltipPanel + TooltipLabel
 	# TooltipPanel is also used for custom tooltips, while TooltipLabel
 	# is only relevant for default tooltips.
-	var style_tooltip = style_popup.duplicate()
+	var style_tooltip: StyleBoxFlat = style_popup.duplicate()
 	style_tooltip.set_shadow_size(0)
 	style_tooltip.set_content_margin_all(default_margin_size * EDSCALE * 0.5)
 	style_tooltip.set_bg_color(dark_color_3 * Color(0.8, 0.8, 0.8, 0.9))
@@ -1558,7 +1558,7 @@ static func create_editor_theme(p_theme):
 	# PopupPanel
 	theme.set_stylebox("panel", "PopupPanel", style_popup)
 
-	var control_editor_popup_style = style_popup.duplicate()
+	var control_editor_popup_style: StyleBoxFlat = style_popup.duplicate()
 	control_editor_popup_style.set_shadow_size(0)
 	control_editor_popup_style.set_content_margin(SIDE_LEFT, default_margin_size * EDSCALE)
 	control_editor_popup_style.set_content_margin(SIDE_TOP, default_margin_size * EDSCALE)
@@ -1600,13 +1600,13 @@ static func create_editor_theme(p_theme):
 	theme.set_icon("layout", "GraphEdit", theme.get_icon(StringName("GridLayout"), StringName("EditorIcons")))
 
 	# GraphEditMinimap
-	var style_minimap_bg = make_flat_stylebox(dark_color_1, 0, 0, 0, 0)
+	var style_minimap_bg: StyleBoxFlat = make_flat_stylebox(dark_color_1, 0, 0, 0, 0)
 	style_minimap_bg.set_border_color(dark_color_3)
 	style_minimap_bg.set_border_width_all(1)
 	theme.set_stylebox("bg", "GraphEditMinimap", style_minimap_bg)
 
-	var style_minimap_camera
-	var style_minimap_node
+	var style_minimap_camera: StyleBoxFlat
+	var style_minimap_node: StyleBoxFlat
 	if dark_theme:
 		style_minimap_camera = make_flat_stylebox(Color(0.65, 0.65, 0.65, 0.2), 0, 0, 0, 0)
 		style_minimap_camera.set_border_color(Color(0.65, 0.65, 0.65, 0.45))
@@ -1620,7 +1620,7 @@ static func create_editor_theme(p_theme):
 	theme.set_stylebox("camera", "GraphEditMinimap", style_minimap_camera)
 	theme.set_stylebox("node", "GraphEditMinimap", style_minimap_node)
 
-	var minimap_resizer_color
+	var minimap_resizer_color: Color
 	if dark_theme:
 		minimap_resizer_color = Color(1, 1, 1, 0.65)
 	else:
@@ -1630,41 +1630,41 @@ static func create_editor_theme(p_theme):
 	theme.set_color("resizer_color", "GraphEditMinimap", minimap_resizer_color)
 
 	# GraphNode
-	var gn_margin_side = 2
-	var gn_margin_bottom = 2
+	var gn_margin_side := 2
+	var gn_margin_bottom := 2
 
 	# StateMachine
-	var sm_margin_side = 10
+	var sm_margin_side := 10
 
-	var graphnode_bg = dark_color_3
+	var graphnode_bg := dark_color_3
 	if !dark_theme:
 		graphnode_bg = prop_section_color
 
-	var graphsb = make_flat_stylebox(graphnode_bg.lerp(style_tree_bg.get_bg_color(), 0.3), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
+	var graphsb: StyleBoxFlat = make_flat_stylebox(graphnode_bg.lerp(style_tree_bg.get_bg_color(), 0.3), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
 	graphsb.set_border_width_all(border_width)
 	graphsb.set_border_color(graphnode_bg)
-	var graphsbselected = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 1), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
+	var graphsbselected: StyleBoxFlat  = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 1), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
 	graphsbselected.set_border_width_all(2 * EDSCALE + border_width)
 	graphsbselected.set_border_color(Color(accent_color.r, accent_color.g, accent_color.b, 0.6))
-	var graphsbcomment = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 0.3), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
+	var graphsbcomment: StyleBoxFlat  = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 0.3), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
 	graphsbcomment.set_border_width_all(border_width)
 	graphsbcomment.set_border_color(graphnode_bg)
-	var graphsbcommentselected = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 0.4), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
+	var graphsbcommentselected: StyleBoxFlat  = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 0.4), gn_margin_side, 24, gn_margin_side, gn_margin_bottom, corner_width)
 	graphsbcommentselected.set_border_width_all(border_width)
 	graphsbcommentselected.set_border_color(graphnode_bg)
-	var graphsbbreakpoint = graphsbselected.duplicate()
+	var graphsbbreakpoint: StyleBoxFlat  = graphsbselected.duplicate()
 	graphsbbreakpoint.set_draw_center(false)
 	graphsbbreakpoint.set_border_color(warning_color)
 	graphsbbreakpoint.set_shadow_color(warning_color * Color(1.0, 1.0, 1.0, 0.1))
-	var graphsbposition = graphsbselected.duplicate()
+	var graphsbposition: StyleBoxFlat  = graphsbselected.duplicate()
 	graphsbposition.set_draw_center(false)
 	graphsbposition.set_border_color(error_color)
 	graphsbposition.set_shadow_color(error_color * Color(1.0, 1.0, 1.0, 0.2))
-	var graphsbslot = make_empty_stylebox(12, 0, 12, 0)
-	var smgraphsb = make_flat_stylebox(dark_color_3 * Color(1, 1, 1, 0.7), sm_margin_side, 24, sm_margin_side, gn_margin_bottom, corner_width)
+	var graphsbslot := make_empty_stylebox(12, 0, 12, 0)
+	var smgraphsb: StyleBoxFlat  = make_flat_stylebox(dark_color_3 * Color(1, 1, 1, 0.7), sm_margin_side, 24, sm_margin_side, gn_margin_bottom, corner_width)
 	smgraphsb.set_border_width_all(border_width)
 	smgraphsb.set_border_color(graphnode_bg)
-	var smgraphsbselected = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 0.9), sm_margin_side, 24, sm_margin_side, gn_margin_bottom, corner_width)
+	var smgraphsbselected: StyleBoxFlat  = make_flat_stylebox(graphnode_bg * Color(1, 1, 1, 0.9), sm_margin_side, 24, sm_margin_side, gn_margin_bottom, corner_width)
 	smgraphsbselected.set_border_width_all(2 * EDSCALE + border_width)
 	smgraphsbselected.set_border_color(Color(accent_color.r, accent_color.g, accent_color.b, 0.9))
 	smgraphsbselected.set_shadow_size(8 * EDSCALE)
@@ -1690,7 +1690,7 @@ static func create_editor_theme(p_theme):
 	theme.set_stylebox("state_machine_frame", "GraphNode", smgraphsb)
 	theme.set_stylebox("state_machine_selected_frame", "GraphNode", smgraphsbselected)
 
-	var node_decoration_color = dark_color_1.inverted()
+	var node_decoration_color := dark_color_1.inverted()
 	theme.set_color("title_color", "GraphNode", node_decoration_color)
 	node_decoration_color.a = 0.7
 	theme.set_color("close_color", "GraphNode", node_decoration_color)
@@ -1710,7 +1710,7 @@ static func create_editor_theme(p_theme):
 	theme.set_font("title_font", "GraphNode", theme.get_font(StringName("main_bold_msdf"), StringName("EditorFonts")))
 
 	# GridContainer
-	theme.set_constant("v_separation", "GridContainer", round(widget_default_margin.y - 2 * EDSCALE))
+	theme.set_constant("v_separation", "GridContainer", roundf(widget_default_margin.y - 2 * EDSCALE))
 
 	# FileDialog
 	theme.set_icon("folder", "FileDialog", theme.get_icon(StringName("Folder"), StringName("EditorIcons")))
@@ -1746,13 +1746,13 @@ static func create_editor_theme(p_theme):
 	theme.set_icon("bg", "ColorPickerButton", theme.get_icon(StringName("GuiMiniCheckerboard"), StringName("EditorIcons")))
 
 	# ColorPresetButton
-	var preset_sb = make_flat_stylebox(Color(1, 1, 1), 2, 2, 2, 2, 2)
+	var preset_sb: StyleBoxFlat = make_flat_stylebox(Color(1, 1, 1), 2, 2, 2, 2, 2)
 	theme.set_stylebox("preset_fg", "ColorPresetButton", preset_sb)
 	theme.set_icon("preset_bg", "ColorPresetButton", theme.get_icon(StringName("GuiMiniCheckerboard"), StringName("EditorIcons")))
 	theme.set_icon("overbright_indicator", "ColorPresetButton", theme.get_icon(StringName("OverbrightIndicator"), StringName("EditorIcons")))
 
 	# Information on 3D viewport
-	var style_info_3d_viewport = style_default.duplicate()
+	var style_info_3d_viewport: StyleBoxFlat = style_default.duplicate()
 	style_info_3d_viewport.set_bg_color(style_info_3d_viewport.get_bg_color() * Color(1, 1, 1, 0.5))
 	style_info_3d_viewport.set_border_width_all(0)
 	theme.set_stylebox("Information3dViewport", "EditorStyles", style_info_3d_viewport)
@@ -1765,25 +1765,25 @@ static func create_editor_theme(p_theme):
 
 	# Theme editor.
 	theme.set_color("preview_picker_overlay_color", "ThemeEditor", Color(0.1, 0.1, 0.1, 0.25))
-	var theme_preview_picker_bg_color = accent_color
+	var theme_preview_picker_bg_color := accent_color
 	theme_preview_picker_bg_color.a = 0.2
-	var theme_preview_picker_sb = make_flat_stylebox(theme_preview_picker_bg_color, 0, 0, 0, 0)
+	var theme_preview_picker_sb: StyleBoxFlat = make_flat_stylebox(theme_preview_picker_bg_color, 0, 0, 0, 0)
 	theme_preview_picker_sb.set_border_color(accent_color)
 	theme_preview_picker_sb.set_border_width_all(1.0 * EDSCALE)
 	theme.set_stylebox("preview_picker_overlay", "ThemeEditor", theme_preview_picker_sb)
-	var theme_preview_picker_label_bg_color = accent_color
+	var theme_preview_picker_label_bg_color := accent_color
 	theme_preview_picker_label_bg_color.v = 0.5
-	var theme_preview_picker_label_sb = make_flat_stylebox(theme_preview_picker_label_bg_color, 4.0, 1.0, 4.0, 3.0)
+	var theme_preview_picker_label_sb := make_flat_stylebox(theme_preview_picker_label_bg_color, 4.0, 1.0, 4.0, 3.0)
 	theme.set_stylebox("preview_picker_label", "ThemeEditor", theme_preview_picker_label_sb)
 
 	# Dictionary editor add item.
 	# Expand to the left and right by 4px to compensate for the dictionary editor margins.
-	var style_dictionary_add_item = make_flat_stylebox(prop_subsection_color, 0, 4, 0, 4, corner_radius)
+	var style_dictionary_add_item: StyleBoxFlat = make_flat_stylebox(prop_subsection_color, 0, 4, 0, 4, corner_radius)
 	style_dictionary_add_item.set_expand_margin(SIDE_LEFT, 4 * EDSCALE)
 	style_dictionary_add_item.set_expand_margin(SIDE_RIGHT, 4 * EDSCALE)
 	theme.set_stylebox("DictionaryAddItem", "EditorStyles", style_dictionary_add_item)
 
-	var vshader_label_style = make_empty_stylebox(2, 1, 2, 1)
+	var vshader_label_style := make_empty_stylebox(2, 1, 2, 1)
 	theme.set_stylebox("label_style", "VShaderEditor", vshader_label_style)
 
 	# Project manager.
@@ -1792,51 +1792,51 @@ static func create_editor_theme(p_theme):
 
 	# adaptive script theme constants
 	# for comments and elements with lower relevance
-	var dim_color = Color(font_color.r, font_color.g, font_color.b, 0.5)
+	var dim_color := Color(font_color.r, font_color.g, font_color.b, 0.5)
 
-	var mono_value = mono_color.r
-	var alpha1 = Color(mono_value, mono_value, mono_value, 0.07)
-	var alpha2 = Color(mono_value, mono_value, mono_value, 0.14)
-	var alpha3 = Color(mono_value, mono_value, mono_value, 0.27)
+	var mono_value := mono_color.r
+	var alpha1 := Color(mono_value, mono_value, mono_value, 0.07)
+	var alpha2 := Color(mono_value, mono_value, mono_value, 0.14)
+	var alpha3 := Color(mono_value, mono_value, mono_value, 0.27)
 	
-	var symbol_color = Color(0.67, 0.79, 1) if dark_theme else Color(0, 0, 0.61)
-	var keyword_color = Color(1.0, 0.44, 0.52) if dark_theme else Color(0.9, 0.135, 0.51)
-	var control_flow_keyword_color = Color(1.0, 0.55, 0.8) if dark_theme else Color(0.743, 0.12, 0.8)
-	var base_type_color = Color(0.26, 1.0, 0.76) if dark_theme else Color(0, 0.6, 0.2)
-	var engine_type_color = Color(0.56, 1, 0.86) if dark_theme else Color(0.11, 0.55, 0.4)
-	var user_type_color = Color(0.78, 1, 0.93) if dark_theme else Color(0.18, 0.45, 0.4)
-	var comment_color = dim_color if dark_theme else Color(0.08, 0.08, 0.08, 0.5)
-	var string_color = Color(1, 0.93, 0.63) if dark_theme else Color(0.6, 0.42, 0)
+	var symbol_color := Color(0.67, 0.79, 1) if dark_theme else Color(0, 0, 0.61)
+	var keyword_color := Color(1.0, 0.44, 0.52) if dark_theme else Color(0.9, 0.135, 0.51)
+	var control_flow_keyword_color := Color(1.0, 0.55, 0.8) if dark_theme else Color(0.743, 0.12, 0.8)
+	var base_type_color := Color(0.26, 1.0, 0.76) if dark_theme else Color(0, 0.6, 0.2)
+	var engine_type_color := Color(0.56, 1, 0.86) if dark_theme else Color(0.11, 0.55, 0.4)
+	var user_type_color := Color(0.78, 1, 0.93) if dark_theme else Color(0.18, 0.45, 0.4)
+	var comment_color := dim_color if dark_theme else Color(0.08, 0.08, 0.08, 0.5)
+	var string_color := Color(1, 0.93, 0.63) if dark_theme else Color(0.6, 0.42, 0)
 
 	# Use the brightest background color on a light theme (which generally uses a negative contrast rate).
-	var te_background_color = background_color if dark_theme else dark_color_3
-	var completion_background_color = base_color if dark_theme else background_color
-	var completion_selected_color = alpha1
-	var completion_existing_color = alpha2
+	var te_background_color := background_color if dark_theme else dark_color_3
+	var completion_background_color := base_color if dark_theme else background_color
+	var completion_selected_color := alpha1
+	var completion_existing_color := alpha2
 	# Same opacity as the scroll grabber editor icon.
-	var completion_scroll_color = Color(mono_value, mono_value, mono_value, 0.29)
-	var completion_scroll_hovered_color = Color(mono_value, mono_value, mono_value, 0.4)
-	var completion_font_color = font_color
-	var text_color = font_color
-	var line_number_color = dim_color
-	var safe_line_number_color = (dim_color * Color(1, 1.2, 1, 1.5)) if dark_theme else Color(0, 0.4, 0, 0.75)
-	var caret_color = mono_color
-	var caret_background_color = mono_color.inverted()
-	var text_selected_color = Color(0, 0, 0, 0)
-	var brace_mismatch_color = error_color if dark_theme else Color(1, 0.08, 0, 1)
-	var current_line_color = alpha1
-	var line_length_guideline_color = base_color if dark_theme else background_color
-	var word_highlighted_color = alpha1
-	var number_color = Color(0.63, 1, 0.88) if dark_theme else Color(0, 0.55, 0.28, 1)
-	var function_color = Color(0.34, 0.7, 1.0) if dark_theme else Color(0, 0.225, 0.9, 1)
-	var member_variable_color = Color(0.34, 0.7, 1.0).lerp(mono_color, 0.6) if dark_theme else Color(0, 0.4, 0.68, 1)
-	var mark_color = Color(error_color.r, error_color.g, error_color.b, 0.3)
-	var bookmark_color = Color(0.08, 0.49, 0.98)
-	var breakpoint_color = error_color if dark_theme else Color(1, 0.27, 0.2, 1)
-	var executing_line_color = Color(0.98, 0.89, 0.27)
-	var code_folding_color = alpha3
-	var search_result_color = alpha1
-	var search_result_border_color = Color(0.41, 0.61, 0.91, 0.38) if dark_theme else Color(0, 0.4, 1, 0.38)
+	var completion_scroll_color := Color(mono_value, mono_value, mono_value, 0.29)
+	var completion_scroll_hovered_color := Color(mono_value, mono_value, mono_value, 0.4)
+	var completion_font_color := font_color
+	var text_color := font_color
+	var line_number_color := dim_color
+	var safe_line_number_color := (dim_color * Color(1, 1.2, 1, 1.5)) if dark_theme else Color(0, 0.4, 0, 0.75)
+	var caret_color := mono_color
+	var caret_background_color := mono_color.inverted()
+	var text_selected_color := Color(0, 0, 0, 0)
+	var brace_mismatch_color := error_color if dark_theme else Color(1, 0.08, 0, 1)
+	var current_line_color := alpha1
+	var line_length_guideline_color := base_color if dark_theme else background_color
+	var word_highlighted_color := alpha1
+	var number_color := Color(0.63, 1, 0.88) if dark_theme else Color(0, 0.55, 0.28, 1)
+	var function_color := Color(0.34, 0.7, 1.0) if dark_theme else Color(0, 0.225, 0.9, 1)
+	var member_variable_color := Color(0.34, 0.7, 1.0).lerp(mono_color, 0.6) if dark_theme else Color(0, 0.4, 0.68, 1)
+	var mark_color := Color(error_color.r, error_color.g, error_color.b, 0.3)
+	var bookmark_color := Color(0.08, 0.49, 0.98)
+	var breakpoint_color := error_color if dark_theme else Color(1, 0.27, 0.2, 1)
+	var executing_line_color := Color(0.98, 0.89, 0.27)
+	var code_folding_color := alpha3
+	var search_result_color := alpha1
+	var search_result_border_color := Color(0.41, 0.61, 0.91, 0.38) if dark_theme else Color(0, 0.4, 1, 0.38)
 
 	# TODO attention
 #	EditorSettings *setting = EditorSettings::get_singleton()
@@ -1929,11 +1929,11 @@ static func create_editor_theme(p_theme):
 	return theme
 
 
-static func create_custom_theme(p_theme):
-	var theme = create_editor_theme(p_theme)
-	var custom_theme_path = EDITOR_GET("interface/theme/custom_theme", "")
+static func create_custom_theme(p_theme: Variant) -> Theme:
+	var theme := create_editor_theme(p_theme)
+	var custom_theme_path := EDITOR_GET("interface/theme/custom_theme", "") as String
 	if custom_theme_path:
-		var custom_theme = ResourceLoader.load(custom_theme_path) as Theme
+		var custom_theme := ResourceLoader.load(custom_theme_path) as Theme
 		if custom_theme:
 			theme.merge_with(custom_theme)
 	return theme

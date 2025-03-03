@@ -9,8 +9,8 @@ func _ready() -> void:
 	toggle_mode = true
 
 	_update_modualate()
-	toggled.connect(func(_arg): _update_modualate())
+	toggled.connect(func(_arg: bool) -> void: _update_modualate())
 
 
-func _update_modualate():
+func _update_modualate() -> void:
 	modulate = Color(1, 1, 1, 1) if button_pressed else Color(1, 1, 1, 0.2)

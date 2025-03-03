@@ -25,7 +25,7 @@ class Params:
 	var user: String = ""
 	
 	# license
-	var cost = ""
+	var cost := ""
 
 	# (major).(minor).(patch)
 	var godot_version: String = ""
@@ -42,14 +42,14 @@ class Params:
 			assert(value in ["rating", "cost", "name", "updated"])
 			sort = value
 	
-	var reverse = false
+	var reverse := false
 
 
-static func params_to_search(params: Params):
-	var scalar = func(n, p=null): return _UrlSearchParamScalar.new(n, p)
-	var array = func(n, p=null): return _UrlSearchParamArray.new(n, p)
+static func params_to_search(params: Params) -> String:
+	var scalar := func(n: String, p:Variant = null) -> _UrlSearchParamBase: return _UrlSearchParamScalar.new(n, p)
+	var array := func(n: String, p:Variant = null) -> _UrlSearchParamBase: return _UrlSearchParamArray.new(n, p)
 	
-	var parts = [
+	var parts := [
 		scalar.call("type"),
 		_UrlSearchParamCategory.new(),
 		array.call("support"),
@@ -63,27 +63,31 @@ static func params_to_search(params: Params):
 		_UrlSearchParamReverse.new()
 	]
 	
-	var result = "?"
-	for part in parts:
+	var result := "?"
+	for part: _UrlSearchParamBase in parts:
 		result = part.join(result, params)
 	return result
 
 
 class _UrlSearchParamBase:
-	var _name
-	var _prop
+	var _name: String
+	var _prop: String
 	
-	func _init(name: String, prop=null):
+	## prop: Optional[String]
+	func _init(name: String, prop: Variant = null) -> void:
 		if prop == null:
 			_prop = name
 		else:
 			_prop = prop
 		_name = name
+	
+	func join(prev: String, params: Params) -> String:
+		return utils.not_implemeted()
 
 
 class _UrlSearchParamScalar extends _UrlSearchParamBase:
 	func join(prev: String, params: Params) -> String:
-		var value = params.get(_prop)
+		var value: Variant = params.get(_prop)
 		if value is String and value == "":
 			return prev
 		return prev + "&{name}={value}".format({"name": _name, "value": value})
@@ -91,10 +95,10 @@ class _UrlSearchParamScalar extends _UrlSearchParamBase:
 
 class _UrlSearchParamArray extends _UrlSearchParamBase:
 	func join(prev: String, params: Params) -> String:
-		var value = params.get(_prop)
-		if len(value) == 0:
+		var param_value: Array = params.get(_prop)
+		if len(param_value) == 0:
 			return prev
-		value = "+".join(value)
+		var value := "+".join(param_value)
 		return prev + "&{name}={value}".format({"name": _name, "value": value})
 
 
@@ -107,11 +111,11 @@ class _UrlSearchParamReverse:
 
 
 class _UrlSearchParamCategory extends _UrlSearchParamScalar:
-	func _init():
+	func _init() -> void:
 		super._init("category")
 	
 	func join(prev: String, params: Params) -> String:
-		var value = params.get(_prop)
+		var value := params.get(_prop) as int
 		if value == 0:
 			return prev
 		return super.join(prev, params)
@@ -121,7 +125,7 @@ class I:
 	func async_fetch(params: Params, errors: Array[String]=[]) -> Items:
 		return Items.new({})
 
-	func async_fetch_one(id) -> Item:
+	func async_fetch_one(id: String) -> Item:
 		return null
 
 
@@ -146,69 +150,70 @@ class Items:
 	var total_items: int:
 		get: return _data.get('total_items', 0)
 
-	var _data
+	var _data: Dictionary
 	
-	func _init(data):
+	func _init(data: Dictionary) -> void:
 		_data = data
 	
 
 class Factory:
-	func construct(url) -> I:
+	func construct(url: String) -> I:
 		return I.new() 
 
 
 class FactoryDefault extends Factory:
 	var _req: HTTPRequest
 	
-	func _init(req: HTTPRequest):
+	func _init(req: HTTPRequest) -> void:
 		_req = req
 	
-	func construct(url) -> I:
+	func construct(url: String) -> I:
 		return Fake.new(url, _req)
 
 
 class Fake extends I:
-	var _url
+	var _url: String
 	var _req: HTTPRequest
 	
-	func _init(url, req: HTTPRequest):
+	func _init(url: String, req: HTTPRequest) -> void:
 		_url = url
 		_req = req
 	
 	func async_fetch(params: Params, errors: Array[String]=[]) -> Items:
 		_req.cancel_request()
-		var response = HttpClient.Response.new(await HttpClient.async_http_get_using(
+		var response := HttpClient.Response.new(await HttpClient.async_http_get_using(
 			_req,
 			_url.path_join("asset") + AssetLib.params_to_search(params),
 			["Accept: application/vnd.github.v3+json"]
 		))
-		var info = response.to_response_info(_url)
+		var info := response.to_response_info(_url)
 		if info.error_text:
 			errors.append(info.error_text)
-		var json = response.to_json()
+		var json: Variant = response.to_json()
 		if json == null:
 			return Items.new({})
 		var result: Array[Item] = []
-		for el in json.get('result', []):
+		for el: Dictionary in (json as Dictionary).get('result', []):
 			result.append(Item.new(el))
 		json.result = result
-		return Items.new(json)
+		return Items.new(json as Dictionary)
 
-	func async_fetch_one(id) -> Item:
-		var json = utils.response_to_json(await HttpClient.async_http_get(
+	func async_fetch_one(id: String) -> Item:
+		var json: Variant = utils.response_to_json(await HttpClient.async_http_get(
 			_url.path_join("asset").path_join(id),
 			["Accept: application/vnd.github.v3+json"]
 		))
 		if json == null:
 			return null
 		else:
-			return Item.new(json)
+			return Item.new(json as Dictionary)
 
 
 class Item:
 	var _data: Dictionary
-
-	var id:
+	
+	## Optional String?
+	var id: Variant:
 		get: return _data.get("asset_id", null)
 
 	var author: String:
@@ -244,11 +249,11 @@ class Item:
 	var previews: Array[ItemPreview]:
 		get:
 			var result: Array[ItemPreview] = []
-			for x in _data.get("previews", []):
+			for x: Dictionary in _data.get("previews", []):
 				result.append(ItemPreview.new(x))
 			return result
 
-	func _init(data: Dictionary):
+	func _init(data: Dictionary) -> void:
 		_data = data
 
 
@@ -264,5 +269,5 @@ class ItemPreview:
 	var is_video: bool:
 		get: return _data.get("type", "") == "video"
 
-	func _init(data: Dictionary):
+	func _init(data: Dictionary) -> void:
 		_data = data

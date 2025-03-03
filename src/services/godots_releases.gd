@@ -2,7 +2,7 @@ class_name GodotsReleases
 
 
 class I:
-	func async_load():
+	func async_load() -> void:
 		pass
 	
 	func all() -> Array[Release]:
@@ -15,16 +15,16 @@ class I:
 class Default extends I:
 	var _src: Src
 	var _data: Array[Release] = []
-	var _fetched = false
+	var _fetched := false
 	
-	func _init(src: Src):
+	func _init(src: Src) -> void:
 		_src = src
 	
-	func async_load():
-		var json = await _src.async_all()
+	func async_load() -> void:
+		var json := await _src.async_all()
 		
-		var latest = {'value': null}
-		var check_is_latest = func(release: Release):
+		var latest := {'value': null}
+		var check_is_latest := func(release: Release) -> void:
 			if latest.value != null or release.is_draft or release.is_prerelease:
 				return
 			release._mark_as_latest()
@@ -32,7 +32,7 @@ class Default extends I:
 
 		_data.clear()
 		for el in json:
-			var release = Release.new(el)
+			var release := Release.new(el)
 			_data.append(release)
 			check_is_latest.call(release)
 
@@ -54,57 +54,57 @@ class Default extends I:
 		else:
 			var release: GodotsReleases.Release
 			if Config.ONLY_STABLE_UPDATES.ret():
-				var json = await _src.async_latest()
+				var json: Variant = await _src.async_latest()
 				release = _to_release_or_null(json)
 			else:
-				var json = await _src.async_recent()
+				var json: Variant = await _src.async_recent()
 				release = _to_release_or_null(json)
 			return release.tag_name != Config.VERSION
 
 	func all() -> Array[Release]:
 		return _data
 	
-	func _to_release_or_null(json):
+	func _to_release_or_null(json: Variant) -> Release:
 		if json != null:
-			return Release.new(json)
+			return Release.new(json as Dictionary)
 		else:
 			return null
 
 
-
 class Src:
-	func async_all():
-		pass
+	func async_all() -> Array[Dictionary]:
+		return utils.not_implemeted()
 
-	func async_latest():
-		pass
+	## return is Optional[Dictionary]
+	func async_latest() -> Variant:
+		return utils.not_implemeted()
 	
-	func async_recent():
-		pass
-
+	## return is Optional[Dictionary]
+	func async_recent() -> Variant:
+		return utils.not_implemeted()
 
 
 class SrcFileSystem extends Src:
 	var _filename: String
 	
-	func _init(filename: String):
+	func _init(filename: String) -> void:
 		_filename = filename
 	
-	func async_all():
-		var file = FileAccess.open(_filename, FileAccess.READ)
-		var content = file.get_as_text()
+	func async_all() -> Array[Dictionary]:
+		var file := FileAccess.open(_filename, FileAccess.READ)
+		var content := file.get_as_text()
 		return JSON.parse_string(content)
 
-	func async_latest():
-		var json = self.async_all()
+	func async_latest() -> Variant:
+		var json := self.async_all()
 		for el in json:
-			var release = Release.new(el)
+			var release := Release.new(el)
 			if !release.is_prerelease and !release.is_draft:
 				return el
 		return null
 	
-	func async_recent():
-		var json = self.async_all()
+	func async_recent() -> Variant:
+		var json := self.async_all()
 		for el in json:
 			return el
 		return null
@@ -113,39 +113,39 @@ class SrcFileSystem extends Src:
 class SrcGithub extends Src:
 	const headers = ["Accept: application/vnd.github.v3+json"]
 	
-	func async_all():
-		var json = await _get_json(Config.RELEASES_API_ENDPOINT)
+	func async_all() -> Array[Dictionary]:
+		var json: Variant = await _get_json(Config.RELEASES_API_ENDPOINT)
 		if json:
 			return json
 		else:
 			return []
 
-	func async_latest():
-		var json = await _get_json(Config.RELEASES_LATEST_API_ENDPOINT)
+	func async_latest() -> Variant:
+		var json: Variant = await _get_json(Config.RELEASES_LATEST_API_ENDPOINT)
 		if not json is Dictionary:
 			return null
-		if json.get('message', '') == 'Not Found':
+		if (json as Dictionary).get('message', '') == 'Not Found':
 			return null
 		return json
 	
-	func async_recent():
-		var json = await _get_json(Config.RELEASES_API_ENDPOINT + "?per_page=1")
-		for el in json:
+	func async_recent() -> Variant:
+		var json: Variant = await _get_json(Config.RELEASES_API_ENDPOINT + "?per_page=1")
+		for el: Variant in json:
 			return el
 		return null
 	
-	func _get_json(url):
-		var response = HttpClient.Response.new(
+	func _get_json(url: String) -> Variant:
+		var response := HttpClient.Response.new(
 			await HttpClient.async_http_get(url, headers)
 		)
-		var json = response.to_json()
+		var json: Dictionary = response.to_json()
 		return json
 
 
 class Release:
 	var _json: Dictionary
-	var _is_latest = false
-	var _is_ready_to_update = false
+	var _is_latest := false
+	var _is_ready_to_update := false
 	
 	var name: String:
 		get: return _json.name
@@ -174,10 +174,10 @@ class Release:
 	var is_ready_to_update: bool:
 		get: return _is_ready_to_update
 	
-	func _init(json):
+	func _init(json: Dictionary) -> void:
 		_json = json
 	
-	func _get_tags():
+	func _get_tags() -> Array[String]:
 		var tags: Array[String] = []
 #		if len(_json.tag_name) > 1:
 #			tags.append(_json.tag_name.substr(1))
@@ -191,16 +191,16 @@ class Release:
 			tags.append(tr("draft"))
 		return tags
 	
-	func _get_assets():
+	func _get_assets() -> Array[ReleaseAsset]:
 		var assets: Array[ReleaseAsset] = []
-		for asset in _json.get("assets", []):
+		for asset: Dictionary in _json.get("assets", []):
 			assets.append(ReleaseAsset.new(asset))
 		return assets
 	
-	func _mark_as_latest():
+	func _mark_as_latest() -> void:
 		_is_latest = true
 	
-	func _mark_as_ready_to_update():
+	func _mark_as_ready_to_update() -> void:
 		_is_ready_to_update = true
 
 
@@ -213,11 +213,11 @@ class ReleaseAsset:
 	var browser_download_url: String:
 		get: return _json.get("browser_download_url", "")
 	
-	func _init(json):
+	func _init(json: Dictionary) -> void:
 		_json = json
 	
-	func is_godots_bin_for_current_platform():
-		var zip_name
+	func is_godots_bin_for_current_platform() -> bool:
+		var zip_name: String
 		if OS.has_feature("windows"):
 			zip_name = "Windows.Desktop.zip"
 		elif OS.has_feature("macos"):

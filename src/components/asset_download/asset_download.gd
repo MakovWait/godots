@@ -7,9 +7,10 @@ signal downloaded(abs_zip_path: String)
 signal download_failed(response_code: int)
 signal request_failed(error: int)
 
-var _retry_callback
-var _host
-var _requesting = false
+## Optional[Callable]
+var _retry_callback: Variant
+var _host: String
+var _requesting := false
 
 @onready var _progress_bar: ProgressBar = get_node("%ProgressBar")
 @onready var _status: Label = get_node("%Status")
@@ -32,26 +33,26 @@ func _ready() -> void:
 	_dismiss_button.pressed.connect(queue_free)
 	_dismiss_button.texture_normal = get_theme_icon("Close", "EditorIcons")
 	
-	_retry_button.pressed.connect(func():
+	_retry_button.pressed.connect(func() -> void:
 		_remove_downloaded_file()
 		if _retry_callback:
-			_retry_callback.call()
+			(_retry_callback as Callable).call()
 	)
 	
-	_install_button.pressed.connect(func():
+	_install_button.pressed.connect(func() -> void:
 		downloaded.emit(_download.download_file)
 	)
 	
-	_download.request_completed.connect(func(result: int, response_code: int, headers, body):
+	_download.request_completed.connect(func(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 		_requesting = false
 #		https://github.com/godotengine/godot/blob/a7583881af5477cd73110cc859fecf7ceaf39bd7/editor/plugins/asset_library_editor_plugin.cpp#L316
-		var host = _host
-		var response = HttpClient.Response.new([
+		var host := _host
+		var response := HttpClient.Response.new([
 			result, response_code, headers, body
 		])
-		var status_error_pair = response.to_response_info(host, _download.download_file)
-		var error_text = status_error_pair.error_text
-		var status = status_error_pair.status
+		var status_error_pair := response.to_response_info(host, _download.download_file)
+		var error_text := status_error_pair.error_text
+		var status := status_error_pair.status
 		
 		_progress_bar.modulate = Color(0, 0, 0, 0)
 		
@@ -67,14 +68,14 @@ func _ready() -> void:
 	)
 
 
-func start(url, target_abs_dir, file_name, title_name=null):
+func start(url: String, target_abs_dir: String, file_name: String, title_name:String="") -> void:
 	assert(not _requesting)
 	assert(target_abs_dir.ends_with("/"))
 	
 	_requesting = true
 	url = url.strip_edges()
 	_host = url
-	_retry_callback = func(): start(url, target_abs_dir, file_name, title_name)
+	_retry_callback = func() -> void: start(url, target_abs_dir, file_name, title_name)
 	
 	_retry_button.hide()
 	_install_button.disabled = true
@@ -85,7 +86,7 @@ func start(url, target_abs_dir, file_name, title_name=null):
 	if FileAccess.file_exists(target_abs_dir + file_name):
 		file_name = uuid.v4().substr(0, 8) + "-" + file_name
 	_download.download_file = target_abs_dir + file_name
-	var request_err = _download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
+	var request_err := _download.request(url, [Config.AGENT_HEADER], HTTPClient.METHOD_GET)
 	
 	if request_err:
 		_progress_bar.modulate = Color(0, 0, 0, 0)
@@ -128,13 +129,14 @@ func start(url, target_abs_dir, file_name, title_name=null):
 		await get_tree().create_timer(0.1).timeout
 
 
-func set_status(text):
+func set_status(text: String) -> void:
 	_status.text = text
 
 
-func popup_error_dialog(text):
-	$AcceptErrorDialog.dialog_text = text
-	$AcceptErrorDialog.popup_centered()
+func popup_error_dialog(text: String) -> void:
+	var accept_error_dialog := $AcceptErrorDialog as AcceptDialog
+	accept_error_dialog.dialog_text = text
+	accept_error_dialog.popup_centered()
 
 
 func _notification(what: int) -> void:
@@ -142,7 +144,7 @@ func _notification(what: int) -> void:
 		_remove_downloaded_file()
 
 
-func _remove_downloaded_file():
+func _remove_downloaded_file() -> void:
 	if _download.download_file:
 		DirAccess.remove_absolute(
 			ProjectSettings.globalize_path(_download.download_file)

@@ -2,18 +2,18 @@ class_name GodotsRecentReleases
 
 
 class I:
-	func async_has_updates():
-		pass
+	func async_has_updates() -> bool:
+		return utils.not_implemeted()
 
 
 class Default extends I:
 	var _releases: GodotsReleases.I
 	
-	func _init(releases: GodotsReleases.I):
+	func _init(releases: GodotsReleases.I) -> void:
 		_releases = releases
 
-	func async_has_updates():
-		var has_updates = await _releases.async_has_newest_version()
+	func async_has_updates() -> bool:
+		var has_updates := await _releases.async_has_newest_version()
 		return has_updates
 
 
@@ -23,22 +23,22 @@ class Cached extends I:
 
 	var _origin: I
 	
-	func _init(origin):
+	func _init(origin: I) -> void:
 		_origin = origin
 	
-	func async_has_updates():
+	func async_has_updates() -> bool:
 		await _actualize_cache()
 		return Cache.get_value("has_update", "value", false)
 	
-	func _actualize_cache():
+	func _actualize_cache() -> void:
 		var last_checked_unix:int = Cache.get_value("has_update", "last_checked", 0)
 		if int(Time.get_unix_time_from_system()) - last_checked_unix > UPDATES_CACHE_LIFETIME_SEC:
 			await _update_cache()
 		elif Cache.get_value("has_update", "current_version", Config.VERSION) != Config.VERSION:
 			await _update_cache() 
 	
-	func _update_cache():
-		var has_updates = await _origin.async_has_updates()
+	func _update_cache() -> bool:
+		var has_updates := await _origin.async_has_updates()
 		Cache.set_value("has_update", "value", has_updates)
 		Cache.set_value("has_update", "current_version", Config.VERSION)
 		Cache.set_value("has_update", "last_checked", int(Time.get_unix_time_from_system()))
@@ -47,5 +47,5 @@ class Cached extends I:
 
 
 class MockHasUpdates extends I:
-	func async_has_updates():
+	func async_has_updates() -> bool:
 		return true
