@@ -27,6 +27,6 @@ func _notification(what: int) -> void:
 func _draw() -> void:
 	if not has_notifications:
 		return
-	var color = get_theme_color("warning_color", "Editor")
-	var button_radius = size.x / 8
+	var color := get_theme_color("warning_color", "Editor")
+	var button_radius := size.x / 8
 	draw_circle(Vector2(button_radius * 2, button_radius * 2), button_radius, color)

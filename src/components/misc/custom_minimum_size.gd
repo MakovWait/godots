@@ -9,12 +9,12 @@ extends Node
 			_apply()
 
 
-func _ready():
+func _ready() -> void:
 	_apply()
 
 
-func _apply():
-	var target = get_parent()
+func _apply() -> void:
+	var target := get_parent() as Control
 	if target == null:
 		return
 	target.custom_minimum_size = custom_minimum_size * Config.EDSCALE

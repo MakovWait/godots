@@ -1,7 +1,7 @@
 class_name DefaultRoutes
 extends Routes.List
 
-func _init(ctx: CliContext):
+func _init(ctx: CliContext) -> void:
 	self._items = [
 		Help.Route.new(),
 		OpenRecentProject.Route.new(ctx)

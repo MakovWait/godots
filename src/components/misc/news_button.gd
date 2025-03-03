@@ -4,7 +4,7 @@ const HOUR = 60 * 60
 const NEWS_CACHE_LIFETIME_SEC = 12 * HOUR
 
 var _http_request: HTTPRequest
-var _downloading = false
+var _downloading := false
 
 
 func _init() -> void:
@@ -21,7 +21,7 @@ func _notification(what: int) -> void:
 		_check_for_updates()
 
 
-func _check_for_updates():
+func _check_for_updates() -> void:
 	if _downloading: 
 		return
 	var last_checked_unix:int = Cache.get_value("news", "last_checked", 0)
@@ -30,20 +30,20 @@ func _check_for_updates():
 	_load_from_cache()
 
 
-func _update_cache():
+func _update_cache() -> void:
 	_downloading = true
-	var response = await _http_get("https://godotengine.org/rss.xml")
+	var response := await _http_get("https://godotengine.org/rss.xml")
 	_downloading = false
-	var body = XML.parse_buffer(response[3])
-	var item = exml.smart(body.root).find_smart_child_recursive(
+	var body := XML.parse_buffer(response[3] as PackedByteArray)
+	var item := exml.smart(body.root).find_smart_child_recursive(
 		exml.Filters.by_name("item")
 	)
 	if not item: 
 		return
-	var title = item.find_smart_child_recursive(
+	var title := item.find_smart_child_recursive(
 		exml.Filters.by_name("title")
 	)
-	var link = item.find_smart_child_recursive(
+	var link := item.find_smart_child_recursive(
 		exml.Filters.by_name("link")
 	)
 	Cache.set_value("news", "title", title.o.content)
@@ -52,14 +52,14 @@ func _update_cache():
 	Cache.save()
 
 
-func _load_from_cache():
+func _load_from_cache() -> void:
 	text = "%s %s" % [tr("News:"), Cache.get_value("news", "title", "<null>")]
 	uri = Cache.get_value("news", "link", "")
 
 
-func _http_get(url, headers=[]):
-	var default_headers = [Config.AGENT_HEADER]
+func _http_get(url: String, headers:=[]) -> Array:
+	var default_headers := [Config.AGENT_HEADER]
 	default_headers.append_array(headers)
 	_http_request.request(url, default_headers, HTTPClient.METHOD_GET)
-	var response = await _http_request.request_completed
+	var response: Array = await _http_request.request_completed
 	return response

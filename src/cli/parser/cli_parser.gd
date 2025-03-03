@@ -11,7 +11,7 @@ class ParsedOption:
 
 	var values: Array[String] = []
 
-	func _init(long, short, values: Array[String]):
+	func _init(long: String, short: String, values: Array[String]) -> void:
 		long_name = long
 		short_name = short
 		self.values = values
@@ -34,10 +34,10 @@ class ParsedArguments:
 			_options[option.short_name] = option
 			
 	func get_first_name(default:="") -> String:
-		var name = null
+		var name := default
 		if len(names) > 0:
 			name = names.front()
-		return default if name == null else name
+		return name
 
 	func has_options(names: Array[String]) -> bool:
 		for name in names:
@@ -46,7 +46,7 @@ class ParsedArguments:
 		return false
 
 	func first_option_value(names: Array[String]) -> String:
-		var values = first_option_values(names)
+		var values := first_option_values(names)
 		return "" if values.is_empty() else values.front()
 
 	func first_option_values(names: Array[String]) -> Array[String]:
@@ -56,7 +56,7 @@ class ParsedArguments:
 		return []
 
 	func option_value(name: String) -> String:
-		var result = option_values(name)
+		var result := option_values(name)
 		return "" if result.is_empty() else result.front()
 	
 	func option_values(name: String) -> Array[String]:
@@ -70,7 +70,7 @@ class ParsedCommandResult:
 	var args: ParsedArguments
 	var errors: Array[String] = []
 
-	func _init(namesp: String, verb: String, args: ParsedArguments):
+	func _init(namesp: String, verb: String, args: ParsedArguments) -> void:
 		self.namesp = namesp
 		self.verb = verb
 		self.args = args
@@ -84,7 +84,7 @@ class CommandParser:
 
 	var _grammar: CliGrammar
 
-	var token:
+	var token: String:
 		get: 
 			if _has_tokens():
 				return _tokens[current_token_index]
@@ -92,7 +92,7 @@ class CommandParser:
 
 	var _last_errors: Array[String] = []
 
-	func _init(grammar: CliGrammar):
+	func _init(grammar: CliGrammar) -> void:
 		self._grammar = grammar
 
 	func parse_command(tokens: Array[String]) -> ParsedCommandResult:
@@ -100,35 +100,35 @@ class CommandParser:
 		_last_errors = []
 		current_token_index = 0
 
-		var namesp = _expect_namespace()
-		var verb = _expect_verb(namesp)
+		var namesp := _expect_namespace()
+		var verb := _expect_verb(namesp)
 		var options: Array[ParsedOption] = []
 		var names: Array[String] = _parse_names()
 
 		while _has_tokens():
-			var option = _parse_option(namesp, verb)
+			var option := _parse_option(namesp, verb)
 
 			if option == null:
 				break;
 
-			if options.any(func(o): return o.names_equal(option)):
+			if options.any(func(o: ParsedOption) -> bool: return o.names_equal(option)):
 				_raise_error("Only one option with name (`%s`, `%s`) can be used." % [option.long_name, option.short_name])
 			else:
 				options.append(option)
 
-		var command = ParsedCommandResult.new(namesp, verb, ParsedArguments.new(names, options))
+		var command := ParsedCommandResult.new(namesp, verb, ParsedArguments.new(names, options))
 		command.errors = _last_errors
 		return command
 
 	func _parse_option(namesp: String, verb: String) -> ParsedOption:
-		var long_name = ""
-		var short_name = ""
+		var long_name := ""
+		var short_name := ""
 		var values: Array[String] = []
-		var failed = false
+		var failed := false
 
 		if _is_option(token):
 			if _grammar.supports_flag(namesp, verb, token):
-				var name_forms = _grammar.flag_name_forms(namesp, verb, token)
+				var name_forms := _grammar.flag_name_forms(namesp, verb, token)
 				long_name = _adjust_flag_token_name(name_forms[0])
 				short_name = _adjust_flag_token_name(name_forms[1])
 
@@ -164,7 +164,7 @@ class CommandParser:
 		if not _grammar.supports_namespace(token):
 			return ""
 
-		var result = token
+		var result := token
 		_next_token()
 		return result
 
@@ -172,7 +172,7 @@ class CommandParser:
 		if not _grammar.supports_verb(scope, token):
 			return ""
 
-		var result = token;
+		var result := token
 		_next_token()
 		return result
 

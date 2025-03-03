@@ -2,7 +2,7 @@ class_name RandomProjectNames
 extends RefCounted
 
 
-var prefixes = [
+var prefixes: PackedStringArray = [
 	"Super",
 	"Mega",
 	"Ultra",
@@ -36,7 +36,7 @@ var prefixes = [
 ]
 
 
-var topics = [
+var topics: PackedStringArray = [
 	"Adventure",
 	"Space",
 	"Fantasy",
@@ -68,7 +68,7 @@ var topics = [
 	"Educational"
 ]
 
-var suffixes = [
+var suffixes: PackedStringArray = [
 	"Game",
 	"Adventure",
 	"Quest",
@@ -102,23 +102,23 @@ var suffixes = [
 ]
 
 
-func next():
-	var prefix = prefixes[randi() % prefixes.size()]
-	var topic = topics[randi() % topics.size()]
-	var suffix = suffixes[randi() % suffixes.size()]
+func next() -> String:
+	var prefix := prefixes[randi() % prefixes.size()]
+	var topic := topics[randi() % topics.size()]
+	var suffix := suffixes[randi() % suffixes.size()]
 	return prefix + " " + topic + " " + suffix
 
 
-func set_prefixes(value: Array):
+func set_prefixes(value: Array) -> void:
 	if len(value) > 0:
 		prefixes = value
 
 
-func set_suffixes(value: Array):
+func set_suffixes(value: Array) -> void:
 	if len(value) > 0:
 		suffixes = value
 
 
-func set_topics(value: Array):
+func set_topics(value: Array) -> void:
 	if len(value) > 0:
 		topics = value

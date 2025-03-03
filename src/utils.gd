@@ -1,9 +1,9 @@
 class_name utils
 
 
-static func guess_editor_name(file_name: String):
-	var possible_editor_name = file_name.get_file()
-	var tokens_to_replace = []
+static func guess_editor_name(file_name: String) -> String:
+	var possible_editor_name := file_name.get_file()
+	var tokens_to_replace: Array[String]
 	tokens_to_replace.append_array([
 		"x11.64", 
 		"linux.64",
@@ -25,37 +25,38 @@ static func guess_editor_name(file_name: String):
 	return possible_editor_name
 
 
-static func find_project_godot_files(dir_path) -> Array[edir.DirListResult]:
-	var project_configs = edir.list_recursive(
+static func find_project_godot_files(dir_path: String) -> Array[edir.DirListResult]:
+	var project_configs := edir.list_recursive(
 		ProjectSettings.globalize_path(dir_path), 
 		false,
-		(func(x: edir.DirListResult): 
+		(func(x: edir.DirListResult) -> bool: 
 			return x.is_file and x.file == "project.godot"),
-		(func(x: String): 
+		(func(x: String) -> bool: 
 			return not x.get_file().begins_with("."))
 	)
 	return project_configs
 
 
-static func response_to_json(response, safe=true):
-	var string = response[3].get_string_from_utf8()
+static func response_to_json(response: Variant, safe:=true) -> Variant:
+	var body := response[3] as PackedByteArray
+	var string := body.get_string_from_utf8()
 	if safe:
 		return parse_json_safe(string)
 	else:
 		return JSON.parse_string(string)
 
 
-static func parse_json_safe(string):
-	var json = JSON.new()
-	var err = json.parse(string)
+static func parse_json_safe(string: String) -> Variant:
+	var json := JSON.new()
+	var err := json.parse(string)
 	if err != OK:
 		return null
 	else:
 		return json.data
 
 
-static func fit_height(max_height, cur_size: Vector2i, callback):
-	var scale_ratio = max_height / (cur_size.y * Config.EDSCALE)
+static func fit_height(max_height: float, cur_size: Vector2i, callback: Callable) -> void:
+	var scale_ratio := max_height / (cur_size.y * Config.EDSCALE)
 	if scale_ratio < 1:
 		callback.call(Vector2i(
 			cur_size.x * Config.EDSCALE * scale_ratio,
@@ -63,19 +64,27 @@ static func fit_height(max_height, cur_size: Vector2i, callback):
 		))
 
 
-static func disconnect_all(obj: Object):
+static func disconnect_all(obj: Object) -> void:
 	for obj_signal in obj.get_signal_list():
-		for connection in obj.get_signal_connection_list(obj_signal.name):
-			obj.disconnect(obj_signal.name, connection.callable)
+		for connection in obj.get_signal_connection_list(obj_signal.name as StringName):
+			obj.disconnect(obj_signal.name as StringName, connection.callable as Callable)
 
 
-static func prop_is_readonly():
+static func prop_is_readonly() -> void:
 	assert(false, "Property is readonly")
 
 
-static func not_implemeted():
+static func not_implemeted() -> Variant:
 	assert(false, "Not Implemented")
+	return null
 
 
-static func empty_func():
+static func empty_func() -> void:
 	pass
+
+
+static func obj_has_method(obj: Variant, method: StringName) -> bool:
+	if obj is Object:
+		return (obj as Object).has_method(method)
+	else:
+		return false

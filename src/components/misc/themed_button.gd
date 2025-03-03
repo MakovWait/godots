@@ -1,8 +1,8 @@
 extends Button
 
 
-@export var _theme_icon_name = "Load"
-@export var _theme_type = "EditorIcons"
+@export var _theme_icon_name := "Load"
+@export var _theme_type := "EditorIcons"
 
 
 func _ready() -> void:
@@ -10,5 +10,5 @@ func _ready() -> void:
 	theme_changed.connect(_update_theme)
 
 
-func _update_theme():
+func _update_theme() -> void:
 	icon = get_theme_icon(_theme_icon_name, _theme_type)

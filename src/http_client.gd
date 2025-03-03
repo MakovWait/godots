@@ -1,31 +1,32 @@
 extends Node
 
 
-func async_http_get(url, headers=[], download_file=null):
-	var http_request = HTTPRequest.new()
+func async_http_get(url: String, headers := PackedStringArray(), download_file:="") -> Array:
+	var http_request := HTTPRequest.new()
 	add_child(http_request)
-	var response = await async_http_get_using(http_request, url, headers, download_file)
+	var response := await async_http_get_using(http_request, url, headers, download_file)
 	http_request.queue_free()
 	return response
 
 
-func async_http_get_using(http_request: HTTPRequest, url, headers=[], download_file=null):
-	var proxy_host = Config.HTTP_PROXY_HOST.ret().strip_edges()
+func async_http_get_using(http_request: HTTPRequest, url: String, headers := PackedStringArray(), download_file:="") -> Array:
+	url = url.strip_edges()
+	var proxy_host := (Config.HTTP_PROXY_HOST.ret() as String).strip_edges()
 	if not proxy_host.is_empty():
 		http_request.set_http_proxy(
 			proxy_host,
-			Config.HTTP_PROXY_PORT.ret()
+			Config.HTTP_PROXY_PORT.ret() as int
 		)
 		http_request.set_https_proxy(
 			proxy_host,
-			Config.HTTP_PROXY_PORT.ret()
+			Config.HTTP_PROXY_PORT.ret() as int
 		)
-	var default_headers = [Config.AGENT_HEADER]
+	var default_headers := PackedStringArray([Config.AGENT_HEADER])
 	default_headers.append_array(headers)
 	if download_file:
 		http_request.download_file = download_file
 	http_request.request(url, default_headers, HTTPClient.METHOD_GET)
-	var response = await http_request.request_completed
+	var response: Array = await http_request.request_completed
 	return response
 
 
@@ -44,21 +45,21 @@ class Response:
 	var body: PackedByteArray:
 		get: return _resp[3]
 
-	func _init(resp: Array):
+	func _init(resp: Array) -> void:
 		_resp = resp
 	
-	func to_json(safe=true):
+	func to_json(safe:=true) -> Variant:
 		return utils.response_to_json(_resp, safe)
 	
-	func get_string_from_utf8():
+	func get_string_from_utf8() -> String:
 		return body.get_string_from_utf8()
 	
-	func _to_string():
+	func _to_string() -> String:
 		return "[Response] Result: %s; Code: %s; Headers: %s" % [result, code, headers]
 	
-	func to_response_info(host, download_file=null) -> ResponseInfo:
-		var error_text = null
-		var status = ""
+	func to_response_info(host: String, download_file:="") -> ResponseInfo:
+		var error_text := ""
+		var status := ""
 		
 		match result:
 			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
@@ -90,12 +91,12 @@ class Response:
 					error_text = tr("Request failed, return code") + ": " + str(code)
 					status = tr("Failed") + ": " + str(code)
 		
-		var result = ResponseInfo.new()
+		var result := ResponseInfo.new()
 		result.error_text = error_text
 		result.status = status
 		return result
 
 
 class ResponseInfo:
-	var status
-	var error_text
+	var status: String
+	var error_text: String

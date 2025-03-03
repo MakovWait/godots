@@ -4,7 +4,7 @@ var projects: Projects.List
 var editors: LocalEditors.List
 
 
-func _init():
+func _init() -> void:
 	editors = LocalEditors.List.new(
 		Config.EDITORS_CONFIG_PATH
 	)
@@ -18,6 +18,6 @@ func _init():
 	projects.load()
 
 
-func cleanup():
+func cleanup() -> void:
 	editors.cleanup()
 	projects.cleanup()

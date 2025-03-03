@@ -1,12 +1,12 @@
 class_name CliGrammar
 
-var _commands = []
+var _commands: Array[CliCommand] = []
 
-func _init(commands: Array[CliCommand]):
+func _init(commands: Array[CliCommand]) -> void:
 	self._commands = commands
 
 func flag_name_forms(namesp: String, verb: String, flag: String) -> Array[String]:
-	var command = _find_command(namesp, verb)
+	var command := _find_command(namesp, verb)
 	if command:
 		for option in command.options:
 			if option.long == flag or option.short == flag:
@@ -14,7 +14,7 @@ func flag_name_forms(namesp: String, verb: String, flag: String) -> Array[String
 	return []
 
 func supports_flag(namesp: String, verb: String, flag: String) -> bool:
-	var command = _find_command(namesp, verb)
+	var command := _find_command(namesp, verb)
 	if command:
 		for option in command.options:
 			if option.long == flag or option.short == flag:

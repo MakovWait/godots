@@ -1,14 +1,15 @@
+class_name AssetLibDetailsDescriptionLabel
 extends RichTextLabel
 
 
 
-func _ready():
-	meta_clicked.connect(func(meta):
-		OS.shell_open(meta)
+func _ready() -> void:
+	meta_clicked.connect(func(meta: Variant) -> void:
+		OS.shell_open(str(meta))
 	)
 
 
-func configure(item: AssetLib.Item):
+func configure(item: AssetLib.Item) -> void:
 	clear()
 	add_text(tr("Version:") + " " + item.version_string + "\n")
 	add_text(tr("Contents:") + " ")
