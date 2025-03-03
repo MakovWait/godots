@@ -52,9 +52,12 @@ func _ready() -> void:
 	
 	custom_action.connect(func(action: String) -> void:
 		if action == "just_import":
+			var editor_path: String
+			if _editors_option_button.selected != -1:
+				editor_path = _editors_option_button.get_item_metadata(_editors_option_button.selected)
 			imported.emit(
-				_project_path_edit.text, 
-				_editors_option_button.get_item_metadata(_editors_option_button.selected),
+				_project_path_edit.text,
+				editor_path,
 				false,
 				_callback
 			)

@@ -37,7 +37,7 @@ func find(path_from: String, key: Callable):
 	while true:
 		if has(path_from):
 			var bucket = get(path_from)
-			var opt = key.call(bucket, OptFactory) as Opt
+			var opt = key.call(bucket, OptFactory) as _Opt
 			if opt.has_value():
 				return opt.value()
 		if path_from == "/":
@@ -48,13 +48,13 @@ func find(path_from: String, key: Callable):
 
 class OptFactory:
 	static func found(value):
-		return Opt.new(true, value)
+		return _Opt.new(true, value)
 	
 	static func not_found():
-		return Opt.new(false)
+		return _Opt.new(false)
 
 
-class Opt:
+class _Opt:
 	var _has_value
 	var _value
 	

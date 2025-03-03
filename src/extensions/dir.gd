@@ -34,7 +34,7 @@ static func list_recursive(
 	dir_filter: Variant = null,
 ) -> Array[DirListResult]:
 	if not result_filter:
-		result_filter = func(x: String) -> bool: return true
+		result_filter = func(x: DirListResult) -> bool: return true
 	if not dir_filter:
 		dir_filter = func(x: String) -> bool: return true
 	var dirs_to_visit: Array[String] = [path]
