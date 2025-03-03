@@ -1,6 +1,7 @@
 # https://github.com/godotengine/godot/blob/master/editor/editor_themes.cpp
 # https://github.com/godotengine/godot/blob/master/editor/editor_fonts.cpp
-
+@warning_ignore_start("narrowing_conversion")
+@warning_ignore_start("integer_division")
 static var EDSCALE := 1.
 
 
@@ -227,7 +228,7 @@ static func create_editor_theme(p_theme: Variant) -> Theme:
 
 	var preset_accent_color: Color
 	var preset_base_color: Color
-	var preset_contrast := 0
+	var preset_contrast := 0.
 	var preset_draw_extra_borders := false
 
 	var default_contrast := 0.3
@@ -380,10 +381,10 @@ static func create_editor_theme(p_theme: Variant) -> Theme:
 	var prop_color_saturation := accent_color.s * 0.75
 	var prop_color_value := accent_color.v
 
-	theme.set_color("property_color_x", "Editor", Color().from_hsv(0.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
-	theme.set_color("property_color_y", "Editor", Color().from_hsv(1.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
-	theme.set_color("property_color_z", "Editor", Color().from_hsv(2.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
-	theme.set_color("property_color_w", "Editor", Color().from_hsv(1.5 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
+	theme.set_color("property_color_x", "Editor", Color.from_hsv(0.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
+	theme.set_color("property_color_y", "Editor", Color.from_hsv(1.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
+	theme.set_color("property_color_z", "Editor", Color.from_hsv(2.0 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
+	theme.set_color("property_color_w", "Editor", Color.from_hsv(1.5 / 3.0 + 0.05, prop_color_saturation, prop_color_value))
 
 	theme.set_color("font_color", "Editor", font_color)
 	theme.set_color("highlighted_font_color", "Editor", font_hover_color)

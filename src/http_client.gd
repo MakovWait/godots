@@ -10,6 +10,7 @@ func async_http_get(url: String, headers := PackedStringArray(), download_file:=
 
 
 func async_http_get_using(http_request: HTTPRequest, url: String, headers := PackedStringArray(), download_file:="") -> Array:
+	url = url.strip_edges()
 	var proxy_host := (Config.HTTP_PROXY_HOST.ret() as String).strip_edges()
 	if not proxy_host.is_empty():
 		http_request.set_http_proxy(

@@ -64,12 +64,17 @@ static func params_to_search(params: Params) -> String:
 	]
 	
 	var result := "?"
-	for part: _UrlSearchParamBase in parts:
+	for part: _IUrlSearchParam in parts:
 		result = part.join(result, params)
 	return result
 
 
-class _UrlSearchParamBase:
+class _IUrlSearchParam:
+	func join(prev: String, params: Params) -> String:
+		return utils.not_implemeted()
+
+
+class _UrlSearchParamBase extends _IUrlSearchParam:
 	var _name: String
 	var _prop: String
 	
@@ -80,9 +85,6 @@ class _UrlSearchParamBase:
 		else:
 			_prop = prop
 		_name = name
-	
-	func join(prev: String, params: Params) -> String:
-		return utils.not_implemeted()
 
 
 class _UrlSearchParamScalar extends _UrlSearchParamBase:
@@ -102,7 +104,7 @@ class _UrlSearchParamArray extends _UrlSearchParamBase:
 		return prev + "&{name}={value}".format({"name": _name, "value": value})
 
 
-class _UrlSearchParamReverse:
+class _UrlSearchParamReverse extends _IUrlSearchParam:
 	func join(prev: String, params: Params) -> String:
 		if params.reverse:
 			return prev + "&reverse"

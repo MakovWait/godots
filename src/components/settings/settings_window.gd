@@ -244,7 +244,7 @@ func _setup_settings() -> void:
 		var category := setting.category
 		if not category.first_lvl in categories:
 			categories[category.first_lvl] = Set.new()
-		var second_lvls := categories[category.first_lvl] as Array
+		var second_lvls := categories[category.first_lvl] as Set
 		second_lvls.append(category.second_lvl) 
 	var selected := false
 	for first_lvl: String in categories.keys():

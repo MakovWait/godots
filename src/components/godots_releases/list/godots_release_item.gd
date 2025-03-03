@@ -43,7 +43,7 @@ func _ready() -> void:
 	_tag_container.tag_clicked.connect(func(tag: String) -> void: tag_clicked.emit(tag))
 
 
-func apply_filter(filter: Callable) -> void:
+func apply_filter(filter: Callable) -> bool:
 	return filter.call({
 		'name': _title_label.text,
 		'path': _path_label.text,

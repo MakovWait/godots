@@ -31,7 +31,7 @@ class Default extends I:
 			latest.value = release
 
 		_data.clear()
-		for el in json:
+		for el: Dictionary in json:
 			var release := Release.new(el)
 			_data.append(release)
 			check_is_latest.call(release)
@@ -72,7 +72,7 @@ class Default extends I:
 
 
 class Src:
-	func async_all() -> Array[Dictionary]:
+	func async_all() -> Array:
 		return utils.not_implemeted()
 
 	## return is Optional[Dictionary]
@@ -90,14 +90,14 @@ class SrcFileSystem extends Src:
 	func _init(filename: String) -> void:
 		_filename = filename
 	
-	func async_all() -> Array[Dictionary]:
+	func async_all() -> Array:
 		var file := FileAccess.open(_filename, FileAccess.READ)
 		var content := file.get_as_text()
 		return JSON.parse_string(content)
 
 	func async_latest() -> Variant:
 		var json := self.async_all()
-		for el in json:
+		for el: Dictionary in json:
 			var release := Release.new(el)
 			if !release.is_prerelease and !release.is_draft:
 				return el
@@ -105,7 +105,7 @@ class SrcFileSystem extends Src:
 	
 	func async_recent() -> Variant:
 		var json := self.async_all()
-		for el in json:
+		for el: Dictionary in json:
 			return el
 		return null
 
@@ -113,7 +113,7 @@ class SrcFileSystem extends Src:
 class SrcGithub extends Src:
 	const headers = ["Accept: application/vnd.github.v3+json"]
 	
-	func async_all() -> Array[Dictionary]:
+	func async_all() -> Array:
 		var json: Variant = await _get_json(Config.RELEASES_API_ENDPOINT)
 		if json:
 			return json
@@ -138,7 +138,7 @@ class SrcGithub extends Src:
 		var response := HttpClient.Response.new(
 			await HttpClient.async_http_get(url, headers)
 		)
-		var json: Dictionary = response.to_json()
+		var json: Variant = response.to_json()
 		return json
 
 

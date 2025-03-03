@@ -330,7 +330,7 @@ func get_actions() -> Array:
 	return []
 
 
-func apply_filter(filter: Callable) -> void:
+func apply_filter(filter: Callable) -> bool:
 	return filter.call({
 		'name': _title_label.text,
 		'path': _path_label.text,

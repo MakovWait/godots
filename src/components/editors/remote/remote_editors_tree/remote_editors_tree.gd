@@ -235,7 +235,7 @@ class RowFilter:
 class SimpleContainsFilter extends RowFilter:
 	func _init(what: String) -> void:
 		super._init(
-			func(row: RemoteEditorsTreeDataSource.FilterTarget) -> void: 
+			func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool: 
 				return row.get_name().to_lower().contains(what)
 		)
 
@@ -243,7 +243,7 @@ class SimpleContainsFilter extends RowFilter:
 class NotRelatedFilter extends RowFilter:
 	func _init() -> void:
 		super._init(
-			func(row: RemoteEditorsTreeDataSource.FilterTarget) -> void: 
+			func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 				return ["media", "patreon", "testing", "toolchains"].any(
 					func(x: String) -> bool: return row.get_name() == x
 				)

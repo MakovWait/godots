@@ -31,6 +31,10 @@ AutoNativeFileDialog="*res://src/auto_native_file_dialog.gd"
 
 [debug]
 
+gdscript/warnings/unused_variable=0
+gdscript/warnings/unused_parameter=0
+gdscript/warnings/shadowed_variable=0
+gdscript/warnings/shadowed_variable_base_class=0
 gdscript/warnings/untyped_declaration=2
 gdscript/warnings/unsafe_property_access=2
 gdscript/warnings/unsafe_method_access=2

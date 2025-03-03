@@ -91,7 +91,7 @@ func _ready() -> void:
 	var main_current_tab := Cache.smart_value(
 		self, "main_current_tab", true
 	)
-	_tab_container.tab_changed.connect(func(tab: String) -> void: main_current_tab.put(tab))
+	_tab_container.tab_changed.connect(func(tab: int) -> void: main_current_tab.put(tab))
 	_tab_container.current_tab = main_current_tab.ret(0)
 
 	_local_editors.editor_download_pressed.connect(func() -> void:
@@ -316,7 +316,7 @@ class TitleTabButton extends Button:
 		self.flat = true
 		self.pressed.connect(func() -> void:
 			var idx := tab_controls.find(tab_container.get_current_tab_control())
-			idx = wrap(idx + 1, 0, len(tab_controls))
+			idx = wrapi(idx + 1, 0, len(tab_controls))
 			tab_container.current_tab = tab_container.get_tab_idx_from_control(tab_controls[idx] as Control)
 			set_pressed_no_signal(true)
 		)
