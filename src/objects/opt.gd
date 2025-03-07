@@ -58,7 +58,7 @@ static func of(data: Variant) -> Opt:
 	return Opt.new(data)
 
 static func lazy(f: Callable) -> Callable:
-	return func() -> void: return Opt.new(f.call())
+	return func() -> Opt: return Opt.new(f.call())
 
 
 const Callback = _Callable
