@@ -1,6 +1,6 @@
 class_name TestGrammar
 
-static var grammar := CliGrammar.new([
+static var grammar = CliGrammar.new([
 	CliCommand.new(
 		"namespace1",
 		"verb1",

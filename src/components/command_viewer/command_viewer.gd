@@ -22,16 +22,16 @@ func _ready() -> void:
 		if not visible:
 			_commands = null
 	)
-
+	
 	var help := add_button(tr("Help"))
 	help.pressed.connect(func() -> void:
 		OS.shell_open("https://github.com/MakovWait/godots/blob/main/.github/assets/FEATURES.md#edit-commands")
 	)
 	help.icon = get_theme_icon("ExternalLink", "EditorIcons")
-
+	
 	_create_new_command_btn = add_button(tr("New Command"))
 	_create_new_command_btn.pressed.connect(func() -> void:
-		_popup_new_command_dialog("", "", [], "Terminal", false,
+		_popup_new_command_dialog("", "", [], "Terminal", false, 
 		func(cmd_name: String, cmd_path: String, cmd_args: PackedStringArray, cmd_icon: String, is_local: bool) -> void:
 			if _commands:
 				var command := _commands.add(
@@ -60,7 +60,7 @@ func _update_view(commands: Commands, command_creation_allowed:=false) -> void:
 		if c.has_method("hide"):
 			c.call("hide")
 		c.queue_free()
-
+	
 	for command in commands.all():
 		_add_view(command, commands)
 
@@ -98,7 +98,7 @@ func _add_view(command: Command, commands: Commands) -> void:
 			var output_text := ""
 			if len(output) > 0:
 				output_text = output[0]
-
+			
 			var rich_text_label := %OutputLabel as RichTextLabel
 			rich_text_label.custom_minimum_size = Vector2i(0, 100) * Config.EDSCALE
 			rich_text_label.clear()
@@ -125,8 +125,8 @@ func _add_view(command: Command, commands: Commands) -> void:
 func _set_text_to_command_view(command: Command, command_view: CommandTextView) -> void:
 	var local_badge := tr("Local") if command.is_local() else tr("Global")
 	command_view.set_text(
-		"%s (%s):" % [command.name(), local_badge],
-		"",
+		"%s (%s):" % [command.name(), local_badge], 
+		"", 
 		str(command),
 		command.icon()
 	)
@@ -155,14 +155,14 @@ class Command:
 	var _icon: String
 	var _process_src: OSProcessSchema.Source
 	var _allowed_actions: PackedStringArray
-
+	
 	func _init(
 		name: String,
 		path: String,
 		args: PackedStringArray,
 		icon: String,
-		is_local: bool,
-		process_src: OSProcessSchema.Source,
+		is_local: bool, 
+		process_src: OSProcessSchema.Source, 
 		allowed_actions: PackedStringArray
 	) -> void:
 		_icon = icon
@@ -172,36 +172,36 @@ class Command:
 		_is_local = is_local
 		_process_src = process_src
 		_allowed_actions = allowed_actions
-
+	
 	func icon() -> String:
 		return _icon
-
+	
 	func is_local() -> bool:
 		return _is_local
-
+	
 	func is_action_allowed(action: String) -> bool:
 		return action in _allowed_actions
-
+	
 	func args() -> PackedStringArray:
 		return _args
-
+	
 	func path() -> String:
 		return _path
-
+	
 	func name() -> String:
 		return _name
-
+	
 	func execute(output:=[]) -> int:
 		return _process_src.get_os_process_schema(_path, _args).execute(
 			output, true, true
 		)
-
+	
 	func create_process() -> void:
 		_process_src.get_os_process_schema(_path, _args).create_process(true)
-
+	
 	func remove_from(commands: Commands) -> void:
 		commands.remove(_name, _is_local)
-
+	
 	func _to_string() -> String:
 		return str(_process_src.get_os_process_schema(_path, _args))
 
@@ -209,11 +209,11 @@ class Command:
 class Commands:
 	func all() -> Array[Command]:
 		return []
-
+	
 	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
-		# assert(true, "Not implemented") <- Why??? assert true is redundant
+		assert(true, "Not implemented")
 		return null
-
+	
 	func remove(name: String, is_local: bool) -> void:
 		pass
 
@@ -222,10 +222,10 @@ class CustomCommandsSource:
 	var custom_commands: Array:
 		get: return _get_custom_commands()
 		set(value): _set_custom_commands(value)
-
+	
 	func _get_custom_commands() -> Array:
 		return []
-
+	
 	func _set_custom_commands(value: Array) -> void:
 		pass
 
@@ -248,28 +248,28 @@ class CommandsInMemory extends CommandsWrap:
 
 class CustomCommandsSourceArray extends CustomCommandsSource:
 	var _data: Array[Dictionary] = []
-
+	
 	func _init(data: Array[Dictionary]=[]) -> void:
 		_data = data
-
+	
 	func _get_custom_commands() -> Array:
 		return _data
-
+	
 	func _set_custom_commands(value: Array) -> void:
 		_data = value
 
 
 class CustomCommandsSourceDynamic extends CustomCommandsSource:
 	signal edited
-
+	
 	var _delegate: Object
-
+	
 	func _init(delegate: Object) -> void:
 		_delegate = delegate
-
+	
 	func _get_custom_commands() -> Array:
 		return _delegate.get("custom_commands")
-
+	
 	func _set_custom_commands(value: Array) -> void:
 		_delegate.set("custom_commands", value)
 		edited.emit()
@@ -278,23 +278,23 @@ class CustomCommandsSourceDynamic extends CustomCommandsSource:
 class CommandsDuo extends Commands:
 	var _local: Commands
 	var _global: Commands
-
+	
 	func _init(local: Commands, global: Commands) -> void:
 		_local = local
 		_global = global
-
+	
 	func all() -> Array[Command]:
 		var result: Array[Command] = []
 		result.append_array(_global.all())
 		result.append_array(_local.all())
 		return result
-
+	
 	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
 		if is_local:
 			return _local.add(name, path, args, is_local, icon, allowed_actions)
 		else:
 			return _global.add(name, path, args, is_local, icon, allowed_actions)
-
+	
 	func remove(name: String, is_local: bool) -> void:
 		if is_local:
 			return _local.remove(name, is_local)
@@ -304,27 +304,27 @@ class CommandsDuo extends Commands:
 
 class CommandsWrap extends Commands:
 	var _origin: Commands
-
+	
 	func _init(origin: Commands) -> void:
 		_origin = origin
-
+	
 	func all() -> Array[Command]:
 		return _origin.all()
-
+	
 	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
 		return _origin.add(name, path, args, is_local, icon, allowed_actions)
-
+	
 	func remove(name: String, is_local: bool) -> void:
 		_origin.remove(name, is_local)
 
 
 class CommandsWithBasic extends CommandsWrap:
 	var _basic: Array[Command]
-
+	
 	func _init(origin: Commands, basic: Array[Command]) -> void:
 		super._init(origin)
 		_basic = basic
-
+	
 	func all() -> Array[Command]:
 		var result: Array[Command]
 		result.append_array(_basic)
@@ -336,12 +336,12 @@ class CommandsGeneric extends Commands:
 	var _custom_commands_source: CustomCommandsSource
 	var _base_process_src: OSProcessSchema.Source
 	var _is_local: bool
-
+	
 	func _init(base_process_src: OSProcessSchema.Source, custom_commands_source: CustomCommandsSource, is_local: bool) -> void:
 		_base_process_src = base_process_src
 		_custom_commands_source = custom_commands_source
 		_is_local = is_local
-
+	
 	func all() -> Array[Command]:
 		var result: Array[Command]
 		var commands := _custom_commands_source.custom_commands
@@ -354,7 +354,7 @@ class CommandsGeneric extends Commands:
 			_is_local
 		)))
 		return result
-
+	
 	func add(name: String, path: String, args: PackedStringArray, is_local: bool, icon: String, allowed_actions: PackedStringArray) -> Command:
 		if is_local == _is_local:
 			var commands := _custom_commands_source.custom_commands
@@ -382,22 +382,21 @@ class CommandsGeneric extends Commands:
 			_custom_commands_source.custom_commands = commands
 			return _to_command(name, path, args, allowed_actions, icon, is_local)
 		else:
-			# assert(true, "Not implemented") <- Again?
+			assert(true, "Not implemented")
 			return null
-
+	
 	func remove(name: String, is_local: bool) -> void:
 		if is_local == _is_local:
 			var commands := _custom_commands_source.custom_commands
 			commands = commands.filter(func(x: Dictionary) -> bool: return x.name != name)
 			_custom_commands_source.custom_commands = commands
 		else:
-			# assert(true, "Not implemented") <- ;-;
-			pass
-
+			assert(true, "Not implemented")
+	
 	func _has_by_name(name: String) -> bool:
 		return len(
 			_custom_commands_source.custom_commands.filter(func(x: Dictionary) -> bool: return x.name == name)
 		) > 0
-
+	
 	func _to_command(name: String, path: String, args: PackedStringArray, allowed_actions: PackedStringArray, icon: String, is_local: bool) -> Command:
 		return Command.new(name, path, args, icon, is_local, _base_process_src, allowed_actions)

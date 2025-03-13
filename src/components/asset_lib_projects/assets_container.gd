@@ -45,7 +45,7 @@ func _update_columns() -> void:
 	new_columns = max(1, new_columns)
 #	prints(size.x, new_columns, (size.x / new_columns) - (100 * Config.EDSCALE))
 	if new_columns != columns:
-		columns = int(new_columns)
+		columns = new_columns
 #	for c in get_children():
 #		if c.has_method('clamp_width'):
 #			c.clamp_width((size.x / new_columns) - (100 * Config.EDSCALE))

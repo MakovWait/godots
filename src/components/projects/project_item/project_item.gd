@@ -20,9 +20,9 @@ signal tag_clicked(tag: String)
 @onready var _tag_container: ItemTagContainer = %TagContainer
 @onready var _project_features: Label = %ProjectFeatures
 @onready var _info_body: VBoxContainer = %InfoBody
-#@onready var _info_v_box: VBoxContainer = %InfoVBox
+@onready var _info_v_box: VBoxContainer = %InfoVBox
 @onready var _actions_h_box: HBoxContainer = %ActionsHBox
-#@onready var _title_container: HBoxContainer = %TitleContainer
+@onready var _title_container: HBoxContainer = %TitleContainer
 @onready var _actions_container: HBoxContainer = %ActionsContainer
 
 static var settings := ProjectItemActions.Settings.new(
@@ -56,10 +56,10 @@ func init(item: Projects.Item) -> void:
 	item.loaded.connect(func() -> void:
 		_fill_data(item)
 	)
-
+	
 	_editor_button.pressed.connect(_on_rebind_editor.bind(item))
 	_editor_button.disabled = item.is_missing
-
+	
 	item.internals_changed.connect(func() -> void:
 		_fill_data(item)
 	)
@@ -74,7 +74,7 @@ func init(item: Projects.Item) -> void:
 	double_clicked.connect(func() -> void:
 		if item.is_missing:
 			return
-
+		
 		if item.has_invalid_editor:
 			_on_rebind_editor(item)
 		else:
@@ -84,8 +84,8 @@ func init(item: Projects.Item) -> void:
 
 func _setup_actions_view(item: Projects.Item) -> void:
 	var action_views := ProjectItemActions.Menu.new(
-		_actions.without(['view-command']).all(),
-		settings,
+		_actions.without(['view-command']).all(), 
+		settings, 
 		CustomCommandsPopupItems.Self.new(
 			_actions.by_key('view-command'),
 			_get_commands(item)
@@ -145,11 +145,11 @@ func _fill_actions(item: Projects.Item) -> void:
 		"act": _on_edit_with_editor.bind(item),
 		"label": tr("Edit"),
 	})
-
+	
 	var run := Action.from_dict({
 		"key": "run",
 		"icon": Action.IconTheme.new(self, "Play", "EditorIcons"),
-		"act": _on_run_with_editor.bind(item, func(_item: Projects.Item) -> void: _item.run(), "run", "Run", false),
+		"act": _on_run_with_editor.bind(item, func(item: Projects.Item) -> void: item.run(), "run", "Run", false),
 		"label": tr("Run"),
 	})
 
@@ -180,14 +180,14 @@ func _fill_actions(item: Projects.Item) -> void:
 		"act": func() -> void: manage_tags_requested.emit(),
 		"label": tr("Manage Tags"),
 	})
-
+	
 	var view_command := Action.from_dict({
 		"key": "view-command",
 		"icon": Action.IconTheme.new(self, "Edit", "EditorIcons"),
 		"act": _view_command.bind(item),
 		"label": tr("Edit Commands"),
 	})
-
+	
 	var remove := Action.from_dict({
 		"key": "remove",
 		"icon": Action.IconTheme.new(self, "Remove", "EditorIcons"),
@@ -219,7 +219,7 @@ func _fill_data(item: Projects.Item) -> void:
 	if item.is_missing:
 		_explore_button.icon = get_theme_icon("FileBroken", "EditorIcons")
 		modulate = Color(1, 1, 1, 0.498)
-
+		
 	_project_warning.visible = item.has_invalid_editor
 	_favorite_button.button_pressed = item.favorite
 	_title_label.text = item.name
@@ -229,13 +229,13 @@ func _fill_data(item: Projects.Item) -> void:
 	_tag_container.set_tags(item.tags)
 	_set_features(item.features)
 	_tags = item.tags
-
+	
 	_sort_data.favorite = item.favorite
 	_sort_data.name = item.name
 	_sort_data.path = item.path
 	_sort_data.last_modified = item.last_modified
 	_sort_data.tag_sort_string = "".join(item.tags)
-
+	
 	for action in _actions.sub_list([
 		'duplicate',
 		'bind-editor',
@@ -243,7 +243,7 @@ func _fill_data(item: Projects.Item) -> void:
 		'rename'
 	]).all():
 		action.disable(item.is_missing)
-
+	
 	for action in _actions.sub_list([
 		'view-command',
 		'edit',
@@ -284,8 +284,8 @@ func _get_commands(item: Projects.Item) -> CommandViewer.Commands:
 func _set_features(features: Array) -> void:
 	var features_to_print := features.filter(func(x: String) -> bool: return _is_version(x) or x == "C#")
 	if len(features_to_print) > 0:
-		var string := ", ".join(features_to_print)
-		_project_features.text = string
+		var str := ", ".join(features_to_print)
+		_project_features.text = str
 #		_project_features.custom_minimum_size = Vector2(25 * 15, 10) * Config.EDSCALE
 		if settings.is_show_features():
 			_project_features.show()
@@ -299,37 +299,37 @@ func _is_version(feature: String) -> bool:
 
 func _on_rebind_editor(item: Projects.Item) -> void:
 	var bind_dialog := ConfirmationDialogAutoFree.new()
-
+	
 	var vbox := VBoxContainer.new()
 	bind_dialog.add_child(vbox)
-
+	
 	var hbox := HBoxContainer.new()
 	vbox.add_child(hbox)
-
+	
 	var title := Label.new()
 	hbox.add_child(title)
-
+	
 	var options := OptionButton.new()
 	hbox.add_child(options)
-
+	
 	if item.has_version_hint:
 		var hbox2 := HBoxContainer.new()
 		hbox2.modulate = Color(0.5, 0.5, 0.5, 0.5)
 		hbox2.alignment = BoxContainer.ALIGNMENT_CENTER
 		vbox.add_child(hbox2)
-
+		
 		var version_hint_title := Label.new()
 		version_hint_title.text = tr("version hint:")
 		hbox2.add_child(version_hint_title)
-
+		
 		var version_hint_value := Label.new()
 		version_hint_value.text = item.version_hint
 		hbox2.add_child(version_hint_value)
-
+	
 	vbox.add_spacer(false)
-
+	
 	title.text = "%s: " % tr("Editor")
-
+	
 	options.item_selected.connect(func(idx: int) -> void:
 		bind_dialog.get_ok_button().disabled = false
 	)
@@ -339,14 +339,14 @@ func _on_rebind_editor(item: Projects.Item) -> void:
 		var opt: Dictionary = option_items[i]
 		options.add_item(opt.label as String, i)
 		options.set_item_metadata(i, opt.path)
-
+	
 	bind_dialog.confirmed.connect(func() -> void:
 		if options.selected < 0: return
 		var new_editor_path := options.get_item_metadata(options.selected) as String
 		item.editor_path = new_editor_path
 		edited.emit()
 	)
-
+	
 	add_child(bind_dialog)
 	bind_dialog.popup_centered()
 
@@ -364,36 +364,36 @@ func _on_rename(item: Projects.Item) -> void:
 
 
 func _on_edit_with_editor(item: Projects.Item) -> void:
-	_on_run_with_editor(item, func(_item: Projects.Item) -> void: _item.edit(), "edit", "Edit", true)
+	_on_run_with_editor(item, func(item: Projects.Item) -> void: item.edit(), "edit", "Edit", true)
 
 
 func _on_run_with_editor(item: Projects.Item, editor_flag: Callable, action_name: String, ok_button_text: String, auto_close: bool) -> void:
 	if not item.show_edit_warning:
 		_run_with_editor(item, editor_flag, auto_close)
 		return
-
+	
 	var confirmation_dialog := ConfirmationDialogAutoFree.new()
 	confirmation_dialog.ok_button_text = ok_button_text
 	confirmation_dialog.get_label().hide()
-
+	
 	var label := Label.new()
 	label.text = tr("Are you sure to %s the project with the given editor?") % action_name
-
+	
 	var editor_name := Label.new()
 	editor_name.text = item.editor_name
 	editor_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
+	
 	var checkbox := CheckBox.new()
 	checkbox.text = tr("do not show again for this project")
-
+	
 	var vb := VBoxContainer.new()
 	vb.add_child(label)
 	vb.add_child(editor_name)
 	vb.add_child(checkbox)
 	vb.add_spacer(false)
-
+	
 	confirmation_dialog.add_child(vb)
-
+	
 	confirmation_dialog.confirmed.connect(func() -> void:
 		var before := item.show_edit_warning
 		item.show_edit_warning = not checkbox.button_pressed

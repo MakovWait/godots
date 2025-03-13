@@ -32,10 +32,10 @@ func async_http_get_using(http_request: HTTPRequest, url: String, headers := Pac
 
 class Response:
 	var _resp: Array
-
+	
 	var result: int:
 		get: return _resp[0]
-
+	
 	var code: int:
 		get: return _resp[1]
 
@@ -47,20 +47,20 @@ class Response:
 
 	func _init(resp: Array) -> void:
 		_resp = resp
-
+	
 	func to_json(safe:=true) -> Variant:
 		return utils.response_to_json(_resp, safe)
-
+	
 	func get_string_from_utf8() -> String:
 		return body.get_string_from_utf8()
-
+	
 	func _to_string() -> String:
 		return "[Response] Result: %s; Code: %s; Headers: %s" % [result, code, headers]
-
+	
 	func to_response_info(host: String, download_file:="") -> ResponseInfo:
 		var error_text := ""
 		var status := ""
-
+		
 		match result:
 			HTTPRequest.RESULT_CHUNKED_BODY_SIZE_MISMATCH, HTTPRequest.RESULT_CONNECTION_ERROR, HTTPRequest.RESULT_BODY_SIZE_LIMIT_EXCEEDED:
 				error_text = tr("Connection error, prease try again.")
@@ -90,11 +90,11 @@ class Response:
 				if code != 200:
 					error_text = tr("Request failed, return code") + ": " + str(code)
 					status = tr("Failed") + ": " + str(code)
-
-		var _result := ResponseInfo.new()
-		_result.error_text = error_text
-		_result.status = status
-		return _result
+		
+		var result := ResponseInfo.new()
+		result.error_text = error_text
+		result.status = status
+		return result
 
 
 class ResponseInfo:

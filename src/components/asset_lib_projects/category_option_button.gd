@@ -1,7 +1,9 @@
 class_name AssetCategoryOptionButton
 extends OptionButton
 
+
 signal changed
+
 
 var _src: Src
 
@@ -17,10 +19,8 @@ func _init() -> void:
 
 func async_load_items(url: String) -> Array[String]:
 	clear()
-	@warning_ignore("redundant_await")
-	await add_item(tr("All"), 0)
+	add_item(tr("All"), 0)
 	var errors: Array[String] = []
-	@warning_ignore("redundant_await")
 	var json := await _src.async_load(url, errors)
 	for category: Dictionary in json.get("categories", []):
 		add_item(tr(category.name as String), category.id as int)
@@ -51,17 +51,15 @@ func force_select_by_label(opt_label: String) -> void:
 
 
 class Src:
-	func async_load(url: String, errors: Array[String] = []) -> Dictionary:
+	func async_load(url: String, errors: Array[String]=[]) -> Dictionary:
 		return {}
 
 
-class SrcRemote:
-	extends Src
-
-	func async_load(url: String, errors: Array[String] = []) -> Dictionary:
-		var response := HttpClient.Response.new(
-			await HttpClient.async_http_get(url.path_join("configure?type=project"))
-		)
+class SrcRemote extends Src:
+	func async_load(url: String, errors: Array[String]=[]) -> Dictionary:
+		var response := HttpClient.Response.new(await HttpClient.async_http_get(
+			url.path_join("configure?type=project")
+		))
 		var info := response.to_response_info(url)
 		if info.error_text:
 			errors.append(info.error_text)

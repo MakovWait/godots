@@ -14,16 +14,16 @@ signal manage_tags_requested(item_tags: Array, all_tags: Array, on_confirm: Call
 
 
 var _projects: Projects.List
-#var _load_projects_queue := []
+var _load_projects_queue := []
 var _remove_missing_action: Action.Self
 
 
 func init(projects: Projects.List) -> void:
 	self._projects = projects
-
+	
 	var remove_missing_popup := RemoveMissingDialog.new(_remove_missing)
 	add_child(remove_missing_popup)
-
+	
 	var actions := Action.List.new([
 		Action.from_dict({
 			"key": "new-project",
@@ -67,7 +67,7 @@ func init(projects: Projects.List) -> void:
 			"act": _refresh
 		})
 	])
-
+	
 	_remove_missing_action = actions.by_key('remove-missing')
 
 	var project_actions := TabActions.Menu.new(
@@ -76,9 +76,9 @@ func init(projects: Projects.List) -> void:
 			'import-project',
 			'clone-project',
 			'scan-projects',
-		]).all(),
+		]).all(), 
 		TabActions.Settings.new(
-			Cache.section_of(self),
+			Cache.section_of(self), 
 			[
 				'new-project',
 				'import-project',
@@ -106,34 +106,34 @@ func init(projects: Projects.List) -> void:
 			project.load()
 			_projects_list.add(project)
 		_projects.save()
-
+		
 		if edit:
 			project.edit()
 			AutoClose.close_if_should()
-
+		
 		if callback:
 			(callback as Callable).call(project, projects)
-
+		
 		_projects_list.sort_items()
 	)
-
+	
 	_clone_project_dialog.cloned.connect(func(path: String) -> void:
 		assert(path.get_file() == "project.godot")
 		import(path)
 	)
-
+	
 	_new_project_dialog.created.connect(func(project_path: String) -> void:
 		import(project_path)
 	)
-
+	
 	_scan_dialog.dir_to_scan_selected.connect(func(dir_to_scan: String) -> void:
 		_scan_projects(dir_to_scan)
 	)
-
+	
 	_duplicate_project_dialog.duplicated.connect(func(project_path: String, callback: Callable) -> void:
 		import(project_path, callback)
 	)
-
+	
 	_projects_list.refresh(_projects.all())
 	_load_projects()
 
@@ -182,7 +182,7 @@ func install_zip(zip_reader: ZIPReader, project_name: String) -> void:
 		if len(project_configs) == 0:
 			_install_project_from_zip_dialog.error(tr("No project.godot found."))
 			return
-
+		
 		var project_file_path := project_configs[0]
 		_install_project_from_zip_dialog.hide()
 		import(project_file_path.path)
@@ -255,5 +255,5 @@ func _on_projects_list_item_manage_tags_requested(item_data: Projects.Item) -> v
 func _on_projects_list_item_duplicate_requested(project: Projects.Item) -> void:
 	if _duplicate_project_dialog.visible:
 		return
-
+	
 	_duplicate_project_dialog.raise(project.name, project)
