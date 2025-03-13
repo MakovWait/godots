@@ -7,11 +7,11 @@ static func unzip(zip_path: String, target_dir: String) -> void:
 	var exit_code: int
 	if OS.has_feature("windows"):
 		exit_code = OS.execute(
-			"powershell.exe", 
+			"powershell.exe",
 			[
 				"-command",
-				"\"Expand-Archive '%s' '%s'\" -Force" % [ 
-					ProjectSettings.globalize_path(zip_path), 
+				"\"Expand-Archive '%s' '%s'\" -Force" % [
+					ProjectSettings.globalize_path(zip_path),
 					ProjectSettings.globalize_path(target_dir)
 				]
 			], output, true
@@ -20,10 +20,10 @@ static func unzip(zip_path: String, target_dir: String) -> void:
 		Output.push("unzip executed with exit code: %s" % exit_code)
 	elif OS.has_feature("macos"):
 		exit_code = OS.execute(
-			"unzip", 
+			"unzip",
 			[
-				"%s" % ProjectSettings.globalize_path(zip_path), 
-				"-d", 
+				"%s" % ProjectSettings.globalize_path(zip_path),
+				"-d",
 				"%s" % ProjectSettings.globalize_path(target_dir)
 			], output, true
 		)
@@ -34,7 +34,7 @@ static func unzip(zip_path: String, target_dir: String) -> void:
 			"unzip",
 			[
 				"-o",
-				"%s" % ProjectSettings.globalize_path(zip_path), 
+				"%s" % ProjectSettings.globalize_path(zip_path),
 				"-d",
 				"%s" % ProjectSettings.globalize_path(target_dir)
 			], output, true
@@ -45,8 +45,8 @@ static func unzip(zip_path: String, target_dir: String) -> void:
 
 ## A procedure that unzips a zip file to a target directory, keeping the
 ## target directory as root, rather than the zip's root directory.
-static func unzip_to_path(zip: ZIPReader, destiny: String) -> Error:
-	var files := zip.get_files()
+static func unzip_to_path(_zip: ZIPReader, destiny: String) -> Error:
+	var files := _zip.get_files()
 	var err: int
 
 	for zip_file_name in files:
@@ -56,9 +56,9 @@ static func unzip_to_path(zip: ZIPReader, destiny: String) -> Error:
 		if zip_file_name.ends_with("/"):
 			err = DirAccess.make_dir_recursive_absolute(target_file_name)
 			if err != OK:
-				return err
+				return (err as Error)
 		else:
-			var file_contents := zip.read_file(zip_file_name)
+			var file_contents: PackedByteArray = _zip.read_file(zip_file_name)
 			var file := FileAccess.open(target_file_name, FileAccess.WRITE)
 			if not file:
 				return FileAccess.get_open_error()

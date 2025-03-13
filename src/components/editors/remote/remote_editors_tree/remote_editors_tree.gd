@@ -10,14 +10,14 @@ const uuid = preload("res://addons/uuid.gd")
 @onready var _check_box_container: HFlowContainer = %CheckBoxContainer
 
 var _refresh_button: Button
-var _remote_assets: RemoteEditorsTreeDataSource.RemoteAssets
+#var _remote_assets: RemoteEditorsTreeDataSource.RemoteAssets
 
 var _src: RemoteEditorsTreeDataSource.I
 var _i_remote_tree: RemoteEditorsTreeDataSource.RemoteTree
 var _root_loaded := false
 var _row_filters: Array[RowFilter] = [NotRelatedFilter.new()]
 var _current_loadings_number := 0:
-	set(value): 
+	set(value):
 		_current_loadings_number = value
 		_loadings_number_changed.emit(value)
 var _remote_editors_checkbox_checked := Cache.smart_section(
@@ -27,7 +27,7 @@ var _remote_editors_checkbox_checked := Cache.smart_section(
 
 func post_ready(refresh_button: Button) -> void:
 	_refresh_button = refresh_button
-	
+
 	_setup_tree()
 	_setup_checkboxes()
 
@@ -61,7 +61,7 @@ func _refresh() -> void:
 
 func _setup_checkboxes() -> void:
 	(%CheckBoxPanelContainer as PanelContainer).add_theme_stylebox_override("panel", get_theme_stylebox("panel", "Tree"))
-	
+
 	var checkbox := func(text: String, filter: RowFilter, button_pressed:=false) -> CheckBox:
 		var box := CheckBox.new()
 		box.text = text
@@ -69,7 +69,7 @@ func _setup_checkboxes() -> void:
 		if button_pressed:
 			_row_filters.append(filter)
 		box.toggled.connect(func(pressed: bool) -> void:
-			if pressed: 
+			if pressed:
 				_row_filters.append(filter)
 			else:
 				var idx := _row_filters.find(filter)
@@ -86,7 +86,7 @@ func _setup_checkboxes() -> void:
 		if not button_pressed:
 			_row_filters.append(filter)
 		box.toggled.connect(func(pressed: bool) -> void:
-			if pressed: 
+			if pressed:
 				var idx := _row_filters.find(filter)
 				if idx >= 0:
 					_row_filters.remove_at(idx)
@@ -98,32 +98,32 @@ func _setup_checkboxes() -> void:
 		return box
 
 	var contains_any := func(words: Array) -> Callable:
-		return func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool: 
+		return func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 			return words.any(func(x: String) -> bool: return row.get_name().to_lower().contains(x.to_lower()))
-	
+
 	var _not := func(original: Callable) -> Callable:
 		return func(row: RemoteEditorsTreeDataSource.FilterTarget) -> Callable: return not original.call(row)
-	
+
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			tr("mono"), 
+			tr("mono"),
 			RowFilter.new(contains_any.call(["mono"]) as Callable),
 			_remote_editors_checkbox_checked.get_value("mono", true)
 		) as CheckBox
 	)
-	
+
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			tr("unstable"), 
+			tr("unstable"),
 			RowFilter.new(contains_any.call(["rc", "beta", "alpha", "dev", "fixup"]) as Callable),
 			_remote_editors_checkbox_checked.get_value("unstable", false)
 		) as CheckBox
 	)
-	
+
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			tr("any platform"), 
-			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool: 
+			tr("any platform"),
+			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 				return row.is_file() and row.is_for_different_platform(_src.get_platform_suffixes())),
 			_remote_editors_checkbox_checked.get_value("any platform", false)
 		) as CheckBox
@@ -141,7 +141,7 @@ func _setup_checkboxes() -> void:
 		if bit:
 			_check_box_container.add_child(
 				checkbox.call(
-					"%s-bit" % bit, 
+					"%s-bit" % bit,
 					RowFilter.new(contains_any.call([opposite]) as Callable),
 					_remote_editors_checkbox_checked.get_value("%s-bit" % bit, true)
 				) as CheckBox
@@ -149,8 +149,8 @@ func _setup_checkboxes() -> void:
 
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			tr("4.x"), 
-			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool: 
+			tr("4.x"),
+			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 				return row.is_possible_version_folder() and row.get_name().begins_with("4")),
 			_remote_editors_checkbox_checked.get_value("4.x", true)
 		) as CheckBox
@@ -158,8 +158,8 @@ func _setup_checkboxes() -> void:
 
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			tr("3.x"), 
-			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool: 
+			tr("3.x"),
+			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 				return row.is_possible_version_folder() and row.get_name().begins_with("3")),
 			_remote_editors_checkbox_checked.get_value("3.x", true)
 		) as CheckBox
@@ -167,8 +167,8 @@ func _setup_checkboxes() -> void:
 
 	_check_box_container.add_child(
 		inverted_checkbox.call(
-			tr("x.x"), 
-			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool: 
+			tr("x.x"),
+			RowFilter.new(func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 				return row.is_possible_version_folder() and not (row.get_name().begins_with("4") or row.get_name().begins_with("3"))),
 			_remote_editors_checkbox_checked.get_value("x.x", false)
 		) as CheckBox
@@ -181,9 +181,9 @@ func _delegate_of(item: TreeItem) -> RemoteEditorsTreeDataSource.Item:
 
 func _setup_tree() -> void:
 	_i_remote_tree = RemoteEditorsTreeDataSource.RemoteTree.new(_tree, self)
-	
+
 	_tree.item_collapsed.connect(
-		func(x: TreeItem) -> void: 
+		func(x: TreeItem) -> void:
 			var expanded := not x.collapsed
 			var delegate := _delegate_of(x)
 			var not_loaded_yet := not delegate.is_loaded()
@@ -205,6 +205,7 @@ func _setup_tree() -> void:
 
 func _expand(remote_tree_item: RemoteEditorsTreeDataSource.Item) -> void:
 	_current_loadings_number += 1
+	@warning_ignore("redundant_await")
 	await remote_tree_item.async_expand(_i_remote_tree)
 	_update_whole_tree_visibility(remote_tree_item)
 	_current_loadings_number -= 1
@@ -224,10 +225,10 @@ func _on_visibility_changed() -> void:
 
 class RowFilter:
 	var _delegate: Callable
-	
+
 	func _init(delegate: Callable) -> void:
 		_delegate = delegate
-	
+
 	func test(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 		return _delegate.call(row)
 
@@ -235,7 +236,7 @@ class RowFilter:
 class SimpleContainsFilter extends RowFilter:
 	func _init(what: String) -> void:
 		super._init(
-			func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool: 
+			func(row: RemoteEditorsTreeDataSource.FilterTarget) -> bool:
 				return row.get_name().to_lower().contains(what)
 		)
 

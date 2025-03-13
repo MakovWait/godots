@@ -18,9 +18,9 @@ func _ready() -> void:
 		ctx.go_to_remote()
 		_local.set_pressed_no_signal(true)
 	)
-	
-	add_theme_constant_override("separation", 48 * Config.EDSCALE)
-	
+
+	add_theme_constant_override("separation", int(48 * Config.EDSCALE))
+
 	_set_theme_to(_local)
 	_set_theme_to(_remote)
 

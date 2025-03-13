@@ -19,7 +19,7 @@ var _original_title_text: String
 
 func _init() -> void:
 	custom_minimum_size = Vector2i(DEFAULT_MIN_SIZE_X, 100) * Config.EDSCALE
-	add_theme_constant_override("separation", 15 * Config.EDSCALE)
+	add_theme_constant_override("separation", int(15 * Config.EDSCALE))
 
 
 func _ready() -> void:
@@ -34,9 +34,9 @@ func init(item: AssetLib.Item, images: RemoteImageSrc.I) -> void:
 	_category.text = item.category
 	_author.text = item.author
 	_cost.text = item.cost
-	
+
 	_original_title_text = item.title
-	
+
 	_title.pressed.connect(func() -> void:
 		title_pressed.emit(item)
 	)
@@ -69,5 +69,5 @@ func clamp_width(max_width: int) -> void:
 	if text_pixel_width > max_width:
 		# Truncate title text to within the current column width.
 		var max_length := max_width / (text_pixel_width / full_text.length())
-		var truncated_text := full_text.left(max_length - 3) + "..."
+		var truncated_text := full_text.left(int(max_length - 3)) + "..."
 		_title.text = truncated_text

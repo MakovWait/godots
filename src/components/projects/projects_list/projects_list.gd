@@ -34,7 +34,6 @@ func _item_comparator(a: Dictionary, b: Dictionary) -> bool:
 		2: return a.path < b.path
 		3: return a.tag_sort_string < b.tag_sort_string
 		_: return a.name < b.name
-	return a.name < b.name
 
 
 func _fill_sort_options(btn: OptionButton) -> void:
@@ -42,7 +41,7 @@ func _fill_sort_options(btn: OptionButton) -> void:
 	btn.add_item(tr("Name"))
 	btn.add_item(tr("Path"))
 	btn.add_item(tr("Tags"))
-	
+
 	var last_checked_sort := Cache.smart_value(self, "last_checked_sort", true)
 	btn.select(last_checked_sort.ret(1) as int)
 	btn.item_selected.connect(func(idx: int) -> void: last_checked_sort.put(idx))

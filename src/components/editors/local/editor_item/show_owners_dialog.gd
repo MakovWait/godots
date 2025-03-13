@@ -19,31 +19,31 @@ func raise(editor: LocalEditors.Item) -> void:
 		var item := _tree.create_item()
 		var icon_image: Image = owner.icon.get_image().duplicate()
 		icon_image.resize(
-			16 * Config.EDSCALE,
-			16 * Config.EDSCALE,
+			int(16 * Config.EDSCALE),
+			int(16 * Config.EDSCALE),
 			Image.INTERPOLATE_LANCZOS
 		)
 		item.set_icon(0, ImageTexture.create_from_image(icon_image))
 		item.set_text(0, owner.name)
 		item.add_button(
-			0, 
-			get_theme_icon("Play", "EditorIcons"), 
-			Buttons.RUN, 
-			not owner.is_valid, 
+			0,
+			get_theme_icon("Play", "EditorIcons"),
+			Buttons.RUN,
+			not owner.is_valid,
 			tr("Run")
 		)
 		item.add_button(
-			0, 
-			get_theme_icon("Edit", "EditorIcons"), 
-			Buttons.EDIT, 
-			not owner.is_valid, 
+			0,
+			get_theme_icon("Edit", "EditorIcons"),
+			Buttons.EDIT,
+			not owner.is_valid,
 			tr("Edit")
 		)
 		item.add_button(
-			0, 
-			get_theme_icon("Folder", "EditorIcons"), 
-			Buttons.OPEN_IN_EXPLORER, 
-			not owner.is_valid, 
+			0,
+			get_theme_icon("Folder", "EditorIcons"),
+			Buttons.OPEN_IN_EXPLORER,
+			not owner.is_valid,
 			tr("Show in File Manager")
 		)
 		item.set_metadata(0, owner)
@@ -57,7 +57,7 @@ func _ready() -> void:
 		if not visible:
 			queue_free()
 	)
-	
+
 	_tree.button_clicked.connect(func(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 		var project: Projects.Item = item.get_metadata(0)
 		if id == Buttons.EDIT:
@@ -69,6 +69,6 @@ func _ready() -> void:
 				ProjectSettings.globalize_path(project.path)
 			)
 	)
-	
+
 	_tree.create_item()
 	_tree.hide_root = true

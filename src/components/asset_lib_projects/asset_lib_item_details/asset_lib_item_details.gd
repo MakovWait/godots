@@ -26,7 +26,8 @@ func _ready() -> void:
 
 	_preview.custom_minimum_size = Vector2(640, 345) * Config.EDSCALE
 	_preview_bg.custom_minimum_size = Vector2(640, 101) * Config.EDSCALE
-	
+
+	@warning_ignore("redundant_await")
 	var item := await _asset_lib.async_fetch_one(_item_id)
 	_configure(item)
 
@@ -40,7 +41,8 @@ func _configure(item: AssetLib.Item) -> void:
 	title = item.title
 	var first_preview_selected := false
 	for preview in item.previews:
-		var btn := add_preview(preview)
+		@warning_ignore("redundant_await")
+		var btn := await add_preview(preview)
 		if not first_preview_selected and not preview.is_video:
 			first_preview_selected = true
 			_handle_btn_pressed.bind(preview, btn).call_deferred()
@@ -52,10 +54,11 @@ func add_preview(item: AssetLib.ItemPreview) -> Button:
 	btn.toggle_mode = true
 	btn.pressed.connect(_handle_btn_pressed.bind(item, btn))
 	_previews_container.add_child(btn)
-	_images_src.async_load_img(item.thumbnail, func(tex: Texture2D) -> void:
+	@warning_ignore("redundant_await")
+	await _images_src.async_load_img(item.thumbnail, func(tex: Texture2D) -> void:
 		if not item.is_video:
 			if tex is ImageTexture:
-				utils.fit_height(85 * Config.EDSCALE, tex.get_size(), func(new_size: Vector2i) -> void: 
+				utils.fit_height(85 * Config.EDSCALE, tex.get_size(), func(new_size: Vector2i) -> void:
 					(tex as ImageTexture).set_size_override(new_size)
 				)
 			btn.icon = tex
@@ -64,13 +67,13 @@ func add_preview(item: AssetLib.ItemPreview) -> Button:
 			var tex_image: Image = tex.get_image()
 			if tex_image == null:
 				tex_image = get_theme_icon("FileBrokenBigThumb", "EditorIcons").get_image()
-			utils.fit_height(85 * Config.EDSCALE, tex_image.get_size(), func(new_size: Vector2i) -> void: 
+			utils.fit_height(85 * Config.EDSCALE, tex_image.get_size(), func(new_size: Vector2i) -> void:
 				tex_image.resize(new_size.x, new_size.y, Image.INTERPOLATE_LANCZOS)
 			)
 			var thumbnail := tex_image.duplicate() as Image
 			var overlay_pos := Vector2i(
-				(thumbnail.get_width() - overlay.get_width()) / 2,
-				(thumbnail.get_height() - overlay.get_height()) / 2
+				int((thumbnail.get_width() - overlay.get_width()) / 2.0),
+				int((thumbnail.get_height() - overlay.get_height()) / 2.0)
 			)
 			thumbnail.convert(Image.FORMAT_RGBA8)
 			thumbnail.blend_rect(overlay, overlay.get_used_rect(), overlay_pos)
@@ -89,7 +92,7 @@ func _handle_btn_pressed(item: AssetLib.ItemPreview, btn: Button) -> void:
 	else:
 		_images_src.async_load_img(item.link, func(tex: Texture2D) -> void:
 			if tex is ImageTexture:
-				utils.fit_height(397 * Config.EDSCALE, tex.get_size(), func(new_size: Vector2i) -> void: 
+				utils.fit_height(397 * Config.EDSCALE, tex.get_size(), func(new_size: Vector2i) -> void:
 					(tex as ImageTexture).set_size_override(new_size)
 				)
 			_preview.texture = tex

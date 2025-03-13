@@ -1,6 +1,7 @@
 class_name NewProjectDialog
 extends "res://src/components/projects/install_project_dialog/install_project_dialog.gd"
 
+@warning_ignore("unused_signal")
 signal created(path: String)
 
 @onready var _handler_option_button: OptionButton = %HandlerOptionButton
@@ -9,15 +10,15 @@ signal created(path: String)
 
 func _ready() -> void:
 	super._ready()
-	
+
 	_handler_option_button.item_selected.connect(func(idx: int) -> void:
 		var meta: Dictionary = _handler_option_button.get_item_metadata(idx)
 		_custom_form_tabs.current_tab = _custom_form_tabs.get_tab_idx_from_control(meta.form as Control)
 	)
-	
+
 	_register_handler(NewProjectGodot4.new())
 	_register_handler(NewProjectGodot3.new())
-	
+
 	confirmed.connect(func() -> void:
 		var meta: Dictionary = _handler_option_button.get_item_metadata(_handler_option_button.selected)
 		var handler := meta.self as NewProjectHandler
@@ -33,7 +34,7 @@ func _register_handler(handler: NewProjectHandler) -> void:
 	var handler_form := handler.custom_form()
 	handler_form.name = handler.label()
 	_custom_form_tabs.add_child(handler_form)
-	
+
 	_handler_option_button.add_item(handler.label())
 	_handler_option_button.set_item_metadata(
 		_handler_option_button.item_count - 1,
@@ -46,17 +47,17 @@ func _register_handler(handler: NewProjectHandler) -> void:
 
 class NewProjectContext:
 	var _ctx_delegate: Object
-	
+
 	var dir: String
 	var project_name: String
 	var form: Control
-	
+
 	func _init(ctx_delegate: Object) -> void:
 		_ctx_delegate = ctx_delegate
-	
+
 	func show_error(msg: String) -> void:
 		_ctx_delegate.call("_error", msg)
-	
+
 	func emit_created(path: String) -> void:
 		_ctx_delegate.emit_signal("created", path)
 
@@ -64,10 +65,10 @@ class NewProjectContext:
 class NewProjectHandler:
 	func custom_form() -> Control:
 		return Control.new()
-	
-	func create_project(args: NewProjectContext) -> void: 
+
+	func create_project(args: NewProjectContext) -> void:
 		pass
-	
+
 	func label() -> String:
 		return ""
 
@@ -75,7 +76,7 @@ class NewProjectHandler:
 class NewProjectGodot3 extends NewProjectHandler:
 	func custom_form() -> Control:
 		return NewProjectGodot3Form.new()
-	
+
 	func create_project(ctx: NewProjectContext) -> void:
 		var dir := ctx.dir
 		var project_file_path := dir.path_join("project.godot")
@@ -95,14 +96,14 @@ class NewProjectGodot3 extends NewProjectHandler:
 			var img: Texture2D = preload("res://assets/default_project_icon.svg")
 			img.get_image().save_png(dir.path_join("icon.png"))
 			ctx.emit_created(project_file_path)
-	
+
 	func label() -> String:
 		return "Godot 3.x"
 
 
 class NewProjectGodot3Form extends VBoxContainer:
 	var _renderer: RendererSelect
-	
+
 	func _init() -> void:
 		_renderer = RendererSelect.new({
 			"GLES3": {
@@ -125,9 +126,9 @@ class NewProjectGodot3Form extends VBoxContainer:
 				]),
 			},
 		})
-		
+
 		add_child(_renderer)
-		
+
 		Comp.new(Label).on_init([
 			CompInit.TEXT(tr("The renderer can be changed later, but scenes may need to be adjusted.")),
 			CompInit.CUSTOM(func(label: Label) -> void:
@@ -138,7 +139,7 @@ class NewProjectGodot3Form extends VBoxContainer:
 				pass\
 			)
 		]).add_to(self)
-	
+
 	func renderer_method() -> String:
 		return _renderer.current()
 
@@ -156,7 +157,7 @@ class NewProjectGodot4 extends NewProjectHandler:
 		var initial_settings := ConfigFile.new()
 		initial_settings.set_value("application", "config/name", ctx.project_name)
 		initial_settings.set_value("application", "config/icon", "res://icon.svg")
-		
+
 		# rendering
 		initial_settings.set_value("rendering", "renderer/rendering_method", form.renderer_method())
 		if form.renderer_method() == "gl_compatibility":
@@ -179,7 +180,7 @@ class NewProjectGodot4 extends NewProjectHandler:
 				else:
 					ctx.show_error(tr("Couldn't create .gitignore in project path."))
 					return
-			
+
 				var gitattributes := FileAccess.open(dir.path_join(".gitattributes"), FileAccess.WRITE)
 				if gitattributes != null:
 					gitattributes.store_line("# Normalize EOL for all files that Git considers text files.")
@@ -195,7 +196,7 @@ class NewProjectGodot4 extends NewProjectHandler:
 			file_to.close()
 
 			ctx.emit_created(project_file_path)
-	
+
 	func label() -> String:
 		return "Godot 4.x"
 
@@ -238,9 +239,9 @@ class NewProjectGodot4Form extends VBoxContainer:
 				]),
 			}
 		})
-		
+
 		add_child(_renderer)
-		
+
 		Comp.new(Label).on_init([
 			CompInit.TEXT(tr("The renderer can be changed later, but scenes may need to be adjusted.")),
 			CompInit.CUSTOM(func(label: Label) -> void:
@@ -251,34 +252,34 @@ class NewProjectGodot4Form extends VBoxContainer:
 				pass\
 			)
 		]).add_to(self)
-		
+
 		_vcs_meta = VersionControlMetadata.new()
 		add_child(_vcs_meta)
-	
+
 	func renderer_method() -> String:
 		return _renderer.current()
-	
+
 	func vsc_meta() -> String:
 		return _vcs_meta.current()
 
 
 class VersionControlMetadata extends HBoxContainer:
 	var _options: OptionButton
-	
+
 	func _init() -> void:
 		var label := Label.new()
 		label.text = tr("Version Control Metadata:")
-		
+
 		_options = OptionButton.new()
 		_options.add_item("Git")
 		_options.set_item_metadata(_options.item_count - 1, "git")
-		
+
 		_options.add_item("None")
 		_options.set_item_metadata(_options.item_count - 1, "none")
-		
+
 		add_child(label)
 		add_child(_options)
-	
+
 	func current() -> String:
 		return _options.get_item_metadata(_options.selected) as String
 
@@ -286,7 +287,7 @@ class VersionControlMetadata extends HBoxContainer:
 
 class RendererSelect extends VBoxContainer:
 	var _button_group := ButtonGroup.new()
-	
+
 	func _init(options: Dictionary) -> void:
 		var renderer_desc_label := CompRefs.Simple.new()
 
@@ -317,13 +318,13 @@ class RendererSelect extends VBoxContainer:
 			Comp.new(Label).on_init([
 				CompInit.TEXT(tr("Renderer:"))
 			]),
-			
+
 			Comp.new(HBoxContainer, [
 				# checkboxes
 				Comp.new(VBoxContainer, checkboxes),
-				
+
 				Comp.new(VSeparator),
-				
+
 				# checkbox desc
 				Comp.new(VBoxContainer, [
 					Comp.new(Label).on_init([
@@ -337,6 +338,6 @@ class RendererSelect extends VBoxContainer:
 				]),
 			]),
 		]).add_to(self)
-	
+
 	func current() -> String:
 		return _button_group.get_pressed_button().get_meta("rendering_method")

@@ -10,7 +10,7 @@ signal download_requested(item: AssetLib.Item, icon: Texture2D)
 @onready var _assets_container := %AssetsContainer as AssetsContainer
 @onready var _filter_edit := %FilterEdit as LineEdit
 @onready var _version_option_button := %VersionOptionButton as GodotVersionOptionButton
-@onready var _sort_option_button := %SortOptionButton as OptionButton
+#@onready var _sort_option_button := %SortOptionButton as OptionButton
 @onready var _category_option_button := %CategoryOptionButton as AssetCategoryOptionButton
 @onready var _site_option_button := %SiteOptionButton as AssetLibProjectsSiteOptionButton
 @onready var _support_menu_button := %SupportMenuButton as AssetLibProjectsSupportMenuButton
@@ -23,8 +23,8 @@ var _params_sources_composed: ParamSources
 var _asset_lib_factory: AssetLib.Factory
 
 var _current_page := 0
-var _top_pages: HBoxContainer
-var _bottom_pages: HBoxContainer
+#var _top_pages: HBoxContainer
+#var _bottom_pages: HBoxContainer
 var _versions_loaded := false
 var _config_loaded := false
 var _initial_fetch := false
@@ -33,7 +33,7 @@ var _next_fetch_queued := false
 
 
 func init(
-	asset_lib_factory: AssetLib.Factory, 
+	asset_lib_factory: AssetLib.Factory,
 	category_src: AssetCategoryOptionButton.Src,
 	version_src: GodotVersionOptionButton.Src,
 	images_src: RemoteImageSrc.I
@@ -41,20 +41,20 @@ func init(
 	_category_option_button.init(category_src)
 	_version_option_button.init(version_src)
 	_asset_lib_factory = asset_lib_factory
-	
+
 	_assets_container.init(images_src)
 	_assets_container.title_pressed.connect(func(item: AssetLib.Item) -> void:
 		var asset_lib := _get_asset_lib()
 		var item_details: AssetLibItemDetailsDialog = _item_details_scene.instantiate()
-		item_details.download_requested.connect(func(item: AssetLib.Item, icon: Texture2D) -> void:
+		item_details.download_requested.connect(func(asset: AssetLib.Item, icon: Texture2D) -> void:
 			download_requested.emit(item, icon)
 		)
 		item_details.init(item.id as String, asset_lib, images_src)
 		add_child(item_details)
 		item_details.popup_centered()
 	)
-	_assets_container.category_pressed.connect(func(item: AssetLib.Item) -> void:
-		_category_option_button.force_select_by_label(item.category)
+	_assets_container.category_pressed.connect(func(asset: AssetLib.Item) -> void:
+		_category_option_button.force_select_by_label(asset.category)
 	)
 
 	if is_visible_in_tree():
@@ -72,23 +72,23 @@ func _init() -> void:
 
 func _ready() -> void:
 	_params_sources_composed = ParamSources.new(_params_sources)
-	
-	(%LibVb as Control).add_theme_constant_override("separation", 20 * Config.EDSCALE)
+
+	(%LibVb as Control).add_theme_constant_override("separation", int(20 * Config.EDSCALE))
 	_filter_edit.placeholder_text = tr("Search Templates, Projects, and Demos")
-	
-	_assets_container.add_theme_constant_override("h_separation", 10 * Config.EDSCALE)
-	_assets_container.add_theme_constant_override("v_separation", 10 * Config.EDSCALE)
-	
+
+	_assets_container.add_theme_constant_override("h_separation", int(10 * Config.EDSCALE))
+	_assets_container.add_theme_constant_override("v_separation", int(10 * Config.EDSCALE))
+
 	_params_sources_composed.connect_changed(func() -> void:
 		_current_page = 0
 		_async_fetch()
 	)
-	
+
 	_site_option_button.site_selected.connect(func() -> void:
 		_config_loaded = false
 		_async_fetch()
 	)
-	
+
 	(%TopPagesContainer as PaginationContainer).page_changed.connect(_change_page)
 	(%BotPagesContainer as PaginationContainer).page_changed.connect(_change_page)
 
@@ -102,17 +102,19 @@ func _async_fetch() -> void:
 	_next_fetch_queued = false
 
 	if not _versions_loaded:
+		@warning_ignore("redundant_await")
 		var version_error := await __async_load_versions_list()
 		if version_error:
 			return
-	
+
 	if not _config_loaded:
 		var config_error := await __async_load_configuration()
 		if config_error:
 			return
-	
+
+	@warning_ignore("redundant_await")
 	await __async_fetch_assets()
-	
+
 	_fetching = false
 	if _next_fetch_queued:
 		_async_fetch()
@@ -126,6 +128,7 @@ func __async_load_versions_list() -> Error:
 	_assets_container.clear()
 	_clear_pages()
 
+	@warning_ignore("redundant_await")
 	var versions_load_errors := await _version_option_button.async_load_versions()
 	var return_error: Error
 	if len(versions_load_errors) > 0:
@@ -153,6 +156,7 @@ func __async_load_configuration() -> Error:
 	_scroll_container.dim()
 	_error_container.hide()
 
+	@warning_ignore("redundant_await")
 	var config_load_errors := await _category_option_button.async_load_items(
 		_site_option_button.get_selected_site()
 	)
@@ -181,6 +185,7 @@ func __async_fetch_assets() -> void:
 	var asset_lib := _get_asset_lib()
 	var params := _get_asset_lib_params()
 	var errors: Array[String] = []
+	@warning_ignore("redundant_await")
 	var items := await asset_lib.async_fetch(params, errors)
 
 	if len(errors) > 0:
@@ -253,15 +258,15 @@ func _set_status(text: String) -> void:
 
 class ParamSources:
 	var _elements: Array
-	
+
 	func _init(elements: Array) -> void:
 		_elements = elements
-	
+
 	func enable() -> void:
 		for x: Object in _elements:
 			if x.has_method("_on_fetch_enable"):
 				x.call("_on_fetch_enable")
-	
+
 	func disable() -> void:
 		for x: Object in _elements:
 			if x.has_method("_on_fetch_disable"):
@@ -271,7 +276,7 @@ class ParamSources:
 		for x: Object in _elements:
 			if x.has_signal("changed"):
 				x.connect("changed", callback)
-	
+
 	func fill_params(params: AssetLib.Params) -> void:
 		for x: Object in _elements:
 			if x.has_method("fill_params"):

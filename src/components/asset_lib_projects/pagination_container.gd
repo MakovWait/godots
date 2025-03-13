@@ -22,25 +22,25 @@ func clear() -> void:
 func _make_pages(page: int, page_count: int, page_len: int, total_items: int) -> HBoxContainer:
 	var hbc := HBoxContainer.new()
 	hbc.alignment = HBoxContainer.ALIGNMENT_CENTER
-	
+
 	if page_count < 2:
 		return hbc
-	
+
 	var from := page - (5 / Config.EDSCALE)
 	if from < 0:
 		from = 0
 	var to := from + (10 / Config.EDSCALE)
 	if to > page_count:
 		to = page_count
-	
+
 	hbc.add_spacer(false)
-	hbc.add_theme_constant_override("separation", 5 * Config.EDSCALE)
-	
+	hbc.add_theme_constant_override("separation", int(5 * Config.EDSCALE))
+
 	var trigger_search := func(btn: Button, p: int) -> void:
 		btn.pressed.connect(func() -> void:
 			page_changed.emit(p)
 		)
-	
+
 	var first := Button.new()
 	first.text = tr("First", "Pagination")
 	if page != 0:
@@ -49,7 +49,7 @@ func _make_pages(page: int, page_count: int, page_len: int, total_items: int) ->
 		first.set_disabled(true)
 		first.set_focus_mode(Control.FOCUS_NONE)
 	hbc.add_child(first)
-	
+
 	var prev := Button.new()
 	prev.text = tr("Previous", "Pagination")
 	if page > 0:
@@ -59,7 +59,7 @@ func _make_pages(page: int, page_count: int, page_len: int, total_items: int) ->
 		prev.set_focus_mode(Control.FOCUS_NONE)
 	hbc.add_child(prev)
 	hbc.add_child(VSeparator.new())
-	
+
 	for i in range(from, to):
 		if i == page:
 			var current := Button.new()
@@ -76,7 +76,7 @@ func _make_pages(page: int, page_count: int, page_len: int, total_items: int) ->
 			trigger_search.call(current, i)
 
 			hbc.add_child(current)
-	
+
 	var next := Button.new()
 	next.set_text(tr("Next", "Pagination"))
 	if page < page_count - 1:
