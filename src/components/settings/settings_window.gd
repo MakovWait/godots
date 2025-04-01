@@ -34,24 +34,24 @@ func _prepare_settings() -> Array:
 			Config.USE_SYSTEM_TITLE_BAR,
 			SettingCheckbox
 		))), func() -> bool: return DisplayServer.has_feature(DisplayServer.FEATURE_EXTEND_TO_TITLE)),
-
+		
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/config/use_native_file_dialog",
 			Config.USE_NATIVE_FILE_DIALOG,
 			SettingCheckbox
 		))),
-
+		
 		SettingChangeObserved(SettingCfg(
 			"application/config/remember_window_rect",
 			Config.REMEMBER_WINDOW_SIZE,
 			SettingCheckbox,
 			tr("Restore last window size and position on startup.")
 		)),
-
+		
 		SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/preset",
 			ConfigFileValue.new(
-				IConfigFileLike.of_config(Config._cfg),
+				IConfigFileLike.of_config(Config._cfg), 
 				"theme",
 				"interface/theme/preset"
 			).bake_default("Default"),
@@ -61,18 +61,18 @@ func _prepare_settings() -> Array:
 		SettingCustomPresetTrigger(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/base_color",
 			ConfigFileValue.new(
-				IConfigFileLike.of_config(Config._cfg),
+				IConfigFileLike.of_config(Config._cfg), 
 				"theme",
 				"interface/theme/base_color"
 			).bake_default(Color(0.21, 0.24, 0.29)),
 			SettingColorPicker,
 			tr("Base color for the theme. Affects the background and primary UI elements.")
 		)))),
-
+		
 		SettingCustomPresetTrigger(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/accent_color",
 			ConfigFileValue.new(
-				IConfigFileLike.of_config(Config._cfg),
+				IConfigFileLike.of_config(Config._cfg), 
 				"theme",
 				"interface/theme/accent_color"
 			).bake_default(Color(0.44, 0.73, 0.98)),
@@ -83,7 +83,7 @@ func _prepare_settings() -> Array:
 		SettingCustomPresetTrigger(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/theme/contrast",
 			ConfigFileValue.new(
-				IConfigFileLike.of_config(Config._cfg),
+				IConfigFileLike.of_config(Config._cfg), 
 				"theme",
 				"interface/theme/contrast"
 			).bake_default(0.3),
@@ -152,9 +152,9 @@ func _init() -> void:
 		(%WarningRect as Button).icon = get_theme_icon("StatusWarning", "EditorIcons")
 		(%WarningRect as Button).self_modulate = get_theme_color("warning_color", "Editor") * Color(1, 1, 1, 0.6)
 		(%RestartInfoLabel as Label).self_modulate = get_theme_color("warning_color", "Editor") * Color(1, 1, 1, 0.6)
-
+		
 		(%OpenConfigFileButton as Button).icon = get_theme_icon("Load", "EditorIcons")
-
+		
 		var sections_root := (%SectionsTree as Tree).get_root()
 		if sections_root:
 			for child in sections_root.get_children():
@@ -169,7 +169,7 @@ func _ready() -> void:
 			Config.save()
 	)
 
-	var title_text := tr("Settings")
+	var title_text := tr("Settings") 
 	var set_title_text := func(pattern: String) -> void:
 		title = pattern % title_text
 	title = title_text
@@ -179,19 +179,19 @@ func _ready() -> void:
 	Config.saved.connect(func() -> void:
 		set_title_text.call("%s")
 	)
-
+	
 	get_ok_button().text = tr("Save & Close")
-
-
+	
+	
 	var left_vb := %LeftVB as VBoxContainer
 	left_vb.custom_minimum_size = Vector2(190, 0) * Config.EDSCALE
-
-
+	
+	
 	var right_vb: = %RightVB as VBoxContainer
 	right_vb.custom_minimum_size = Vector2(300, 0) * Config.EDSCALE
 	right_vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-
+	
+	
 	(%RestartInfoLabel as Label).text = tr("Godots must be restarted for changes to take effect.")
 	(%RestartButton as Button).pressed.connect(func() -> void:
 		Config.save()
@@ -205,12 +205,12 @@ func _ready() -> void:
 		(%RestartContainer as PanelContainer).hide()
 	)
 	(%RestartContainer as Control).hide()
-
+	
 	(%OpenConfigFileButton as Button).pressed.connect(func() -> void:
 		var config_path := ProjectSettings.globalize_path(Config.APP_CONFIG_PATH.get_base_dir())
 		OS.shell_show_in_file_manager(config_path)
 	)
-
+	
 	_setup_settings()
 
 
@@ -223,17 +223,17 @@ func raise_settings() -> void:
 
 func _setup_settings() -> void:
 	var settings := _prepare_settings().filter(func(x: Variant) -> bool: return x != null)
-
+	
 	for setting: Setting in settings:
 		setting.bind_settings_window(self)
 		setting.validate()
 		setting.add_control(SettingControlTarget.new(%InspectorVBox, setting.category.raw))
-
+	
 	var tree := %SectionsTree as Tree
 	tree.item_selected.connect(func() -> void:
-		var _selected := tree.get_selected()
-		if _selected:
-			var section: Variant = _selected.get_metadata(0)
+		var selected := tree.get_selected()
+		if selected:
+			var section: Variant = selected.get_metadata(0)
 			if section is String:
 				_update_settings_visibility(section as String)
 	)
@@ -245,7 +245,7 @@ func _setup_settings() -> void:
 		if not category.first_lvl in categories:
 			categories[category.first_lvl] = Set.new()
 		var second_lvls := categories[category.first_lvl] as Set
-		second_lvls.append(category.second_lvl)
+		second_lvls.append(category.second_lvl) 
 	var selected := false
 	for first_lvl: String in categories.keys():
 		var first_lvl_item := tree.create_item(root)
@@ -269,10 +269,10 @@ func _update_settings_visibility(section: String) -> void:
 
 func SettingCfg(category: String, cfg_value: ConfigFileValue, prop_factory: Variant, tooltip:="") -> Setting:
 	if prop_factory is Script:
-		prop_factory = func(a1: Variant, a2: Variant, a3: Variant, a4: Variant) -> Setting:
+		prop_factory = func(a1: Variant, a2: Variant, a3: Variant, a4: Variant) -> Setting: 
 			return (prop_factory as Script).call("new", a1, a2, a3, a4)
 	return ((prop_factory as Callable).call(
-		category,
+		category, 
 		cfg_value.ret(),
 		tooltip,
 		cfg_value.get_baked_default()
@@ -281,7 +281,7 @@ func SettingCfg(category: String, cfg_value: ConfigFileValue, prop_factory: Vari
 
 func SettingChangeObserved(origin: Setting) -> Setting:
 	return origin.on_value_changed(
-		func(new_value: Variant) -> void:
+		func(new_value: Variant) -> void: 
 			_setting_changed.emit(origin, new_value)
 			_settings_changed.emit()
 	)
@@ -304,25 +304,25 @@ func SettingCustomPresetTrigger(origin: Setting) -> Setting:
 
 class Category:
 	var _category: String
-
+	
 	var name: String:
 		get: return _category.get_file().capitalize()
-
+	
 	var first_lvl: String:
 		get: return _category.split("/")[0]
-
+	
 	var second_lvl: String:
 		get: return _category.split("/")[1]
-
+	
 	var raw: String:
 		get: return _category
-
+	
 	func _init(category: String) -> void:
 		_category = category
-
+	
 	func validate() -> void:
 		assert(
-			len(_category.split("/")) == 3,
+			len(_category.split("/")) == 3, 
 			"Invalid category %s! Category format is: s/s/s" % _category
 		)
 
@@ -330,11 +330,11 @@ class Category:
 class SettingControlTarget:
 	var _target: Node
 	var _category: String
-
+	
 	func _init(target: Node, category: String) -> void:
 		_target = target
 		_category = category
-
+	
 	func add_child(child: Node) -> void:
 		child.set_meta("category", _category)
 		_target.add_child(child)
@@ -342,50 +342,50 @@ class SettingControlTarget:
 
 class Setting extends RefCounted:
 	signal changed(new_value: Variant)
-
+	
 	var category: Category
 	var _value: Variant
 	var _tooltip: String
 	var _default_value: Variant
 	var _settings_window: SettingsWindow
-
+	
 	func _init(name: String, value: Variant, tooltip: String, default_value: Variant) -> void:
 		self.category = Category.new(name)
 		self._value = value
 		self._tooltip = tooltip
 		self._default_value = default_value
-
+	
 	func add_control(target: SettingControlTarget) -> void:
 		pass
-
+	
 	func on_value_changed(callback: Callable) -> Setting:
 		changed.connect(callback)
 		return self
-
+	
 	func notify_changed() -> void:
 		changed.emit(_value)
-
+	
 	func set_value(value: Variant) -> void:
 		_value = value
-
+	
 	func set_value_and_notify(value: Variant) -> void:
 		set_value(value)
 		notify_changed()
-
+	
 	func validate() -> void:
 		category.validate()
 		assert(_settings_window != null)
-
+	
 	func reset() -> void:
 		set_value_and_notify(_default_value)
-
+	
 	func value_is_not_default() -> bool:
 		return _value != _default_value
-
+	
 	func bind_settings_window(settings_window: SettingsWindow) -> Setting:
 		_settings_window = settings_window
 		return self
-
+	
 	func with_meta(name: StringName, value: Variant) -> Setting:
 		self.set_meta(name, value)
 		return self
@@ -462,7 +462,7 @@ class SettingFilePath extends Setting:
 	func add_control(target: SettingControlTarget) -> void:
 		var file_dialog := CompRefs.Simple.new()
 		var line_edit := CompRefs.Simple.new()
-		var update_value := func(new_value: String) -> void:
+		var update_value := func(new_value: String) -> void: 
 				set_value_and_notify(new_value)
 				line_edit.value.text = new_value
 		self.on_value_changed(func(new_value: String) -> void:
@@ -491,8 +491,8 @@ class SettingFilePath extends Setting:
 						CompInit.TREE_ENTERED(
 							CompInit.SET_THEME_ICON("Load", "EditorIcons")
 						),
-						CompInit.PRESSED(func(_a: Control) -> void:
-							var dialog := file_dialog.value as FileDialog
+						CompInit.PRESSED(func(_a: Control) -> void: 
+							var dialog := file_dialog.value as FileDialog 
 							dialog.current_dir = self._value
 							dialog.popup_centered_ratio(0.5)\
 						)
@@ -596,12 +596,12 @@ class CompSettingPanelContainer extends Comp:
 class SettingOptionButton extends Setting:
 	var _options: Dictionary
 	var _fallback_option: String
-
+	
 	func _init(name: String, value: Variant, tooltip: String, default_value: Variant, options: Dictionary, fallback_option: String) -> void:
 		super._init(name, value, tooltip, default_value)
 		self._options = options
 		self._fallback_option = fallback_option
-
+	
 	func add_control(target: SettingControlTarget) -> void:
 		var update_selected_value := func(this: OptionButton) -> void:
 			this.clear()
@@ -613,11 +613,11 @@ class SettingOptionButton extends Setting:
 					this.selected = item_idx
 					item_to_select_was_found = true
 				item_idx += 1
-
+			
 			if not item_to_select_was_found:
 				this.add_item(_fallback_option)
 				this.selected = item_idx
-
+		
 		var control := Comp.new(HBoxContainer, [
 			CompSettingNameContainer.new(self),
 			CompSettingPanelContainer.new(_tooltip, [
@@ -790,13 +790,13 @@ class SettingSlider extends Setting:
 							this.step = 0.1
 							this.min_value = -1
 							this.max_value = 1
-
+							
 							self.on_value_changed(func(new_value: Variant) -> void:
 								this.value = new_value
 							)
-
+							
 							this.value = self._value
-
+							
 							this.value_changed.connect(func(new_value: Variant) -> void:
 								self.set_value_and_notify(new_value)
 							)

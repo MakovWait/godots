@@ -7,12 +7,12 @@ signal installed(editor_name: String, editor_exec_path: String)
 
 @onready var _editor_name_edit: LineEdit = %EditorNameEdit
 @onready var _select_exec_file_tree: Tree = %SelectExecFileTree
-#@onready var _file_dialog := $FileDialog as FileDialog
+@onready var _file_dialog := $FileDialog as FileDialog
 @onready var _show_all_check_box := %ShowAllCheckBox as CheckBox
 
 var _dir_content: Array[edir.DirListResult]
-#var _show_all: bool:
-	#get: return _show_all_check_box.button_pressed
+var _show_all: bool:
+	get: return _show_all_check_box.button_pressed
 
 
 func _ready() -> void:
@@ -44,20 +44,20 @@ func init(editor_name: String, editor_exec_path: String) -> void:
 func _setup_editor_select_tree() -> void:
 	_select_exec_file_tree.clear()
 	var root := _select_exec_file_tree.create_item()
-
+	
 	## filter: Optional[Callable], should_be_selected: Optional[Callable]
-	var create_tree_items := func(source: Array[edir.DirListResult], _filter: Variant = null, _should_be_selected: Variant = null) -> void:
+	var create_tree_items := func(source: Array[edir.DirListResult], filter: Variant = null, should_be_selected: Variant = null) -> void:
 		var selected := false
 		for x in source:
-			if _filter and not (_filter as Callable).call(x):
+			if filter and not (filter as Callable).call(x):
 				continue
 			var item := _select_exec_file_tree.create_item(root)
 			item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 			item.set_text(0, x.file)
 			item.set_editable(0, true)
 			item.set_meta("full_path", x.path)
-			if not selected and _should_be_selected != null:
-				if (_should_be_selected as Callable).call(x):
+			if not selected and should_be_selected != null:
+				if (should_be_selected as Callable).call(x):
 					selected = true
 					item.set_checked(0, true)
 					item.select(0)
@@ -83,7 +83,7 @@ func _setup_editor_select_tree() -> void:
 			return x.is_file and (
 				x.extension.contains("32") or x.extension.contains("64")
 			)
-
+	
 	create_tree_items.call(_dir_content, filter, should_be_selected)
 
 
