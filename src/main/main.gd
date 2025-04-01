@@ -7,6 +7,7 @@ const GVM_DESKTOP_ENTRY_NAME = "godots.desktop"
 @export_file() var gui_scene_path: String
 
 
+
 func _ready() -> void:
 	var args := OS.get_cmdline_args()
 	var user_args := OS.get_cmdline_user_args()
@@ -15,7 +16,7 @@ func _ready() -> void:
 	var is_flatpak := FileAccess.file_exists("/.flatpak-info")
 
 	# Check and create GVM desktop entry if needed
-	if OS.get_name() == "Linux" and not OS.has_feature("editor") and not is_flatpak:
+	if OS.get_name() == "Linux" and not is_flatpak:
 		_ensure_desktop_entry()
 
 	if _is_cli_mode(args):
@@ -28,14 +29,12 @@ func _ready() -> void:
 		add_child.call_deferred((load(gui_scene_path) as PackedScene).instantiate())
 	pass
 
-
 func _is_cli_mode(args: PackedStringArray) -> bool:
 	if args.size() > 1 and OS.has_feature("editor"):
 		return true
 	elif args.size() >= 1 and OS.has_feature("template"):
 		return true
 	return false
-
 
 func _ensure_desktop_entry() -> void:
 	var home := OS.get_environment("HOME")
@@ -78,8 +77,7 @@ func _ensure_desktop_entry() -> void:
 
 
 func _create_desktop_entry(exe_path: String, icon_path: String) -> String:
-	return (
-		"""[Desktop Entry]
+	return """[Desktop Entry]
 	Name=Godots
 GenericName=Libre game engine version manager
 Comment=Ultimate go-to hub for managing your Godot versions and projects!
@@ -90,10 +88,9 @@ PrefersNonDefaultGPU=true
 Type=Application
 Categories=Development;IDE;
 StartupWMClass=Godot
-"""
-		. format({"exe": exe_path, "icon": icon_path})
+""".format(
+		{"exe": exe_path, "icon": icon_path}
 	)
-
 
 func _exit() -> void:
 	get_tree().quit()
