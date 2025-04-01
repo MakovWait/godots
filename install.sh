@@ -1,15 +1,15 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 DOWNLOAD_URL="https://github.com/MakovWait/godots/releases/latest/download/LinuxX11.zip"
 
 # Download the latest version of Godots
-wget -O /tmp/godots.zip $DOWNLOAD_URL
+wget -O /tmp/godots.zip $DOWNLOAD_URL || exit
 
-# Unzip the downloaded file to ~/.local/godots.app/
-unzip /tmp/godots.zip -d ~/.local/godots.app/
+# Unzip the downloaded file to ~/.local/godots.app/ and replace if exists
+unzip -o /tmp/godots.zip -d ~/.local/godots.app/ || exit
 
 # download Icon
-wget -O ~/.local/godots.app/icon.svg https://github.com/MakovWait/godots/raw/master/icon.svg
+wget -O ~/.local/godots.app/icon.svg https://github.com/MakovWait/godots/raw/main/icon.svg || exit
 
 # Create a desktop entry for Godots
 cat <<EOF > ~/.local/share/applications/godots.desktop
@@ -17,8 +17,8 @@ cat <<EOF > ~/.local/share/applications/godots.desktop
 Name=Godots
 GenericName=Libre game engine version manager
 Comment=Ultimate go-to hub for managing your Godot versions and projects!
-Exec=~/.local/godots.app/godots
-Icon=~/.local/godots.app/icon.svg
+Exec=$HOME/.local/godots.app/Godots.x86_64
+Icon=$HOME/.local/godots.app/icon.svg
 PrefersNonDefaultGPU=true
 Terminal=false
 Type=Application
