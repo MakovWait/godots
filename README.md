@@ -23,6 +23,8 @@ Fear not Linux users, unleashing the power of Godots on any distribution is just
 <a href='https://flathub.org/apps/details/io.github.MakovWait.Godots'><img width="250" alt='Download on Flathub' src='https://raw.githubusercontent.com/flxzt/rnote/main/misc/assets/flathub-badge.svg'/></a>
 </div><br>
 
+Alternatively for Arch Linux, there is the community maintained AUR Packages <a href="https://aur.archlinux.org/packages/godots-bin"> godots-bin </a> and <a href="https://aur.archlinux.org/packages/godots-git"> godot-git<a>.
+
 Don't have Flatpak? Just download the [latest release](https://github.com/MakovWait/godots/releases)!
 
 ## Features That Redefine Cool 😎
