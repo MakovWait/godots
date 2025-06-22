@@ -2,45 +2,13 @@ class_name zip
 
 static func unzip(zip_path: String, target_dir: String) -> void:
 	DirAccess.make_dir_absolute(target_dir)
-
-	var output := []
-	var exit_code: int
-	if OS.has_feature("windows"):
-		exit_code = OS.execute(
-			"powershell.exe", 
-			[
-				"-command",
-				"\"Expand-Archive '%s' '%s'\" -Force" % [ 
-					ProjectSettings.globalize_path(zip_path), 
-					ProjectSettings.globalize_path(target_dir)
-				]
-			], output, true
-		)
-		Output.push(output.pop_front())
-		Output.push("unzip executed with exit code: %s" % exit_code)
-	elif OS.has_feature("macos"):
-		exit_code = OS.execute(
-			"unzip", 
-			[
-				"%s" % ProjectSettings.globalize_path(zip_path), 
-				"-d", 
-				"%s" % ProjectSettings.globalize_path(target_dir)
-			], output, true
-		)
-		Output.push(output.pop_front())
-		Output.push("unzip executed with exit code: %s" % exit_code)
-	elif OS.has_feature("linux"):
-		exit_code = OS.execute(
-			"unzip",
-			[
-				"-o",
-				"%s" % ProjectSettings.globalize_path(zip_path), 
-				"-d",
-				"%s" % ProjectSettings.globalize_path(target_dir)
-			], output, true
-		)
-		Output.push(output.pop_front())
-		Output.push("unzip executed with exit code: %s" % exit_code)
+	DirAccess.make_dir_absolute(zip_path)
+	var reader: ZIPReader = ZIPReader.new()
+	var err : Error = reader.open(zip_path)
+	unzip_to_path(reader, target_dir)
+	
+	
+	
 
 
 ## A procedure that unzips a zip file to a target directory, keeping the
