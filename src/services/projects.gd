@@ -419,7 +419,20 @@ class ExternalProjectInfo extends RefCounted:
 		var result := _default_icon
 		var icon_path: String = cfg.get_value("application", "config/icon", "")
 		if not icon_path: return result
-		icon_path = icon_path.replace("res://", self._project_path.get_base_dir() + "/")
+		var project_path := self._project_path.get_base_dir() + "/"
+		if icon_path.begins_with("uid://"):
+			var uid_cache := FileAccess.open(project_path + ".godot/uid_cache.bin", FileAccess.READ)
+			if uid_cache.get_error() == OK:
+				var entries := uid_cache.get_32()
+				for i in entries:
+					var id := uid_cache.get_64()
+					var length := uid_cache.get_32()
+					var rl := uid_cache.get_buffer(length)
+					if ResourceUID.id_to_text(id) == icon_path:
+						icon_path = rl.get_string_from_utf8()
+						break
+
+		icon_path = icon_path.replace("res://", project_path)
 		
 		if FileAccess.file_exists(icon_path):
 			var icon_image := Image.new()
