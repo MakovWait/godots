@@ -421,16 +421,18 @@ class ExternalProjectInfo extends RefCounted:
 		if not icon_path: return result
 		var project_path := self._project_path.get_base_dir() + "/"
 		if icon_path.begins_with("uid://"):
-			var uid_cache := FileAccess.open(project_path + ".godot/uid_cache.bin", FileAccess.READ)
-			if uid_cache.get_error() == OK:
-				var entries := uid_cache.get_32()
-				for i in entries:
-					var id := uid_cache.get_64()
-					var length := uid_cache.get_32()
-					var rl := uid_cache.get_buffer(length)
-					if ResourceUID.id_to_text(id) == icon_path:
-						icon_path = rl.get_string_from_utf8()
-						break
+			var uid := ResourceUID.text_to_id(icon_path)
+			if uid != ResourceUID.INVALID_ID:
+				var uid_cache := FileAccess.open(project_path + ".godot/uid_cache.bin", FileAccess.READ)
+				if uid_cache.get_error() == OK:
+					var entries := uid_cache.get_32()
+					for i in entries:
+						var id := uid_cache.get_64()
+						var length := uid_cache.get_32()
+						var rl := uid_cache.get_buffer(length)
+						if id == uid:
+							icon_path = rl.get_string_from_utf8()
+							break
 
 		icon_path = icon_path.replace("res://", project_path)
 		
