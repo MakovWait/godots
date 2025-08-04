@@ -82,6 +82,15 @@ var DEFAULT_PROJECTS_PATH := ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var LANGUAGE := ConfigFileValue.new(
+	_cfg_auto_save.as_config_like(),
+	"app",
+	"language",
+	"en"
+):
+	set(_v): _readonly()
+
+
 var SAVED_EDSCALE := ConfigFileValue.new(
 	_cfg_auto_save.as_config_like(), 
 	_EDITOR_PROXY_SECTION_NAME, 

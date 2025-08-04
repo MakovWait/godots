@@ -9,6 +9,12 @@ var _prev_rect: Rect2
 
 func _prepare_settings() -> Array:
 	return [
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/config/language",
+			Config.LANGUAGE,
+			SettingLanguage,
+		))),
+
 		SettingChangeObserved(SettingCfg(
 			"application/config/auto_close",
 			Config.AUTO_CLOSE,
@@ -644,6 +650,18 @@ class SettingOptionButton extends Setting:
 			])
 		])
 		control.add_to(target)
+
+func SettingLanguage(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:
+	var dictionary := {}
+	var count := 0
+	for i in TranslationServer.get_loaded_locales():
+		count += 1
+		dictionary[count] = {
+			"name": TranslationServer.get_locale_name(i),
+			"value": i
+		}
+	return SettingOptionButton.new(a1, a2, a3, a4, dictionary, tr("Custom")
+	)
 
 
 func SettingScale(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:

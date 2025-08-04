@@ -58,6 +58,10 @@ import/fbx/enabled=false
 
 version_hint="4.4"
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://langs/en.po")
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

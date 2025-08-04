@@ -1,0 +1,601 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Download Error"
+msgstr "Download Error"
+
+msgid "Ready to install"
+msgstr "Ready to install"
+
+msgid "Invalid URL scheme."
+msgstr "Invalid URL scheme."
+
+msgid "Something went wrong."
+msgstr "Something went wrong."
+
+msgid "Downloading"
+msgstr "Downloading"
+
+msgid "Resolving..."
+msgstr "Resolving..."
+
+msgid "Connecting..."
+msgstr "Connecting..."
+
+msgid "Requesting..."
+msgstr "Requesting..."
+
+msgid "Version:"
+msgstr "Version:"
+
+msgid "Contents:"
+msgstr "Contents:"
+
+msgid "View Files"
+msgstr "View Files"
+
+msgid "Description:"
+msgstr "Description:"
+
+msgid "Search Templates, Projects, and Demos"
+msgstr "Search Templates, Projects, and Demos"
+
+msgid "Loading version list..."
+msgstr "Loading version list..."
+
+msgid "Failed to get versions list."
+msgstr "Failed to get versions list."
+
+msgid "Loading configuration..."
+msgstr "Loading configuration..."
+
+msgid "Failed to get repository configuration."
+msgstr "Failed to get repository configuration."
+
+msgid "Failed to load assets list."
+msgstr "Failed to load assets list."
+
+msgid "All"
+msgstr "All"
+
+msgid "Retry"
+msgstr "Retry"
+
+msgid "Recently Updated"
+msgstr "Recently Updated"
+
+msgid "Least Recently Updated"
+msgstr "Least Recently Updated"
+
+msgid "Name (A-Z)"
+msgstr "Name (A-Z)"
+
+msgid "Name (Z-A)"
+msgstr "Name (Z-A)"
+
+msgid "License (A-Z)"
+msgstr "License (A-Z)"
+
+msgid "License (Z-A)"
+msgstr "License (Z-A)"
+
+msgid "Empty versions list!"
+msgstr "Empty versions list!"
+
+msgid "Command Viewer"
+msgstr "Command Viewer"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "New Command"
+msgstr "New Command"
+
+msgid "Are you sure to remove the command?"
+msgstr "Are you sure to remove the command?"
+
+msgid "Local"
+msgstr "Local"
+
+msgid "Global"
+msgstr "Global"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Path"
+msgstr "Path"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Self-contained"
+msgstr "Self-contained"
+
+msgid "Run"
+msgstr "Run"
+
+msgid "Rename"
+msgstr "Rename"
+
+msgid "Manage Tags"
+msgstr "Manage Tags"
+
+msgid "Add Extra Args"
+msgstr "Add Extra Args"
+
+msgid "Edit Commands"
+msgstr "Edit Commands"
+
+msgid "View References"
+msgstr "View References"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Show in File Manager"
+msgstr "Show in File Manager"
+
+msgid "Are you sure to remove the editor from the list?"
+msgstr "Are you sure to remove the editor from the list?"
+
+msgid ""
+"NOTE: the action will remove the parent folder of the editor with all the "
+"content."
+msgstr ""
+"NOTE: the action will remove the parent folder of the editor with all the "
+"content."
+
+msgid "remove also from the file system"
+msgstr "remove also from the file system"
+
+msgid "Show Tags"
+msgstr "Show Tags"
+
+msgid "Show Features"
+msgstr "Show Features"
+
+msgid "Flat"
+msgstr "Flat"
+
+msgid "Show Text"
+msgstr "Show Text"
+
+msgid "Always Show Controls"
+msgstr "Always Show Controls"
+
+msgid "Visibility"
+msgstr "Visibility"
+
+msgid "Appearance"
+msgstr "Appearance"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "References of %s (%s)"
+msgstr "References of %s (%s)"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Orphan Editors Explorer"
+msgstr "Orphan Editors Explorer"
+
+msgid ""
+"Check if there are some leaked Godot binaries on the filesystem that can be "
+"safely removed. For advanced users."
+msgstr ""
+"Check if there are some leaked Godot binaries on the filesystem that can be "
+"safely removed. For advanced users."
+
+msgid "Scan"
+msgstr "Scan"
+
+msgid "Refresh List"
+msgstr "Refresh List"
+
+msgid "Remove Missing"
+msgstr "Remove Missing"
+
+msgid "Permanently delete %d item(s)? (No undo!)"
+msgstr "Permanently delete %d item(s)? (No undo!)"
+
+msgid "Open Downloads Dir"
+msgstr "Open Downloads Dir"
+
+msgid "Refresh"
+msgstr "Refresh"
+
+msgid "Error extracting archive."
+msgstr "Error extracting archive."
+
+msgid "loading..."
+msgstr "loading..."
+
+msgid "mono"
+msgstr "mono"
+
+msgid "unstable"
+msgstr "unstable"
+
+msgid "any platform"
+msgstr "any platform"
+
+msgid "4.x"
+msgstr "4.x"
+
+msgid "3.x"
+msgstr "3.x"
+
+msgid "x.x"
+msgstr "x.x"
+
+msgid "Download & Install"
+msgstr "Download & Install"
+
+msgid "News:"
+msgstr "News:"
+
+msgid ""
+"Remove all missing items from the list?\\nThe item folders' contents won't "
+"be modified."
+msgstr ""
+"Remove all missing items from the list?\\nThe item folders' contents won't "
+"be modified."
+
+msgid "Remove All"
+msgstr "Remove All"
+
+msgid "Select a Folder to Scan"
+msgstr "Select a Folder to Scan"
+
+msgid "Cloning..."
+msgstr "Cloning..."
+
+msgid "Duplicate"
+msgstr "Duplicate"
+
+msgid "No project.godot found."
+msgstr "No project.godot found."
+
+msgid "Couldn't create folder."
+msgstr "Couldn't create folder."
+
+msgid "Code"
+msgstr "Code"
+
+msgid "The path specified doesn't exist."
+msgstr "The path specified doesn't exist."
+
+msgid "Couldn't create project.godot in project path."
+msgstr "Couldn't create project.godot in project path."
+
+msgid "OpenGL ES 3.0"
+msgstr "OpenGL ES 3.0"
+
+msgid "Higher visual quality"
+msgstr "Higher visual quality"
+
+msgid "All features available"
+msgstr "All features available"
+
+msgid "Incompatible with older hardware"
+msgstr "Incompatible with older hardware"
+
+msgid "Not recommended for web games"
+msgstr "Not recommended for web games"
+
+msgid "OpenGL ES 2.0"
+msgstr "OpenGL ES 2.0"
+
+msgid "Lower visual quality"
+msgstr "Lower visual quality"
+
+msgid "Some features not available"
+msgstr "Some features not available"
+
+msgid "Works on most hardware"
+msgstr "Works on most hardware"
+
+msgid "Recommended for web games"
+msgstr "Recommended for web games"
+
+msgid "The renderer can be changed later, but scenes may need to be adjusted."
+msgstr ""
+"The renderer can be changed later, but scenes may need to be adjusted."
+
+msgid "Couldn't create .gitignore in project path."
+msgstr "Couldn't create .gitignore in project path."
+
+msgid "Couldn't create .gitattributes in project path."
+msgstr "Couldn't create .gitattributes in project path."
+
+msgid "Forward+"
+msgstr "Forward+"
+
+msgid "Supports desktop platforms only."
+msgstr "Supports desktop platforms only."
+
+msgid "Advanced 3D graphics available."
+msgstr "Advanced 3D graphics available."
+
+msgid "Can scale to large complex scenes."
+msgstr "Can scale to large complex scenes."
+
+msgid "Uses RenderingDevice backend."
+msgstr "Uses RenderingDevice backend."
+
+msgid "Slower rendering of simple scenes."
+msgstr "Slower rendering of simple scenes."
+
+msgid "Mobile"
+msgstr "Mobile"
+
+msgid "Supports desktop + mobile platforms."
+msgstr "Supports desktop + mobile platforms."
+
+msgid "Less advanced 3D graphics."
+msgstr "Less advanced 3D graphics."
+
+msgid "Less scalable for complex scenes."
+msgstr "Less scalable for complex scenes."
+
+msgid "Fast rendering of simple scenes."
+msgstr "Fast rendering of simple scenes."
+
+msgid "Compatibility"
+msgstr "Compatibility"
+
+msgid "Supports desktop, mobile + web platforms."
+msgstr "Supports desktop, mobile + web platforms."
+
+msgid "Least advanced 3D graphics (currently work-in-progress)."
+msgstr "Least advanced 3D graphics (currently work-in-progress)."
+
+msgid "Intended for low-end/older devices."
+msgstr "Intended for low-end/older devices."
+
+msgid "Uses OpenGL 3 backend (OpenGL 3.3/ES 3.0/WebGL2)."
+msgstr "Uses OpenGL 3 backend (OpenGL 3.3/ES 3.0/WebGL2)."
+
+msgid "Fastest rendering of simple scenes."
+msgstr "Fastest rendering of simple scenes."
+
+msgid "Version Control Metadata:"
+msgstr "Version Control Metadata:"
+
+msgid "Renderer:"
+msgstr "Renderer:"
+
+msgid "New"
+msgstr "New"
+
+msgid "Clone"
+msgstr "Clone"
+
+msgid "Install"
+msgstr "Install"
+
+msgid "Failed to unzip."
+msgstr "Failed to unzip."
+
+msgid "Last Edited"
+msgstr "Last Edited"
+
+msgid "Editor is missing."
+msgstr "Editor is missing."
+
+msgid "Bind Editor"
+msgstr "Bind Editor"
+
+msgid "version hint:"
+msgstr "version hint:"
+
+msgid "Editor"
+msgstr "Editor"
+
+msgid "Are you sure to %s the project with the given editor?"
+msgstr "Are you sure to %s the project with the given editor?"
+
+msgid "do not show again for this project"
+msgstr "do not show again for this project"
+
+msgid "Are you sure to remove the project from the list?"
+msgstr "Are you sure to remove the project from the list?"
+
+msgid "Bind editor first."
+msgstr "Bind editor first."
+
+msgid "Config"
+msgstr "Config"
+
+msgid "Close on launch."
+msgstr "Close on launch."
+
+msgid "Default folder to scan/import projects from."
+msgstr "Default folder to scan/import projects from."
+
+msgid "Restore last window size and position on startup."
+msgstr "Restore last window size and position on startup."
+
+msgid ""
+"Base color for the theme. Affects the background and primary UI elements."
+msgstr ""
+"Base color for the theme. Affects the background and primary UI elements."
+
+msgid ""
+"Accent color for the theme. Used for highlights and interactive elements."
+msgstr ""
+"Accent color for the theme. Used for highlights and interactive elements."
+
+msgid "Contrast ratio for the theme. Affects the brightness of the UI."
+msgstr "Contrast ratio for the theme. Affects the brightness of the UI."
+
+msgid "Temp dir for downloaded zips."
+msgstr "Temp dir for downloaded zips."
+
+msgid "Dir for downloaded editors."
+msgstr "Dir for downloaded editors."
+
+msgid ""
+"By default the project installing is forbidden if the target dir is not "
+"empty. To allow it, check the checkbox."
+msgstr ""
+"By default the project installing is forbidden if the target dir is not "
+"empty. To allow it, check the checkbox."
+
+msgid "Will check only stable Godots releases."
+msgstr "Will check only stable Godots releases."
+
+msgid "Host"
+msgstr "Host"
+
+msgid "Port"
+msgstr "Port"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Save & Close"
+msgstr "Save & Close"
+
+msgid "Godots must be restarted for changes to take effect."
+msgstr "Godots must be restarted for changes to take effect."
+
+msgid "Auto"
+msgstr "Auto"
+
+msgid "Custom"
+msgstr "Custom"
+
+msgid "Custom Theme Guide"
+msgstr "Custom Theme Guide"
+
+msgid "Tag name can't be empty."
+msgstr "Tag name can't be empty."
+
+msgid "Tag name can't contain spaces."
+msgstr "Tag name can't contain spaces."
+
+msgid "Tag name must be lowercase."
+msgstr "Tag name must be lowercase."
+
+msgid "These characters are not allowed in tags: %s."
+msgstr "These characters are not allowed in tags: %s."
+
+msgid "Connection error, prease try again."
+msgstr "Connection error, prease try again."
+
+msgid "Can't connect"
+msgstr "Can't connect"
+
+msgid "Can't connect to host"
+msgstr "Can't connect to host"
+
+msgid "No response from host"
+msgstr "No response from host"
+
+msgid "No response"
+msgstr "No response"
+
+msgid "Can't resolve hostname"
+msgstr "Can't resolve hostname"
+
+msgid "Can't resolve."
+msgstr "Can't resolve."
+
+msgid "Request failed, return code"
+msgstr "Request failed, return code"
+
+msgid "Request failed."
+msgstr "Request failed."
+
+msgid "Cannot save response to"
+msgstr "Cannot save response to"
+
+msgid "Write error."
+msgstr "Write error."
+
+msgid "Request failed, too many redirects"
+msgstr "Request failed, too many redirects"
+
+msgid "Redirect loop."
+msgstr "Redirect loop."
+
+msgid "Request failed, timeout"
+msgstr "Request failed, timeout"
+
+msgid "Timeout."
+msgstr "Timeout."
+
+msgid "Failed"
+msgstr "Failed"
+
+msgid "Projects"
+msgstr "Projects"
+
+msgid "Asset Library"
+msgstr "Asset Library"
+
+msgid "Editors"
+msgstr "Editors"
+
+msgid "Remote Editors"
+msgstr "Remote Editors"
+
+msgid "Updates"
+msgstr "Updates"
+
+msgid "Click to see other versions."
+msgstr "Click to see other versions."
+
+msgid "Click to see the post."
+msgstr "Click to see the post."
+
+msgid "Failed SHA-256 hash check"
+msgstr "Failed SHA-256 hash check"
+
+msgid "Bad download hash, assuming file has been tampered with."
+msgstr "Bad download hash, assuming file has been tampered with."
+
+msgid "Expected:"
+msgstr "Expected:"
+
+msgid "Got:"
+msgstr "Got:"
+
+msgid "Commands"
+msgstr "Commands"
+
+msgid "Alert!"
+msgstr "Alert!"
+
+msgid "Installing is forbidden!"
+msgstr "Installing is forbidden!"
+
+msgid "newest"
+msgstr "newest"
+
+msgid "pre-release"
+msgstr "pre-release"
+
+msgid "latest"
+msgstr "latest"
+
+msgid "draft"
+msgstr "draft"
+
+msgid "Language"
+msgstr "Language"
