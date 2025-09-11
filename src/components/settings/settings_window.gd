@@ -29,6 +29,13 @@ func _prepare_settings() -> Array:
 			tr("Default folder to scan/import projects from.")
 		)),
 
+		SettingChangeObserved(SettingCfg(
+			"application/config/directory_naming_convention",
+			Config.DIRECTORY_NAMING_CONVENTION.bake_default("snake_case"),
+			SettingDirNameType,
+			tr("Style of folder names for new projects.")
+		)),
+
 		SettingFiltered(SettingRestartRequired(SettingChangeObserved(SettingCfg(
 			"application/config/use_system_titlebar",
 			Config.USE_SYSTEM_TITLE_BAR,
@@ -682,6 +689,36 @@ func SettingScale(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOp
 				"value": 2.25
 			},
 		}, tr("Custom")
+	)
+
+func SettingDirNameType(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:
+	return SettingOptionButton.new(a1, a2, a3, a4,
+		{
+			1: {
+				"name": "No convention",
+				"value": "none"
+			},
+			2: {
+				"name": "kebab-case",
+				"value": "kebab_case"
+			},
+			3: {
+				"name": "snake_case",
+				"value": "snake_case"
+			},
+			4: {
+				"name": "camelCase",
+				"value": "camel_case"
+			},
+			5: {
+				"name": "PascalCase",
+				"value": "pascal_case"
+			},
+			6: {
+				"name": "Title Case",
+				"value": "title_case"
+			},
+		}, tr("INVALID")
 	)
 
 

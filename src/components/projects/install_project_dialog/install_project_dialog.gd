@@ -2,7 +2,6 @@ extends ConfirmationDialog
 
 
 @onready var _project_name_edit: LineEdit = %ProjectNameEdit
-@onready var _create_folder_button: Button = %CreateFolderButton
 @onready var _browse_project_path_button: Button = %BrowseProjectPathButton
 @onready var _project_path_line_edit: LineEdit = %ProjectPathLineEdit
 @onready var _message_label: Label = %MessageLabel
@@ -10,31 +9,33 @@ extends ConfirmationDialog
 @onready var _create_folder_failed_dialog: AcceptDialog = $CreateFolderFailedDialog
 @onready var _file_dialog: FileDialog = $FileDialog
 @onready var _randomize_name_button: Button = %RandomizeNameButton
+@onready var _create_folder_check: CheckButton = %CreateFolderCheck
 
 var _create_folder_failed_label: Label
+var _set_custom_folder: bool = false
 
 
 func _ready() -> void:
+	_create_folder_check.icon = get_theme_icon("FolderCreate", "EditorIcons")
+	_browse_project_path_button.icon = get_theme_icon("Load", "EditorIcons")
+	_randomize_name_button.icon = get_theme_icon("RandomNumberGenerator", "EditorIcons")
+	
 	_create_folder_failed_label = Label.new()
 	_create_folder_failed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_create_folder_failed_dialog.add_child(_create_folder_failed_label)
 	
-	_project_path_line_edit.text_changed.connect(func(_arg: String) -> void: _validate())
-	_create_folder_button.pressed.connect(func() -> void:
-		var path := _project_path_line_edit.text.strip_edges()
-		var dir := DirAccess.open(path)
-		if dir:
-			var err := dir.make_dir(_project_name_edit.text)
-			if err > 0:
-				_create_folder_failed_label.text = "%s %s: %s." % [
-					tr("Couldn't create folder."),
-					tr("Code"),
-					err
-				]
-				_create_folder_failed_dialog.popup_centered()
-			elif err == OK:
-				_project_path_line_edit.text = path.path_join(_project_name_edit.text)
-				_validate()
+	confirmed.connect(func() -> void:
+		_create_project_dir()
+	)
+	_project_name_edit.text_changed.connect(func(_arg: String) -> void:
+		_update_project_dir()
+	)
+	_project_path_line_edit.text_changed.connect(func(_arg: String) -> void: 
+		_set_custom_folder = true
+		_validate()
+	)
+	_create_folder_check.toggled.connect(func(_arg: bool) -> void:
+		_update_project_dir()
 	)
 	
 	_browse_project_path_button.pressed.connect(func() -> void:
@@ -48,7 +49,7 @@ func _ready() -> void:
 	
 	_randomize_name_button.pressed.connect(func() -> void:
 		_project_name_edit.text = Config.next_random_project_name()
-		_validate()
+		_update_project_dir()
 	)
 	
 	min_size = Vector2(640, 215) * Config.EDSCALE
@@ -57,16 +58,63 @@ func _ready() -> void:
 func raise(project_name:="New Game Project", args: Variant = null) -> void:
 	_project_name_edit.text = project_name
 	_project_path_line_edit.text = Config.DEFAULT_PROJECTS_PATH.ret()
-	_on_raise(args)
+	_update_project_dir()
 	popup_centered()
+	_on_raise(args)
 	_validate()
 
 
+func _create_project_dir() -> void:
+	var err := DirAccess.make_dir_absolute(_project_path_line_edit.text.strip_edges())
+	if err > 0:
+		print("failed ", err)
+		_create_folder_failed_label.text = "%s %s: %s." % [
+			tr("Couldn't create folder."),
+			tr("Code"),
+			err
+		]
+		_create_folder_failed_dialog.popup_centered()
+	else:
+		print("good dir made")
+	print("done")
+
+
+func _update_project_dir() -> void:
+	var new_name: String = _project_name_edit.text
+	if not _set_custom_folder:
+		if not _create_folder_check.button_pressed:
+			_project_path_line_edit.text = Config.DEFAULT_PROJECTS_PATH.ret() as String
+		else:
+			_project_path_line_edit.text = (Config.DEFAULT_PROJECTS_PATH.ret() as String).path_join(_format_dir_name(new_name))
+	_validate()
+
+
+func _format_dir_name(original_name: String) -> String:
+	match Config.DIRECTORY_NAMING_CONVENTION.ret() as String:
+		"kebab_case":
+			return original_name.to_snake_case().replace("_", "-").validate_filename()
+		"snake_case":
+			return original_name.to_snake_case().validate_filename()
+		"camel_case":
+			return original_name.to_camel_case().validate_filename()
+		"pascal_case":
+			return original_name.to_pascal_case().validate_filename()
+		"title_case":
+			return original_name.capitalize().validate_filename()
+	return original_name.validate_filename()
+
+
 func _validate() -> void:
+	var project_name := _project_name_edit.text.strip_edges()
 	var path := _project_path_line_edit.text.strip_edges()
+	
+	if project_name.is_empty():
+		_error(tr("Project name cannot be blank."))
+		return
+	
 	var dir := DirAccess.open(path)
 	
-	if not dir:
+	if not _create_folder_check.button_pressed and not dir:
 		_error(tr("The path specified doesn't exist."))
 		return
 	
@@ -78,18 +126,19 @@ func _validate() -> void:
 
 	# Check if the specified folder is empty, even though this is not an error, it is good to check here.
 	var dir_is_empty := true
-	dir.list_dir_begin()
-	var n := dir.get_next()
-	while not n.is_empty():
-		if not n.begins_with("."):
-			# Allow `.`, `..` (reserved current/parent folder names)
-			# and hidden files/folders to be present.
-			# For instance, this lets users initialize a Git repository
-			# and still be able to create a project in the directory afterwards.
-			dir_is_empty = false
-			break;
-		n = dir.get_next()
-	dir.list_dir_end()
+	if dir:
+		dir.list_dir_begin()
+		var n := dir.get_next()
+		while not n.is_empty():
+			if not n.begins_with("."):
+				# Allow `.`, `..` (reserved current/parent folder names)
+				# and hidden files/folders to be present.
+				# For instance, this lets users initialize a Git repository
+				# and still be able to create a project in the directory afterwards.
+				dir_is_empty = false
+				break;
+			n = dir.get_next()
+		dir.list_dir_end()
 
 	if not dir_is_empty:
 		if _handle_dir_is_not_empty(path):

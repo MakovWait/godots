@@ -224,7 +224,7 @@ func _fill_data(item: Projects.Item) -> void:
 	_favorite_button.button_pressed = item.favorite
 	_title_label.text = item.name
 	_editor_path_label.text = item.editor_name
-	_path_label.text = item.path
+	_path_label.text = item.path.get_base_dir()
 	_icon.texture = item.icon
 	_tag_container.set_tags(item.tags)
 	_set_features(item.features)

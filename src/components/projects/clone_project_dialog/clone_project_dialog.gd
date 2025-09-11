@@ -18,7 +18,7 @@ func _ready() -> void:
 	dialog_hide_on_ok = false
 	_repository_edit.text_changed.connect(func(new_text: String) -> void:
 		_project_name_edit.text = new_text.get_file().replace(".git", "")
-		_validate()
+		_update_project_dir()
 	)
 	confirmed.connect(func() -> void:
 		var project_name := _project_name_edit.text.strip_edges()
@@ -74,6 +74,7 @@ func _emit_cloned(err: Error, output: Array, path: String) -> void:
 
 func _on_raise(args: Variant = null) -> void:
 	_repository_edit.clear()
+	_repository_edit.grab_focus()
 
 
 func _spawn_clone_alert(err: Error) -> void:

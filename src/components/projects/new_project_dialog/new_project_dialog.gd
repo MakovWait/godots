@@ -29,6 +29,11 @@ func _ready() -> void:
 	)
 
 
+func _on_raise(args: Variant = null) -> void:
+	_project_name_edit.grab_focus()
+	_project_name_edit.select_all()
+
+
 func _register_handler(handler: NewProjectHandler) -> void:
 	var handler_form := handler.custom_form()
 	handler_form.name = handler.label()
