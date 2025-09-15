@@ -31,7 +31,7 @@ Don't have Flatpak? Just download the [latest release](https://github.com/MakovW
 Or use the installation script:
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/MakovWait/godots/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/MakovWait/godots/main/install.sh | bash
 ```
 
 ## Features That Redefine Cool 😎
@@ -48,7 +48,7 @@ curl -sSL https://raw.githubusercontent.com/MakovWait/godots/main/install.sh | s
 
 - **Theming Support**: Customize your Godots experience with theming support. Make it truly your own with personalized themes that match your style and mood. [Theming readme](https://github.com/MakovWait/godots/blob/main/.github/assets/THEMING.md)
   ![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot3.png)
-    > Used theme: https://github.com/bitbrain/godot-dash
+  > Used theme: https://github.com/bitbrain/godot-dash
 - **Cli Support**: Embrace the power of the command line! Enjoy the flexibility and efficiency of using Godots through the [command line interface](https://github.com/MakovWait/godots/blob/main/.github/assets/FEATURES.md#cli). Manage your projects and versions effortlessly, even when your fingers are dancing on the keys.
 
 ---
