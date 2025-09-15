@@ -80,7 +80,7 @@ if command -v update-desktop-database &>/dev/null; then
 	update-desktop-database -q
 fi
 
-if command gtk-upate-icon-cache &>/dev/null; then
+if command -v gtk-upate-icon-cache &>/dev/null; then
 	gtk-update-icon-cache
 fi
 
