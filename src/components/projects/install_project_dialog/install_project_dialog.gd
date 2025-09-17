@@ -1,6 +1,9 @@
 extends ConfirmationDialog
 
 
+signal _successfully_confirmed
+
+
 @onready var _project_name_edit: LineEdit = %ProjectNameEdit
 @onready var _browse_project_path_button: Button = %BrowseProjectPathButton
 @onready var _project_path_line_edit: LineEdit = %ProjectPathLineEdit
@@ -16,6 +19,8 @@ var _set_custom_folder: bool = false
 
 
 func _ready() -> void:
+	dialog_hide_on_ok = false
+	
 	_create_folder_check.icon = get_theme_icon("FolderCreate", "EditorIcons")
 	_browse_project_path_button.icon = get_theme_icon("Load", "EditorIcons")
 	_randomize_name_button.icon = get_theme_icon("RandomNumberGenerator", "EditorIcons")
@@ -25,7 +30,8 @@ func _ready() -> void:
 	_create_folder_failed_dialog.add_child(_create_folder_failed_label)
 	
 	confirmed.connect(func() -> void:
-		_create_project_dir()
+		if _create_project_dir() == OK:
+			_successfully_confirmed.emit()
 	)
 	_project_name_edit.text_changed.connect(func(_arg: String) -> void:
 		_update_project_dir()
@@ -36,6 +42,9 @@ func _ready() -> void:
 	)
 	_create_folder_check.toggled.connect(func(_arg: bool) -> void:
 		_update_project_dir()
+	)
+	focus_entered.connect(func() -> void:
+		_validate()
 	)
 	
 	_browse_project_path_button.pressed.connect(func() -> void:
@@ -56,6 +65,7 @@ func _ready() -> void:
 
 
 func raise(project_name:="New Game Project", args: Variant = null) -> void:
+	_set_custom_folder = false
 	_project_name_edit.text = project_name
 	_project_path_line_edit.text = Config.DEFAULT_PROJECTS_PATH.ret()
 	_update_project_dir()
@@ -64,19 +74,16 @@ func raise(project_name:="New Game Project", args: Variant = null) -> void:
 	_validate()
 
 
-func _create_project_dir() -> void:
+func _create_project_dir() -> Error:
 	var err := DirAccess.make_dir_absolute(_project_path_line_edit.text.strip_edges())
-	if err > 0:
-		print("failed ", err)
+	if err != OK:
 		_create_folder_failed_label.text = "%s %s: %s." % [
 			tr("Couldn't create folder."),
 			tr("Code"),
 			err
 		]
 		_create_folder_failed_dialog.popup_centered()
-	else:
-		print("good dir made")
-	print("done")
+	return err
 
 
 func _update_project_dir() -> void:
@@ -118,6 +125,11 @@ func _validate() -> void:
 		_error(tr("The path specified doesn't exist."))
 		return
 	
+	var parent_dir := path.get_base_dir().simplify_path()
+	if not DirAccess.dir_exists_absolute(parent_dir):
+		_error(tr("The parent directory of the path specified doesn't exist."))
+		return
+	
 	if path.simplify_path() in [OS.get_environment("HOME"), OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS), OS.get_executable_path().get_base_dir()].map(func(x: String) -> String: return x.simplify_path()):
 		_error(tr(
 			"You cannot save a project in the selected path. Please make a new folder or choose a new path."
@@ -144,7 +156,10 @@ func _validate() -> void:
 		if _handle_dir_is_not_empty(path):
 			return
 	
-	_success("")
+	if _create_folder_check.button_pressed:
+		_success(tr("The project folder will be automatically created."))
+	else:
+		_success(tr("The project folder exists and is empty."))
 
 
 func error(text: String) -> void:
@@ -173,8 +188,8 @@ func _set_message(text: String, type: String) -> void:
 		_message_label.modulate = Color(1, 1, 1, 1)
 		new_icon = get_theme_icon("StatusError", "EditorIcons")
 	elif type == "success":
-		_message_label.remove_theme_color_override("font_color")
-		_message_label.modulate = Color(1, 1, 1, 0)
+		_message_label.add_theme_color_override("font_color", get_theme_color("success_color", "Editor"))
+		_message_label.modulate = Color(1, 1, 1, 1)
 		new_icon = get_theme_icon("StatusSuccess", "EditorIcons")
 	elif type == "warning":
 		_message_label.add_theme_color_override("font_color", get_theme_color("warning_color", "Editor"))

@@ -18,7 +18,7 @@ func _ready() -> void:
 	_register_handler(NewProjectGodot4.new())
 	_register_handler(NewProjectGodot3.new())
 	
-	confirmed.connect(func() -> void:
+	_successfully_confirmed.connect(func() -> void:
 		var meta: Dictionary = _handler_option_button.get_item_metadata(_handler_option_button.selected)
 		var handler := meta.self as NewProjectHandler
 		var ctx := NewProjectContext.new(self)
@@ -63,6 +63,7 @@ class NewProjectContext:
 		_ctx_delegate.call("_error", msg)
 	
 	func emit_created(path: String) -> void:
+		_ctx_delegate.call("hide")
 		_ctx_delegate.emit_signal("created", path)
 
 

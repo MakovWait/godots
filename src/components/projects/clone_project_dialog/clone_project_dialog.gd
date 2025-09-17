@@ -20,7 +20,7 @@ func _ready() -> void:
 		_project_name_edit.text = new_text.get_file().replace(".git", "")
 		_update_project_dir()
 	)
-	confirmed.connect(func() -> void:
+	_successfully_confirmed.connect(func() -> void:
 		var project_name := _project_name_edit.text.strip_edges()
 		var project_path := ProjectSettings.globalize_path(
 			_project_path_line_edit.text.strip_edges()
