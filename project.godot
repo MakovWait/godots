@@ -14,7 +14,7 @@ config/name="Godots"
 config/description="Ultimate go-to hub for managing your Godot versions and projects!"
 config/tags=PackedStringArray("application")
 run/main_scene="res://src/main/main.tscn"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.5", "GL Compatibility")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.113725, 0.133333, 0.160784, 1)
 config/icon="res://icon.svg"
@@ -56,7 +56,7 @@ import/fbx/enabled=false
 
 [godots]
 
-version_hint="4.4"
+version_hint="4.5"
 
 [internationalization]
 

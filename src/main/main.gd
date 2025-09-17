@@ -8,7 +8,7 @@ func _ready() -> void:
 
 	if _is_cli_mode(args):
 		Output.push("Run cli mode")
-		var adjusted_args := args.slice(1) if OS.has_feature("editor") else args
+		var adjusted_args := args.slice(2) if OS.has_feature("editor") else args
 		CliMain.main(adjusted_args, user_args)
 		_exit()
 	else:
@@ -17,9 +17,9 @@ func _ready() -> void:
 	pass
 
 func _is_cli_mode(args: PackedStringArray) -> bool:
-	if args.size() > 1 and OS.has_feature("editor"):
+	if args.size() > 2 and OS.has_feature("editor"):
 		return true
-	elif args.size() >= 1 and OS.has_feature("template"):
+	elif args.size() >= 2 and OS.has_feature("template"):
 		return true
 	return false
 
