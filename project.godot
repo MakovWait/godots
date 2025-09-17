@@ -66,4 +66,5 @@ locale/translations=PackedStringArray("res://assets/translations/en.po", "res://
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.113725, 0.133333, 0.160784, 1)
