@@ -31,4 +31,4 @@ layout_mode = 2
 tabs_visible = false
 
 [node name="FileDialog" parent="." index="5"]
-size = Vector2i(762, 159)
+size = Vector2i(762, 175)

@@ -9,7 +9,7 @@ var handle_dir_is_not_empty: Variant
 
 func _ready() -> void:
 	super._ready()
-	confirmed.connect(func() -> void:
+	_successfully_confirmed.connect(func() -> void:
 		about_to_install.emit(
 			_project_name_edit.text.strip_edges(),
 			_project_path_line_edit.text.strip_edges()

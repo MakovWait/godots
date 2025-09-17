@@ -243,6 +243,15 @@ var HTTP_PROXY_PORT := ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var DIRECTORY_NAMING_CONVENTION := ConfigFileValue.new(
+	_cfg_auto_save.as_config_like(), 
+	"app", 
+	"directory_naming_convention",
+	"snake_case"
+): 
+	set(_v): _readonly()
+
+
 func _enter_tree() -> void:	
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_VERSIONS_PATH))
 	DirAccess.make_dir_absolute(ProjectSettings.globalize_path(DEFAULT_DOWNLOADS_PATH))
