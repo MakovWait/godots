@@ -149,6 +149,7 @@ func _notification(what: int) -> void:
 
 
 func _enter_tree() -> void:
+	TranslationServer.set_locale(Config.LANGUAGE.ret("en") as String)
 	theme_source.set_scale(Config.EDSCALE)
 	theme = theme_source.create_custom_theme(null)
 	
