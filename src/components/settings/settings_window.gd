@@ -651,6 +651,7 @@ class SettingOptionButton extends Setting:
 		])
 		control.add_to(target)
 
+
 func SettingLanguage(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:
 	var dictionary := {}
 	var count := 0
@@ -660,8 +661,7 @@ func SettingLanguage(a1: String, a2: Variant, a3: String, a4: Variant) -> Settin
 			"name": TranslationServer.get_locale_name(i),
 			"value": i
 		}
-	return SettingOptionButton.new(a1, a2, a3, a4, dictionary, tr("Custom")
-	)
+	return SettingOptionButton.new(a1, a2, a3, a4, dictionary, tr("Custom"))
 
 
 func SettingScale(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:

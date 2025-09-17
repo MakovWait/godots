@@ -60,7 +60,7 @@ version_hint="4.4"
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://langs/en.po", "res://langs/zh_CN.po", "res://langs/zh_TW.po")
+locale/translations=PackedStringArray("res://assets/translations/en.po", "res://assets/translations/zh_CN.po", "res://assets/translations/zh_TW.po")
 
 [rendering]
 
