@@ -7,6 +7,9 @@ signal double_clicked
 signal hover_changed(is_hovering: bool)
 signal selected_changed(is_selected: bool)
 
+var _double_click_cooldown := 0.0
+const DOUBLE_CLICK_COOLDOWN_TIME := 200
+
 
 var _is_hovering := false:
 	set(value):
@@ -34,11 +37,14 @@ func _input(event: InputEvent) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	var time := Time.get_ticks_msec()
 	var mb := event as InputEventMouseButton
 	if mb:
 		if mb.button_index == MOUSE_BUTTON_LEFT:
-			if mb.double_click:
+			if mb.double_click and _double_click_cooldown <= time:
 				double_clicked.emit()
+				_double_click_cooldown = time + DOUBLE_CLICK_COOLDOWN_TIME
+				
 			elif mb.is_pressed():
 				clicked.emit()
 		if mb.button_index == MOUSE_BUTTON_RIGHT:
