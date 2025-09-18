@@ -46,14 +46,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: generate hashes
-        id: hashes
+      - name: generate SHA512-SUMS.txt
         run: |
           cd "${{ steps.export.outputs.archive_directory }}"
-          for f in *; do
-            sha256sum "$f" > "$f.sha256"
-            sha512sum "$f" > "$f.sha512"
-          done
+          sha512sum * > SHA512-SUMS.txt
+          echo "Generated SHA512-SUMS.txt:"
+          cat SHA512-SUMS.txt
 
         # This release action has worked well for me. However, you can most likely use any release action of your choosing.
         # https://github.com/ncipollo/release-action
@@ -64,5 +62,4 @@ jobs:
           tag: ${{ github.ref_name }}
           artifacts: |
             ${{ steps.export.outputs.archive_directory }}/*
-            ${{ steps.export.outputs.archive_directory }}/*.sha256
-            ${{ steps.export.outputs.archive_directory }}/*.sha512
+            ${{ steps.export.outputs.archive_directory }}/SHA512-SUMS.txt
