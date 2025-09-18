@@ -7,7 +7,7 @@ signal saved
 var AUTO_EDSCALE := 1.
 var EDSCALE := 1.
 var AGENT := ""
-const VERSION = "v1.4.dev1"
+const VERSION = "v1.4.dev2"
 const APP_CONFIG_PATH = "user://godots.cfg"
 const EDITORS_CONFIG_PATH = "user://editors.cfg"
 const PROJECTS_CONFIG_PATH = "user://projects.cfg"
