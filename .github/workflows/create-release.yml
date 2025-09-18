@@ -46,6 +46,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: generate hashes
+        id: hashes
+        run: |
+          cd "${{ steps.export.outputs.archive_directory }}"
+          for f in *; do
+            sha256sum "$f" > "$f.sha256"
+            sha512sum "$f" > "$f.sha512"
+          done
+
         # This release action has worked well for me. However, you can most likely use any release action of your choosing.
         # https://github.com/ncipollo/release-action
       - name: create release
@@ -53,4 +62,7 @@ jobs:
         with:
           draft: true
           tag: ${{ github.ref_name }}
-          artifacts: ${{ steps.export.outputs.archive_directory }}/*
+          artifacts: |
+            ${{ steps.export.outputs.archive_directory }}/*
+            ${{ steps.export.outputs.archive_directory }}/*.sha256
+            ${{ steps.export.outputs.archive_directory }}/*.sha512
