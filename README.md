@@ -1,56 +1,69 @@
-## Godots
+# **Godots**
 
-🚀 **Introducing Godots: Elevating Your Godot Experience!** 🚀
-
-Welcome to a world where style meets functionality, where pixels pop and creativity soars! Presenting **Godots**, your ultimate go-to hub for managing your Godot versions and projects in the most stylish and efficient way possible. 🎮✨
+**Godots** is a lightweight desktop app for managing your Godot Engine versions and projects.
+Everything you need is in one place — downloading editors, keeping multiple versions, and organizing your projects — all in an interface that looks and feels just like the built-in Godot Project Manager.
 
 <p align="center">
-<img width="812" alt="Screenshot 2024-03-18 at 12 59 23 PM" src="https://github.com/MakovWait/godots/assets/39778897/607ce24b-2c39-4ede-8810-f7c528a496d2">
+<img width="812" src="https://github.com/MakovWait/godots/assets/39778897/607ce24b-2c39-4ede-8810-f7c528a496d2">
 </p>
 
-## Unleash the Power on MacOS! 💥
+## **Installation**
 
-For all the macOS aficionados out there, unleashing the power of Godots is just a command away. Ready to run the app? Just add it to your quarantine with a swift and stylish command:
+### **Windows**
+- Download the ZIP, extract it, and run the executable.
+- No additional setup required.
 
-```shell
-sudo xattr -r -d com.apple.quarantine /Applications/Godots.app
-```
+### **Linux**
+- Unzip and launch the binary directly.
 
-## What about Linux? 🐧
-
-Fear not Linux users, unleashing the power of Godots on any distribution is just a command away in the form of a Flatpak! Ready to run the app? Just install it from Flathub!
-
-**Note: This Flatpak is community maintained**
-
+Alternatively:
+- Install from Flathub (**community maintained**):
 <div align="start">
 <a href='https://flathub.org/apps/details/io.github.MakovWait.Godots'><img width="250" alt='Download on Flathub' src='https://raw.githubusercontent.com/flxzt/rnote/main/misc/assets/flathub-badge.svg'/></a>
-</div><br>
+</div>
 
-Don't have Flatpak? Just download the [latest release](https://github.com/MakovWait/godots/releases)!
+- Arch Linux users can install via AUR (**community maintained**):  
+  - [`godots-bin`](https://aur.archlinux.org/packages/godots-bin)  
+  - [`godots-git`](https://aur.archlinux.org/packages/godots-git)
 
-Or use the installation script:
+### **macOS**
+- Unzip and run **Godots.app**.
+- macOS may require removing the quarantine flag:
+  ```sh
+  sudo xattr -r -d com.apple.quarantine /Applications/Godots.app
+  ```
 
-```shell
-curl -fsSL https://raw.githubusercontent.com/MakovWait/godots/main/install.sh | bash
-```
-
-## Features That Redefine Cool 😎
-
-- **HIDPI Magic**: Feast your eyes on Godots like never before! With pixel-perfect support for Retina displays, zero blur, and stunning visuals, it's a visual extravaganza.
-
-- **Sleek & Native**: Dive into the elegance of the native Godot theme, seamlessly integrated into Godots. Get ready to be awed by the fluid aesthetics that keep you engaged.
-
-- **Remote Editors Unleashed**: Experience the ultimate convenience of the Remote Editors feature. Seamlessly download Godot versions from the official [GitHub Releases](https://github.com/godotengine/godot/releases) and take control of your creative arsenal.
-
-- **Project Mastery**: Manage projects with unparalleled finesse. Godots empowers you to embrace almost every feature available in the original Godot Project Manager App. Plus, there's a special twist—bind a downloaded editor to your project, unlocking the potential to run and edit it within a bound scope.
-
-![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot1.png)
-
-- **Theming Support**: Customize your Godots experience with theming support. Make it truly your own with personalized themes that match your style and mood. [Theming readme](https://github.com/MakovWait/godots/blob/main/.github/assets/THEMING.md)
-  ![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot3.png)
-  > Used theme: https://github.com/bitbrain/godot-dash
-- **Cli Support**: Embrace the power of the command line! Enjoy the flexibility and efficiency of using Godots through the [command line interface](https://github.com/MakovWait/godots/blob/main/.github/assets/FEATURES.md#cli). Manage your projects and versions effortlessly, even when your fingers are dancing on the keys.
+Download any build directly from:  
+👉 **[Latest Releases](https://github.com/MakovWait/godots/releases)**
 
 ---
 
-Godots is your ticket to a world of creativity, style, and control. Elevate your Godot journey today with Godots, where innovation and design collide. Your Godot experience will never be the same again! 🌟🎉
+## **Features**
+
+### **Download & manage any Godot version**
+- Fetch any official release from GitHub.
+- Keep multiple versions side-by-side.
+- Add custom local Godot binaries.
+
+### **Full project manager**
+- Add, import, organize, and launch projects.
+- Bind specific engine versions to individual projects.
+- Launch/edit projects directly with their assigned version.
+- Drag & drop `project.godot` or entire project folders.
+
+### **HiDPI / Retina support**
+- Sharp, crisp UI on high-resolution displays.
+
+### **Theming**
+- Supports custom themes compatible with Godot’s own theming system.
+- Guide: 👉 **[Theming Documentation](.github/assets/THEMING.md)**
+![image](https://github.com/MakovWait/godots/blob/main/.github/assets/screenshot3.png)
+
+### **CLI interface**
+- Manage projects and versions through the command line.  
+  Details: 👉 **[CLI Features](.github/assets/FEATURES.md#cli)**
+
+---
+
+## **License**
+MIT License — see `LICENSE.md`.

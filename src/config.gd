@@ -7,7 +7,7 @@ signal saved
 var AUTO_EDSCALE := 1.
 var EDSCALE := 1.
 var AGENT := ""
-const VERSION = "v1.4.dev"
+const VERSION = "v1.4.stable"
 const APP_CONFIG_PATH = "user://godots.cfg"
 const EDITORS_CONFIG_PATH = "user://editors.cfg"
 const PROJECTS_CONFIG_PATH = "user://projects.cfg"
@@ -79,6 +79,15 @@ var DEFAULT_PROJECTS_PATH := ConfigFileValue.new(
 	"projects_path",
 	OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)
 ).map_return_value(_simplify_path): 
+	set(_v): _readonly()
+
+
+var LANGUAGE := ConfigFileValue.new(
+	_cfg_auto_save.as_config_like(),
+	"app",
+	"language",
+	"en"
+):
 	set(_v): _readonly()
 
 
@@ -240,6 +249,15 @@ var HTTP_PROXY_PORT := ConfigFileValue.new(
 	"http_proxy_port",
 	8080
 ):
+	set(_v): _readonly()
+
+
+var DIRECTORY_NAMING_CONVENTION := ConfigFileValue.new(
+	_cfg_auto_save.as_config_like(), 
+	"app", 
+	"directory_naming_convention",
+	"snake_case"
+): 
 	set(_v): _readonly()
 
 

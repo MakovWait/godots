@@ -21,7 +21,7 @@ func _ready() -> void:
 			_project = null
 	)
 
-	confirmed.connect(func() -> void:
+	_successfully_confirmed.connect(func() -> void:
 		var final_project_name := _project_name_edit.text.strip_edges()
 		var project_dir := _project_path_line_edit.text.strip_edges()
 

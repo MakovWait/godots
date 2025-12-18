@@ -4,6 +4,10 @@ on:
     tags:
       - "v*"
 
+env:
+  GODOT_VERSION: 4.5
+  GODOT_RELEASE_TYPE: stable
+
 jobs:
   # job id, can be anything
   export_game:
@@ -33,14 +37,21 @@ jobs:
         uses: firebelley/godot-export@v5.2.1
         with:
           # Defining all the required inputs
-          godot_executable_download_url: https://github.com/godotengine/godot-builds/releases/download/4.2.2-rc2/Godot_v4.2.2-rc2_linux.x86_64.zip
-          godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/4.2.2-rc2/Godot_v4.2.2-rc2_export_templates.tpz
+          godot_executable_download_url: https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}/Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}/Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}_export_templates.tpz
           relative_project_path: .
           archive_output: true
           wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
  
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: generate SHA512-SUMS.txt
+        run: |
+          cd "${{ steps.export.outputs.archive_directory }}"
+          sha512sum * > SHA512-SUMS.txt
+          echo "Generated SHA512-SUMS.txt:"
+          cat SHA512-SUMS.txt
 
         # This release action has worked well for me. However, you can most likely use any release action of your choosing.
         # https://github.com/ncipollo/release-action
@@ -49,4 +60,6 @@ jobs:
         with:
           draft: true
           tag: ${{ github.ref_name }}
-          artifacts: ${{ steps.export.outputs.archive_directory }}/*
+          artifacts: |
+            ${{ steps.export.outputs.archive_directory }}/*
+            ${{ steps.export.outputs.archive_directory }}/SHA512-SUMS.txt

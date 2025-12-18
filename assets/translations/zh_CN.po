@@ -1,0 +1,594 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: SheepYhangCN <sheepyuhang@163.com>\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4\n"
+
+msgid "Download Error"
+msgstr "下载错误"
+
+msgid "Ready to install"
+msgstr "安装已就绪"
+
+msgid "Invalid URL scheme."
+msgstr "无效的 URL Scheme"
+
+msgid "Something went wrong."
+msgstr "出错了。"
+
+msgid "Downloading"
+msgstr "下载中"
+
+msgid "Resolving..."
+msgstr "解析中..."
+
+msgid "Connecting..."
+msgstr "连接中..."
+
+msgid "Requesting..."
+msgstr "请求中..."
+
+msgid "Version:"
+msgstr "版本："
+
+msgid "Contents:"
+msgstr "内容："
+
+msgid "View Files"
+msgstr "查看文件"
+
+msgid "Description:"
+msgstr "介绍："
+
+msgid "Search Templates, Projects, and Demos"
+msgstr "搜索模板、项目和演示"
+
+msgid "Loading version list..."
+msgstr "加载版本列表..."
+
+msgid "Failed to get versions list."
+msgstr "获取版本列表失败。"
+
+msgid "Loading configuration..."
+msgstr "加载配置..."
+
+msgid "Failed to get repository configuration."
+msgstr "获取仓库配置失败。"
+
+msgid "Failed to load assets list."
+msgstr "加载资源列表失败。"
+
+msgid "All"
+msgstr "全部"
+
+msgid "Retry"
+msgstr "重试"
+
+msgid "Recently Updated"
+msgstr "最近更新"
+
+msgid "Least Recently Updated"
+msgstr "最近更新（倒序）"
+
+msgid "Name (A-Z)"
+msgstr "名称（A-Z）"
+
+msgid "Name (Z-A)"
+msgstr "名称（Z-A）"
+
+msgid "License (A-Z)"
+msgstr "许可证（A-Z）"
+
+msgid "License (Z-A)"
+msgstr "许可证（Z-A）"
+
+msgid "Empty versions list!"
+msgstr "空白版本列表！"
+
+msgid "Command Viewer"
+msgstr "命令查看器"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "New Command"
+msgstr "新命令"
+
+msgid "Are you sure to remove the command?"
+msgstr "你确定要移除命令吗？"
+
+msgid "Local"
+msgstr "本地"
+
+msgid "Global"
+msgstr "全局"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "Path"
+msgstr "路径"
+
+msgid "Tags"
+msgstr "标签"
+
+msgid "Self-contained"
+msgstr "自包含模式"
+
+msgid "Run"
+msgstr "运行"
+
+msgid "Rename"
+msgstr "重命名"
+
+msgid "Manage Tags"
+msgstr "管理表情"
+
+msgid "Add Extra Args"
+msgstr "添加额外标签"
+
+msgid "Edit Commands"
+msgstr "编辑命令"
+
+msgid "View References"
+msgstr "查看引用"
+
+msgid "Remove"
+msgstr "移除"
+
+msgid "Show in File Manager"
+msgstr "在文件管理器中显示"
+
+msgid "Are you sure to remove the editor from the list?"
+msgstr "你确定要从列表中移除编辑器吗？"
+
+msgid ""
+"NOTE: the action will remove the parent folder of the editor with all the "
+"content."
+msgstr "注意：此操作会移除编辑器父目录中的所有内容。"
+
+msgid "remove also from the file system"
+msgstr "同样从文件系统中移除"
+
+msgid "Show Tags"
+msgstr "显示标签"
+
+msgid "Show Features"
+msgstr "显示特性"
+
+msgid "Flat"
+msgstr "扁平"
+
+msgid "Show Text"
+msgstr "显示文本"
+
+msgid "Always Show Controls"
+msgstr "总是显示控件"
+
+msgid "Visibility"
+msgstr "可见性"
+
+msgid "Appearance"
+msgstr "外观"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "References of %s (%s)"
+msgstr "%s（%s）的引用"
+
+msgid "Import"
+msgstr "导入"
+
+msgid "Download"
+msgstr "下载"
+
+msgid "Orphan Editors Explorer"
+msgstr "孤立编辑器浏览器"
+
+msgid ""
+"Check if there are some leaked Godot binaries on the filesystem that can be "
+"safely removed. For advanced users."
+msgstr ""
+"检查文件系统中是否有可以被安全删除但漏掉的 Godot 二进制程序。供高级用户使"
+"用。"
+
+msgid "Scan"
+msgstr "扫描"
+
+msgid "Refresh List"
+msgstr "刷新列表"
+
+msgid "Remove Missing"
+msgstr "删除缺失"
+
+msgid "Permanently delete %d item(s)? (No undo!)"
+msgstr "永久删除 %d 个项吗？（无法撤销！）"
+
+msgid "Open Downloads Dir"
+msgstr "打开下载目录"
+
+msgid "Refresh"
+msgstr "刷新"
+
+msgid "Error extracting archive."
+msgstr "解压文件时发生错误。"
+
+msgid "loading..."
+msgstr "加载中..."
+
+msgid "mono"
+msgstr "mono"
+
+msgid "unstable"
+msgstr "不稳定"
+
+msgid "any platform"
+msgstr "任何平台"
+
+msgid "4.x"
+msgstr "4.x"
+
+msgid "3.x"
+msgstr "3.x"
+
+msgid "x.x"
+msgstr "x.x"
+
+msgid "Download & Install"
+msgstr "下载并安装"
+
+msgid "News:"
+msgstr "新闻："
+
+msgid ""
+"Remove all missing items from the list?\\nThe item folders' contents won't "
+"be modified."
+msgstr "从列表中移除所有缺失项吗？\\n项的目录内容不会被修改。"
+
+msgid "Remove All"
+msgstr "移除全部"
+
+msgid "Select a Folder to Scan"
+msgstr "选择一个文件夹来扫描"
+
+msgid "Cloning..."
+msgstr "克隆中..."
+
+msgid "Duplicate"
+msgstr "复制"
+
+msgid "No project.godot found."
+msgstr "未找到 project.godot。"
+
+msgid "Couldn't create folder."
+msgstr "无法创建文件夹。"
+
+msgid "Code"
+msgstr "代码"
+
+msgid "The path specified doesn't exist."
+msgstr "指定的路径不存在。"
+
+msgid "Couldn't create project.godot in project path."
+msgstr "无法在项目路径中创建 project.godot。"
+
+msgid "OpenGL ES 3.0"
+msgstr "OpenGL ES 3.0"
+
+msgid "Higher visual quality"
+msgstr "更高的视觉质量"
+
+msgid "All features available"
+msgstr "所有特性可用"
+
+msgid "Incompatible with older hardware"
+msgstr "与旧硬件不兼容"
+
+msgid "Not recommended for web games"
+msgstr "不推荐用于网页游戏"
+
+msgid "OpenGL ES 2.0"
+msgstr "OpenGL ES 2.0"
+
+msgid "Lower visual quality"
+msgstr "更低的视觉质量"
+
+msgid "Some features not available"
+msgstr "某些特性不可用"
+
+msgid "Works on most hardware"
+msgstr "在大部分硬件上可用"
+
+msgid "Recommended for web games"
+msgstr "推荐用于网页游戏"
+
+msgid "The renderer can be changed later, but scenes may need to be adjusted."
+msgstr "渲染器稍候可以修改，但是场景可能需要进行调整。"
+
+msgid "Couldn't create .gitignore in project path."
+msgstr "无法在项目路径中创建 .gitignore。"
+
+msgid "Couldn't create .gitattributes in project path."
+msgstr "无法在项目路径中创建 .gitattributes。"
+
+msgid "Forward+"
+msgstr "Forward+"
+
+msgid "Supports desktop platforms only."
+msgstr "仅支持桌面平台。"
+
+msgid "Advanced 3D graphics available."
+msgstr "先进的 3D 图形可用。"
+
+msgid "Can scale to large complex scenes."
+msgstr "可以扩展到大型复杂场景。"
+
+msgid "Uses RenderingDevice backend."
+msgstr "使用 RenderingDevice 后端。"
+
+msgid "Slower rendering of simple scenes."
+msgstr "简单场景的渲染更慢。"
+
+msgid "Mobile"
+msgstr "Mobile"
+
+msgid "Supports desktop + mobile platforms."
+msgstr "支持桌面 + 移动平台。"
+
+msgid "Less advanced 3D graphics."
+msgstr "不太先进的 3D 图形。"
+
+msgid "Less scalable for complex scenes."
+msgstr "对复杂场景的扩展性较差。"
+
+msgid "Fast rendering of simple scenes."
+msgstr "简单场景的渲染更快。"
+
+msgid "Compatibility"
+msgstr "Compatibility"
+
+msgid "Supports desktop, mobile + web platforms."
+msgstr "支持桌面、移动 + 网页平台。"
+
+msgid "Least advanced 3D graphics (currently work-in-progress)."
+msgstr "最不先进的 3D 图形（目前仍在开发中）"
+
+msgid "Intended for low-end/older devices."
+msgstr "针对低端/较老的设备。"
+
+msgid "Uses OpenGL 3 backend (OpenGL 3.3/ES 3.0/WebGL2)."
+msgstr "使用 OpenGL 3 后端（OpenGL 3.3/ES 3.0/WebGL2）。"
+
+msgid "Fastest rendering of simple scenes."
+msgstr "简单场景的渲染最快。"
+
+msgid "Version Control Metadata:"
+msgstr "版本控制元数据："
+
+msgid "Renderer:"
+msgstr "渲染器："
+
+msgid "New"
+msgstr "新建"
+
+msgid "Clone"
+msgstr "克隆"
+
+msgid "Install"
+msgstr "安装"
+
+msgid "Failed to unzip."
+msgstr "解压缩失败。"
+
+msgid "Last Edited"
+msgstr "最后编辑"
+
+msgid "Editor is missing."
+msgstr "编辑器缺失。"
+
+msgid "Bind Editor"
+msgstr "绑定编辑器"
+
+msgid "version hint:"
+msgstr "版本标记："
+
+msgid "Editor"
+msgstr "编辑器"
+
+msgid "Are you sure to %s the project with the given editor?"
+msgstr "你确定要使用此编辑器来%s该项目吗？"
+
+msgid "do not show again for this project"
+msgstr "在此项目上不再显示"
+
+msgid "Are you sure to remove the project from the list?"
+msgstr "你确定要从列表中移除项目吗？"
+
+msgid "Bind editor first."
+msgstr "先绑定编辑器。"
+
+msgid "Config"
+msgstr "配置"
+
+msgid "Close on launch."
+msgstr "启动时关闭。"
+
+msgid "Default folder to scan/import projects from."
+msgstr "用于扫描/导入的默认文件夹。"
+
+msgid "Restore last window size and position on startup."
+msgstr "在启动时恢复上次的窗口大小与位置。"
+
+msgid ""
+"Base color for the theme. Affects the background and primary UI elements."
+msgstr "主题的基础颜色。影响背景与主要 UI 元素。"
+
+msgid ""
+"Accent color for the theme. Used for highlights and interactive elements."
+msgstr "主题的强调色。用于高亮与互动元素。"
+
+msgid "Contrast ratio for the theme. Affects the brightness of the UI."
+msgstr "主题的对比度。影响 UI 的亮度。"
+
+msgid "Temp dir for downloaded zips."
+msgstr "下载压缩包的缓存目录。"
+
+msgid "Dir for downloaded editors."
+msgstr "下载编辑器的目录。"
+
+msgid ""
+"By default the project installing is forbidden if the target dir is not "
+"empty. To allow it, check the checkbox."
+msgstr "默认情况下当目标路径非空时禁止安装项目。如需允许安装，勾选此勾选框。"
+
+msgid "Will check only stable Godots releases."
+msgstr "只会检查稳定版 Godots 发布版。"
+
+msgid "Host"
+msgstr "主机"
+
+msgid "Port"
+msgstr "端口"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Save & Close"
+msgstr "保存并关闭"
+
+msgid "Godots must be restarted for changes to take effect."
+msgstr "必须重启 Godots 才能使改动生效。"
+
+msgid "Auto"
+msgstr "自动"
+
+msgid "Custom"
+msgstr "自定义"
+
+msgid "Custom Theme Guide"
+msgstr "自定义主题指南"
+
+msgid "Tag name can't be empty."
+msgstr "标签名不可为空。"
+
+msgid "Tag name can't contain spaces."
+msgstr "标签名不可包含空格。"
+
+msgid "Tag name must be lowercase."
+msgstr "标签名必须为小写。"
+
+msgid "These characters are not allowed in tags: %s."
+msgstr "这些字符不允许出现在标签中：%s。"
+
+msgid "Connection error, prease try again."
+msgstr "连接错误，请再次尝试。"
+
+msgid "Can't connect"
+msgstr "无法连接"
+
+msgid "Can't connect to host"
+msgstr "无法连接到主机"
+
+msgid "No response from host"
+msgstr "主机无应答"
+
+msgid "No response"
+msgstr "无应答"
+
+msgid "Can't resolve hostname"
+msgstr "无法解析主机名"
+
+msgid "Can't resolve."
+msgstr "无法解析。"
+
+msgid "Request failed, return code"
+msgstr "请求失败，返回代码"
+
+msgid "Request failed."
+msgstr "请求失败"
+
+msgid "Cannot save response to"
+msgstr "无法保存回复到"
+
+msgid "Write error."
+msgstr "写入错误。"
+
+msgid "Request failed, too many redirects"
+msgstr "请求失败，过多重定向"
+
+msgid "Redirect loop."
+msgstr "重定向循环。"
+
+msgid "Request failed, timeout"
+msgstr "请求失败，超时"
+
+msgid "Timeout."
+msgstr "超时。"
+
+msgid "Failed"
+msgstr "失败"
+
+msgid "Projects"
+msgstr "项目"
+
+msgid "Asset Library"
+msgstr "资源库"
+
+msgid "Editors"
+msgstr "编辑器"
+
+msgid "Remote Editors"
+msgstr "远程编辑器"
+
+msgid "Updates"
+msgstr "更新"
+
+msgid "Click to see other versions."
+msgstr "点击查看其它版本。"
+
+msgid "Click to see the post."
+msgstr "点击查看文章。"
+
+msgid "Failed SHA-256 hash check"
+msgstr "SHA-256 散列值检查失败"
+
+msgid "Bad download hash, assuming file has been tampered with."
+msgstr "错误的下载散列值，认定文件已被篡改。"
+
+msgid "Expected:"
+msgstr "预料值："
+
+msgid "Got:"
+msgstr "实际值："
+
+msgid "Commands"
+msgstr "命令"
+
+msgid "Alert!"
+msgstr "警报！"
+
+msgid "Installing is forbidden!"
+msgstr "禁止安装！"
+
+msgid "newest"
+msgstr "最新"
+
+msgid "pre-release"
+msgstr "预发布"
+
+msgid "latest"
+msgstr "最新"
+
+msgid "draft"
+msgstr "草稿"
+
+msgid "语言"
+msgstr "语言"

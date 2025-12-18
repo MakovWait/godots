@@ -9,6 +9,12 @@ var _prev_rect: Rect2
 
 func _prepare_settings() -> Array:
 	return [
+		SettingRestartRequired(SettingChangeObserved(SettingCfg(
+			"application/config/language",
+			Config.LANGUAGE,
+			SettingLanguage,
+		))),
+
 		SettingChangeObserved(SettingCfg(
 			"application/config/auto_close",
 			Config.AUTO_CLOSE,
@@ -27,6 +33,13 @@ func _prepare_settings() -> Array:
 			Config.DEFAULT_PROJECTS_PATH,
 			SettingFilePath,
 			tr("Default folder to scan/import projects from.")
+		)),
+
+		SettingChangeObserved(SettingCfg(
+			"application/config/directory_naming_convention",
+			Config.DIRECTORY_NAMING_CONVENTION.bake_default("snake_case"),
+			SettingDirNameType,
+			tr("Style of folder names for new projects.")
 		)),
 
 		SettingFiltered(SettingRestartRequired(SettingChangeObserved(SettingCfg(
@@ -646,6 +659,18 @@ class SettingOptionButton extends Setting:
 		control.add_to(target)
 
 
+func SettingLanguage(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:
+	var dictionary := {}
+	var count := 0
+	for i in TranslationServer.get_loaded_locales():
+		count += 1
+		dictionary[count] = {
+			"name": TranslationServer.get_locale_name(i),
+			"value": i
+		}
+	return SettingOptionButton.new(a1, a2, a3, a4, dictionary, tr("Custom"))
+
+
 func SettingScale(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:
 	return SettingOptionButton.new(a1, a2, a3, a4,
 		{
@@ -682,6 +707,36 @@ func SettingScale(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOp
 				"value": 2.25
 			},
 		}, tr("Custom")
+	)
+
+func SettingDirNameType(a1: String, a2: Variant, a3: String, a4: Variant) -> SettingOptionButton:
+	return SettingOptionButton.new(a1, a2, a3, a4,
+		{
+			1: {
+				"name": "No convention",
+				"value": "none"
+			},
+			2: {
+				"name": "kebab-case",
+				"value": "kebab_case"
+			},
+			3: {
+				"name": "snake_case",
+				"value": "snake_case"
+			},
+			4: {
+				"name": "camelCase",
+				"value": "camel_case"
+			},
+			5: {
+				"name": "PascalCase",
+				"value": "pascal_case"
+			},
+			6: {
+				"name": "Title Case",
+				"value": "title_case"
+			},
+		}, tr("INVALID")
 	)
 
 

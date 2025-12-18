@@ -18,7 +18,7 @@ func _ready() -> void:
 	_register_handler(NewProjectGodot4.new())
 	_register_handler(NewProjectGodot3.new())
 	
-	confirmed.connect(func() -> void:
+	_successfully_confirmed.connect(func() -> void:
 		var meta: Dictionary = _handler_option_button.get_item_metadata(_handler_option_button.selected)
 		var handler := meta.self as NewProjectHandler
 		var ctx := NewProjectContext.new(self)
@@ -27,6 +27,11 @@ func _ready() -> void:
 		ctx.form = _custom_form_tabs.get_current_tab_control()
 		handler.create_project(ctx)
 	)
+
+
+func _on_raise(args: Variant = null) -> void:
+	_project_name_edit.grab_focus()
+	_project_name_edit.select_all()
 
 
 func _register_handler(handler: NewProjectHandler) -> void:
@@ -58,6 +63,7 @@ class NewProjectContext:
 		_ctx_delegate.call("_error", msg)
 	
 	func emit_created(path: String) -> void:
+		_ctx_delegate.call("hide")
 		_ctx_delegate.emit_signal("created", path)
 
 
