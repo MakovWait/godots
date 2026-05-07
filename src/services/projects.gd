@@ -429,10 +429,11 @@ class ExternalProjectInfo extends RefCounted:
 					for i in entries:
 						var id := uid_cache.get_64()
 						var length := uid_cache.get_32()
-						var rl := uid_cache.get_buffer(length)
 						if id == uid:
-							icon_path = rl.get_string_from_utf8()
+							icon_path = uid_cache.get_buffer(length).get_string_from_utf8()
 							break
+						else:
+							uid_cache.seek(uid_cache.get_position() + length)
 
 		icon_path = icon_path.replace("res://", project_path)
 		
