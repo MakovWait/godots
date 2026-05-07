@@ -216,7 +216,7 @@ func _update_fetch_assets_status_label(items: AssetLib.Items, params: AssetLib.P
 		else:
 			_set_status(tr(
 				"No results for \"%s\" for support level(s): %s." % [
-					params.filter, _support_menu_button.get_support_string()
+					params.filter_raw, _support_menu_button.get_support_string()
 				]
 			))
 	else:

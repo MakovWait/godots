@@ -17,7 +17,7 @@ func _init() -> void:
 
 
 func fill_params(params: AssetLib.Params) -> void:
-	params.filter = text.strip_edges()
+	params.filter_raw = text
 
 
 func _on_fetch_disable() -> void:
