@@ -18,9 +18,13 @@ class Params:
 				assert(el in ["official", "community", "testing"])
 			support = value
 	
-	# search text
-	var filter: String = ""
+	# raw search text
+	var filter_raw: String = ""
 	
+	# encoded search text to be used in URL 
+	var filter: String:
+		get: return filter_raw.strip_edges().uri_encode()
+
 	# submitter username
 	var user: String = ""
 	
