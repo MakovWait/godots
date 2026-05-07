@@ -44,7 +44,8 @@ func _ready() -> void:
 		_validate()
 	)
 	_create_folder_check.toggled.connect(func(_arg: bool) -> void:
-		_update_project_dir()
+		_set_custom_folder = false
+		_toggle_auto_project_dir()
 	)
 	focus_entered.connect(func() -> void:
 		_validate()
@@ -55,9 +56,8 @@ func _ready() -> void:
 		_file_dialog.popup_centered_ratio(0.5)
 	)
 	_file_dialog.dir_selected.connect(func(dir: String) -> void: 
-		_project_path_line_edit.text = dir + "/"
-		_set_custom_folder = true
-		_validate()
+		_project_path_line_edit.text = dir
+		_update_project_dir()
 	)
 	
 	_randomize_name_button.pressed.connect(func() -> void:
@@ -72,7 +72,7 @@ func raise(project_name:="New Game Project", args: Variant = null) -> void:
 	_set_custom_folder = false
 	_project_name_edit.text = project_name
 	_project_path_line_edit.text = Config.DEFAULT_PROJECTS_PATH.ret()
-	_update_project_dir()
+	_init_project_dir()
 	popup_centered()
 	_on_raise(args)
 	_validate()
@@ -93,13 +93,28 @@ func _create_project_dir() -> Error:
 func _update_project_dir() -> void:
 	var new_name: String = _project_name_edit.text
 	if not _set_custom_folder:
+		var base_dir := _project_path_line_edit.text.get_base_dir()
 		if not _create_folder_check.button_pressed:
-			_project_path_line_edit.text = Config.DEFAULT_PROJECTS_PATH.ret() as String
+			_project_path_line_edit.text = base_dir
 		else:
-			_project_path_line_edit.text = (Config.DEFAULT_PROJECTS_PATH.ret() as String).path_join(_format_dir_name(new_name))
-	else:
+			_project_path_line_edit.text = base_dir.path_join(_format_dir_name(new_name))
+	_validate()
+
+
+func _toggle_auto_project_dir() -> void:
+	var new_name: String = _project_name_edit.text
+	if not _set_custom_folder:
 		if _create_folder_check.button_pressed:
-			_project_path_line_edit.text = _project_path_line_edit.text.substr(0, _project_path_line_edit.text.rfind("/") + 1) + _format_dir_name(new_name)
+			_project_path_line_edit.text = _project_path_line_edit.text.path_join(_format_dir_name(new_name))
+		else:
+			_project_path_line_edit.text = _project_path_line_edit.text.get_base_dir()
+	_validate()
+
+
+func _init_project_dir() -> void:
+	var new_name: String = _project_name_edit.text
+	if _create_folder_check.button_pressed:
+		_project_path_line_edit.text = _project_path_line_edit.text.path_join(_format_dir_name(new_name))
 	_validate()
 
 
@@ -127,10 +142,13 @@ func _validate() -> void:
 		return
 	
 	var dir := DirAccess.open(path)
-	
-	if not _create_folder_check.button_pressed and not dir:
-		_error(tr("The path specified doesn't exist."))
-		return
+	if not dir:
+		if _create_folder_check.button_pressed:
+			_success(tr("The project folder will be automatically created."))
+			return
+		else:
+			_error(tr("The path specified doesn't exist."))
+			return
 	
 	var parent_dir := path.get_base_dir().simplify_path()
 	if not DirAccess.dir_exists_absolute(parent_dir):
@@ -162,11 +180,8 @@ func _validate() -> void:
 	if not dir_is_empty:
 		if _handle_dir_is_not_empty(path):
 			return
-	
-	if _create_folder_check.button_pressed:
-		_success(tr("The project folder will be automatically created."))
-	else:
-		_success(tr("The project folder exists and is empty."))
+
+	_success(tr("The project folder exists and is empty."))
 
 
 func error(text: String) -> void:
