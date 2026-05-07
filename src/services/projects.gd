@@ -424,7 +424,7 @@ class ExternalProjectInfo extends RefCounted:
 			var uid := ResourceUID.text_to_id(icon_path)
 			if uid != ResourceUID.INVALID_ID:
 				var uid_cache := FileAccess.open(project_path + ".godot/uid_cache.bin", FileAccess.READ)
-				if uid_cache.get_error() == OK:
+				if uid_cache != null:
 					var entries := uid_cache.get_32()
 					for i in entries:
 						var id := uid_cache.get_64()
