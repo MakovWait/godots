@@ -93,7 +93,7 @@ func _create_project_dir() -> Error:
 func _update_project_dir() -> void:
 	var new_name: String = _project_name_edit.text
 	if not _set_custom_folder:
-		var base_dir := _project_path_line_edit.text.get_base_dir()
+		var base_dir := _project_path_line_edit.text
 		if not _create_folder_check.button_pressed:
 			_project_path_line_edit.text = base_dir
 		else:
