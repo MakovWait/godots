@@ -130,6 +130,9 @@ class Item:
 	var editors_to_bind: Array:
 		get: return _get_editors_to_bind()
 	
+	var has_main_scene: bool:
+		get: return _external_project_info.has_main_scene
+	
 	var is_missing: bool:
 		get: return _external_project_info.is_missing
 	
@@ -347,6 +350,9 @@ class ExternalProjectInfo extends RefCounted:
 	var is_missing: bool:
 		get: return _is_missing
 	
+	var has_main_scene: bool:
+		get: return _has_main_scene
+	
 	# TODO type
 	var tags: Array:
 		set(value):
@@ -378,6 +384,7 @@ class ExternalProjectInfo extends RefCounted:
 	var _name := "Loading..."
 	var _last_modified: int
 	var _is_missing := false
+	var _has_main_scene := false
 	var _tags := []
 	var _features := []
 	var _config_version := -1
@@ -401,6 +408,7 @@ class ExternalProjectInfo extends RefCounted:
 		_tags = cfg.get_value("application", "config/tags", [])
 		_features = cfg.get_value("application", "config/features", [])
 		_config_version = cfg.get_value("", "config_version", -1)
+		_has_main_scene = true if cfg.get_value("application", "run/main_scene", false) else false
 		_has_mono_section = cfg.has_section("mono")
 		if cfg.has_section_key("godots", "version_hint"):
 			_version_hint = cfg.get_value("godots", "version_hint")

@@ -4,4 +4,4 @@
 
 [node name="Main" type="Node"]
 script = ExtResource("2_nqr5a")
-gui_scene_path = "res://src/main/gui/gui_main.tscn"
+gui_scene_path = "uid://omgg45dpxftx"
