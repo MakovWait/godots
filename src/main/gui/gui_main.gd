@@ -177,9 +177,14 @@ func _enter_tree() -> void:
 			window.position,
 			window.min_size
 		)) as Rect2i
+		var mode: Window.Mode = Config.LAST_WINDOW_MODE.ret(Window.MODE_WINDOWED)
 		if DisplayServer.get_screen_from_rect(rect) != -1:
-			window.size = rect.size
-			window.position = rect.position
+			if mode == Window.MODE_MAXIMIZED:
+				window.mode = Window.MODE_MAXIMIZED
+			else:
+				window.mode = Window.MODE_WINDOWED
+				window.size = rect.size
+				window.position = rect.position
 	
 	_local_remote_switch_context = LocalRemoteEditorsSwitchContext.new(
 		_local_editors,
@@ -215,6 +220,7 @@ func _exit_tree() -> void:
 		callback.call()
 	var window := get_window()
 	Config.LAST_WINDOW_RECT.put(Rect2i(window.position, window.size))
+	Config.LAST_WINDOW_MODE.put(window.mode)
 
 
 # TODO type

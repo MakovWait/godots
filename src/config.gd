@@ -162,6 +162,15 @@ var LAST_WINDOW_RECT := ConfigFileValue.new(
 	set(_v): _readonly()
 
 
+var LAST_WINDOW_MODE := ConfigFileValue.new(
+	_cfg_auto_save.as_config_like(),
+	"app",
+	"last_window_mode",
+	Window.MODE_WINDOWED
+):
+	set(_v): _readonly()
+
+
 var REMEMBER_WINDOW_SIZE := ConfigFileValue.new(
 	_cfg_auto_save.as_config_like(), 
 	"app", 
