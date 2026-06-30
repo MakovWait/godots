@@ -11,6 +11,7 @@ signal installed(editor_name: String, editor_exec_path: String)
 @onready var _show_all_check_box := %ShowAllCheckBox as CheckBox
 
 var _dir_content: Array[edir.DirListResult]
+var _initial_editor_name: String = ""
 var _show_all: bool:
 	get: return _show_all_check_box.button_pressed
 
@@ -27,7 +28,7 @@ func _ready() -> void:
 					continue
 				c.set_checked(0, false)
 		if selected:
-			_editor_name_edit.text = utils.guess_editor_name(
+			_editor_name_edit.text = _pick_editor_name(
 				selected.get_meta("full_path") as String
 			)
 	)
@@ -40,6 +41,7 @@ func init(editor_name: String, editor_exec_path: String) -> void:
 	assert(editor_exec_path.ends_with("/"))
 	Output.push("Installing editor: %s" % editor_exec_path)
 	_dir_content = edir.list_recursive(editor_exec_path)
+	_initial_editor_name = editor_name
 	_editor_name_edit.text = editor_name
 	_select_exec_file_tree.show()
 	_setup_editor_select_tree()
@@ -65,7 +67,7 @@ func _setup_editor_select_tree() -> void:
 					selected = true
 					item.set_checked(0, true)
 					item.select(0)
-					_editor_name_edit.text = utils.guess_editor_name(x.path)
+					_editor_name_edit.text = _pick_editor_name(x.path)
 
 	var filter: Variant
 	var should_be_selected: Variant
@@ -108,6 +110,15 @@ func _on_confirmed() -> void:
 	# TODO validate data ???
 	installed.emit(_editor_name_edit.text, path)
 	queue_free()
+
+
+func _pick_editor_name(path: String) -> String:
+	var guessed := utils.guess_editor_name(path)
+	# When guess_editor_name cannot extract a version (e.g. macOS "Godot.app"),
+	# it returns the bare filename — fall back to the name derived from the zip.
+	if guessed == path.get_file() and not _initial_editor_name.is_empty():
+		return _initial_editor_name
+	return guessed
 
 
 func _on_canceled() -> void:
