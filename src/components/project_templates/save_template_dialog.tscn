@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/components/project_templates/save_template_dialog.gd" id="1_script"]
+
+[node name="SaveTemplateDialog" type="ConfirmationDialog"]
+title = "Save Project as Template"
+ok_button_text = "Save"
+script = ExtResource("1_script")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Template Name:"
+
+[node name="TemplateNameEdit" type="LineEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "My Awesome Template"
+
+[node name="DescLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Description:"
+
+[node name="DescriptionEdit" type="TextEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 80)
+placeholder_text = "Describe what this template includes..."
+
+[node name="SourceLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Source Project:"
+
+[node name="SourceHBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SourcePathEdit" type="LineEdit" parent="VBoxContainer/SourceHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+editable = false
+
+[node name="BrowseSourceButton" type="Button" parent="VBoxContainer/SourceHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Browse"
+
+[node name="MessageHBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="StatusRect" type="TextureRect" parent="VBoxContainer/MessageHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(16, 16)
+stretch_mode = 5
+
+[node name="MessageLabel" type="Label" parent="VBoxContainer/MessageHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = ""
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Select Project Directory"
+ok_button_text = "Select"
+file_mode = 2
+access = 2

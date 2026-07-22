@@ -8,13 +8,17 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Godots"
 config/description="Ultimate go-to hub for managing your Godot versions and projects!"
 config/tags=PackedStringArray("application")
 run/main_scene="res://src/main/main.tscn"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.6", "GL Compatibility")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0.113725, 0.133333, 0.160784, 1)
 config/icon="res://icon.svg"
@@ -26,7 +30,7 @@ Output="*res://src/output.gd"
 AutoClose="*res://src/auto_close.gd"
 Cache="*res://src/cache.gd"
 HttpClient="*res://src/http_client.gd"
-Context="*res://addons/use-context/context_node.gd"
+Context="*uid://c81coxv48a5x8"
 AutoNativeFileDialog="*res://src/auto_native_file_dialog.gd"
 
 [debug]
@@ -47,7 +51,7 @@ window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/use-context/plugin.cfg")
+enabled=PackedStringArray("res://addons/use-context/plugin.cfg", "res://addons/gdUnit4/plugin.cfg")
 
 [filesystem]
 

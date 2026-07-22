@@ -202,6 +202,13 @@ func _fill_actions(item: Projects.Item) -> void:
 		"label": tr("Show in File Manager"),
 	})
 
+	var save_as_template := Action.from_dict({
+		"key": "save-as-template",
+		"icon": Action.IconTheme.new(self, "FileList", "EditorIcons"),
+		"act": _save_as_template.bind(item),
+		"label": tr("Save as Template"),
+	})
+
 	_actions = Action.List.new([
 		edit,
 		run,
@@ -211,6 +218,7 @@ func _fill_actions(item: Projects.Item) -> void:
 		manage_tags,
 		view_command,
 		show_in_file_manager,
+		save_as_template,
 		remove
 	])
 
@@ -240,7 +248,8 @@ func _fill_data(item: Projects.Item) -> void:
 		'duplicate',
 		'bind-editor',
 		'manage-tags',
-		'rename'
+		'rename',
+		'save-as-template'
 	]).all():
 		action.disable(item.is_missing)
 	
@@ -407,6 +416,86 @@ func _on_run_with_editor(item: Projects.Item, editor_flag: Callable, action_name
 
 func _show_in_file_manager(item: Projects.Item) -> void:
 	OS.shell_show_in_file_manager(ProjectSettings.globalize_path(item.path).get_base_dir())
+
+
+func _save_as_template(item: Projects.Item) -> void:
+	var templates_service := Context.use_or_null(self, ProjectTemplates.List)
+	if templates_service == null:
+		return
+	
+	# Create a simple confirmation dialog
+	var dialog := ConfirmationDialogAutoFree.new()
+	dialog.title = tr("Save as Template")
+	dialog.dialog_text = tr("Save '%s' as a project template?") % item.name
+	dialog.ok_button_text = tr("Save")
+	
+	var vbox := VBoxContainer.new()
+	dialog.add_child(vbox)
+	
+	var name_label := Label.new()
+	name_label.text = tr("Template Name:")
+	vbox.add_child(name_label)
+	
+	var name_edit := LineEdit.new()
+	name_edit.text = item.name + " Template"
+	vbox.add_child(name_edit)
+	
+	var desc_label := Label.new()
+	desc_label.text = tr("Description:")
+	vbox.add_child(desc_label)
+	
+	var desc_edit := TextEdit.new()
+	desc_edit.custom_minimum_size = Vector2(0, 60) * Config.EDSCALE
+	vbox.add_child(desc_edit)
+	
+	dialog.confirmed.connect(func() -> void:
+		var template_name := name_edit.text.strip_edges()
+		var description := desc_edit.text.strip_edges()
+		var source_path := ProjectSettings.globalize_path(item.path).get_base_dir()
+		
+		var template := templates_service.add(template_name, description, source_path, item.tags)
+		templates_service.save()
+		
+		# Create zip from project directory
+		_create_template_zip(source_path, template.zip_path)
+	)
+	
+	add_child(dialog)
+	dialog.popup_centered(Vector2(400, 0) * Config.EDSCALE)
+
+
+func _create_template_zip(source_dir: String, target_zip_path: String) -> void:
+	var output := []
+	var exit_code: int
+	
+	DirAccess.make_dir_recursive_absolute(target_zip_path.get_base_dir())
+	
+	if FileAccess.file_exists(target_zip_path):
+		DirAccess.remove_absolute(target_zip_path)
+	
+	# Use cd + zip to create archive from source directory
+	if OS.has_feature("windows"):
+		exit_code = OS.execute(
+			"powershell.exe",
+			[
+				"-command",
+				"Set-Location '%s'; Compress-Archive -Path '*' -DestinationPath '%s' -Force" % [
+					source_dir,
+					ProjectSettings.globalize_path(target_zip_path)
+				]
+			], output, true
+		)
+	else:
+		exit_code = OS.execute(
+			"bash",
+			[
+				"-c",
+				"cd '%s' && zip -r '%s' ." % [
+					source_dir,
+					ProjectSettings.globalize_path(target_zip_path)
+				]
+			], output, true
+		)
 
 
 func _run_with_editor(item: Projects.Item, editor_flag: Callable, auto_close: bool) -> void:

@@ -1,0 +1,73 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/components/project_templates/template_list_item.gd" id="1_script"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="2_title"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="3_icon"]
+[ext_resource type="Script" path="res://src/components/misc/item_tag_container.gd" id="4_tags"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_path_label.gd" id="5_path"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="6_btn"]
+
+[node name="TemplateListItem" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Icon" type="TextureRect" parent="."]
+layout_mode = 2
+script = ExtResource("3_icon")
+
+[node name="InfoVBox" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="TitleContainer" type="HBoxContainer" parent="InfoVBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="InfoVBox/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Template Name"
+text_overrun_behavior = 3
+script = ExtResource("2_title")
+
+[node name="DateLabel" type="Label" parent="InfoVBox/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+modulate = Color(1, 1, 1, 0.498039)
+text = "2025-01-01"
+script = ExtResource("5_path")
+
+[node name="ActionsContainer" type="HBoxContainer" parent="InfoVBox/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OpenButton" type="Button" parent="InfoVBox/TitleContainer/ActionsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+flat = true
+script = ExtResource("6_btn")
+
+[node name="DescriptionContainer" type="HBoxContainer" parent="InfoVBox"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="InfoVBox/DescriptionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Template description"
+text_overrun_behavior = 3
+autowrap_mode = 2
+
+[node name="TagsContainer" type="HBoxContainer" parent="InfoVBox"]
+layout_mode = 2
+
+[node name="TagContainer" type="HBoxContainer" parent="InfoVBox/TagsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("4_tags")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://omgg45dpxftx"]
+[gd_scene load_steps=18 format=3 uid="uid://omgg45dpxftx"]
 
 [ext_resource type="Script" uid="uid://rj237qsrvde4" path="res://src/main/gui/gui_main.gd" id="1_yjveq"]
 [ext_resource type="PackedScene" uid="uid://cb6u1mub27xo" path="res://src/components/asset_download/asset_download.tscn" id="2_gfvot"]
@@ -15,8 +15,10 @@
 [ext_resource type="PackedScene" uid="uid://buwhvihmtjeff" path="res://src/components/tags/manage_tags.tscn" id="12_6d5cn"]
 [ext_resource type="PackedScene" uid="uid://btxxnjmhy4bqw" path="res://src/components/command_viewer/command_viewer.tscn" id="13_mk5sf"]
 [ext_resource type="PackedScene" uid="uid://b3aprmu6od0wa" path="res://src/components/settings/settings_window.tscn" id="14_3j6hr"]
+[ext_resource type="PackedScene" path="res://src/components/rss_feed/rss_feed.tscn" id="15_rss"]
+[ext_resource type="PackedScene" path="res://src/components/project_templates/project_templates.tscn" id="16_templates"]
 
-[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_asset_lib_projects", "_godots_releases", "_auto_updates", "_title_tabs", "_updates", "_tab_container")]
+[node name="Main" type="Control" node_paths=PackedStringArray("_remote_editors", "_local_editors", "_projects", "_asset_lib_projects", "_godots_releases", "_rss_feed", "_project_templates", "_auto_updates", "_title_tabs", "_updates", "_tab_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,6 +31,8 @@ _local_editors = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/L
 _projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Local Projects")
 _asset_lib_projects = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Asset Library Projects")
 _godots_releases = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Updates")
+_rss_feed = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/RSS Feed")
+_project_templates = NodePath("GuiBase/MainVBox/Content/VBoxContainer/TabContainer/Project Templates")
 _auto_updates = NodePath("AutoUpdates")
 _asset_download = ExtResource("2_gfvot")
 _title_tabs = NodePath("GuiBase/MainVBox/TitleBar/ButtonsContainer")
@@ -98,6 +102,14 @@ visible = false
 layout_mode = 2
 
 [node name="Updates" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("8_aidwm")]
+visible = false
+layout_mode = 2
+
+[node name="RSS Feed" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("15_rss")]
+visible = false
+layout_mode = 2
+
+[node name="Project Templates" parent="GuiBase/MainVBox/Content/VBoxContainer/TabContainer" instance=ExtResource("16_templates")]
 visible = false
 layout_mode = 2
 

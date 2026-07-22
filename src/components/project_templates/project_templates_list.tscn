@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" uid="uid://bjudiph2xbmbu" path="res://src/components/v_box_list/v_box_list.tscn" id="1_base"]
+[ext_resource type="Script" path="res://src/components/project_templates/project_templates_list.gd" id="2_list"]
+[ext_resource type="PackedScene" path="res://src/components/project_templates/template_list_item.tscn" id="3_item"]
+
+[node name="ProjectTemplatesList" instance=ExtResource("1_base")]
+script = ExtResource("2_list")
+_item_scene = ExtResource("3_item")
+
+[node name="SearchBox" parent="HBoxContainer" index="1"]
+placeholder_text = "Filter Templates"
+
+[node name="Label" parent="HBoxContainer/HBoxContainer" index="0"]
+size_flags_vertical = 1
+horizontal_alignment = 1
+vertical_alignment = 1

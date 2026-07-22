@@ -19,6 +19,12 @@ func _is_cli_mode(args: PackedStringArray) -> bool:
 	if args.is_empty():
 		return false
 
+	var cli_keywords := ["--ghelp", "-gh", "--recent", "-r", "editor", "exec"]
+	for arg in args:
+		if cli_keywords.has(arg):
+			return true
+	return false
+
 	var grammar := CliGrammar.new(GodotsCommands.commands)
 	var first := args[0]
 

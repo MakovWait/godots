@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cuuiumge42ghh" path="res://src/components/actions_sidebar/actions_sidebar.tscn" id="1_sidebar"]
+[ext_resource type="PackedScene" path="res://src/components/project_templates/project_templates_list.tscn" id="2_list"]
+[ext_resource type="Script" path="res://src/components/project_templates/project_templates.gd" id="3_script"]
+[ext_resource type="PackedScene" path="res://src/components/project_templates/save_template_dialog.tscn" id="4_save"]
+[ext_resource type="PackedScene" path="res://src/components/project_templates/open_template_dialog.tscn" id="5_open"]
+
+[node name="ProjectTemplates" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_script")
+
+[node name="ProjectTemplatesList" parent="." instance=ExtResource("2_list")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+_search_cache_is_enabled = true
+_cached_search_key = "templates"
+
+[node name="VBoxContainer" parent="ProjectTemplatesList/HBoxContainer2" index="1"]
+visible = false
+
+[node name="ActionsSidebar" parent="ProjectTemplatesList/HBoxContainer2/VBoxContainer/SidebarContainer" index="0" instance=ExtResource("1_sidebar")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SaveTemplateDialog" parent="." instance=ExtResource("4_save")]
+unique_name_in_owner = true
+visible = false
+
+[node name="OpenTemplateDialog" parent="." instance=ExtResource("5_open")]
+unique_name_in_owner = true
+visible = false
+
+[connection signal="item_opened" from="ProjectTemplatesList" to="." method="_on_templates_list_item_selected"]
+
+[editable path="ProjectTemplatesList"]
+[editable path="ProjectTemplatesList/HBoxContainer2/VBoxContainer/SidebarContainer/ActionsSidebar"]

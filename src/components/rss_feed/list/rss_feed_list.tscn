@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://src/components/v_box_list/v_box_list.tscn" id="1_base"]
+[ext_resource type="Script" path="res://src/components/rss_feed/list/rss_feed_list.gd" id="2_script"]
+[ext_resource type="PackedScene" path="res://src/components/rss_feed/list/rss_feed_item.tscn" id="3_item"]
+
+[node name="RssFeedList" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+_item_scene = ExtResource("3_item")
+_cached_search_key = "rss_feed_list"
+
+[node name="SearchBox" parent="HBoxContainer" index="1"]
+placeholder_text = "Filter Feed"
+clear_button_enabled = true
+
+[node name="HBoxContainer" parent="HBoxContainer" index="2"]
+visible = false

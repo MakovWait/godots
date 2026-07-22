@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/components/rss_feed/list/rss_feed_item.gd" id="1_script"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_title_label.gd" id="2_title"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="3_button"]
+[ext_resource type="Script" path="res://src/components/misc/list_item_icon.gd" id="4_icon"]
+
+[node name="RssFeedItem" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Thumbnail" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("4_icon")
+_stretch_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Video Title"
+script = ExtResource("2_title")
+
+[node name="Info" type="HBoxContainer" parent="VBoxContainer"]
+modulate = Color(1, 1, 1, 0.6)
+layout_mode = 2
+
+[node name="SourceLabel" type="Label" parent="VBoxContainer/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Source"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/Info"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="DateLabel" type="Label" parent="VBoxContainer/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "2026-01-01"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/Info"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OpenButton" type="Button" parent="VBoxContainer/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+flat = true

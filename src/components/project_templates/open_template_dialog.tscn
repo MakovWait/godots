@@ -1,0 +1,65 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/components/project_templates/open_template_dialog.gd" id="1_script"]
+
+[node name="OpenTemplateDialog" type="ConfirmationDialog"]
+title = "Create Project from Template"
+ok_button_text = "Create"
+script = ExtResource("1_script")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Project Name:"
+
+[node name="ProjectNameEdit" type="LineEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "My New Project"
+
+[node name="PathLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Target Path:"
+
+[node name="PathHBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ProjectPathLineEdit" type="LineEdit" parent="VBoxContainer/PathHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BrowsePathButton" type="Button" parent="VBoxContainer/PathHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Browse"
+
+[node name="CreateFolderCheck" type="CheckButton" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Create project folder"
+
+[node name="MessageHBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="StatusRect" type="TextureRect" parent="VBoxContainer/MessageHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(16, 16)
+stretch_mode = 5
+
+[node name="MessageLabel" type="Label" parent="VBoxContainer/MessageHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = ""
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Select Target Directory"
+ok_button_text = "Select"
+file_mode = 2
+access = 2

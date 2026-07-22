@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/components/rss_feed/rss_feed.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://src/components/rss_feed/list/rss_feed_list.tscn" id="2_list"]
+[ext_resource type="Script" path="res://src/components/misc/themed_button.gd" id="3_button"]
+
+[node name="RssFeed" type="HBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="RssFeedList" parent="." instance=ExtResource("2_list")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RefreshButton" type="Button" parent="RssFeedList/HBoxContainer" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+flat = true
+script = ExtResource("3_button")
+_theme_icon_name = "Reload"
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
