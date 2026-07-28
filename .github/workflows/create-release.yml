@@ -1,66 +1,178 @@
-# Whenever a tag push matching pattern "v*" then run the job
+name: Create Release
+
+# Runs on a "v*" tag push (builds + publishes a draft release), or manually
+# (builds only, so the pipeline can be tested without cutting a tag).
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
 
 env:
-  GODOT_VERSION: 4.5
+  GODOT_VERSION: "4.5"
   GODOT_RELEASE_TYPE: stable
+  RCEDIT_VERSION: v2.0.0
+
+permissions:
+  contents: write
 
 jobs:
-  # job id, can be anything
   export_game:
-    # Always use ubuntu-latest for this action
-    runs-on: ubuntu-latest
-    # Add permission for release creation. Can be made narrower according to your needs
-    permissions: write-all
-    # Job name, can be anything
     name: Export Game
+    # Pinned rather than ubuntu-latest: an image roll silently changed the
+    # available wine packages once already.
+    runs-on: ubuntu-24.04
     steps:
-      # Always include the checkout step so that 
-      # your project is available for Godot to export
-      - name: checkout
-        uses: actions/checkout@v3.3.0
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          submodules: "recursive"
+          submodules: recursive
 
+      # Godot shells out to rcedit (through wine) to stamp the icon and version
+      # metadata into the Windows .exe, because the "Windows Desktop" preset sets
+      # application/modify_resources=true. Godot only logs an *info* message when
+      # rcedit is missing, so a broken wine setup ships an iconless .exe on a green
+      # build -- hence the hard failure below.
       - name: Install Wine
-        id: wine_install
+        id: wine
         run: |
+          set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends wine64
-          echo "WINE_PATH=$(which wine64)" >> $GITHUB_OUTPUT
+          sudo apt-get install -y --no-install-recommends wine
 
-      - name: export game
-        id: export
-        # Use latest version (see releases for all versions)
-        uses: firebelley/godot-export@v5.2.1
-        with:
-          # Defining all the required inputs
-          godot_executable_download_url: https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}/Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}_linux.x86_64.zip
-          godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}/Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}_export_templates.tpz
-          relative_project_path: .
-          archive_output: true
-          wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
- 
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Ubuntu 24.04 dropped the "wine64" binary name in favour of "wine".
+          WINE_PATH="$(command -v wine64 || command -v wine || true)"
+          if [ -z "$WINE_PATH" ]; then
+            echo "::error::Neither 'wine64' nor 'wine' is on PATH after install; rcedit cannot run."
+            exit 1
+          fi
+          echo "Using wine at: $WINE_PATH"
+          echo "wine_path=$WINE_PATH" >> "$GITHUB_OUTPUT"
 
-      - name: generate SHA512-SUMS.txt
+          # Create the wine prefix up front so the first rcedit call doesn't race it.
+          # This is an optimisation, not a requirement -- wine builds the prefix on
+          # first use anyway, so don't fail the build over it.
+          if command -v wineboot >/dev/null 2>&1; then
+            WINEDEBUG=-all wineboot --init \
+              || echo "::warning::wineboot --init failed; wine will create its prefix on first use."
+          fi
+
+      - name: Download rcedit
         run: |
-          cd "${{ steps.export.outputs.archive_directory }}"
-          sha512sum * > SHA512-SUMS.txt
+          set -euo pipefail
+          curl -fsSL -o "$HOME/rcedit-x64.exe" \
+            "https://github.com/electron/rcedit/releases/download/${RCEDIT_VERSION}/rcedit-x64.exe"
+
+      # Unpacked outside the workspace: stray files inside the project directory
+      # would be picked up by Godot's filesystem scan.
+      - name: Install Godot and export templates
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_TYPE}"
+          NAME="Godot_v${GODOT_VERSION}-${GODOT_RELEASE_TYPE}"
+
+          WORK="$RUNNER_TEMP/godot-setup"
+          mkdir -p "$WORK" "$HOME/bin"
+          cd "$WORK"
+
+          curl -fsSL -o godot.zip "${BASE}/${NAME}_linux.x86_64.zip"
+          curl -fsSL -o templates.tpz "${BASE}/${NAME}_export_templates.tpz"
+
+          unzip -q godot.zip
+          mv "${NAME}_linux.x86_64" "$HOME/bin/godot"
+          chmod +x "$HOME/bin/godot"
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+          "$HOME/bin/godot" --version
+
+          # The .tpz expands to a top-level "templates/" dir; version.txt inside it
+          # holds the exact directory name Godot looks for (e.g. "4.5.stable").
+          unzip -q templates.tpz
+          TEMPLATE_VERSION="$(cat templates/version.txt)"
+          echo "Export templates version: ${TEMPLATE_VERSION}"
+          mkdir -p "$HOME/.local/share/godot/export_templates"
+          rm -rf "$HOME/.local/share/godot/export_templates/${TEMPLATE_VERSION}"
+          mv templates "$HOME/.local/share/godot/export_templates/${TEMPLATE_VERSION}"
+
+      # rcedit/wine paths live in the editor settings, not in export_presets.cfg.
+      # Godot 4.5 reads editor_settings-4.5.tres (major.minor) -- the widely copied
+      # editor_settings-4.tres is silently ignored.
+      - name: Configure Godot editor settings
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.config/godot"
+          SETTINGS="$HOME/.config/godot/editor_settings-${GODOT_VERSION}.tres"
+          cat > "$SETTINGS" <<EOF
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/windows/rcedit = "$HOME/rcedit-x64.exe"
+          export/windows/wine = "${{ steps.wine.outputs.wine_path }}"
+          EOF
+          echo "Wrote ${SETTINGS}:"
+          cat "$SETTINGS"
+
+      - name: Import project
+        run: |
+          set -euo pipefail
+          # A cold .godot/ can make the first import exit non-zero; retry once.
+          godot --headless --import || godot --headless --import
+
+      - name: Export Linux and Windows builds
+        run: |
+          set -euo pipefail
+          BUILD="$RUNNER_TEMP/build"
+          mkdir -p "$BUILD/linux" "$BUILD/windows"
+
+          # Explicit output paths override the presets' export_path, which points
+          # outside the repo (../builds/godots/...).
+          godot --headless --export-release "Linux/X11" "$BUILD/linux/Godots.x86_64"
+          godot --headless --export-release "Windows Desktop" "$BUILD/windows/Godots.exe"
+
+          # Godot can exit 0 having produced nothing; never publish an empty release.
+          for f in \
+            "$BUILD/linux/Godots.x86_64" \
+            "$BUILD/windows/Godots.exe" \
+            "$BUILD/windows/Godots.console.exe"; do
+            if [ ! -s "$f" ]; then
+              echo "::error::Expected export output '$f' is missing or empty."
+              exit 1
+            fi
+            echo "OK: $f ($(stat -c%s "$f") bytes)"
+          done
+
+      - name: Package artifacts
+        run: |
+          set -euo pipefail
+          BUILD="$RUNNER_TEMP/build"
+          mkdir -p dist
+
+          chmod +x "$BUILD/linux/Godots.x86_64"
+          (cd "$BUILD/linux" && zip -q -X "$GITHUB_WORKSPACE/dist/Godots-linux-x86_64.zip" Godots.x86_64)
+          (cd "$BUILD/windows" && zip -q -X "$GITHUB_WORKSPACE/dist/Godots-windows-x86_64.zip" Godots.exe Godots.console.exe)
+
+          cd dist
+          sha512sum *.zip > SHA512-SUMS.txt
           echo "Generated SHA512-SUMS.txt:"
           cat SHA512-SUMS.txt
 
-        # This release action has worked well for me. However, you can most likely use any release action of your choosing.
-        # https://github.com/ncipollo/release-action
-      - name: create release
-        uses: ncipollo/release-action@v1.12.0
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          draft: true
-          tag: ${{ github.ref_name }}
-          artifacts: |
-            ${{ steps.export.outputs.archive_directory }}/*
-            ${{ steps.export.outputs.archive_directory }}/SHA512-SUMS.txt
+          name: godots-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+
+      - name: Create or update draft release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; replacing its assets."
+            gh release upload "$TAG" dist/* --clobber
+          else
+            echo "Creating draft release $TAG."
+            gh release create "$TAG" dist/* --draft --title "$TAG" --generate-notes
+          fi
