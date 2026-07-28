@@ -128,11 +128,13 @@ jobs:
           godot --headless --export-release "Linux/X11" "$BUILD/linux/Godots.x86_64"
           godot --headless --export-release "Windows Desktop" "$BUILD/windows/Godots.exe"
 
+          # No Godots.console.exe here: the preset sets debug/export_console_wrapper=1
+          # ("Debug Only"), so a release export deliberately produces the GUI exe alone.
+          #
           # Godot can exit 0 having produced nothing; never publish an empty release.
           for f in \
             "$BUILD/linux/Godots.x86_64" \
-            "$BUILD/windows/Godots.exe" \
-            "$BUILD/windows/Godots.console.exe"; do
+            "$BUILD/windows/Godots.exe"; do
             if [ ! -s "$f" ]; then
               echo "::error::Expected export output '$f' is missing or empty."
               exit 1
@@ -148,7 +150,7 @@ jobs:
 
           chmod +x "$BUILD/linux/Godots.x86_64"
           (cd "$BUILD/linux" && zip -q -X "$GITHUB_WORKSPACE/dist/Godots-linux-x86_64.zip" Godots.x86_64)
-          (cd "$BUILD/windows" && zip -q -X "$GITHUB_WORKSPACE/dist/Godots-windows-x86_64.zip" Godots.exe Godots.console.exe)
+          (cd "$BUILD/windows" && zip -q -X "$GITHUB_WORKSPACE/dist/Godots-windows-x86_64.zip" Godots.exe)
 
           cd dist
           sha512sum *.zip > SHA512-SUMS.txt
