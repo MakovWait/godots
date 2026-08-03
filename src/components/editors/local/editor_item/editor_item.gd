@@ -2,7 +2,7 @@ class_name EditorListItemControl
 extends HBoxListItem
 
 signal edited
-signal removed(remove_dir: bool)
+signal removed(remove_dir: bool, remove_binary: bool)
 signal manage_tags_requested
 signal tag_clicked(tag: String)
 
@@ -299,23 +299,30 @@ func _on_remove(item: LocalEditors.Item) -> void:
 	warning.self_modulate = get_theme_color("warning_color", "Editor")
 	warning.hide()
 	
-	var checkbox := CheckBox.new()
-	checkbox.text = tr("remove also from the file system")
-	checkbox.toggled.connect(func(toggled: bool) -> void:
+	var remove_binary_checkbox := CheckBox.new()
+	remove_binary_checkbox.text = tr("delete binary from filesystem")
+
+	var remove_dir_checkbox := CheckBox.new()
+	remove_dir_checkbox.text = tr("delete parent folder in filesystem")
+	remove_dir_checkbox.toggled.connect(func(toggled: bool) -> void:
 		warning.visible = toggled
+		if toggled:
+			remove_binary_checkbox.button_pressed = false
+		remove_binary_checkbox.disabled = toggled
 	)
-	
+
 	var vb := VBoxContainer.new()
 	vb.add_child(label)
-	vb.add_child(checkbox)
+	vb.add_child(remove_binary_checkbox)
+	vb.add_child(remove_dir_checkbox)
 	vb.add_child(warning)
 	vb.add_spacer(false)
-	
+
 	confirmation_dialog.add_child(vb)
-	
+
 	confirmation_dialog.confirmed.connect(func() -> void:
 		queue_free()
-		removed.emit(checkbox.button_pressed)
+		removed.emit(remove_dir_checkbox.button_pressed, remove_binary_checkbox.button_pressed)
 	)
 	add_child(confirmation_dialog)
 	confirmation_dialog.popup_centered()

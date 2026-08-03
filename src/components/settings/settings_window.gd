@@ -139,6 +139,12 @@ func _prepare_settings() -> Array:
 			tr("Will check only stable Godots releases.")
 		)),
 		SettingChangeObserved(SettingCfg(
+			"application/advanced/extract_to_same_folder",
+			Config.EXTRACT_TO_SAME_FOLDER,
+			SettingCheckbox,
+			tr("Extract downloaded editors directly into the versions dir instead of creating a subfolder for each one.")
+		)),
+		SettingChangeObserved(SettingCfg(
 			"network/http_proxy/host",
 			Config.HTTP_PROXY_HOST,
 			SettingText,

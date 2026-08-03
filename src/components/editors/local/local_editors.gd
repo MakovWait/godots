@@ -197,22 +197,40 @@ func _on_editors_list_item_selected(item: EditorListItemControl) -> void:
 	_sidebar.refresh_actions(item.get_actions())
 
 
-func _on_editors_list_item_removed(item_data: LocalEditors.Item, remove_dir: bool) -> void:
+func _on_editors_list_item_removed(item_data: LocalEditors.Item, remove_dir: bool, remove_binary: bool) -> void:
+	var target := _resolve_removal_target(
+		item_data.path, Config.VERSIONS_PATH.ret() as String, remove_dir, remove_binary
+	)
 	if remove_dir:
-		var base_dir := ProjectSettings.globalize_path(item_data.path.get_base_dir())
-		var versions_dir := ProjectSettings.globalize_path(Config.VERSIONS_PATH.ret() as String)
-		if not OS.has_feature("linux"):
-			base_dir = base_dir.to_lower()
-			versions_dir = versions_dir.to_lower()
-		if base_dir != versions_dir and base_dir.begins_with(versions_dir):
-			edir.remove_recursive(base_dir)
+		if target != "":
+			edir.remove_recursive(target)
 		else:
-			Output.push("skipping removing path {%s}" % base_dir)
+			Output.push("skipping removing path {%s}" % ProjectSettings.globalize_path(item_data.path.get_base_dir()))
+	elif remove_binary:
+		DirAccess.remove_absolute(target)
 	if _local_editors.has(item_data.path):
 		_local_editors.erase(item_data.path)
 		_local_editors.save()
 	_sidebar.refresh_actions([])
 	_update_remove_missing_disabled()
+
+
+# Returns the absolute path to delete from the filesystem, or "" if nothing should be
+# removed. The parent folder is only removable when it is a sub-folder of the versions
+# dir (never the versions dir itself, e.g. for "extract to same folder" installs).
+static func _resolve_removal_target(editor_path: String, versions_path: String, remove_dir: bool, remove_binary: bool) -> String:
+	if remove_dir:
+		var base_dir := ProjectSettings.globalize_path(editor_path.get_base_dir())
+		var versions_dir := ProjectSettings.globalize_path(versions_path)
+		if not OS.has_feature("linux"):
+			base_dir = base_dir.to_lower()
+			versions_dir = versions_dir.to_lower()
+		if base_dir != versions_dir and base_dir.begins_with(versions_dir):
+			return base_dir
+		return ""
+	if remove_binary:
+		return ProjectSettings.globalize_path(editor_path)
+	return ""
 
 
 func _on_editors_list_item_edited(item_data: Variant) -> void:

@@ -181,11 +181,20 @@ var ALLOW_INSTALL_TO_NOT_EMPTY_DIR := ConfigFileValue.new(
 
 
 var ONLY_STABLE_UPDATES := ConfigFileValue.new(
-	_cfg_auto_save.as_config_like(), 
-	"app", 
+	_cfg_auto_save.as_config_like(),
+	"app",
 	"only_stable_updates",
 	true
-): 
+):
+	set(_v): _readonly()
+
+
+var EXTRACT_TO_SAME_FOLDER := ConfigFileValue.new(
+	_cfg_auto_save.as_config_like(),
+	"app",
+	"extract_to_same_folder",
+	false
+):
 	set(_v): _readonly()
 
 

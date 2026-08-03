@@ -120,9 +120,19 @@ func install_zip(zip_abs_path: String, root_unzip_folder_name: String, possible_
 
 
 func _unzip_downloaded(downloaded_abs_path: String, root_unzip_folder_name: String) -> String:
-	var zip_content_dir := "%s/%s" % [Config.VERSIONS_PATH.ret(), root_unzip_folder_name]
-	if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(zip_content_dir)):
-		zip_content_dir += "-%s" % uuid.v4().substr(0, 8)
-	zip_content_dir += "/"
+	var zip_content_dir := _resolve_unzip_dir(
+		Config.VERSIONS_PATH.ret() as String,
+		root_unzip_folder_name,
+		Config.EXTRACT_TO_SAME_FOLDER.ret() as bool
+	)
 	zip.unzip(downloaded_abs_path, zip_content_dir)
 	return zip_content_dir
+
+
+static func _resolve_unzip_dir(versions_path: String, root_unzip_folder_name: String, extract_to_same_folder: bool) -> String:
+	if extract_to_same_folder:
+		return versions_path + "/"
+	var zip_content_dir := "%s/%s" % [versions_path, root_unzip_folder_name]
+	if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(zip_content_dir)):
+		zip_content_dir += "-%s" % uuid.v4().substr(0, 8)
+	return zip_content_dir + "/"
